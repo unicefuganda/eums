@@ -18,13 +18,13 @@ class TestStockCSVEndpoint(AuthenticatedAPITestCase):
 
     @override_settings(CELERY_ALWAYS_EAGER=True)
     @patch('eums.services.csv_export_service.CSVExportService.notify')
-    @patch('eums.services.exporter.stock_feedback_report_csv_exporter.StockFeedbackReportExporter.notification_details')
+    @patch('eums.services.exporter.stock_report_csv_exporter.StockReportExporter.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
-    @patch('eums.services.exporter.stock_feedback_report_csv_exporter.ReportExporter.assemble_csv_data')
-    @patch('eums.services.exporter.stock_feedback_report_csv_exporter.StockFeedbackReportExporter.generate_exported_csv_file_name')
-    @patch('eums.api.stock_report.stock_report_endpoint.filter_stock_feedback_report')
+    @patch('eums.services.exporter.stock_report_csv_exporter.ReportExporter.assemble_csv_data')
+    @patch('eums.services.exporter.stock_report_csv_exporter.StockReportExporter.generate_exported_csv_file_name')
+    @patch('eums.api.stock_report.stock_report_endpoint.filter_stock_report')
     def test_should_start_async_csv_generation_with_direct_deliveries(
-            self, mock_filter_stock_feedback_report,mock_generate_exported_csv_file_name,
+            self, mock_filter_stock_report,mock_generate_exported_csv_file_name,
             mock_assemble_csv_data,
             mock_generate_csv,
             mock_notification_details, mock_notify_user):
@@ -32,9 +32,9 @@ class TestStockCSVEndpoint(AuthenticatedAPITestCase):
 
         some_data = ['some data']
         mock_assemble_csv_data.return_value = some_data
-        mock_filter_stock_feedback_report.return_value = []
+        mock_filter_stock_report.return_value = []
 
-        file_name = 'stocks_feedback_report_1448892495779.csv'
+        file_name = 'stocks_report_1448892495779.csv'
         mock_generate_exported_csv_file_name.return_value = file_name
 
         mock_notification_details.return_value = ('subject', 'message')
