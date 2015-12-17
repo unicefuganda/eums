@@ -69,7 +69,7 @@ class DistributionPlanViewSet(ModelViewSet):
             user_profile = UserProfile.objects.get(user=logged_in_user)
             consignee = user_profile.consignee
             return user_profile, consignee
-        except StandardError:
+        except:
             return None, None
 
     @staticmethod
