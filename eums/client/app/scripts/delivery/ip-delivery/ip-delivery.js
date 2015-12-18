@@ -73,6 +73,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         };
 
         $scope.confirm = function (delivery) {
+            clearContactAndLocation();
             LoaderService.showLoader();
             $scope.activeDelivery = delivery;
             $scope.isInitContactEmpty = delivery.contactPersonId == null;
@@ -85,10 +86,15 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     $scope.oringalAnswers = angular.copy(answers);
                     $scope.selectedLocation.id = delivery.location;
                     $scope.contact.id = delivery.contactPersonId;
-                    setLocationAndContactFields()
+                    setLocationAndContactFields();
                     LoaderService.showModal('ip-acknowledgement-modal');
                 });
         };
+
+        function clearContactAndLocation() {
+            $scope.selectedLocation.id = '';
+            $scope.contact.id = '';
+        }
 
         $scope.saveAnswers = function () {
             if (isContactAndLocationInvalid()) {

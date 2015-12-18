@@ -113,7 +113,7 @@ function resetdb {
     python manage.py migrate
     python manage.py setup_permissions
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-    python manage.py shell_plus < eums/fixtures/init_system_settings.py
+    python manage.py shell_plus < eums/fixtures/init_basic_data.py
     python manage.py loaddata eums/client/test/functional/fixtures/user.json
   fi
 }
