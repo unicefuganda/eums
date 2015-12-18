@@ -27,5 +27,9 @@ describe('SystemSettings', function () {
         var confirmedStatus = systemSettingsPage.autoTrackStatus();
 
         expect(currentStatus).toEqual(confirmedStatus);
+
+        systemSettingsPage.visit();
+        systemSettingsPage.switch();
+        systemSettingsPage.confirmAutoTrack();
     });
 });
