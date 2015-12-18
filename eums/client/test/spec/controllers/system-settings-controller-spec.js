@@ -40,8 +40,6 @@ describe('SystemSettingsController', function () {
         scope.isSelected = true;
         spyOn(scope, 'cancelAutoTrack').and.callThrough();
         scope.cancelAutoTrack();
-        timeout.flush();
-        timeout.verifyNoPendingTasks();
         scope.$apply();
 
         expect(scope.cancelAutoTrack).toHaveBeenCalled();
