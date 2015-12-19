@@ -17,9 +17,13 @@ class ExportStockReportViewSet(APIView):
         return Response(message, status=200)
 
     def join_stock_report(self, stocks):
-        result = []
+        stock_results = []
         for index, stock in enumerate(stocks):
-            for item_index, item in enumerate(stock['items']):
-                stock['item'] = item
-                result.insert(item_index, stock)
-        return result
+            for item_index, items in enumerate(stock['items']):
+                stock_line = {}
+                stock_line['item'] = items
+                for key ,item in enumerate(stock):
+                    if(item != 'items'):
+                        stock_line[item] = stock[item]
+                stock_results.append(stock_line)
+        return stock_results
