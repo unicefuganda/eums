@@ -103,6 +103,11 @@ RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT':
 # WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
 RAPIDPRO_LIVE = False
 
+VISION_PASSWORD = os.getenv('VISION_PASSWORD', 'invalid_vision_password')
+VISION_URL = 'https://devapis.unicef.org/BIService/BIWebService.svc/'
+VISION_BUSINESS_AREA_CODE = 4380
+VISION_COUNTRY_CODE = 438
+
 NON_RESPONSE_GRACE_PERIOD = DELIVERY_STATUS_CHECK_DELAY  # in days
 
 NON_RESPONSE_PERCENTAGE_THRESHOLD = 70

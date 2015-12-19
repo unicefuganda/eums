@@ -9,7 +9,7 @@ class SalesOrderItem(OrderItem):
     net_value = models.DecimalField(max_digits=20, decimal_places=4)
     issue_date = models.DateField()
     delivery_date = models.DateField(null=True)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True)
 
     def purchase_order_item(self):
         return self.purchaseorderitem_set.all().first()
