@@ -9,7 +9,7 @@ from eums.vision.sales_order_synchronizer import SalesOrderSynchronizer
 class TestSalesOrderSynchronizer(TestCase):
     def setUp(self):
         self.synchronizer = SalesOrderSynchronizer(start_date='01012015')
-        self._prepare_sales_order()
+        self._prepare_sales_order_and_item()
 
     def tearDown(self):
         Item.objects.all().delete()
@@ -38,6 +38,7 @@ class TestSalesOrderSynchronizer(TestCase):
 
         existing_sales_order = self.synchronizer._get_or_create_new_order(sales_order)
 
+        self.assertEqual(SalesOrder.objects.count(), 1)
         self.assertEqual(existing_sales_order.order_number, 20173918)
 
     def test_should_create_new_sales_order(self):
@@ -77,7 +78,7 @@ class TestSalesOrderSynchronizer(TestCase):
         self.synchronizer._update_or_create_new_item(sales_order_item, self.sales_order_1)
         self.assertEqual(SalesOrder.objects.all().first().salesorderitem_set.count(), 2)
 
-    def _prepare_sales_order(self):
+    def _prepare_sales_order_and_item(self):
         self.programme_1 = Programme(wbs_element_ex='0060/A0/07/883')
         self.programme_1.save()
         self.sales_order_1 = SalesOrder(programme=self.programme_1,
