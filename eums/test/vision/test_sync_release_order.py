@@ -9,7 +9,7 @@ from eums.models import Programme, SalesOrder, PurchaseOrderItem, PurchaseOrder,
 from eums.vision.release_order_synchronizer import ReleaseOrderSynchronizer
 
 
-class TestReleaseOrderSynchronizer(TestCase):
+class TestSyncReleaseOrder(TestCase):
     def setUp(self):
         self.downloaded_release_orders = [{"RELEASE_ORDER_NUMBER": u"0054155912",
                                            "RELEASE_ORDER_ITEM": 10,

@@ -8,7 +8,7 @@ from eums.models import SalesOrder, SalesOrderItem, OrderItem, Item, Programme, 
 from eums.vision.purchase_order_synchronizer import PurchaseOrderSynchronizer
 
 
-class TestPurchaseOrderSynchronizer(TestCase):
+class TestSyncPurchaseOrder(TestCase):
     def setUp(self):
         self.downloaded_purchase_orders = [{"SALES_ORDER_NO": u"0020173918",
                                             "DOCUMENT_TYPE": "ZCOM",

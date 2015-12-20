@@ -6,7 +6,7 @@ from eums.models import Programme
 from eums.vision.programme_synchronizer import ProgrammeSynchronizer
 
 
-class TestProgrammeSynchronizer(TestCase):
+class TestSyncProgramme(TestCase):
     def setUp(self):
         self.downloaded_programme = {'GetProgrammeStructureList_JSONResult':
                                          '[{"BUSINESS_AREA_CODE":"4380",' \

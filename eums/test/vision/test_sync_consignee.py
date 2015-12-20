@@ -6,7 +6,7 @@ from eums.models import Consignee
 from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
 
 
-class TestConsigneeSynchronizer(TestCase):
+class TestSyncConsignee(TestCase):
     def setUp(self):
         self.downloaded_consignee = '[{"COUNTRY_CODE":"438",' \
                                     '"COUNTRY_NAME":"Uganda",' \
