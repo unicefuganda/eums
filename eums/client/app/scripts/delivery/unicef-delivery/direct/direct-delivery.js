@@ -9,7 +9,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         var rootPath = '/direct-delivery/new/';
 
 
-        $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'lastShipmentDate'];
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -17,7 +16,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.purchaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
-        $scope.sortTerm = {field: 'trackedDate', orderIndex: 0};
 
         $scope.documentColumnTitle = 'Purchase Order';
         $scope.dateColumnTitle = 'Date Created';
@@ -28,12 +26,8 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
         function loadPurchaseOrders(options) {
             LoaderService.showLoader();
-            options = angular.extend({'paginate': 'true'}, options);
-
             PurchaseOrderService.forDirectDelivery(undefined, options).then(function (response) {
-                $scope.purchaseOrders = response.results.sort();
-                $scope.count = response.count;
-                $scope.pageSize = response.pageSize;
+                $scope.purchaseOrders = response;
                 LoaderService.hideLoader();
             }).catch(function () {
                 ngToast.create({content: 'Failed to load purchase orders', class: 'danger'});
@@ -41,21 +35,10 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         }
 
         $scope.initialize = function (urlArgs) {
-            this.sortBy('trackedDate');
-            this.sort.descending = false;
-
             loadPurchaseOrders(urlArgs);
         };
 
-        $scope.sortedBy = function (sortField) {
-            var sort = SortByService.sortedBy($scope.sortTerm, sortField);
-            this.sortBy(sort.field);
-            this.sort.descending = sort.des;
-        };
 
-        $scope.goToPage = function (page) {
-            loadPurchaseOrders(angular.extend({'page': page}, changedFilters()));
-        };
 
         $scope.$watch('[fromDate,toDate,query]', function (newValue, oldValue) {
             if (angular.equals(newValue, oldValue)) return;
@@ -81,18 +64,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
         }
-
-        $scope.sortArrowClass = function (criteria) {
-            var output = '';
-
-            if (this.sort.criteria === criteria) {
-                output = 'active glyphicon glyphicon-arrow-down';
-                if (this.sort.descending) {
-                    output = 'active glyphicon glyphicon-arrow-up';
-                }
-            }
-            return output;
-        };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
             if (selectedPurchaseOrder.isSingleIp == true) {
@@ -121,11 +92,5 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             });
         };
 
-    })
-    .factory('$sorter', function () {
-        return function (field) {
-            this.sort = this.sort || {};
-            angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
-        };
     });
 

@@ -40,7 +40,6 @@ class PurchaseOrderViewSet(ModelViewSet):
             self.paginator.page_size = 0
 
         queryset = self.filter_queryset(self.__get_direct_delivery())
-
         page = self.paginate_queryset(queryset)
 
         if page is not None:

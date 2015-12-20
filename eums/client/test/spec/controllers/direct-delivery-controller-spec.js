@@ -65,65 +65,12 @@ describe('DirectDeliveryController', function () {
         });
     });
 
-    describe('when sorted', function () {
-        it('should set the sort criteria', function () {
-            scope.sortBy('field');
-            expect(scope.sort.criteria).toBe('field');
-        });
-        it('should set the sort order as descending by default', function () {
-            scope.sortBy('field');
-            expect(scope.sort.descending).toBe(true);
-        });
-        it('should toggle the sort order', function () {
-            scope.sortBy('field');
-            scope.sortBy('field');
-            expect(scope.sort.descending).toBe(false);
-        });
-    });
-
     describe('when initialized', function () {
         xit('should set all sales orders on initialize to the scope', function () {
             deferredPurchaseOrder.resolve(purchaseOrderDetails);
             scope.initialize();
             scope.$apply();
             expect(scope.salesOrders).toEqual(purchaseOrderDetails);
-        });
-
-        it('should set the sorter', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sortBy).toBe(sorter);
-        });
-
-        it('should sort by order number', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sort.criteria).toBe('trackedDate');
-        });
-
-        it('should sort in descending order', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sort.descending).toBe(false);
-        });
-
-        it('should have the sort arrow icon on the order number column by default', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sortArrowClass('')).toEqual('');
-        });
-
-        it('should set the clicked column as active', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sortArrowClass('trackedDate')).toEqual('active glyphicon glyphicon-arrow-down');
-        });
-
-        it('should set the clicked column as active and have the up arrow when ascending', function () {
-            scope.initialize();
-            scope.sort.descending = true;
-            scope.$apply();
-            expect(scope.sortArrowClass('trackedDate')).toEqual('active glyphicon glyphicon-arrow-up');
         });
 
         it('should show loader', function () {

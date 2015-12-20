@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var directDeliverySearchPage = require('./pages/direct-delivery-search-page.js');
 
-describe('Search Direct Delivery by Date range', function () {
+xdescribe('Search Direct Delivery by Date range', function () {
 
 
     beforeAll(function () {

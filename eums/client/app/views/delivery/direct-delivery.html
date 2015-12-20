@@ -81,31 +81,21 @@
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
-                <th>
-                    <a ng-click="sortedBy('orderNumber')">{{ documentColumnTitle }} <i
-                            ng-class="sortArrowClass('orderNumber');"></i></a>
+                <th sort-by="orderNumber">{{ documentColumnTitle }}
                 </th>
-                <th>
-                    <a ng-click="sortedBy('date')">{{ dateColumnTitle }}
-                        <i ng-class="sortArrowClass('date');"></i>
-                    </a>
+                <th sort-by="date">
+                    {{ dateColumnTitle }}
                 </th>
-                <th>
-                    <a ng-click="sortedBy('trackedDate')">{{ trackedDateColumnTitle }}
-                        <i ng-class="sortArrowClass('trackedDate');"></i>
-                    </a>
+                <th sort-by="trackedDate" sort-init="desc">
+                    {{ trackedDateColumnTitle }}
                 </th>
-                <th>
-                    <a ng-click="sortedBy('lastShipmentDate')">{{ lastShipmentDateColumnTitle }}
-                        <i ng-class="sortArrowClass('lastShipmentDate');"></i>
-                    </a>
+                <th sort-by="lastShipmentDate">
+                    {{ lastShipmentDateColumnTitle }}
                 </th>
-                <th>
-                    <a ng-click="sortedBy('poType')">{{ poTypeColumnTitle }} <i ng-class="sortArrowClass('poType');"></i></a>
+                <th sort-by="poType">{{ poTypeColumnTitle }}
                 </th>
-                <th>
-                    <a ng-click="sortedBy('programmeName')">{{ outcomeColumnTitle }} <i
-                            ng-class="sortArrowClass('programmeName');"></i></a>
+                <th sort-by="programmeName">
+                    {{ outcomeColumnTitle }}
                 </th>
                 <th class="col-xs-4 aligned-left" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
@@ -114,7 +104,8 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="purchaseOrder in purchaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
+            <tr si-sortable="single"
+                ng-repeat="purchaseOrder in purchaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
                     <span ng-class="purchaseOrder.track == 'Not' ?  'glyphicon glyphicon-remove text-danger' :
                     (purchaseOrder.track == 'Fully' ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-warning-sign text-warning')"></span>
@@ -187,11 +178,8 @@
             </tbody>
             <tfoot>
             <tr>
-                <td class="pagination-row" colspan="7">
-                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                                items-per-page="pageSize">
-                    </pagination>
+                <td colspan="7">
+                    <si-table-pagination limit="10" indices="5"/>
                 </td>
             </tr>
             </tfoot>
