@@ -107,27 +107,27 @@ class TestSyncSalesOrder(TestCase):
                                     material_code='S0145620')
         self.expected_item_3 = Item(description='Laundry soap, Carton, 25 bars, 800 grams',
                                     material_code='SL009100')
-        self.expected_sales_item_1 = SalesOrderItem(sales_order=self.expected_sales_order_1,
-                                                    item=self.expected_item_1,
-                                                    net_price=0,
-                                                    net_value=Decimal('51322.6500'),
-                                                    issue_date=datetime.date(2015, 12, 3),
-                                                    delivery_date=datetime.date(2015, 12, 3),
-                                                    description='Scale,electronic,mother/child,150kgx100g')
-        self.expected_sales_item_2 = SalesOrderItem(sales_order=self.expected_sales_order_1,
-                                                    item=self.expected_item_2,
-                                                    net_price=0,
-                                                    net_value=Decimal('3655.16'),
-                                                    issue_date=datetime.date(2015, 12, 3),
-                                                    delivery_date=datetime.date(2015, 12, 3),
-                                                    description='MUAC,Child 11.5 Red/PAC-50')
-        self.expected_sales_item_3 = SalesOrderItem(sales_order=self.expected_sales_order_2,
-                                                    item=self.expected_item_3,
-                                                    net_price=0,
-                                                    net_value=Decimal('2673'),
-                                                    issue_date=datetime.date(2015, 12, 14),
-                                                    delivery_date=datetime.date(2015, 12, 14),
-                                                    description='Laundry soap, Carton, 25 bars, 800 grams')
+        self.expected_sales_order_item_1 = SalesOrderItem(sales_order=self.expected_sales_order_1,
+                                                          item=self.expected_item_1,
+                                                          net_price=0,
+                                                          net_value=Decimal('51322.6500'),
+                                                          issue_date=datetime.date(2015, 12, 3),
+                                                          delivery_date=datetime.date(2015, 12, 3),
+                                                          description='Scale,electronic,mother/child,150kgx100g')
+        self.expected_sales_order_item_2 = SalesOrderItem(sales_order=self.expected_sales_order_1,
+                                                          item=self.expected_item_2,
+                                                          net_price=0,
+                                                          net_value=Decimal('3655.16'),
+                                                          issue_date=datetime.date(2015, 12, 3),
+                                                          delivery_date=datetime.date(2015, 12, 3),
+                                                          description='MUAC,Child 11.5 Red/PAC-50')
+        self.expected_sales_order_item_3 = SalesOrderItem(sales_order=self.expected_sales_order_2,
+                                                          item=self.expected_item_3,
+                                                          net_price=0,
+                                                          net_value=Decimal('2673'),
+                                                          issue_date=datetime.date(2015, 12, 14),
+                                                          delivery_date=datetime.date(2015, 12, 14),
+                                                          description='Laundry soap, Carton, 25 bars, 800 grams')
         start_date = '01122015'
         end_date = datetime.date.today().strftime('%d%m%Y')
         self.synchronizer = SalesOrderSynchronizer(start_date=start_date)
@@ -181,9 +181,9 @@ class TestSyncSalesOrder(TestCase):
         actual_sales_item_2 = all_sales_order_items[1]
         actual_sales_item_3 = all_sales_order_items[2]
 
-        self._assert_sales_order_item_equal(actual_sales_item_1, self.expected_sales_item_1)
-        self._assert_sales_order_item_equal(actual_sales_item_2, self.expected_sales_item_2)
-        self._assert_sales_order_item_equal(actual_sales_item_3, self.expected_sales_item_3)
+        self._assert_sales_order_item_equal(actual_sales_item_1, self.expected_sales_order_item_1)
+        self._assert_sales_order_item_equal(actual_sales_item_2, self.expected_sales_order_item_2)
+        self._assert_sales_order_item_equal(actual_sales_item_3, self.expected_sales_order_item_3)
 
     def _sync_sales_order(self):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_sales_orders)

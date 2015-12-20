@@ -76,11 +76,14 @@ class SalesOrderSynchronizer(OrderSynchronizer):
 
     @staticmethod
     def _convert_wbs_code_format(wbs_code):
-        if len(wbs_code) < 6:
-            return ''
+        wbs_code_without_suffix = ''
+        if len(wbs_code) == 17:
+            wbs_code_without_suffix = wbs_code[0:-6]
 
-        wbs_code_without_suffix = wbs_code[0:-6]
-        return re.sub(r'(.{4})(.{2})(.{2})', r'\1/\2/\3/', wbs_code_without_suffix)
+        if len(wbs_code) == 11:
+            wbs_code_without_suffix = wbs_code
+
+        return re.sub(r'(.{4})(.{2})(.{2})', r'\1/\2/\3/', wbs_code_without_suffix) if wbs_code_without_suffix else ''
 
     @staticmethod
     def _remove_order_level_data_from(record):
