@@ -16,7 +16,7 @@ describe('SystemSettings Service', function () {
     });
 
     it('should get system settings', function () {
-        var systemSettings = [{id: 1, auto_track: true, sync_start_date: '2015-12-06T00:00:00'}];
+        var systemSettings = [{id: 1, auto_track: true, sync_start_date: new Date('2015-12-06T00:00:00')}];
         var url = config.BACKEND_URLS.SYSTEM_SETTINGS;
 
         mockBackend.whenGET(url).respond(200, systemSettings);
@@ -29,14 +29,14 @@ describe('SystemSettings Service', function () {
     });
 
     it('should update system settings', function () {
-        var systemSettings = {auto_track: true, sync_start_date: '2015-12-07T00:00:00'};
+        var systemSettings = {auto_track: true, sync_start_date: new Date('2015-12-06T00:00:00')};
         var url = config.BACKEND_URLS.SYSTEM_SETTINGS + '/1';
 
         mockBackend.whenPUT(url).respond(200, systemSettings);
         mockBackend.expectPUT(url);
 
         systemSettingsService.updateSettings(systemSettings).then(function (response) {
-            expect(response.data).toEqual(systemSettings);
+            expect(response).toEqual(systemSettings);
         });
         mockBackend.flush();
     });

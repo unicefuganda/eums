@@ -15,7 +15,7 @@ angular.module('SystemSettingsService', ['eums.config'])
             updateSettings: function (data) {
                 var result = $q.defer();
                 $http.put(EumsConfig.BACKEND_URLS.SYSTEM_SETTINGS + '/1', data).then(function (response) {
-                    result.resolve(response);
+                    result.resolve(response.data);
                 }, function () {
                     result.reject();
                 });

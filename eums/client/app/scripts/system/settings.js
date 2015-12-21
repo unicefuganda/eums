@@ -22,9 +22,11 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
 
             $scope.isON = false;
             $scope.settings.syncStartDate = null;
+            $scope.currectStartDate = null;
 
             SystemSettingsService.getSettings().then(function (settings) {
-                $scope.settings.syncStartDate = settings.sync_start_date;
+                $scope.settings.syncStartDate = settings.sync_start_date ? new Date(settings.sync_start_date) : null;
+                $scope.currectStartDate = $scope.settings.syncStartDate;
                 $scope.isSelected = settings.state;
                 isCancelledOrInitUpdated = settings.state;
             });
@@ -61,13 +63,21 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
 
             function processSyncStartDate(newDate, oldDate) {
                 if (oldDate === null || new Date(newDate) < new Date(oldDate)) {
-                    $scope.settings.syncStartDate = newDate;
-                    SystemSettingsService.updateSettings({sync_start_date: newDate});
+                    if (needToUpdateStartDate()) {
+                        $scope.currectStartDate = $scope.settings.syncStartDate;
+                        SystemSettingsService.updateSettings({sync_start_date: newDate}).then(function() {
+                            ngToast.create({content: "Start syncing, Please waiting...", class: 'success'});
+                        });
+                    }
                 } else {
                     $scope.settings.syncStartDate = oldDate;
-                    var errorMessage = "You can only set an earlier date";
-                    ngToast.create({content: errorMessage, class: 'danger'});
+                    ngToast.create({content: "Only the earlier date is allowed", class: 'danger'});
                 }
+            }
+
+            function needToUpdateStartDate() {
+                return $scope.currectStartDate == null
+                    || $scope.currectStartDate.toString() != $scope.settings.syncStartDate.toString();
             }
         }
     );

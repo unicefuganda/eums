@@ -61,33 +61,33 @@ describe('SystemSettingsController', function () {
     });
 
     it('should get sync start date', function () {
-        deferSettings.resolve({sync_start_date: '2015-12-06T00:00:00'});
+        deferSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
         scope.$apply();
 
         expect(mockSystemSettingsService.getSettings).toHaveBeenCalled();
-        expect(scope.settings.syncStartDate).toEqual('2015-12-06T00:00:00');
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
     });
 
     it('should set an earlier sync start date', function () {
-        deferSettings.resolve({sync_start_date: '2015-12-06T00:00:00'});
+        deferSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
         scope.$apply();
 
-        scope.settings.syncStartDate = '2015-12-05T00:00:00';
+        scope.settings.syncStartDate = new Date('2015-12-05T00:00:00');
         scope.$digest();
 
-        expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({sync_start_date: '2015-12-05T00:00:00'});
-        expect(scope.settings.syncStartDate).toEqual('2015-12-05T00:00:00');
+        expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({sync_start_date: new Date('2015-12-05T00:00:00')});
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-05T00:00:00'));
     });
 
     it('should not set and later sync start date', function() {
         deferSettings.resolve({sync_start_date: '2015-12-06T00:00:00'});
         scope.$apply();
 
-        scope.settings.syncStartDate = '2015-12-07T00:00:00';
+        scope.settings.syncStartDate = new Date('2015-12-07T00:00:00');
         scope.$digest();
 
-        expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(1);
+        expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
         expect(mockToast.create).toHaveBeenCalled();
-        expect(scope.settings.syncStartDate).toEqual('2015-12-06T00:00:00');
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
     })
 });
