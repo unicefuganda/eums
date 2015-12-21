@@ -15,10 +15,6 @@ class SystemSettingsViewSet(ModelViewSet):
     queryset = SystemSettings.objects.all()
     serializer_class = SystemSettingsSerialiser
 
-    def update(self, request, *args, **kwargs):
-        super(SystemSettingsViewSet, self).update(request, args, kwargs)
-        return Response()
-
 
 system_settings_routers = DefaultRouter()
 system_settings_routers.register(r'system-settings', SystemSettingsViewSet)

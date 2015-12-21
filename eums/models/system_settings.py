@@ -9,5 +9,5 @@ class SystemSettings(models.Model):
         app_label = 'eums'
 
     def __unicode__(self):
-        return 'SystemSettings = {id : %s, auto_track : %s, sync_start_time : %s}' \
+        return 'SystemSettings = {id : %s, auto_track : %s, sync_start_date : %s}' \
                % (str(self.id), str(self.auto_track), str(self.sync_start_date))

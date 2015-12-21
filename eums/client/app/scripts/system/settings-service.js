@@ -10,7 +10,7 @@ angular.module('SystemSettingsService', ['eums.config'])
                 }, function () {
                     result.reject();
                 });
-                return result.promise
+                return result.promise;
             },
             updateSettings: function (data) {
                 var result = $q.defer();
@@ -19,6 +19,7 @@ angular.module('SystemSettingsService', ['eums.config'])
                 }, function () {
                     result.reject();
                 });
+                return result.promise;
             }
         }
     });

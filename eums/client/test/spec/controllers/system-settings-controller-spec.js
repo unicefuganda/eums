@@ -1,4 +1,4 @@
-ddescribe('SystemSettingsController', function () {
+describe('SystemSettingsController', function () {
 
     var scope;
     var mockSystemSettingsService, deferSettings, mockToast, mockLoaderService, q;

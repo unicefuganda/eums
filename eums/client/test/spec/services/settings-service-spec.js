@@ -16,26 +16,26 @@ describe('SystemSettings Service', function () {
     });
 
     it('should get system settings', function () {
-        var systemSettings = [{id: 1, auto_track: true}];
+        var systemSettings = [{id: 1, auto_track: true, sync_start_date: '2015-12-06T00:00:00'}];
         var url = config.BACKEND_URLS.SYSTEM_SETTINGS;
 
         mockBackend.whenGET(url).respond(200, systemSettings);
         mockBackend.expectGET(url);
 
-        systemSettingsService.isAutoTrack().then(function (response) {
-            expect(response).toEqual(systemSettings[0].auto_track);
+        systemSettingsService.getSettings().then(function (response) {
+            expect(response).toEqual(systemSettings[0]);
         });
         mockBackend.flush();
     });
 
     it('should update system settings', function () {
-        var systemSettings = {auto_track: true};
+        var systemSettings = {auto_track: true, sync_start_date: '2015-12-07T00:00:00'};
         var url = config.BACKEND_URLS.SYSTEM_SETTINGS + '/1';
 
         mockBackend.whenPUT(url).respond(200, systemSettings);
         mockBackend.expectPUT(url);
 
-        systemSettingsService.updateAutoTrack(systemSettings.auto_track).then(function (response) {
+        systemSettingsService.updateSettings(systemSettings).then(function (response) {
             expect(response.data).toEqual(systemSettings);
         });
         mockBackend.flush();
