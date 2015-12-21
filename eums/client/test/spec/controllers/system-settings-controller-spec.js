@@ -1,24 +1,19 @@
-describe('SystemSettingsController', function () {
+ddescribe('SystemSettingsController', function () {
 
     var scope;
-    var mockSystemSettingsService, deferredUpdateSettings, deferSettings, mockToast, mockLoaderService, q;
-    var deferredLoadSettings;
+    var mockSystemSettingsService, deferSettings, mockToast, mockLoaderService, q;
 
     beforeEach(function () {
         module('SystemSettings');
 
-        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService',
-            ['isAutoTrack', 'updateAutoTrack', 'getSettings', 'updateSettings']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'updateSettings']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showModal', 'hideModal']);
 
         inject(function ($controller, $rootScope, $q, $timeout, ngToast) {
             q = $q;
-            deferredLoadSettings = $q.defer();
-            deferredUpdateSettings = $q.defer();
             deferSettings = $q.defer();
-            mockSystemSettingsService.isAutoTrack.and.returnValue(deferredLoadSettings.promise);
-            mockSystemSettingsService.updateAutoTrack.and.returnValue(deferredUpdateSettings.promise);
             mockSystemSettingsService.getSettings.and.returnValue(deferSettings.promise);
+            mockSystemSettingsService.updateSettings.and.returnValue(deferSettings.promise);
             mockToast = ngToast;
             spyOn(mockToast, 'create');
 
@@ -34,10 +29,10 @@ describe('SystemSettingsController', function () {
     });
 
     it('should load current auto track setting', function () {
-        deferredLoadSettings.resolve(true);
+        deferSettings.resolve({state: true});
         scope.$apply();
 
-        expect(mockSystemSettingsService.isAutoTrack).toHaveBeenCalled();
+        expect(mockSystemSettingsService.getSettings).toHaveBeenCalled();
         expect(scope.isSelected).toBe(true);
     });
 
@@ -54,13 +49,13 @@ describe('SystemSettingsController', function () {
 
     it('should confirm auto track setting', function () {
         scope.isSelected = true;
-        deferredUpdateSettings.resolve(scope.isSelected);
+        deferSettings.resolve({state: scope.isSelected});
         spyOn(scope, 'confirmAutoTrack').and.callThrough();
         scope.confirmAutoTrack();
         scope.$apply();
 
         expect(scope.confirmAutoTrack).toHaveBeenCalled();
-        expect(mockSystemSettingsService.updateAutoTrack).toHaveBeenCalled();
+        expect(mockSystemSettingsService.updateSettings).toHaveBeenCalled();
         expect(scope.isSelected).toBe(true);
         expect(mockLoaderService.hideModal).toHaveBeenCalled();
     });
