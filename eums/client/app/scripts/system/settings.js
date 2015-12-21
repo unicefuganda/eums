@@ -65,9 +65,8 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 if (oldDate === null || new Date(newDate) < new Date(oldDate)) {
                     if (needToUpdateStartDate()) {
                         $scope.currectStartDate = $scope.settings.syncStartDate;
-                        SystemSettingsService.updateSettings({sync_start_date: newDate}).then(function() {
-                            ngToast.create({content: "Start syncing, Please waiting...", class: 'success'});
-                        });
+                        SystemSettingsService.updateSettings({sync_start_date: newDate});
+                        ngToast.create({content: "Start syncing, It may take a long time.", class: 'success'});
                     }
                 } else {
                     $scope.settings.syncStartDate = oldDate;
