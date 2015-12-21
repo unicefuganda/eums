@@ -36,7 +36,7 @@ class VisionSyncInfoTest(TestCase):
         self.assertEqual(self.successful_po.programme_status, VisionSyncInfo.STATUS.NOT_RUNNING)
 
     def test_should_assign_sync_time_automatically(self):
-        self.assertIsInstance(self.successful_po.sync_time, datetime)
+        self.assertIsInstance(self.successful_po.sync_date, datetime)
 
     def test_should_set_status(self):
         sync_info = VisionSyncInfo.new_instance()

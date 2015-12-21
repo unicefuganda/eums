@@ -10,7 +10,7 @@ class VisionSyncInfo(models.Model):
                     'CONSIGNEE': 'consignee_status',
                     'PROGRAMME': 'programme_status'}
     STATUS = Choices('SUCCESS', 'FAILURE', 'NOT_RUNNING')
-    sync_time = models.DateTimeField(auto_now_add=True)
+    sync_date = models.DateTimeField(auto_now_add=True)
     so_status = StatusField(default=STATUS.NOT_RUNNING)
     po_status = StatusField(default=STATUS.NOT_RUNNING)
     ro_status = StatusField(default=STATUS.NOT_RUNNING)
@@ -19,7 +19,7 @@ class VisionSyncInfo(models.Model):
 
     def __unicode__(self):
         return "sync_time=%s, so_status=%s, po_status=%s, ro_status=%s, consignee_status=%s, programme=%s" \
-               % str(self.sync_time), self.so_status, self.po_status, \
+               % str(self.sync_date), self.so_status, self.po_status, \
                self.ro_status, self.consignee_status, self.programme_status
 
     def set_sync_status_success(self, which):

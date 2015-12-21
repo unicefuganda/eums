@@ -3,7 +3,7 @@ from celery.schedules import crontab
 from celery.task import periodic_task
 from celery.utils.log import get_task_logger
 
-from eums.models import VisionSyncInfo
+from eums.models import VisionSyncInfo, SystemSettings
 from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
 from eums.vision.programme_synchronizer import ProgrammeSynchronizer
 from eums.vision.purchase_order_synchronizer import PurchaseOrderSynchronizer
@@ -13,15 +13,14 @@ from eums.vision.vision_data_synchronizer import VisionException
 
 logger = get_task_logger(__name__)
 
-DEFAULT_START_DATE = '17122015'
-
 
 @periodic_task(run_every=crontab(minute=0, hour=1))
 def run():
-    sync_record = VisionSyncInfo.new_instance()
-    _sync_consignee(sync_record)
-    _sync_programme(sync_record)
-    _sync_orders(sync_record)
+    if _get_start_date():
+        sync_record = VisionSyncInfo.new_instance()
+        _sync_consignee(sync_record)
+        _sync_programme(sync_record)
+        _sync_orders(sync_record)
 
 
 def _sync_consignee(sync_record):
@@ -68,11 +67,11 @@ def _get_last_sync_date(key):
     last_so_sync = VisionSyncInfo.get_last_successful_sync('SO')
 
     if key == 'SO':
-        return _convert_date_format(last_so_sync.sync_time) if last_so_sync else DEFAULT_START_DATE
+        return _convert_date_format(last_so_sync.sync_time) if last_so_sync else _get_start_date()
 
     last_sync = VisionSyncInfo.get_last_successful_sync(key)
     if not (last_sync and last_so_sync):
-        return DEFAULT_START_DATE
+        return _get_start_date()
 
     last_so_sync_date = last_so_sync.sync_time
     last_sync_date = last_sync.sync_time
@@ -86,3 +85,8 @@ def _convert_date_format(sync_date):
 
 def _is_last_sync_date_gte_today(sync_date):
     return sync_date >= datetime.date.today().strftime('%d%m%Y')
+
+
+def _get_start_date():
+    start_date = SystemSettings.objects.all().first().sync_start_date
+    return start_date.strftime('%d%m%Y') if start_date else ''
