@@ -118,6 +118,7 @@ describe('StockReportController', function () {
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc'
             });
@@ -167,6 +168,7 @@ describe('StockReportController', function () {
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 consignee: 1
@@ -179,6 +181,7 @@ describe('StockReportController', function () {
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 location: 1
@@ -193,6 +196,7 @@ describe('StockReportController', function () {
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 location: 2,
@@ -205,6 +209,7 @@ describe('StockReportController', function () {
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 fromDate: '2015-11-01'
@@ -216,6 +221,7 @@ describe('StockReportController', function () {
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 toDate: '2015-11-01'
@@ -226,6 +232,7 @@ describe('StockReportController', function () {
             scope.reportParams.selectedOutcomeId = 7;
             scope.$apply();
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 outcome: 7
@@ -362,6 +369,7 @@ describe('StockReportController', function () {
             expect(mockUserService.getCurrentUser.calls.count()).toEqual(1);
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                page : undefined,
                 field: 'last_shipment_date',
                 order: 'desc',
                 consignee: 5

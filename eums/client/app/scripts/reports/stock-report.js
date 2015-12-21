@@ -55,8 +55,9 @@ angular.module('StockReport', [
         function fetchReport(params) {
             LoaderService.showLoader();
             var requestParams = {};
+            Object.merge(requestParams, {page: $scope.currentPage});
             if ($scope.reportParams.selectedLocation) {
-                Object.merge(requestParams, {location: $scope.reportParams.selectedLocation})
+                Object.merge(requestParams, {location: $scope.reportParams.selectedLocation});
             }
             if ($scope.reportParams.selectedIPId) {
                 Object.merge(requestParams, {consignee: $scope.reportParams.selectedIPId});
