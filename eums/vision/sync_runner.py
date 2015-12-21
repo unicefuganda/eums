@@ -67,14 +67,14 @@ def _get_last_sync_date(key):
     last_so_sync = VisionSyncInfo.get_last_successful_sync('SO')
 
     if key == 'SO':
-        return _convert_date_format(last_so_sync.sync_time) if last_so_sync else _get_start_date()
+        return _convert_date_format(last_so_sync.sync_date) if last_so_sync else _get_start_date()
 
     last_sync = VisionSyncInfo.get_last_successful_sync(key)
     if not (last_sync and last_so_sync):
         return _get_start_date()
 
-    last_so_sync_date = last_so_sync.sync_time
-    last_sync_date = last_sync.sync_time
+    last_so_sync_date = last_so_sync.sync_date
+    last_sync_date = last_sync.sync_date
     return _convert_date_format(last_so_sync_date) if last_sync_date > last_so_sync_date \
         else _convert_date_format(last_sync_date)
 
