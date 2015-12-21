@@ -60,7 +60,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             event.stopPropagation();
         });
 
-
         function setLocationAndContactFields() {
             if ($scope.contact.id)
                 ContactService.get($scope.contact.id)
@@ -97,7 +96,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         }
 
         $scope.saveAnswers = function () {
-            if (isContactAndLocationInvalid()) {
+            if (isContactOrLocationInvalid()) {
                 return;
             }
             var answers;
@@ -118,6 +117,12 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 });
         };
 
+        $scope.toContactPage = function () {
+            LoaderService.showLoader();
+            $location.path('/contacts');
+            LoaderService.hideLoader();
+        }
+
         function updateContactAndLocation() {
             if ($scope.isInitContactEmpty) {
                 $scope.activeDelivery.contact_person_id = $scope.contact.id;
@@ -126,7 +131,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             }
         }
 
-        function isContactAndLocationInvalid() {
+        function isContactOrLocationInvalid() {
             if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id)) {
                 createToast('Please fill in required field!', 'danger');
                 return true;
