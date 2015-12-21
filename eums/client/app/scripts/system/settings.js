@@ -1,10 +1,14 @@
 'use strict';
 
-angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader', 'frapontillo.bootstrap-switch'])
-    .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService, LoaderService) {
+angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader', 'frapontillo.bootstrap-switch', 'ngToast'])
+    .config(['ngToastProvider', function (ngToast) {
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+    }])
+    .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService, LoaderService, ngToast) {
 
         var isCancelledOrInitUpdated = false;
 
+        $scope.settings = {};
         $scope.isSelected = false;
         $scope.onText = 'ON';
         $scope.offText = 'OFF';
@@ -17,11 +21,22 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         $scope.inverse = true;
 
         $scope.isON = false;
+        $scope.settings.syncStartDate = null;
 
         SystemSettingsService.isAutoTrack().then(function (state) {
             $scope.isSelected = state;
             isCancelledOrInitUpdated = state;
         });
+
+        SystemSettingsService.getSettings().then(function (settings) {
+            $scope.settings.syncStartDate = settings.sync_start_date;
+        });
+
+        $scope.$watch('settings', function (newValue, oldValue) {
+            if (newValue.syncStartDate !== oldValue.syncStartDate) {
+                processSyncStartDate(newValue.syncStartDate, oldValue.syncStartDate);
+            }
+        }, true);
 
         $('input[name="auto-track-switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
             $timeout(function () {
@@ -46,4 +61,15 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 LoaderService.hideModal("auto-track-confirm-modal");
             });
         };
+
+        function processSyncStartDate(newDate, oldDate) {
+            if (oldDate === null || new Date(newDate) < new Date(oldDate)) {
+                $scope.settings.syncStartDate = newDate;
+                SystemSettingsService.updateSettings({sync_start_date: newDate});
+            } else {
+                $scope.settings.syncStartDate = oldDate;
+                var errorMessage = "You can only set an earlier date";
+                ngToast.create({content: errorMessage, class: 'danger'});
+            }
+        }
     });
