@@ -72,6 +72,12 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             });
         }
 
+        $scope.isDeliveryTracked = function() {
+            return ($scope.delivery.track) &&
+                ($scope.contact && $scope.contact.id) &&
+                ($scope.selectedLocation && $scope.selectedLocation.id);
+        };
+
         var getDelivery = function () {
             var deliveryParams = ['consignee', 'sales_order.programme', 'delivery', 'items.item.unit'];
             var deliveryNodeParams = ['consignee'];

@@ -52,12 +52,12 @@
                         <div class="bold-label pad-small">Contact Person</div>
                         <div class="col-md-10 pad-small" ng-class="{'has-error': !contact.id && errors}">
                             <div class="form-group table-contact-form-group col-md-10">
-                                <input type="hidden" search-contacts required="required"
+                                <input type="hidden" search-contacts required="required" ng-disabled="isDeliveryTracked()"
                                        value="{{ contact.id }}" ng-model="contact.id"
                                        ng-attr-id="{{ 'contact-select' }}">
                             </div>
                             <div class="form-group table-contact-form-group plus-btn col-md-2">
-                                <button type="button" class="btn btn-default "
+                                <button type="button" class="btn btn-default" ng-disabled="isDeliveryTracked()"
                                         ng-click="addContact(item, $index)">
                                     <i class="glyphicon glyphicon-plus"></i>
                                 </button>
@@ -67,22 +67,22 @@
 
                     <div class="col-md-12 margin-bottom-10">
                         <div class="bold-label pad-small">Choose District</div>
-                        <div id="input-location" class="pad-small col-md-8" ng-if="districtsLoaded"
+                        <div id="input-location" class="pad-small col-md-10" ng-if="districtsLoaded"
                              ng-class="{'has-error': !selectedLocation.id && errors}">
-                            <div class="pad-small">
+                            <div class="table-contact-form-group col-md-10">
                                 <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="selectedLocation.id"
+                                       ng-model="selectedLocation.id" ng-disabled="isDeliveryTracked()"
                                        ng-attr-id="{{ 'location-select' }}"
-                                       value="{{ selectedLocation.id }}"></div>
+                                       value="{{ selectedLocation.id }}">
+                            </div>
                         </div>
                         <div class="margin-10 col-mg-4">
-                            <label class="control-label description-label">
-                                <input type="checkbox"
+                            <label class="control-label" ng-class="isDeliveryTracked() ? 'text-muted' : 'description-label'">
+                                <input type="checkbox" ng-disabled="isDeliveryTracked()"
                                        ng-model="track">
                                 Track delivery
                             </label>
                         </div>
-
                     </div>
 
                     <div class="col-md-12 margin-bottom-10">
