@@ -16,14 +16,14 @@ class ExportStockReportViewSet(APIView):
         message = {'message': 'Generating CSV, you will be notified via email once it is done.'}
         return Response(message, status=200)
 
-    def join_stock_report(self, stocks):
+    @staticmethod
+    def join_stock_report(stocks):
         stock_results = []
         for index, stock in enumerate(stocks):
             for item_index, items in enumerate(stock['items']):
-                stock_line = {}
-                stock_line['item'] = items
+                stock_line = {'item': items}
                 for key ,item in enumerate(stock):
-                    if(item != 'items'):
+                    if item != 'items':
                         stock_line[item] = stock[item]
                 stock_results.append(stock_line)
         return stock_results
