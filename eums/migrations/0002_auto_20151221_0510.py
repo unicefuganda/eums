@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='VisionSyncInfo',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('sync_time', models.DateTimeField(auto_now_add=True)),
+                ('sync_date', models.DateTimeField(auto_now_add=True)),
                 ('so_status', model_utils.fields.StatusField(default=b'NOT_RUNNING', max_length=100, no_check_for_status=True, choices=[(b'SUCCESS', b'SUCCESS'), (b'FAILURE', b'FAILURE'), (b'NOT_RUNNING', b'NOT_RUNNING')])),
                 ('po_status', model_utils.fields.StatusField(default=b'NOT_RUNNING', max_length=100, no_check_for_status=True, choices=[(b'SUCCESS', b'SUCCESS'), (b'FAILURE', b'FAILURE'), (b'NOT_RUNNING', b'NOT_RUNNING')])),
                 ('ro_status', model_utils.fields.StatusField(default=b'NOT_RUNNING', max_length=100, no_check_for_status=True, choices=[(b'SUCCESS', b'SUCCESS'), (b'FAILURE', b'FAILURE'), (b'NOT_RUNNING', b'NOT_RUNNING')])),
@@ -26,6 +26,12 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='systemsettings',
+            name='sync_start_date',
+            field=models.DateTimeField(null=True),
+            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='item',
