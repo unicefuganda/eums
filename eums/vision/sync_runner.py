@@ -1,4 +1,5 @@
 import datetime
+
 from celery.schedules import crontab
 from celery.task import periodic_task
 from celery.utils.log import get_task_logger
@@ -12,6 +13,10 @@ from eums.vision.sales_order_synchronizer import SalesOrderSynchronizer
 from eums.vision.vision_data_synchronizer import VisionException
 
 logger = get_task_logger(__name__)
+
+order_synchronizers = ({'SO': SalesOrderSynchronizer},
+                       {'PO': PurchaseOrderSynchronizer},
+                       {'RO': ReleaseOrderSynchronizer})
 
 
 @periodic_task(run_every=crontab(minute=0, hour=1))
@@ -44,11 +49,7 @@ def _sync_programme(sync_record):
 
 
 def _sync_orders(sync_record):
-    synchronizers = ({'SO': SalesOrderSynchronizer},
-                     {'PO': PurchaseOrderSynchronizer},
-                     {'RO': ReleaseOrderSynchronizer})
-
-    for synchronizer_dict in synchronizers:
+    for synchronizer_dict in order_synchronizers:
         key = synchronizer_dict.keys()[0]
         synchronizer = synchronizer_dict.values()[0]
         try:
@@ -56,6 +57,21 @@ def _sync_orders(sync_record):
             if _is_last_sync_date_gte_today(last_sync_date):
                 continue
             synchronizer(start_date=last_sync_date).sync()
+            sync_record.set_sync_status_success(key)
+            logger.info("%s sync successfully" % key)
+        except VisionException, e:
+            sync_record.set_sync_status_failure(key)
+            logger.error("%s sync failed, Reason:%s" % (key, e.get_error_message()))
+
+
+def trigger_sync(start_date, end_date):
+    sync_record = VisionSyncInfo.new_instance()
+
+    for synchronizer_dict in order_synchronizers:
+        key = synchronizer_dict.keys()[0]
+        synchronizer = synchronizer_dict.values()[0]
+        try:
+            synchronizer(start_date=start_date, end_date=end_date).sync()
             sync_record.set_sync_status_success(key)
             logger.info("%s sync successfully" % key)
         except VisionException, e:
