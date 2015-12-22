@@ -28,6 +28,7 @@ from eums.models.alert import Alert
 from eums.models.system_settings import SystemSettings
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.delete_records import DeleteRecords
+from eums.models.vision_sync_info import VisionSyncInfo
 
 
 __all__ = [
@@ -63,6 +64,6 @@ __all__ = [
     'Alert',
     'SyncInfo',
     'DeleteRecords',
-    'SystemSettings'
-
+    'SystemSettings',
+    'VisionSyncInfo'
 ]

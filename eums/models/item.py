@@ -5,7 +5,7 @@ from eums.models.time_stamped_model import TimeStampedModel
 
 
 class Item(TimeStampedModel):
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True)
     material_code = models.CharField(max_length=255)
     unit = models.ForeignKey(ItemUnit, null=True)
 

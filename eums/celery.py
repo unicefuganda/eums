@@ -8,7 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eums.settings_staging')
 app = Celery('eums', broker='redis://localhost:6379/0', backend='redis://',
              include=['eums.services.flow_scheduler', 'eums.services.csv_export_service',
                       'eums.services.csv_clear_service', 'eums.services.release_order_to_delivery_service',
-                      'eums.elasticsearch.synchroniser'])
+                      'eums.elasticsearch.synchroniser', 'eums.vision.sync_runner'])
 
 CELERY_TIMEZONE = 'Africa/Kampala'
 

@@ -19,11 +19,10 @@ describe('Delivery Feedback Report', function () {
         expect(report.consignees).toContain('WAKISO DHO');
         expect(report.outcome).toContain('sample programme');
         expect(report.value).toContain('$30.00');
-
     });
 
     it('should sort by shipment date', function () {
-        ftUtils.wait(1500);
+        ftUtils.wait(3000);
 
         report.sortBy('shipment-date', 'desc');
 

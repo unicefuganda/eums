@@ -1,8 +1,9 @@
 from decimal import Decimal
+
 from django.db import models
 
-from eums.models import OrderItem
 from eums.models import DistributionPlanNode
+from eums.models import OrderItem
 
 
 class PurchaseOrderItem(OrderItem):
@@ -10,7 +11,7 @@ class PurchaseOrderItem(OrderItem):
     PURCHASE_ORDER = "Purchase Order"
 
     purchase_order = models.ForeignKey('PurchaseOrder')
-    sales_order_item = models.ForeignKey('SalesOrderItem')
+    sales_order_item = models.ForeignKey('SalesOrderItem', null=True)
     value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 
     def available_balance(self):

@@ -1,7 +1,8 @@
+import datetime
+
 import factory
-from eums.models import Alert, ReleaseOrderItem
+
 from eums.models.system_settings import SystemSettings
-from eums.test.factories.delivery_factory import DeliveryFactory
 
 
 class SystemSettingsFactory(factory.DjangoModelFactory):
@@ -9,3 +10,4 @@ class SystemSettingsFactory(factory.DjangoModelFactory):
         model = SystemSettings
 
     auto_track = False
+    sync_start_date = datetime.date.today()

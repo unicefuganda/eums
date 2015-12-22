@@ -45,10 +45,37 @@
                     />
                 </div>
             </div>
+            <div class="row row-spaced">
+                <div class="col-md-offset-2 col-md-3">
+                    <label class="pull-right">Sync start date</label>
+                </div>
+                <div class="col-md-2 pad-small">
+                    <span class="input-group" eums-date-picker>
+                        <input type="text" class="form-control white-bg"
+                               datepicker-popup="dd-MMM-yyyy"
+                               ng-model="settings.syncStartDate"
+                               is-open="datepicker[1]"
+                               datepicker-options="dateOptions"
+                               show-button-bar="false"
+                               ng-required="true"
+                               ng-disabled="true"
+                               placeholder="{{ settings.syncStartDate }}"
+                               required="required"
+                               value="{{ settings.syncStartDate | date : 'dd-MMM-yyyy' }}"/>
+                            <span class="input-group-btn">
+                              <button type="button"
+                                      class="btn btn-default"
+                                      ng-click="open($event, 1)">
+                                  <i class="glyphicon glyphicon-calendar"></i>
+                              </button>
+                            </span>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<ng-toast></ng-toast>
 <ng-include
         src="'/static/app/views/system/partials/auto-track-confirm-dialog.html'">
 </ng-include>
-

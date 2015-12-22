@@ -19,14 +19,24 @@
                 <div class="pad-top-20">
                     <table>
                         <tr>
-                            <td class="pad-5">Contact Person</td>
-                            <td class="pad-5">
+                            <td class="pad-left-5 pad-top-5">Contact Person</td>
+                            <td class="pad-left-5 pad-top-5">
                                 <div ng-class="{'has-error': !contact.id && errors}">
                                     <input class="form-control" type="hidden" search-contacts required="required"
                                            ng-disabled="!isInitContactEmpty"
                                            value="{{ contact.id }}" ng-model="contact.id" required="required"
                                            ng-attr-id="{{ 'contact-select' }}">
+
                                 </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="pad-left-5 pad-bottom-5">
+                                <h6 class="text-warning">
+                                    If the contact person is not listed, you should add the person from the <a
+                                        href="javascript:void(0)" ng-click="toContactPage()">ContactPage</a>
+                                </h6>
                             </td>
                         </tr>
                         <tr>
