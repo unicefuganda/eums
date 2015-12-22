@@ -73,10 +73,43 @@ describe('SystemSettingsController', function () {
         scope.$apply();
 
         scope.settings.syncStartDate = new Date('2015-12-05T00:00:00');
-        scope.$digest();
+        spyOn(scope, 'clickSyncBtn').and.callThrough();
+        scope.clickSyncBtn();
+        scope.$apply();
 
+        expect(scope.clickSyncBtn).toHaveBeenCalled();
+        expect(mockLoaderService.showModal).toHaveBeenCalled();
+
+        spyOn(scope, 'confirmSync').and.callThrough();
+        scope.confirmSync();
+        scope.$apply();
+
+        expect(mockLoaderService.hideModal).toHaveBeenCalled();
+        expect(scope.confirmSync).toHaveBeenCalled();
         expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({sync_start_date: new Date('2015-12-05T00:00:00')});
         expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-05T00:00:00'));
+    });
+
+    it('should cancel an earlier sync start date', function () {
+        deferGetSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
+        scope.$apply();
+
+        scope.settings.syncStartDate = new Date('2015-12-05T00:00:00');
+        spyOn(scope, 'clickSyncBtn').and.callThrough();
+        scope.clickSyncBtn();
+        scope.$apply();
+
+        expect(scope.clickSyncBtn).toHaveBeenCalled();
+        expect(mockLoaderService.showModal).toHaveBeenCalled();
+
+        spyOn(scope, 'cancelSync').and.callThrough();
+        scope.cancelSync();
+        scope.$apply();
+
+        expect(mockLoaderService.hideModal).toHaveBeenCalled();
+        expect(scope.cancelSync).toHaveBeenCalled();
+        expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
     });
 
     it('should not set and later sync start date', function () {
@@ -84,11 +117,18 @@ describe('SystemSettingsController', function () {
         scope.$apply();
 
         scope.settings.syncStartDate = new Date('2015-12-07T00:00:00');
-        scope.$digest();
+        spyOn(scope, 'clickSyncBtn').and.callThrough();
+        scope.clickSyncBtn();
+        scope.$apply();
 
+        expect(scope.clickSyncBtn).toHaveBeenCalled();
+        expect(mockLoaderService.showModal).toHaveBeenCalled();
+        scope.cancelSync();
+        scope.$apply();
+
+        expect(mockLoaderService.hideModal).toHaveBeenCalled();
         expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
-        expect(mockToast.create).toHaveBeenCalled();
-        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'))
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
     });
 
     it('should cancel notification message setting', function () {

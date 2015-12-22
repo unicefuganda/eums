@@ -58,7 +58,7 @@
             </div>
             <div class="row row-spaced">
                 <div class="col-md-offset-2 col-md-3">
-                    <label class="pull-right">Sync start date</label>
+                    <label class="pull-right">Start Date for VISION Data Import</label>
                 </div>
                 <div class="col-md-2 pad-small">
                     <span class="input-group" eums-date-picker>
@@ -82,6 +82,8 @@
                             </span>
                     </span>
                 </div>
+                    <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">
+                        <i class="glyphicon glyphicon-log-out"></i> Start sync</a>
             </div>
         </div>
     </div>
@@ -89,4 +91,7 @@
 <ng-toast></ng-toast>
 <ng-include
         src="'/static/app/views/system/partials/auto-track-confirm-dialog.html'">
+</ng-include>
+<ng-include
+        src="'/static/app/views/system/partials/sync-start-date-confirm-dialog.html'">
 </ng-include>

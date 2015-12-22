@@ -23,6 +23,7 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             $scope.isON = false;
             $scope.settings.syncStartDate = null;
             $scope.currectStartDate = null;
+            $scope.isAllowSync = false;
             $scope.currentNotificationMessage = '';
             $scope.notificationMessage = '';
 
@@ -32,12 +33,6 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 isCancelledOrInitUpdated = $scope.isSelected = settings.auto_track;
                 $scope.notificationMessage = $scope.currentNotificationMessage = settings.notification_message;
             });
-
-            $scope.$watch('settings', function (newValue, oldValue) {
-                if (newValue.syncStartDate !== oldValue.syncStartDate) {
-                    processSyncStartDate(newValue.syncStartDate, oldValue.syncStartDate);
-                }
-            }, true);
 
             $('input[name="auto-track-switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
                 $timeout(function () {
@@ -82,22 +77,25 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 $scope.notificationMessage = $scope.currentNotificationMessage;
             };
 
-            function processSyncStartDate(newDate, oldDate) {
-                if (oldDate === null || new Date(newDate) < new Date(oldDate)) {
-                    if (needToUpdateStartDate()) {
-                        $scope.currectStartDate = $scope.settings.syncStartDate;
-                        SystemSettingsService.updateSettings({sync_start_date: newDate});
-                        ngToast.create({content: "Start syncing, It may take a long time.", class: 'success'});
-                    }
-                } else {
-                    $scope.settings.syncStartDate = oldDate;
-                    ngToast.create({content: "Only the earlier date is allowed", class: 'danger'});
-                }
-            }
+            $scope.clickSyncBtn = function () {
+                $scope.isAllowSync = allowToSync();
+                LoaderService.showModal('sync-start-date-confirm-modal');
+            };
 
-            function needToUpdateStartDate() {
+            $scope.cancelSync = function () {
+                LoaderService.hideModal('sync-start-date-confirm-modal');
+                $scope.settings.syncStartDate = $scope.currectStartDate;
+            };
+
+            $scope.confirmSync = function () {
+                LoaderService.hideModal('sync-start-date-confirm-modal');
+                $scope.currectStartDate = $scope.settings.syncStartDate;
+                SystemSettingsService.updateSettings({sync_start_date: $scope.settings.syncStartDate});
+            };
+
+            function allowToSync () {
                 return $scope.currectStartDate == null
-                    || $scope.currectStartDate.toString() != $scope.settings.syncStartDate.toString();
+                    || new Date($scope.settings.syncStartDate) < new Date($scope.currectStartDate)
             }
         }
     );
