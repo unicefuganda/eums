@@ -27,3 +27,21 @@ class ExportStockReportViewSet(APIView):
                         stock_line[item] = stock[item]
                 stock_results.append(stock_line)
         return stock_results
+
+
+    def _join_stock_report(self, stocks):
+        stock_export_result = []
+        for stock in stocks:
+            stock_export_result.extend(self._generate_new_stock_row(stock))
+        return stock_export_result
+
+    def _generate_new_stock_row(self, stock):
+        return [self._update_stock(item, stock) for item in stock['items']]
+
+    @staticmethod
+    def _update_stock(item, stock):
+        stock = stock.copy()
+        stock.update({'item': item})
+        if stock.get('items'):
+            del stock['items']
+        return stock
