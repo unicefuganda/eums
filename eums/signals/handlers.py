@@ -28,17 +28,16 @@ def on_post_save_delivery(sender, **kwargs):
 
 @receiver(pre_save, sender=SystemSettings)
 def on_pre_save_system_settings(sender, **kwargs):
-    current_sync_date = SystemSettings.objects.first().sync_start_date
+    system_settings = SystemSettings.objects.first()
+    current_sync_date = system_settings.sync_start_date if system_settings else ''
     new_sync_date = kwargs['instance'].sync_start_date
 
     if not current_sync_date or new_sync_date < current_sync_date:
-        start_date = new_sync_date.strftime('%d%m%Y')
+        start_date = new_sync_date.strftime('%d%m%Y') if new_sync_date else ''
         end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''
 
-        print start_date, end_date
-
         logger.info('Syncing is triggered by Admin. From %s to %s' % (start_date, end_date))
-        trigger_sync(start_date, end_date)
+        trigger_sync.apply_async(args=[start_date, end_date])
         logger.info('Syncing done.')
 
 
