@@ -23,12 +23,14 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             $scope.isON = false;
             $scope.settings.syncStartDate = null;
             $scope.currectStartDate = null;
+            $scope.currentNotificationMessage = '';
+            $scope.notificationMessage = '';
 
             SystemSettingsService.getSettings().then(function (settings) {
                 $scope.settings.syncStartDate = settings.sync_start_date ? new Date(settings.sync_start_date) : null;
                 $scope.currectStartDate = $scope.settings.syncStartDate;
-                $scope.isSelected = settings.state;
-                isCancelledOrInitUpdated = settings.state;
+                isCancelledOrInitUpdated = $scope.isSelected = settings.auto_track;
+                $scope.notificationMessage = $scope.currentNotificationMessage = settings.notification_message;
             });
 
             $scope.$watch('settings', function (newValue, oldValue) {
@@ -59,6 +61,25 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 SystemSettingsService.updateSettings({auto_track: updated_status}).then(function () {
                     LoaderService.hideModal("auto-track-confirm-modal");
                 });
+            };
+
+            $scope.saveNotificationMessage = function (isValid) {
+                if (isValid) {
+                    if ($scope.notificationMessage && $scope.notificationMessage != $scope.currentNotificationMessage) {
+                        SystemSettingsService.updateSettings({notification_message: $scope.notificationMessage}).then(function (response) {
+                            $scope.currentNotificationMessage = $scope.notificationMessage;
+                            ngToast.create({content: "Notification message saved successfully", class: 'success'});
+                        });
+                    } else {
+                        ngToast.create({content: "Notification message is empty or not changed", class: 'danger'});
+                    }
+                } else {
+                    ngToast.create({content: "Notification message word limit to 300", class: 'danger'});
+                }
+            };
+
+            $scope.cancelNotificationMessage = function () {
+                $scope.notificationMessage = $scope.currentNotificationMessage;
             };
 
             function processSyncStartDate(newDate, oldDate) {

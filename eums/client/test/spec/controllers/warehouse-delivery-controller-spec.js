@@ -18,14 +18,14 @@ describe('Warehouse Delivery Controller', function () {
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
-        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['isAutoTrack']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
         inject(function ($controller, $rootScope, $location, $q, $sorter, $timeout) {
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
             deferredSystemSettings = $q.defer();
-            mockSystemSettingsService.isAutoTrack.and.returnValue(deferredSystemSettings.promise)
+            mockSystemSettingsService.getSettings.and.returnValue(deferredSystemSettings.promise);
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
             scope = $rootScope.$new();

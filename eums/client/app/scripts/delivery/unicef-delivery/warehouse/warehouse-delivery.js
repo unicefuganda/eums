@@ -133,8 +133,8 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         }
 
         function initAutoTrack() {
-            SystemSettingsService.isAutoTrack().then(function (auto_track) {
-                $scope.autoTrack = auto_track;
+            SystemSettingsService.getSettings().then(function (settings) {
+                $scope.autoTrack = settings.auto_track;
             });
         }
     })

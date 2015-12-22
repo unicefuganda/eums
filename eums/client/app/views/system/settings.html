@@ -9,16 +9,27 @@
                 </div>
                 <div class="col-md-4">
                     <p>
-                        <textarea class="form-control" rows="5" id="notification"></textarea>
+                        <form name="settingsForm" novalidate>
+                            <textarea class="form-control" rows="5" id="notification" name="notification"
+                                      ng-class="{ 'has-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
+                                      placeholder="Enter notification message (300 word limit)"
+                                      ng-model="notificationMessage" ng-maxlength="300"></textarea>
+                        </form>
                     </p>
-
+                    <p ng-show="settingsForm.notification.$error.maxlength" class="text-danger" ng-cloak>
+                        Notification message word limit to 300
+                    </p>
                     <p>
                         This message will be displayed on the IP's UNICEF Shipment page when IPs report on delivery.
                         This will allow you to inform IPs on who to contact if deliveries are not showing up on their
                         dashboard or put any other relevant info related to reporting on deliveries.
                     </p>
-                    <button class="btn btn-eums-danger"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
-                    <button class="btn btn-eums-success"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+                    <button class="btn btn-eums-danger" ng-click="cancelNotificationMessage()"><i
+                            class="glyphicon glyphicon-remove"></i> Cancel
+                    </button>
+                    <button class="btn btn-eums-success" ng-click="saveNotificationMessage(settingsForm.$valid)"><i
+                            class="glyphicon glyphicon-floppy-disk"></i> Save
+                    </button>
                 </div>
             </div>
             <div class="row row-spaced">

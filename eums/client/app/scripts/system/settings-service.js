@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('SystemSettingsService', ['eums.config'])
-    .factory('SystemSettingsService', function ($http, $q, $timeout, EumsConfig) {
+    .factory('SystemSettingsService', function ($http, $q, EumsConfig) {
         return {
             getSettings: function () {
                 var result = $q.defer();

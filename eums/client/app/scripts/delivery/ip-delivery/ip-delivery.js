@@ -1,14 +1,17 @@
 'use strict';
 
-angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact', 'ngToast'])
-    .controller('IpDeliveryController', function ($scope, $location, ngToast, DeliveryService, LoaderService,
+angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact', 'ngToast', 'SystemSettingsService'])
+    .controller('IpDeliveryController', function ($scope, $location, ngToast, DeliveryService, LoaderService, SystemSettingsService,
                                                   UserService, AnswerService, $timeout, IPService, ContactService) {
+
+        var timer, initializing = true;
+        var questionLabel = 'deliveryReceived';
+
         $scope.deliveries = [];
         $scope.answers = [];
         $scope.oringalAnswers = [];
         $scope.activeDelivery = undefined;
         $scope.hasReceivedDelivery = undefined;
-        var questionLabel = 'deliveryReceived';
         $scope.searchFields = ['number', 'date'];
 
         $scope.districts = [];
@@ -18,17 +21,11 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         $scope.delivery = {};
         $scope.districtsLoaded = false;
 
+        $scope.notificationMessage = "";
 
-        function loadDeliveries(urlArgs) {
-            LoaderService.showLoader();
-            DeliveryService.all(undefined, urlArgs)
-                .then(function (deliveries) {
-                    $scope.deliveries = deliveries;
-                    LoaderService.hideLoader();
-                });
-        }
 
         loadDeliveries();
+        //loadNotificationMessage();
 
         UserService.retrieveUserPermissions()
             .then(function (userPermissions) {
@@ -60,17 +57,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             event.stopPropagation();
         });
 
-        function setLocationAndContactFields() {
-            if ($scope.contact.id)
-                ContactService.get($scope.contact.id)
-                    .then(function (contact) {
-                        if (contact) {
-                            $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
-                        }
-                    });
-            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
-        };
-
         $scope.confirm = function (delivery) {
             clearContactAndLocation();
             LoaderService.showLoader();
@@ -89,11 +75,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     LoaderService.showModal('ip-acknowledgement-modal');
                 });
         };
-
-        function clearContactAndLocation() {
-            $scope.selectedLocation.id = '';
-            $scope.contact.id = '';
-        }
 
         $scope.saveAnswers = function () {
             if (isContactOrLocationInvalid()) {
@@ -121,6 +102,57 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             LoaderService.showLoader();
             $location.path('/contacts');
             LoaderService.hideLoader();
+        };
+
+        $scope.$watch('answers', function (newAnswers) {
+            $scope.hasReceivedDelivery = $scope.answers && _isDeliveryReceived(questionLabel, $scope.answers);
+            $scope.isValidChoice = validateAnswers(newAnswers);
+        }, true);
+
+        $scope.$watch('[fromDate,toDate,query]', function () {
+            if (initializing) {
+                initializing = false;
+            }
+            else {
+                if (timer) {
+                    $timeout.cancel(timer);
+                }
+                delaySearch();
+            }
+        }, true);
+
+
+        function loadDeliveries(urlArgs) {
+            LoaderService.showLoader();
+            DeliveryService.all(undefined, urlArgs)
+                .then(function (deliveries) {
+                    $scope.deliveries = deliveries;
+                    LoaderService.hideLoader();
+                });
+        }
+
+        function loadNotificationMessage() {
+            LoaderService.showLoader();
+            SystemSettingsService.getSettings().then(function (settings) {
+                $scope.notificationMessage = settings.notification_message;
+                LoaderService.hideLoader();
+            });
+        }
+
+        function setLocationAndContactFields() {
+            if ($scope.contact.id)
+                ContactService.get($scope.contact.id)
+                    .then(function (contact) {
+                        if (contact) {
+                            $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+                        }
+                    });
+            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
+        }
+
+        function clearContactAndLocation() {
+            $scope.selectedLocation.id = '';
+            $scope.contact.id = '';
         }
 
         function updateContactAndLocation() {
@@ -142,7 +174,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function isInvalid(field) {
             $scope.errors = field ? false : true;
             return field ? false : true;
-        };
+        }
 
         function validateAnswers(newAnswers) {
             if ($scope.hasReceivedDelivery) {
@@ -150,11 +182,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             }
             return !angular.equals(newAnswers.first(), $scope.oringalAnswers.first()) && _isValidChoice($scope.answers);
         }
-
-        $scope.$watch('answers', function (newAnswers) {
-            $scope.hasReceivedDelivery = $scope.answers && _isDeliveryReceived(questionLabel, $scope.answers);
-            $scope.isValidChoice = validateAnswers(newAnswers);
-        }, true);
 
         function _isDeliveryReceived(questionLabel, answers) {
             var received = answers.find(function (answer) {
@@ -196,20 +223,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             return answers.length > 0 ? answers.first().options.indexOf(answers.first().value) > -1 : false;
         }
 
-        var timer, initializing = true;
-
-        $scope.$watch('[fromDate,toDate,query]', function () {
-            if (initializing) {
-                initializing = false;
-            }
-            else {
-                if (timer) {
-                    $timeout.cancel(timer);
-                }
-                delaySearch();
-            }
-        }, true);
-
         function delaySearch() {
             timer = $timeout(function () {
                 loadDeliveries(changedFilters());
@@ -243,5 +256,3 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             });
         }
     });
-
-

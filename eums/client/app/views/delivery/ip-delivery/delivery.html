@@ -107,6 +107,11 @@
             </tbody>
             <tfoot>
             <tr>
+                <td colspan="7">
+                    <p class="notification" ng-bind="notificationMessage" ng-show="notificationMessage"></p>
+                </td>
+            </tr>
+            <tr>
                 <td class="pagination-row centered" colspan="7">
                     <si-table-pagination limit="15" indices="3"/>
                 </td>

@@ -8,7 +8,7 @@ from eums.models.system_settings import SystemSettings
 class SystemSettingsSerialiser(serializers.ModelSerializer):
     class Meta:
         model = SystemSettings
-        fields = ('id', 'auto_track', 'sync_start_date')
+        fields = ('id', 'auto_track', 'sync_start_date', 'notification_message')
 
 
 class SystemSettingsViewSet(ModelViewSet):
