@@ -78,8 +78,10 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             };
 
             $scope.clickSyncBtn = function () {
-                $scope.isAllowSync = allowToSync();
-                LoaderService.showModal('sync-start-date-confirm-modal');
+                if (isNewDate()) {
+                    $scope.isAllowSync = allowToSync();
+                    LoaderService.showModal('sync-start-date-confirm-modal');
+                }
             };
 
             $scope.cancelSync = function () {
@@ -92,6 +94,10 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 $scope.currectStartDate = $scope.settings.syncStartDate;
                 SystemSettingsService.updateSettings({sync_start_date: $scope.settings.syncStartDate});
             };
+
+            function isNewDate() {
+                return $scope.currectStartDate.toString() != $scope.settings.syncStartDate.toString();
+            }
 
             function allowToSync () {
                 return $scope.currectStartDate == null
