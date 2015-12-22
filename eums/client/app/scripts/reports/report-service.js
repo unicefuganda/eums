@@ -47,6 +47,7 @@ angular.module('ReportService', ['eums.config'])
                 field: params.field,
                 order: params.order,
                 outcome: params.selectedOutcomeId,
+                consignee: params.selectedIPId,
                 fromDate: params.selectedFromDate ? moment(params.selectedFromDate).format('YYYY-MM-DD') : params.selectedFromDate,
                 toDate: params.selectedToDate ? moment(params.selectedToDate).format('YYYY-MM-DD') : params.selectedToDate
             } : {};

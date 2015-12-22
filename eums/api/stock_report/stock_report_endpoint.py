@@ -10,14 +10,10 @@ from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.api.filter.filter_mixin import RequestFilterMixin
 
 PAGE_SIZE = 10
-sort = StandardDicSort('last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed',
-                       'balance')
+sort = StandardDicSort('last_shipment_date', 'last_received_date',
+                       'total_value_received', 'total_value_dispensed','balance')
 
-
-class StockReport(APIView, RequestFilterMixin):
-
-    mixin = RequestFilterMixin()
-
+class StockReport(APIView):
 
     def get(self, request):
         reduced_stock_report = filter_stock_report(request)
@@ -63,16 +59,16 @@ def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
     ip_nodes = DistributionPlanNode.objects.filter(
             Q(tree_position=Flow.Label.IMPLEMENTING_PARTNER), ~Q(distribution_plan__is_auto_track_confirmed=False))
 
-    StockReport.mixin.supported_filters = {
+    mixin.supported_filters = {
         "consignee_id": "consignee_id",
         "location": "location__icontains",
         "programme": "programme_id",
         "from_date": "delivery_date__gte",
         "to_date": "delivery_date__lte"
     }
-    filters = StockReport.mixin.build_filters({
-        'consignee_id': consignee_id, 'location': location, 'programme': outcome_id,
-        'from_date': from_date, 'to_date': to_date})
+    filters = mixin.build_filters(
+        {'consignee_id': consignee_id, 'location': location,
+         'programme': outcome_id, 'from_date': from_date, 'to_date': to_date})
 
     ip_nodes = ip_nodes.filter(**filters)
 
