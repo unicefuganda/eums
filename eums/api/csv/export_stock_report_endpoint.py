@@ -8,6 +8,7 @@ from eums.services.csv_export_service import generate_delivery_export_csv, \
 
 
 class ExportStockReportViewSet(APIView):
+
     def get(self, request, *args, **kwargs):
         host_name = request.build_absolute_uri(reverse('home'))
         stocks = filter_stock_report(request)
