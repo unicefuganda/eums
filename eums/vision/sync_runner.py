@@ -31,6 +31,9 @@ def run():
 
 @app.task
 def trigger_sync(start_date, end_date):
+    if not start_date:
+        return
+
     sync_record = VisionSyncInfo.new_instance()
 
     for synchronizer_dict in order_synchronizers:

@@ -37,7 +37,7 @@ def on_pre_save_system_settings(sender, **kwargs):
         end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''
 
         logger.info('Syncing is triggered by Admin. From %s to %s' % (start_date, end_date))
-        trigger_sync.apply_async(args=[start_date, end_date])
+        trigger_sync.delay(start_date, end_date)
         logger.info('Syncing done.')
 
 
