@@ -1,4 +1,4 @@
-<div class="modal fade" id="sync-start-date-confirm-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="sync-start-date-confirm-modal">
 
     <div class="modal-dialog" role="document">
         <div class="modal-content col-md-10">
@@ -7,21 +7,21 @@
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">No</span>
                 </button>
-                <h3 class="modal-title text-warning">
-                    <p id="switch-on-auto-track-text" ng-show="isAllowSync">
+                <h4 class="modal-title text-danger">
+                    <div ng-show="isAllowSync">
                         <i class="glyphicon glyphicon-warning-sign"></i> This will start the automatic importing
                         of VISION data
-                    </p>
+                    </div>
 
-                    <p id="switch-off-auto-track-text" ng-hide="isAllowSync">
+                    <div ng-hide="isAllowSync">
                         <i class="glyphicon glyphicon-warning-sign"></i> Note that the Start Date can only be changed
                         to an earlier date
-                    </p>
-                </h3>
+                    </div>
+                </h4>
 
             </div>
             <div class="modal-body align-center" ng-show="isAllowSync">
-                <h4>Confirm to proceed?</h4>
+                <h5>Confirm to proceed?</h5>
             </div>
             <div class="modal-footer align-center" ng-show="isAllowSync">
                 <button
