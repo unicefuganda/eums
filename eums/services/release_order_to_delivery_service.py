@@ -1,8 +1,5 @@
 import logging
 
-from celery.schedules import crontab
-from celery.task import periodic_task
-
 from eums.models import ReleaseOrder, DistributionPlan, DistributionPlanNode, Runnable
 
 logger = logging.getLogger(__name__)
@@ -27,7 +24,7 @@ class ReleaseOrderToDeliveryService(object):
                                                 tree_position=Runnable.IMPLEMENTING_PARTNER, quantity=item.quantity)
 
 
-@periodic_task(run_every=crontab())
+# @periodic_task(run_every=crontab())
 def execute_sync_release_order_to_delivery():
     logger.info('execute_sync_release_order_to_delivery')
 
