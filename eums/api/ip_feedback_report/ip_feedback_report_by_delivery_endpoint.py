@@ -124,7 +124,7 @@ def _filter_ip(request, deliveries):
 
 
 def _filter_po_way_bill(request):
-    nodes = _filter_track_and_auto_track_nodes(request)
+    nodes = _filter_track_and_confirmed_auto_track_nodes(request)
     po_way_bill = request.GET.get('po_waybill')
     if po_way_bill:
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
@@ -136,7 +136,7 @@ def _filter_po_way_bill(request):
     return deliveries
 
 
-def _filter_track_and_auto_track_nodes(request):
+def _filter_track_and_confirmed_auto_track_nodes(request):
     nodes = DistributionPlanNode.objects.filter(Q(distribution_plan__track=True) | (
         Q(distribution_plan__track=False) & Q(distribution_plan__is_auto_track_confirmed=True)))
 
