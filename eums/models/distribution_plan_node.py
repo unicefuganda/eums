@@ -19,6 +19,7 @@ class DistributionPlanNode(Runnable):
     quantity = None
     objects = DeliveryNodeManager()
 
+
     def save(self, *args, **kwargs):
         _is_root = self.is_root()
         if self.parents or self.parents == []:

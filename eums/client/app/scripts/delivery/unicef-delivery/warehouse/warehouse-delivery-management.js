@@ -72,7 +72,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             });
         }
 
-        $scope.isDeliveryTracked = function() {
+        $scope.isDeliveryTracked = function () {
             return ($scope.delivery.track) &&
                 ($scope.contact && $scope.contact.id) &&
                 ($scope.selectedLocation && $scope.selectedLocation.id);
@@ -92,20 +92,20 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                     if ($scope.delivery) {
                         $scope.track = $scope.delivery.track;
+                        $scope.selectedLocation.id = $scope.delivery.location;
+                        $scope.contact.id = $scope.delivery.contactPersonId;
                         DeliveryNodeService.filter({distribution_plan: $scope.delivery.id}, deliveryNodeParams)
                             .then(function (childNodes) {
                                 var firstChildNode = childNodes.first();
+
                                 if (childNodes && firstChildNode) {
                                     $scope.deliveryNodes.add(childNodes);
-                                    $scope.selectedLocation.id = firstChildNode.location;
-                                    $scope.contact.id = firstChildNode.contactPersonId;
                                     $scope.delivery.time_limitation_on_distribution = firstChildNode.timeLimitationOnDistribution;
                                     $scope.delivery.tracked_date = firstChildNode.tracked_date;
                                     setLocationAndContactFields();
                                 }
                             });
                     }
-
                 });
         };
 
@@ -155,6 +155,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                 $scope.delivery.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
                 $scope.delivery.track = $scope.track;
+                $scope.delivery.contact_person_id = $scope.contact.id;
+                $scope.delivery.location = $scope.selectedLocation.id;
                 return DeliveryService.update($scope.delivery)
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;

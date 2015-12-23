@@ -43,3 +43,4 @@ class CSVClearService(object):
 @periodic_task(run_every=crontab(minute="*/30"))
 def execute_csv_clear_task():
     logger.info('execute_csv_clear_task')
+    CSVClearService.clear_expired_files()

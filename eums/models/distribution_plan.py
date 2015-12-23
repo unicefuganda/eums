@@ -28,7 +28,7 @@ class DistributionPlan(Runnable):
                 purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
         shipment_date = self.delivery_date
         if purchase_order and purchase_order.last_shipment_date and (
-            (purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
+                    (purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
             purchase_order.last_shipment_date = shipment_date
             purchase_order.save()
 
@@ -154,6 +154,9 @@ class DistributionPlan(Runnable):
             node_answers.append({'id': node.id, 'answers': sorted(answers, key=lambda field: field['position'])})
 
         return node_answers
+
+    def contact_person_id(self):
+        return DistributionPlanNode.objects.filter(distribution_plan=self).first().contact_person_id
 
     @classmethod
     def flow(cls):

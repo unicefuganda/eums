@@ -7,7 +7,7 @@ from rest_framework.utils.urls import replace_query_param
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode, Runnable, Flow
+    DistributionPlanNode, Runnable, Flow, SystemSettings
 
 PAGE_SIZE = 10
 DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,
@@ -124,7 +124,7 @@ def _filter_ip(request, deliveries):
 
 
 def _filter_po_way_bill(request):
-    nodes = DistributionPlanNode.objects.filter(**_query_args(request))
+    nodes = _filter_track_and_auto_track_nodes(request)
     po_way_bill = request.GET.get('po_waybill')
     if po_way_bill:
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
@@ -136,12 +136,15 @@ def _filter_po_way_bill(request):
     return deliveries
 
 
-def _query_args(request):
-    kwargs = {'distribution_plan__track': True,
-              'tree_position': Flow.Label.IMPLEMENTING_PARTNER}
+def _filter_track_and_auto_track_nodes(request):
+    nodes = DistributionPlanNode.objects.filter(Q(distribution_plan__track=True) | (
+        Q(distribution_plan__track=False) & Q(distribution_plan__is_auto_track_confirmed=True)))
+
+    kwargs = {'tree_position': Flow.Label.IMPLEMENTING_PARTNER}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
     kwargs.update(_filter_fields(params))
-    return kwargs
+
+    return nodes.filter(**kwargs)
 
 
 def _filter_fields(params):

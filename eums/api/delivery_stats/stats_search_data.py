@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from eums.models import UserProfile, Flow, Runnable, Question, DistributionPlanNode as DeliveryNode, \
     DistributionPlan as Delivery, MultipleChoiceAnswer, Item, NumericAnswer
 
@@ -48,7 +50,9 @@ class EndUserStatsSearchData(StatsSearchData):
     def __init__(self):
         StatsSearchData.__init__(self)
         self.flow = Flow.objects.get(label=Flow.Label.END_USER)
-        self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
+        self.nodes = DeliveryNode.objects.filter(Q(tree_position=DeliveryNode.END_USER) & (Q(track=True) | (
+            Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True))))
+        # self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.received_label = Question.LABEL.productReceived
         self.quality_label = Question.LABEL.qualityOfProduct
         self.satisfied_label = Question.LABEL.satisfiedWithProduct
@@ -60,7 +64,8 @@ class EndUserStatsSearchData(StatsSearchData):
         answers = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
                                                       run__runnable__in=self.nodes)
         nodes_with_answers_ids = answers.values_list('run__runnable')
-        latest_items_ids = self.nodes.filter(id__in=nodes_with_answers_ids).values_list('item__item', flat=True).distinct()[:limit]
+        latest_items_ids = self.nodes.filter(id__in=nodes_with_answers_ids).values_list('item__item',
+                                                                                        flat=True).distinct()[:limit]
         return [self._delivery_data(item_id) for item_id in latest_items_ids]
 
     def _delivery_data(self, item_id):
@@ -96,7 +101,8 @@ class IpStatsSearchData(StatsSearchData):
     def __init__(self):
         StatsSearchData.__init__(self)
         self.flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
-        self.nodes = Delivery.objects.filter(track=True)
+        self.nodes = Delivery.objects.filter(Q(track=True) | (Q(track=False) & Q(is_auto_track_confirmed=True)))
+        # self.nodes = Delivery.objects.filter(track=True)
         self.received_label = Question.LABEL.deliveryReceived
         self.quality_label = Question.LABEL.isDeliveryInGoodOrder
         self.satisfied_label = Question.LABEL.satisfiedWithDelivery
@@ -122,7 +128,7 @@ class IpStatsSearchData(StatsSearchData):
         received = self._get_yes_or_no(received_answer)
         quality = self._get_yes_or_no(good_condition_answer)
         satisfied = self._get_yes_or_no(satisfied_answer)
-        return {'name': '%s on %s' % (getattr(node.ip,'name', node.location), delivery_date), 'received': received,
+        return {'name': '%s on %s' % (getattr(node.ip, 'name', node.location), delivery_date), 'received': received,
                 'inGoodCondition': quality, 'satisfied': satisfied}
 
 

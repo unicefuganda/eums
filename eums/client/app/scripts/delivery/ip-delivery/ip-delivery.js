@@ -82,7 +82,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             }
             var answers;
             LoaderService.showLoader();
-            updateContactAndLocation();
+            confirmToUpdateContactAndLocation();
 
             answers = _isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
             AnswerService.createWebAnswer($scope.activeDelivery, answers)
@@ -150,10 +150,11 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             $scope.contact.id = '';
         }
 
-        function updateContactAndLocation() {
+        function confirmToUpdateContactAndLocation() {
             if ($scope.isInitContactEmpty) {
                 $scope.activeDelivery.contact_person_id = $scope.contact.id;
                 $scope.activeDelivery.location = $scope.selectedLocation.id;
+                $scope.activeDelivery.is_auto_track_confirmed = true;
                 return DeliveryService.update($scope.activeDelivery);
             }
         }

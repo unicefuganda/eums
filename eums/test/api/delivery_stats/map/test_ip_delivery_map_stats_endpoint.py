@@ -1,7 +1,7 @@
 import datetime
 from decimal import Decimal
 
-from eums.api.delivery_stats.map_delivery_stats_endpoint import DeliveryState
+from eums.api.delivery_stats.delivery_stats_map_endpoint import DeliveryState
 from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL

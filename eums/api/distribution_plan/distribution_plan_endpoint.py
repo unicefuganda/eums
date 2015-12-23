@@ -10,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
-from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem
+from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem, DistributionPlanNode
 from eums.services.flow_scheduler import schedule_run_directly_for
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class DistributionPlanSerializer(serializers.ModelSerializer):
         fields = ('id', 'programme', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
                   'track', 'contact_person_id', 'remark', 'total_value', 'is_received', 'type', 'number',
                   'number_of_items', 'confirmed', 'shipment_received', 'is_retriggered',
-                  'time_limitation_on_distribution', 'tracked_date')
+                  'time_limitation_on_distribution', 'tracked_date', 'is_auto_track_confirmed')
 
 
 class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
@@ -64,11 +64,7 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
         user_profile, consignee = self.get_user_profile(logged_in_user)
 
         if user_profile and consignee:
-            deliveries = self._deliveries_for_ip(request, consignee)
-
-            filtered_deliveries = filter(
-                    lambda x: x.is_partially_received() is None or x.is_partially_received() or x.is_retriggered,
-                    deliveries)
+            filtered_deliveries = self._deliveries_for_ip(request, consignee)
             return Response(self.get_serializer(filtered_deliveries, many=True).data)
 
         admin_deliveries = self._deliveries_for_admin(request)
@@ -90,7 +86,11 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
         filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track()
 
         filters = self.build_filters(request.query_params, **{'consignee': consignee})
-        return filtered_distribution_plans.filter(**filters).distinct()
+        deliveries = filtered_distribution_plans.filter(**filters).distinct()
+        filtered_deliveries = filter(
+                lambda x: x.is_partially_received() is None or x.is_partially_received() or x.is_retriggered,
+                deliveries)
+        return filtered_deliveries
 
     @staticmethod
     def __filter_distribution_plans_depends_on_auto_track():

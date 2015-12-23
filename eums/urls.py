@@ -15,7 +15,7 @@ from eums.api.csv.export_item_feedback_report_endpoint import ExportItemFeedback
 from eums.api.csv.export_stock_report_endpoint import ExportStockReportViewSet
 from eums.api.delivery_stats.delivery_stats_details_endpoint import DeliveryStatsDetailsEndpoint
 from eums.api.delivery_stats.latest_deliveries import LatestDeliveriesEndpoint
-from eums.api.delivery_stats.map_delivery_stats_endpoint import MapDeliveryStatsEndpoint
+from eums.api.delivery_stats.delivery_stats_map_endpoint import DeliveryStatsMapEndpoint
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
@@ -78,7 +78,7 @@ urlpatterns = patterns(
     url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
     url(r'^api/delivery-stats/details/$', DeliveryStatsDetailsEndpoint.as_view(), name='delivery_stats_details'),
-    url(r'^api/delivery-stats/map/$', MapDeliveryStatsEndpoint.as_view(), name='delivery_stats_map'),
+    url(r'^api/delivery-stats/map/$', DeliveryStatsMapEndpoint.as_view(), name='delivery_stats_map'),
     url(r'^api/latest-deliveries/$', LatestDeliveriesEndpoint.as_view(), name='latest_deliveries'),
     url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
