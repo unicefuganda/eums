@@ -67,21 +67,21 @@ def _build_delivery_result(deliveries):
         answers = delivery.answers()
 
         delivery_answers.append(
-            {Question.LABEL.deliveryReceived: _get_answer(Question.LABEL.deliveryReceived, answers),
-             'shipmentDate': delivery.delivery_date,
-             Question.LABEL.dateOfReceipt: _get_answer(Question.LABEL.dateOfReceipt, answers),
-             'orderNumber': delivery.number(),
-             'programme': {'id': delivery.programme.id, 'name': delivery.programme.name},
-             'consignee': {'id': delivery.consignee.id, 'name': delivery.consignee.name},
-             Question.LABEL.isDeliveryInGoodOrder:
-                 _get_answer(Question.LABEL.isDeliveryInGoodOrder, answers),
-             Question.LABEL.satisfiedWithDelivery:
-                 _get_answer(Question.LABEL.satisfiedWithDelivery, answers),
-             Question.LABEL.additionalDeliveryComments:
-                 _get_answer(Question.LABEL.additionalDeliveryComments, answers),
-             'value': int(delivery.total_value),
-             'location': delivery.location
-             })
+                {Question.LABEL.deliveryReceived: _get_answer(Question.LABEL.deliveryReceived, answers),
+                 'shipmentDate': delivery.delivery_date,
+                 Question.LABEL.dateOfReceipt: _get_answer(Question.LABEL.dateOfReceipt, answers),
+                 'orderNumber': delivery.number(),
+                 'programme': {'id': delivery.programme.id, 'name': delivery.programme.name},
+                 'consignee': {'id': delivery.consignee.id, 'name': delivery.consignee.name},
+                 Question.LABEL.isDeliveryInGoodOrder:
+                     _get_answer(Question.LABEL.isDeliveryInGoodOrder, answers),
+                 Question.LABEL.satisfiedWithDelivery:
+                     _get_answer(Question.LABEL.satisfiedWithDelivery, answers),
+                 Question.LABEL.additionalDeliveryComments:
+                     _get_answer(Question.LABEL.additionalDeliveryComments, answers),
+                 'value': int(delivery.total_value),
+                 'location': delivery.location
+                 })
 
     return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
 

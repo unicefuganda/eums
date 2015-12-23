@@ -1,3 +1,5 @@
+import logging
+
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
@@ -5,9 +7,13 @@ from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
+
+from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
 from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem
 from eums.services.flow_scheduler import schedule_run_directly_for
+
+logger = logging.getLogger(__name__)
 
 
 class DistributionPlanSerializer(serializers.ModelSerializer):
@@ -21,11 +27,19 @@ class DistributionPlanSerializer(serializers.ModelSerializer):
                   'time_limitation_on_distribution', 'tracked_date')
 
 
-class DistributionPlanViewSet(ModelViewSet):
+class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
     permission_classes = (DjangoModelPermissions, ViewDeliveryPermission)
 
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerializer
+
+    supported_filters = {
+        'programme': 'programme__name__icontains',
+        'query': 'distributionplannode__item__purchaseorderitem__purchase_order__order_number__icontains',
+        'from': 'delivery_date__gte',
+        'to': 'delivery_date__lte',
+        'consignee': 'consignee'
+    }
 
     @detail_route(['GET', ])
     def answers(self, request, *args, **kwargs):
@@ -47,20 +61,17 @@ class DistributionPlanViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
-
-        query = request.GET.get('query')
-        programme = request.GET.get('programme')
         user_profile, consignee = self.get_user_profile(logged_in_user)
-        from_date = request.GET.get('from')
-        to_date = request.GET.get('to')
+
         if user_profile and consignee:
-            deliveries = DistributionPlanViewSet._deliveries_for_ip(programme, query, consignee, from_date, to_date)
+            deliveries = self._deliveries_for_ip(request, consignee)
+
             filtered_deliveries = filter(
                     lambda x: x.is_partially_received() is None or x.is_partially_received() or x.is_retriggered,
                     deliveries)
             return Response(self.get_serializer(filtered_deliveries, many=True).data)
 
-        admin_deliveries = DistributionPlanViewSet._deliveries_for_admin(programme, query, from_date, to_date)
+        admin_deliveries = self._deliveries_for_admin(request)
         return Response(self.get_serializer(admin_deliveries, many=True).data)
 
     @staticmethod
@@ -72,37 +83,14 @@ class DistributionPlanViewSet(ModelViewSet):
         except:
             return None, None
 
-    @staticmethod
-    def _deliveries_for_admin(programme, query, from_date, to_date):
-        filter_args = {}
-        DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
+    def _deliveries_for_admin(self, request):
+        return DistributionPlan.objects.filter(**self.build_filters(request.query_params)).distinct()
 
-        if from_date and to_date:
-            filter_args['delivery_date__range'] = [from_date, to_date]
-
-        deliveries = DistributionPlan.objects.filter(**filter_args) if len(
-                filter_args) > 0 else DistributionPlan.objects.all()
-
-        return DistributionPlanViewSet.__filter_deliveries_by_query(query, deliveries)
-
-    @staticmethod
-    def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
+    def _deliveries_for_ip(self, request, consignee):
         filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track()
 
-        filter_args = {
-            'consignee': consignee
-        }
-        DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
-
-        if from_date and to_date:
-            filter_args['delivery_date__range'] = [from_date, to_date]
-        elif from_date:
-            filter_args['delivery_date__gte'] = from_date
-        elif to_date:
-            filter_args['delivery_date__lte'] = to_date
-
-        return DistributionPlanViewSet.__filter_deliveries_by_query(query,
-                                                                    filtered_distribution_plans.filter(**filter_args))
+        filters = self.build_filters(request.query_params, **{'consignee': consignee})
+        return filtered_distribution_plans.filter(**filters).distinct()
 
     @staticmethod
     def __filter_distribution_plans_depends_on_auto_track():
@@ -112,15 +100,6 @@ class DistributionPlanViewSet(ModelViewSet):
                             track=True)).distinct()
 
         return DistributionPlan.objects.filter(Q(track=True))
-
-    @staticmethod
-    def __add_programme_filter_if_exist(filter_args, programme):
-        if programme is not None:
-            filter_args['programme__name__icontains'] = programme
-
-    @staticmethod
-    def __filter_deliveries_by_query(query, deliveries):
-        return filter(lambda delivery: query in str(delivery.number()), deliveries) if query else deliveries
 
 
 distributionPlanRouter = DefaultRouter()

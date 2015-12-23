@@ -1,10 +1,13 @@
 import datetime
 import json
+import logging
 
 from mock import patch
 
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
-    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Flow, SystemSettings
+    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Flow, SystemSettings, ReleaseOrder, ReleaseOrderItem, \
+    OrderItem, Item
+from eums.services.release_order_to_delivery_service import execute_sync_release_order_to_delivery
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
@@ -19,10 +22,14 @@ from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
     NumericQuestionFactory
+from eums.test.factories.release_order_factory import ReleaseOrderFactory
+from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.system_settings_factory import SystemSettingsFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
+
+logger = logging.getLogger(__name__)
 
 
 class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
@@ -82,6 +89,39 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], first_delivery.id)
+
+    def test_list_should_display_deliveries_when_auto_track_on(self):
+        first_consignee = ConsigneeFactory()
+        system_settings = SystemSettings.objects.first()
+        system_settings.auto_track = True
+        system_settings.save()
+
+        ReleaseOrderItemFactory(release_order=ReleaseOrderFactory(consignee=first_consignee))
+
+        execute_sync_release_order_to_delivery()
+
+        self.logout()
+        self.log_consignee_in(consignee=first_consignee)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_list_should_not_display_deliveries_when_auto_track_off(self):
+        first_consignee = ConsigneeFactory()
+
+        ReleaseOrderItemFactory(release_order=ReleaseOrderFactory(consignee=first_consignee))
+
+        execute_sync_release_order_to_delivery()
+
+        self.logout()
+        self.log_consignee_in(consignee=first_consignee)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
 
     def test_should_provide_delivery_is_received_value_from_api(self):
         delivery = DeliveryFactory()
@@ -457,7 +497,11 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         DistributionPlanNode.objects.all().delete()
         PurchaseOrder.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
+        ReleaseOrder.objects.all().delete()
+        ReleaseOrderItem.objects.all().delete()
         Programme.objects.all().delete()
         Consignee.objects.all().delete()
         UserProfile.objects.all().delete()
         SystemSettings.objects.all().delete()
+        OrderItem.objects.all().delete()
+        Item.objects.all().delete()
