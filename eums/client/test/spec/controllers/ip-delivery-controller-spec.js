@@ -1,5 +1,5 @@
 describe('IP Delivery Controller', function () {
-    var mockDeliveryService, scope, location, mockLoaderService, q,
+    var mockDeliveryService, scope, location, mockLoaderService, q, mockSystemSettingsService,
         mockUserService, controller, mockAnswerService, timeout, mockIPService, mockContactService;
 
     var firstDelivery = {
@@ -44,6 +44,9 @@ describe('IP Delivery Controller', function () {
     var districts = {
         'data': ['wakiso']
     };
+    var settings = {
+        'notification_message': 'notification'
+    };
 
     function initializeController(userService) {
         controller('IpDeliveryController', {
@@ -54,7 +57,8 @@ describe('IP Delivery Controller', function () {
             AnswerService: mockAnswerService,
             $timeout: timeout,
             IPService: mockIPService,
-            ContactService: mockContactService
+            ContactService: mockContactService,
+            systemSettingsService: mockSystemSettingsService
         });
     }
 
@@ -62,7 +66,7 @@ describe('IP Delivery Controller', function () {
 
         module('IpDelivery');
 
-        inject(function ($controller, $rootScope, $location, $q,
+        inject(function ($controller, $rootScope, $location, $q, SystemSettingsService,
                          LoaderService, UserService, AnswerService, DeliveryService, $timeout, IPService, ContactService) {
             controller = $controller;
             scope = $rootScope.$new();
@@ -75,6 +79,7 @@ describe('IP Delivery Controller', function () {
             timeout = $timeout;
             mockIPService = IPService;
             mockContactService = ContactService;
+            mockSystemSettingsService = SystemSettingsService;
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
 
@@ -89,11 +94,13 @@ describe('IP Delivery Controller', function () {
             spyOn(mockDeliveryService, 'getDetail');
             spyOn(location, 'path');
             spyOn(mockIPService, 'loadAllDistricts');
+            spyOn(mockSystemSettingsService, 'getSettings');
 
 
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
             mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
             mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
+            mockSystemSettingsService.getSettings.and.returnValue(q.when(settings));
         });
     });
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact', 'ngToast', 'SystemSettingsService'])
-    .controller('IpDeliveryController', function ($scope, $location, ngToast, DeliveryService, LoaderService, SystemSettingsService,
+    .controller('IpDeliveryController', function ($scope, $location, $q, ngToast, DeliveryService, LoaderService, SystemSettingsService,
                                                   UserService, AnswerService, $timeout, IPService, ContactService) {
 
         var timer, initializing = true;
@@ -25,7 +25,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
 
         loadDeliveries();
-        //loadNotificationMessage();
+
 
         UserService.retrieveUserPermissions()
             .then(function (userPermissions) {
@@ -123,18 +123,13 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
 
         function loadDeliveries(urlArgs) {
+            var promises = [];
             LoaderService.showLoader();
-            DeliveryService.all(undefined, urlArgs)
-                .then(function (deliveries) {
-                    $scope.deliveries = deliveries;
-                    LoaderService.hideLoader();
-                });
-        }
-
-        function loadNotificationMessage() {
-            LoaderService.showLoader();
-            SystemSettingsService.getSettings().then(function (settings) {
-                $scope.notificationMessage = settings.notification_message;
+            promises.push(DeliveryService.all(undefined, urlArgs));
+            promises.push(SystemSettingsService.getSettings());
+            $q.all(promises).then(function (returns) {
+                $scope.deliveries = returns[0];
+                $scope.notificationMessage = returns[1].notification_message;
                 LoaderService.hideLoader();
             });
         }
