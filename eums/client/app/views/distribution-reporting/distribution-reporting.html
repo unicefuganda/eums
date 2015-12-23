@@ -2,9 +2,11 @@
     <div class="content">
         <h4 class="eums page-header">Field Verification</h4>
         <ul class="nav nav-pills row-padding">
-            <li ng-class="{active: currentDocumentType === 'PO'}" ng-click="toggleDocumentType('PO')"><a href="">Purchase
-                Orders</a></li>
-            <li ng-class="{active: currentDocumentType === 'WB'}" ng-click="toggleDocumentType('WB')"><a href="">Waybills</a>
+            <li class="pad-small" ng-class="{active: currentDocumentType === 'PO'}" ng-click="toggleDocumentType('PO')">
+                <a href="" class="btn blue-border-button">Purchase Orders</a>
+            </li>
+            <li class="pad-small" ng-class="{active: currentDocumentType === 'WB'}" ng-click="toggleDocumentType('WB')">
+                <a href="" class="btn blue-border-button">Waybills</a>
             </li>
         </ul>
         <div class="panel panel-default line-order-panel">
@@ -29,7 +31,7 @@
                                class="form-control"
                                name="filter"
                                ng-model="query"
-                               placeholder="{{placeHolderText}}"/>
+                               placeholder="{{ placeHolderText }}"/>
                     </div>
                 </div>
             </div>
@@ -60,7 +62,8 @@
                     </thead>
 
                     <tbody>
-                    <tr si-sortable="single" ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
+                    <tr si-sortable="single"
+                        ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                         <td data-header="Document Number">
                             <a ng-click="selectDocument(document)">{{ document.orderNumber }}</a>
                         </td>
@@ -84,7 +87,8 @@
                           ng-show="documents.length > 0 && (documents | orderFilter: query:dateQuery:searchFields).length == 0">
                 There are no matches to your search criteria.
                 </span>
-                    <span class="information message" ng-show="documents.length == 0">There are no records right now.</span>
+                    <span class="information message"
+                          ng-show="documents.length == 0">There are no records right now.</span>
                 </table>
             </div>
         </div>

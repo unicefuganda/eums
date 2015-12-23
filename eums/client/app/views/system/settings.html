@@ -11,7 +11,7 @@
                     <p>
                         <form name="settingsForm" novalidate>
                             <textarea class="form-control" rows="5" id="notification" name="notification"
-                                      ng-class="{ 'has-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
+                                      ng-class="{ 'maxlength-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
                                       placeholder="Enter notification message (300 word limit)"
                                       ng-model="notificationMessage" ng-maxlength="300"></textarea>
                         </form>
