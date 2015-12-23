@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings
 from eums.services.flow_scheduler import schedule_run_for
-from eums.vision.sync_runner import trigger_sync
+from eums.vision import sync_orders
 
 logger = get_task_logger(__name__)
 
@@ -36,9 +36,7 @@ def on_pre_save_system_settings(sender, **kwargs):
         start_date = new_sync_date.strftime('%d%m%Y') if new_sync_date else ''
         end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''
 
-        logger.info('Syncing is triggered by Admin. From %s to %s' % (start_date, end_date))
-        trigger_sync.delay(start_date, end_date)
-        logger.info('Syncing done.')
+        sync_orders.delay(start_date, end_date)
 
 
 def _resolve_alert_if_possible(delivery):

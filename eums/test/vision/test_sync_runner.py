@@ -2,7 +2,7 @@ import datetime
 from unittest import TestCase
 
 from eums.models import VisionSyncInfo
-from eums.vision.sync_runner import _convert_date_format, _get_last_sync_date
+from eums.vision.sync_all import _convert_date_format, _get_last_sync_date
 
 
 class TestSyncRunner(TestCase):

@@ -319,7 +319,11 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                              sales_order_item=SalesOrderItem.objects.all()[0], quantity=16000,
                                              value=Decimal('6873.64'))
 
-        self.assertEqual(expected_po_item, first_purchase_order_item)
+        self.assertEqual(expected_po_item.purchase_order.order_number,
+                         first_purchase_order_item.purchase_order.order_number)
+        self.assertEqual(expected_po_item.item_number, first_purchase_order_item.item_number)
+        self.assertEqual(expected_po_item.quantity, first_purchase_order_item.quantity)
+        self.assertEqual(expected_po_item.value, first_purchase_order_item.value)
 
     def test_should_load_purchase_orders_from_excel_and_save(self):
         self.assertEqual(PurchaseOrder.objects.count(), 0)

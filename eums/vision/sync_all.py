@@ -4,7 +4,6 @@ from celery.schedules import crontab
 from celery.task import periodic_task
 from celery.utils.log import get_task_logger
 
-from eums.celery import app
 from eums.models import VisionSyncInfo, SystemSettings
 from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
 from eums.vision.programme_synchronizer import ProgrammeSynchronizer
@@ -15,37 +14,14 @@ from eums.vision.vision_data_synchronizer import VisionException
 
 logger = get_task_logger(__name__)
 
-order_synchronizers = ({'SO': SalesOrderSynchronizer},
-                       {'PO': PurchaseOrderSynchronizer},
-                       {'RO': ReleaseOrderSynchronizer})
-
 
 @periodic_task(run_every=crontab(minute=0, hour=1))
-def run():
+def sync_all():
     if _get_start_date():
         sync_record = VisionSyncInfo.new_instance()
         _sync_consignee(sync_record)
         _sync_programme(sync_record)
         _sync_orders(sync_record)
-
-
-@app.task
-def trigger_sync(start_date, end_date):
-    if not start_date:
-        return
-
-    sync_record = VisionSyncInfo.new_instance()
-
-    for synchronizer_dict in order_synchronizers:
-        key = synchronizer_dict.keys()[0]
-        synchronizer = synchronizer_dict.values()[0]
-        try:
-            synchronizer(start_date=start_date, end_date=end_date).sync()
-            sync_record.set_sync_status_success(key)
-            logger.info("%s sync successfully" % key)
-        except VisionException, e:
-            sync_record.set_sync_status_failure(key)
-            logger.error("%s sync failed, Reason:%s" % (key, e.get_error_message()))
 
 
 def _sync_consignee(sync_record):
@@ -69,6 +45,10 @@ def _sync_programme(sync_record):
 
 
 def _sync_orders(sync_record):
+    order_synchronizers = ({'SO': SalesOrderSynchronizer},
+                           {'PO': PurchaseOrderSynchronizer},
+                           {'RO': ReleaseOrderSynchronizer})
+
     for synchronizer_dict in order_synchronizers:
         key = synchronizer_dict.keys()[0]
         synchronizer = synchronizer_dict.values()[0]
