@@ -69,7 +69,7 @@ describe('SystemSettingsController', function () {
     });
 
     it('should set an earlier sync start date', function () {
-        deferUpdateSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
+        deferGetSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
         scope.$apply();
 
         scope.settings.syncStartDate = new Date('2015-12-05T00:00:00');
