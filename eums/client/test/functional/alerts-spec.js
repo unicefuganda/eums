@@ -14,7 +14,7 @@ describe('Alerts', function () {
         alertsPage.visit();
     });
 
-    it('should show, resolve and retrigger alerts', function () {
+    fit('should show, resolve and retrigger alerts', function () {
         expect(alertsPage.retriggerBtns.count()).toEqual(1);
 
         alertsPage.retrigger();
