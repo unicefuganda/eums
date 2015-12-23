@@ -7,15 +7,14 @@ angular.module('NavigationTabs', ['Alerts'])
             for (var enabledLocation in allLocations) {
                 if (allLocations[enabledLocation] === '/') {
                     return $location.path() === '/';
-                }
-                else if ($location.path().indexOf(allLocations[enabledLocation]) >= 0) {
+                } else if ($location.path().indexOf(allLocations[enabledLocation]) >= 0) {
                     return true;
                 }
             }
             return false;
         };
 
-        $scope.pathContains = function(subPath) {
+        $scope.pathContains = function (subPath) {
             var absPath = $location.absUrl();
             return absPath.indexOf(subPath) !== -1;
         };

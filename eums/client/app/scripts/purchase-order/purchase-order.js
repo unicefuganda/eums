@@ -12,7 +12,6 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem
                 forDirectDelivery: function (nestedFields, urlArgs) {
                     var directDeliveryUrl = 'for_direct_delivery/';
                     var uri = urlArgs ? directDeliveryUrl + this.queryStringFrom(urlArgs) : directDeliveryUrl;
-                    console.log(uri);
                     return this._listEndpointMethod(uri, nestedFields);
                 },
                 forUser: function (user, nestedFields) {

@@ -1,26 +1,32 @@
 <nav class="navbar navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a href="/"><img src="/static/app/media/unicef-logo-white.png" class="navbar-brand"><span
-                    class="navbar-brand white">Supply End User Monitoring System</span></a>
+            <a href="/#/">
+                <img src="/static/app/media/unicef-logo-white.png" class="navbar-brand">
+                <span class="navbar-brand white">Supply End User Monitoring System</span>
+            </a>
         </div>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><span id="user-icon" class="glyphicon glyphicon-user white"><span id="user">{{ user }}
             <li>
-            <li id="change-password-nav" ><a href="/password_change">Change Password</a></li>
-            <li id="logout-nav" > <a href="{% url "logout" %}">Logout</a>
-            <li>
+                <span id="user-icon" class="glyphicon glyphicon-user white"><span id="user">{{ user }}</span></span>
+            </li>
+            <li id="change-password-nav">
+                <a href="/password_change">Change Password</a>
+            </li>
+            <li id="logout-nav">
+                <a href="{% url "logout" %}">Logout</a>
+            </li>
         </ul>
     </div>
 </nav>
-<nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation" ng-controller="NavigationTabsController">
     <div class="container">
-        <ul class="nav navbar-nav menubar navbar-left" ng-controller="NavigationTabsController">
-            <li id="home-nav" {% if request.path == '/' %} class="active" {% endif %}
+        <ul class="nav navbar-nav menubar navbar-left">
+            <li id="home-nav"
                 ng-class="{ active: isActive('/')}">
                 {% if perms.auth.can_view_dashboard %}
-                    <a href="/">Dashboard</a>
+                    <a href="/#/">Dashboard</a>
                 {% endif %}
             </li>
             {% block nav %}
@@ -30,13 +36,13 @@
         {% if perms.auth.can_view_users %}
             <ul class="nav navbar-nav navbar-right">
                 <li id="admin-nav" class="dropdown {% if request.path == '/users/' %} active {% endif %}"
-                    ng-class="{ active: isActive('/users,/contacts,/import-data,/consignees')}">
+                    ng-class="{ active: isActive('/import-data,/users,/contacts,/system-settings')}">
                     <a href="" data-toggle="dropdown" role="button" aria-expanded="false">Admin<span
                             class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li id="import-nav" ><a href="/#/import-data">Import Vision Data</a></li>
+                        <li id="import-nav"><a href="/#/import-data">Import Vision Data</a></li>
                         <li class="divider"></li>
-                        <li id="users-nav" ><a href="/users">Users</a></li>
+                        <li id="users-nav"><a href="/users">Users</a></li>
                         <li class="divider"></li>
                         <li id="contact-nav"><a href="/#/contacts">Contacts</a></li>
                         <li class="divider"></li>
