@@ -52,7 +52,6 @@ class EndUserStatsSearchData(StatsSearchData):
         self.flow = Flow.objects.get(label=Flow.Label.END_USER)
         self.nodes = DeliveryNode.objects.filter(Q(tree_position=DeliveryNode.END_USER) & (Q(track=True) | (
             Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True))))
-        # self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.received_label = Question.LABEL.productReceived
         self.quality_label = Question.LABEL.qualityOfProduct
         self.satisfied_label = Question.LABEL.satisfiedWithProduct
@@ -102,7 +101,6 @@ class IpStatsSearchData(StatsSearchData):
         StatsSearchData.__init__(self)
         self.flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
         self.nodes = Delivery.objects.filter(Q(track=True) | (Q(track=False) & Q(is_auto_track_confirmed=True)))
-        # self.nodes = Delivery.objects.filter(track=True)
         self.received_label = Question.LABEL.deliveryReceived
         self.quality_label = Question.LABEL.isDeliveryInGoodOrder
         self.satisfied_label = Question.LABEL.satisfiedWithDelivery

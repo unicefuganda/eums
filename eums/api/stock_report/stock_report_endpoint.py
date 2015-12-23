@@ -1,4 +1,6 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
+
 from eums.models import DistributionPlanNode, Runnable, DistributionPlan, Flow
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
@@ -7,7 +9,8 @@ from rest_framework import status
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 
 PAGE_SIZE = 10
-sort = StandardDicSort('last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance')
+sort = StandardDicSort('last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed',
+                       'balance')
 
 
 class StockReport(APIView):
@@ -38,6 +41,7 @@ def _aggregate_nodes_into_stock_report(stock_report, node):
         stock_report.append(_get_report_details_for_node(node))
     return stock_report
 
+
 def filter_stock_report(request):
     consignee_id = request.GET.get('consignee')
     location = request.GET.get('location')
@@ -51,7 +55,8 @@ def filter_stock_report(request):
 
 
 def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
-    ip_nodes = DistributionPlanNode.objects.filter(tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+    ip_nodes = DistributionPlanNode.objects.filter(
+            Q(tree_position=Flow.Label.IMPLEMENTING_PARTNER), ~Q(distribution_plan__is_auto_track_confirmed=False))
 
     if consignee_id:
         ip_nodes = ip_nodes.filter(consignee_id=consignee_id)
