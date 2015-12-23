@@ -56,18 +56,22 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             });
         };
 
-        $scope.addRemark = function (index) {
+        $scope.setResolve = function () {
+            var remarksModalId = 'resolve-confirm-modal';
+            LoaderService.showModal(remarksModalId);
+        };
+
+        $scope.remark = function (index) {
             var remarksModalId = 'resolve-alert-modal-' + index;
             LoaderService.showModal(remarksModalId)
         };
 
-        $scope.showRemark = function (index) {
-            var remarksModalId = 'resolved-alert-modal-' + index;
-            LoaderService.showModal(remarksModalId)
-        };
-
-        $scope.resolveAlert = function (alertId, alertRemarks) {
-            AlertsService.update({id: alertId, remarks: alertRemarks}, 'PATCH')
+        $scope.resolveAlert = function (alertId, alertRemarks, alertResolve) {
+            AlertsService.update({
+                id: alertId,
+                remarks: alertRemarks ? alertRemarks : '',
+                is_resolved: alertResolve
+            }, 'PATCH')
                 .then(function () {
                     AlertsService.get('count').then(function (alertsCount) {
                         $rootScope.unresolvedAlertsCount = alertsCount.unresolved;

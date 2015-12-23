@@ -47,6 +47,7 @@
                 <th ng-hide="isActiveAlertType(constant_type_distribution)">REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
+                <th>REMARKS</th>
                 <th></th>
                 <th ng-show="isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)"></th>
             </tr>
@@ -88,20 +89,25 @@
                     <span class="alerts-bolder">{{ alert.location }}</span>
                 </td>
                 <td>
+                    <span class="glyphicon glyphicon-comment glyphicon-comment-color
+                                        glyphicon-size-17 glyphicon-top-5" ng-click="remark($index)"></span>
+                </td>
+                <td>
                     <button class="btn btn-primary btn-sm resolve-alert-button"
                             ng-if="!alert.isResolved"
                             type="button"
-                            ng-click="addRemark($index)">
+                            ng-click="setResolve()">
                         Resolve
                     </button>
 
-                    <a id="resolved-alert-link-{{$index}}"
-                       ng-if="alert.isResolved"
-                       ng-click="showRemark($index)">
-                        View Resolution
-                    </a>
+                    <button class="btn btn-primary btn-sm resolve-alert-button"
+                            ng-if="alert.isResolved"
+                            type="button"
+                            disabled>
+                        Resolved
+                    </button>
 
-                    <div class="modal fade text-left" id="resolved-alert-modal-{{$index}}">
+                    <div class="modal fade text-left" id="resolve-alert-modal-{{$index}}">
                         <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">
                                 <div class="modal-header">
@@ -111,40 +117,11 @@
                                         <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
                                         <span class="sr-only">Close</span>
                                     </button>
-                                    <h4 class="eums-modal-header">Alert Resolution</h4>
+                                    <h4 class="eums-modal-header">Remark</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="text-warning pad-bottom-5">The following action was taken to resolve
-                                        this Alert.
-                                    </div>
-                                    <div class="eums-modal-content">
-                                        {{ alert.remarks }}
-                                    </div>
-                                </div>
-                                <div class="modal-footer centered">
-                                    <button type="button"
-                                            class="btn btn-primary"
-                                            data-dismiss="modal"><span
-                                            class='glyphicon glyphicon-ok-sign text-white'></span> OK
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade text-left" id="resolve-alert-modal-{{$index}}">
-                        <div class="modal-dialog modal-sixty-percent-size">
-                            <div class="modal-content col-md-offset-3 col-md-6">
-                                <div class="modal-header">
-                                    <button type="button"
-                                            class="close"
-                                            data-dismiss="modal">
-                                        <span aria-hidden="true" class="glyphicon glyphicon-remove-sign text-"></span>
-                                        <span class="sr-only">Close</span>
-                                    </button>
-                                    <h4 class="eums-modal-header">Resolve Alert</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="text-warning pad-bottom-5">Please make notes of any actions taken.
+                                    <div class="text-warning pad-bottom-5">
+                                        Here you can add comments on any action taken to address the alert
                                     </div>
                                     <form role="form">
                                         <div class="form-group">
@@ -155,7 +132,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer centered">
                                     <button type="button"
                                             class="btn btn-default bg-grey text-white"
                                             data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span>
@@ -165,9 +142,36 @@
                                     <button type="button"
                                             class="btn btn-primary"
                                             ng-disabled="!alert.remarks"
-                                            ng-click="resolveAlert(alert.id, alert.remarks)"
-                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span> Mark
-                                        as resolved
+                                            ng-click="resolveAlert(alert.id, alert.remarks, alert.isResolved)"
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span> Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade text-left" id="resolve-confirm-modal">
+                        <div class="modal-dialog modal-sixty-percent-size">
+                            <div class="modal-content col-md-offset-3 col-md-6">
+                                <div class="modal-header">
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="modal">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+                                        <span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="eums-modal-header">Please confirm alert has been resolved</h4>
+                                </div>
+                                <div class="modal-footer centered">
+                                    <button type="button"
+                                            class="btn btn-default bg-grey text-white"
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span>
+                                        Cancel
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-primary"
+                                            ng-click="resolveAlert(alert.id, alert.remarks, true)"
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span> Resolve
                                     </button>
                                 </div>
                             </div>
