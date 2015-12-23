@@ -12,7 +12,7 @@ describe('Delivery Feedback Report', function () {
         report.visit();
     });
 
-    fit('should show the Delivery Feedback Report', function () {
+    it('should show the Delivery Feedback Report', function () {
         expect(report.received).toContain('YES');
         expect(report.shipmentDate).toContain('11-Jul-2015');
         expect(report.dateReceived).toContain('02-Dec-2015');
