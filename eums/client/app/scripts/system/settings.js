@@ -96,7 +96,8 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             };
 
             function isNewDate() {
-                return $scope.currectStartDate.toString() != $scope.settings.syncStartDate.toString();
+                return $scope.currectStartDate == null
+                || $scope.currectStartDate.toString() != $scope.settings.syncStartDate.toString();
             }
 
             function allowToSync () {
