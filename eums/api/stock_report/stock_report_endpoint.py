@@ -62,13 +62,13 @@ def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
     mixin.supported_filters = {
         "consignee_id": "consignee_id",
         "location": "location__icontains",
-        "programme": "programme_id",
+        "outcome_id": "programme_id",
         "from_date": "delivery_date__gte",
         "to_date": "delivery_date__lte"
     }
     filters = mixin.build_filters(
         {'consignee_id': consignee_id, 'location': location,
-         'programme': outcome_id, 'from_date': from_date, 'to_date': to_date})
+         'outcome_id': outcome_id, 'from_date': from_date, 'to_date': to_date})
 
     ip_nodes = ip_nodes.filter(**filters)
 

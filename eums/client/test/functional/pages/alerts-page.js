@@ -10,6 +10,7 @@ AlertsPage.prototype = Object.create({}, {
     }},
 
     firstAlert: { get: function () { return element.all(by.repeater('($index, alert) in alerts')).get(0).getText(); }},
+    secondAlert: { get: function () { return element.all(by.repeater('($index, alert) in alerts')).get(1).getText(); }},
 
     alertStatuses: { get: function () { return element.all(by.css('.alerts-issue')).getText(); }},
     alertOrderNumbers: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.orderNumber')).getText(); }},
@@ -26,12 +27,10 @@ AlertsPage.prototype = Object.create({}, {
         element.all(by.css('.retrigger-btn')).get(0).click();
     }},
 
-    resolveAlert: { value: function (remark) {
+    resolveAlert: { value: function () {
         element.all(by.css('.resolve-alert-button')).get(0).click();
         waitForModalToLoad();
-
-        alertModal.$('textarea').clear().sendKeys(remark);
-        element.all(by.partialButtonText('Mark as resolved')).get(0).click();
+        element.all(by.css('.btn btn-primary resolve')).click();
     }},
 
     viewResolutionDetails: { value: function () {
@@ -57,8 +56,8 @@ function waitForPageToLoad() {
 }
 
 function waitForModalToLoad() {
-    alertModal = element(by.id('resolve-alert-modal-0'));
-    resolvedAlertModal = element(by.id('resolved-alert-modal-1'));
-    var modalHasLoaded = EC.or(EC.visibilityOf(alertModal), EC.visibilityOf(resolvedAlertModal));
+    resolveModal = element(by.id('resolve-confirm-modal'));
+    //resolvedAlertModal = element(by.id('resolved-alert-modal-1'));
+    var modalHasLoaded = EC.visibilityOf(resolveModal);
     browser.wait(modalHasLoaded, 5000, "Timeout exceeded while waiting for modal to load");
 }

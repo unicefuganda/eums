@@ -42,7 +42,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         PermissionsTestCase.setUpClass()
         alert = AlertFactory()
 
-        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': 'hello world'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': 'hello world', 'is_resolved':True})
 
         self.assertEqual(response.status_code, 200)
 

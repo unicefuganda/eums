@@ -77,7 +77,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_update_alert(self):
         alert = AlertFactory()
 
-        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': 'some remarks'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': 'some remarks', 'is_resolved': True})
         updated_alert = Alert.objects.get(pk=alert.id)
 
         self.assertEqual(response.status_code, 200)

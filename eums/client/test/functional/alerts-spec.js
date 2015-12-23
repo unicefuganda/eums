@@ -26,13 +26,8 @@ describe('Alerts', function () {
         expect(alertsPage.firstAlert).toContain('Wakiso DHO');
         expect(alertsPage.firstAlert).toContain('John Doe');
 
-        alertsPage.resolveAlert('This is now resolved');
-        expect(alertsPage.firstAlert).toContain('View Resolution');
-
-        alertsPage.viewResolutionDetails();
-        expect(alertsPage.alertResolutionRemarks).toContain('This is now resolved');
-        expect(alertsPage.retriggerBtns.count()).toEqual(0);
-
+        alertsPage.resolveAlert();
+        expect(alertsPage.secondAlert).toContain('Resolved');
 
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');

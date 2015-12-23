@@ -172,7 +172,7 @@ describe('AlertsController', function () {
             scope.resolveAlert(alertId, remarks);
             scope.$apply();
 
-            expect(mockAlertsService.update).toHaveBeenCalledWith({id: alertId, remarks: remarks}, 'PATCH');
+            expect(mockAlertsService.update).toHaveBeenCalledWith({id: alertId, remarks: remarks, is_resolved : undefined}, 'PATCH');
         });
 
         it('should update unresolved alerts count upon updating an alert', function () {
@@ -210,17 +210,17 @@ describe('AlertsController', function () {
         });
 
         it('should set modal flag to true when add remark button is clicked', function () {
-            scope.addRemark(0);
+            scope.remark(0);
             scope.$apply();
 
             expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolve-alert-modal-0');
         });
 
         it('should set modal flag to true when show remark button is clicked', function () {
-            scope.showRemark(1);
+            scope.remark(1);
             scope.$apply();
 
-            expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolved-alert-modal-1');
+            expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolve-alert-modal-1');
         });
 
         it('should retrigger a manual flow when retrigger button is clicked and then create successful toast', function () {
