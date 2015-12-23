@@ -44,6 +44,7 @@ angular.module('StockReport', [
         $scope.sortBy = function (sortField) {
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
+                $scope.currentPage = 1;
                 fetchReport()
             }
         };
@@ -55,7 +56,6 @@ angular.module('StockReport', [
         function fetchReport(params) {
             LoaderService.showLoader();
             var requestParams = {};
-            Object.merge(requestParams, {page: $scope.currentPage});
             if ($scope.reportParams.selectedLocation) {
                 Object.merge(requestParams, {location: $scope.reportParams.selectedLocation});
             }

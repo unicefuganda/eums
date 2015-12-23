@@ -38,6 +38,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
         $scope.sortBy = function (sortField) {
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
+                $scope.goToPage(1);
                 loadIpFeedbackReportByDelivery()
             }
         };

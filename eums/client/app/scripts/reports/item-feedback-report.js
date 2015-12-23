@@ -54,6 +54,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.sortBy = function (sortField) {
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
+                $scope.goToPage(1);
                 loadItemFeedbackReport()
             }
         };
