@@ -13,6 +13,8 @@ PAGE_SIZE = 10
 sort = StandardDicSort('last_shipment_date', 'last_received_date',
                        'total_value_received', 'total_value_dispensed','balance')
 
+mixin = RequestFilterMixin()
+
 class StockReport(APIView):
 
     def get(self, request):
