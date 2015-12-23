@@ -32,7 +32,7 @@ def on_pre_save_system_settings(sender, **kwargs):
     current_sync_date = system_settings.sync_start_date if system_settings else ''
     new_sync_date = kwargs['instance'].sync_start_date
 
-    if ((not current_sync_date) and new_sync_date) or new_sync_date < current_sync_date:
+    if new_sync_date and (not current_sync_date or new_sync_date < current_sync_date):
         start_date = new_sync_date.strftime('%d%m%Y') if new_sync_date else ''
         end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''
         sync_orders.delay(start_date, end_date)
