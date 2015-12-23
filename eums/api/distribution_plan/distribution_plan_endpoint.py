@@ -35,7 +35,6 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
 
     supported_filters = {
         'programme': 'programme__name__icontains',
-        'query': 'distributionplannode__item__purchaseorderitem__purchase_order__order_number__icontains',
         'from': 'delivery_date__gte',
         'to': 'delivery_date__lte',
         'consignee': 'consignee'
@@ -61,13 +60,14 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
 
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
+        query = request.GET.get('query')
         user_profile, consignee = self.get_user_profile(logged_in_user)
 
         if user_profile and consignee:
-            filtered_deliveries = self._deliveries_for_ip(request, consignee)
+            filtered_deliveries = self._deliveries_for_ip(request, consignee, query)
             return Response(self.get_serializer(filtered_deliveries, many=True).data)
 
-        admin_deliveries = self._deliveries_for_admin(request)
+        admin_deliveries = self._deliveries_for_admin(request, query)
         return Response(self.get_serializer(admin_deliveries, many=True).data)
 
     @staticmethod
@@ -79,14 +79,18 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
         except:
             return None, None
 
-    def _deliveries_for_admin(self, request):
-        return DistributionPlan.objects.filter(**self.build_filters(request.query_params)).distinct()
+    def _deliveries_for_admin(self, request, query):
+        return DistributionPlanViewSet.__filter_deliveries_by_query(query, DistributionPlan.objects.filter(
+                **self.build_filters(request.query_params)).distinct())
 
-    def _deliveries_for_ip(self, request, consignee):
+    def _deliveries_for_ip(self, request, consignee, query):
         filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track()
 
         filters = self.build_filters(request.query_params, **{'consignee': consignee})
-        deliveries = filtered_distribution_plans.filter(**filters).distinct()
+
+        deliveries = DistributionPlanViewSet.__filter_deliveries_by_query(query, filtered_distribution_plans.filter(
+            **filters).distinct())
+
         filtered_deliveries = filter(
                 lambda x: x.is_partially_received() is None or x.is_partially_received() or x.is_retriggered,
                 deliveries)
@@ -100,6 +104,10 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
                             track=True)).distinct()
 
         return DistributionPlan.objects.filter(Q(track=True))
+
+    @staticmethod
+    def __filter_deliveries_by_query(query, deliveries):
+        return filter(lambda delivery: query in str(delivery.number()), deliveries) if query else deliveries
 
 
 distributionPlanRouter = DefaultRouter()
