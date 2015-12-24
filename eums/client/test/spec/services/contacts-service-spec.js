@@ -4,8 +4,7 @@ describe('Contacts Service', function () {
         _id: 1,
         firstName: 'Andrew',
         lastName: 'Mukiza',
-        phone: '+234778945674',
-        createdByUserId: 5
+        phone: '+234778945674'
     };
 
     beforeEach(function () {
