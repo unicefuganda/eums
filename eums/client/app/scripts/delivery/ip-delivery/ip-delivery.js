@@ -146,8 +146,9 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         }
 
         function clearContactAndLocation() {
-            $scope.selectedLocation.id = '';
-            $scope.contact.id = '';
+            $scope.selectedLocation.id = null;
+            $scope.contact.id = null;
+            $('#contact-select').siblings('div').find('a span.select2-chosen').text('')
         }
 
         function confirmToUpdateContactAndLocation() {
