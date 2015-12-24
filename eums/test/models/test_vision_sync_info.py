@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from django.test import TestCase
 
@@ -7,41 +7,77 @@ from eums.models import VisionSyncInfo
 
 class VisionSyncInfoTest(TestCase):
     def setUp(self):
-        self.successful_ro = VisionSyncInfo.objects.create(so_status=VisionSyncInfo.STATUS.FAILURE,
-                                                           po_status=VisionSyncInfo.STATUS.FAILURE,
-                                                           ro_status=VisionSyncInfo.STATUS.SUCCESS)
-
-        self.successful_so = VisionSyncInfo.objects.create(so_status=VisionSyncInfo.STATUS.SUCCESS,
-                                                           po_status=VisionSyncInfo.STATUS.FAILURE,
-                                                           ro_status=VisionSyncInfo.STATUS.FAILURE)
-
-        self.successful_po = VisionSyncInfo.objects.create(so_status=VisionSyncInfo.STATUS.FAILURE,
-                                                           po_status=VisionSyncInfo.STATUS.SUCCESS,
-                                                           ro_status=VisionSyncInfo.STATUS.FAILURE)
+        self.successful_so = VisionSyncInfo.objects.create(so_status=VisionSyncInfo.STATUS.SUCCESS)
+        self.successful_po = VisionSyncInfo.objects.create(po_status=VisionSyncInfo.STATUS.SUCCESS)
+        self.successful_ro = VisionSyncInfo.objects.create(ro_status=VisionSyncInfo.STATUS.SUCCESS)
+        self.date_2015_12_03 = datetime.datetime.fromtimestamp(1449118800)
+        self.date_2015_12_15 = datetime.datetime.fromtimestamp(1450118800)
+        self.date_2015_12_31 = datetime.datetime.fromtimestamp(1451538000)
+        self.date_2015_12_03_str = '03122015'
+        self.date_2015_12_15_str = '15122015'
+        self.date_2015_12_31_str = '31122015'
 
     def tearDown(self):
         VisionSyncInfo.objects.all().delete()
 
-    def test_should_get_last_successful_so_status(self):
-        self.assertEqual(VisionSyncInfo.get_last_successful_sync('SO'), self.successful_so)
+    def test_should_get_so_sync_start_date(self):
+        self.successful_so.sync_date = self.date_2015_12_03
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_31
+        self.successful_po.save()
 
-    def test_should_get_last_successful_po_status(self):
-        self.assertEqual(VisionSyncInfo.get_last_successful_sync('PO'), self.successful_po)
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('SO'), self.date_2015_12_03_str)
 
-    def test_should_get_last_successful_ro_status(self):
-        self.assertEqual(VisionSyncInfo.get_last_successful_sync('RO'), self.successful_ro)
+        self.successful_so.sync_date = self.date_2015_12_31
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_03
+        self.successful_po.save()
 
-    def test_should_have_default_status_as_running(self):
-        self.assertEqual(self.successful_po.consignee_status, VisionSyncInfo.STATUS.NOT_RUNNING)
-        self.assertEqual(self.successful_po.programme_status, VisionSyncInfo.STATUS.NOT_RUNNING)
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('SO'), self.date_2015_12_31_str)
 
-    def test_should_assign_sync_time_automatically(self):
-        self.assertIsInstance(self.successful_po.sync_date, datetime)
+    def test_should_get_po_sync_start_date(self):
+        self.successful_so.sync_date = self.date_2015_12_03
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_31
+        self.successful_po.save()
 
-    def test_should_set_status(self):
-        sync_info = VisionSyncInfo.new_instance()
-        sync_info.set_sync_status_success('SO')
-        sync_info.set_sync_status_failure('PO')
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('PO'), self.date_2015_12_03_str)
 
-        self.assertEqual(sync_info.so_status, VisionSyncInfo.STATUS.SUCCESS)
-        self.assertEqual(sync_info.po_status, VisionSyncInfo.STATUS.FAILURE)
+        self.successful_so.sync_date = self.date_2015_12_31
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_03
+        self.successful_po.save()
+
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('PO'), self.date_2015_12_03_str)
+
+        self.successful_so.sync_date = self.date_2015_12_03
+        self.successful_so.save()
+        self.successful_po.delete()
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('PO'), self.date_2015_12_03_str)
+
+    def test_should_get_ro_sync_start_date(self):
+        self.successful_so.sync_date = self.date_2015_12_03
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_15
+        self.successful_po.save()
+        self.successful_ro.sync_date = self.date_2015_12_31
+        self.successful_ro.save()
+
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('RO'), self.date_2015_12_03_str)
+
+        self.successful_so.sync_date = self.date_2015_12_15
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_03
+        self.successful_po.save()
+        self.successful_ro.sync_date = self.date_2015_12_31
+        self.successful_ro.save()
+
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('RO'), self.date_2015_12_03_str)
+
+        self.successful_so.sync_date = self.date_2015_12_15
+        self.successful_so.save()
+        self.successful_po.sync_date = self.date_2015_12_03
+        self.successful_po.save()
+        self.successful_ro.delete()
+
+        self.assertEqual(VisionSyncInfo.get_sync_start_date('RO'), self.date_2015_12_03_str)

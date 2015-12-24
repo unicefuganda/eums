@@ -1,11 +1,11 @@
 from celery.utils.log import get_task_logger
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
+from eums.celery import app
 from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings
 from eums.services.flow_scheduler import schedule_run_for
-from eums.vision.sync_orders import sync_orders
+from eums.vision.sync_runner import sync
 
 logger = get_task_logger(__name__)
 
@@ -33,9 +33,14 @@ def on_pre_save_system_settings(sender, **kwargs):
     new_sync_date = kwargs['instance'].sync_start_date
 
     if new_sync_date and (not current_sync_date or new_sync_date < current_sync_date):
-        start_date = new_sync_date.strftime('%d%m%Y') if new_sync_date else ''
+        start_date = new_sync_date.strftime('%d%m%Y')
         end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''
-        sync_orders.delay(start_date, end_date)
+        run.apply_async(args=[start_date, end_date])
+
+
+@app.task
+def run(start_date, end_date):
+    sync(start_date, end_date)
 
 
 def _resolve_alert_if_possible(delivery):
