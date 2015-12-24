@@ -22,7 +22,6 @@ perm_code_names = [
     {'name': 'Can view dashboard', 'codename': 'can_view_dashboard'},
     {'name': 'Can view distribution plans', 'codename': 'can_view_distribution_plans'},
     {'name': 'Can view reports', 'codename': 'can_view_reports'},
-    {'name': 'Can view contacts', 'codename': 'can_view_contacts'},
     {'name': 'Can view deliveries', 'codename': 'can_view_deliveries'},
     {'name': 'Can create deliveries', 'codename': 'can_create_deliveries'},
     {'name': 'Can track deliveries', 'codename': 'can_track_deliveries'},
@@ -43,6 +42,8 @@ perm_code_names = [
     {'name': 'Can view consignees', 'codename': 'can_view_consignees'},
     {'name': 'Can import data', 'codename': 'can_import_data'},
 
+    {'name': 'Can view self contacts', 'codename': 'can_view_self_contacts'},
+    {'name': 'Can view contacts', 'codename': 'can_view_contacts'},
     {'name': 'Can create contacts', 'codename': 'can_create_contacts'},
     {'name': 'Can edit contacts', 'codename': 'can_edit_contacts'},
     {'name': 'Can push contacts to RapidPro', 'codename': 'can_push_contacts_to_rapid_pro'},

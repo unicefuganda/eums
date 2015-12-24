@@ -9,7 +9,10 @@ GROUP_PERMISSIONS = {
         'can_view_distribution_plans',
         'can_view_delivery_reports',
         'can_view_reports',
+        'can_view_self_contacts',
         'can_view_contacts',
+        'can_create_contacts',
+        'can_edit_contacts',
         'can_view_consignees',
         'add_consignee',
         'change_consignee',
@@ -20,7 +23,7 @@ GROUP_PERMISSIONS = {
         'add_distributionplan',
         'change_distributionplan',
         'can_track_deliveries',
-        'can_view_unicef_menu'
+        'can_view_unicef_menu',
     ],
     'UNICEF_editor': [
         'can_view_dashboard',
@@ -34,31 +37,42 @@ GROUP_PERMISSIONS = {
         'can_track_deliveries',
         'can_view_unicef_menu',
         'can_view_reports',
+        'can_view_self_contacts',
+        'can_create_contacts',
+        'can_edit_contacts',
     ],
     'UNICEF_viewer': [
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_distribution_plans',
-        'can_view_unicef_menu'
+        'can_view_unicef_menu',
+        'can_view_self_contacts',
+        'can_create_contacts',
+        'can_edit_contacts',
     ],
     'Implementing Partner_editor': [
         'can_view_delivery_reports',
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_reports',
-        'can_view_contacts',
         'add_consignee',
         'change_consignee',
         'delete_consignee',
         'can_view_distribution_plans',
         'change_distributionplan',
-        'add_distributionplan'
+        'add_distributionplan',
+        'can_view_self_contacts',
+        'can_create_contacts',
+        'can_edit_contacts',
     ],
     'Implementing Partner_viewer': [
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_reports',
-        'can_view_distribution_plans'
+        'can_view_distribution_plans',
+        'can_view_self_contacts',
+        'can_create_contacts',
+        'can_edit_contacts',
     ]
 }
 

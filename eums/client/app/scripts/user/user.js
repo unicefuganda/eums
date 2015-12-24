@@ -21,7 +21,12 @@ angular.module('User', ['eums.config']).factory('UserService', function ($http, 
                 return false;
             });
         },
-        retrieveUserPermissions: function() {
+        hasPermissionTo: function (permissionToCheck) {
+            return this.retrieveUserPermissions().then(function (permissions) {
+                return (permissions.indexOf(permissionToCheck) > -1);
+            });
+        },
+        retrieveUserPermissions: function () {
             return $http.get(EumsConfig.BACKEND_URLS.PERMISSION + '/all').then(function (result) {
                 return result.data;
             });

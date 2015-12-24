@@ -1,22 +1,35 @@
 'use strict';
 
 angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
-    .controller('ContactController', function (ContactService, $scope, $sorter, ngToast) {
+    .controller('ContactController', function (ContactService, $scope, $sorter, UserService, ngToast) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
         $scope.contact = {};
+        $scope.currentUser = {};
 
         function loadContacts() {
-            ContactService.all().then(function (allContacts) {
-                $scope.contacts = allContacts.sort();
+            UserService.hasPermissionTo('auth.can_view_contacts').then(function (isPermissionGranted) {
+                if (isPermissionGranted) {
+                    ContactService.all().then(function (resultContacts) {
+                        $scope.contacts = resultContacts.sort();
+                    });
+                } else {
+                    ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
+                        $scope.contacts = resultContacts.sort();
+                    });
+                }
             });
-        }
+        };
 
         $scope.initialize = function () {
             this.sortBy('firstName');
             this.sort.descending = false;
-            loadContacts.call(this);
+
+            UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+                loadContacts.call(this);
+            });
         };
 
         $scope.sortArrowClass = function (criteria) {
@@ -81,7 +94,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             });
         };
     })
-    .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {
+    .factory('ContactService', function ($http, EumsConfig, UserService, ServiceFactory, $q) {
         return ServiceFactory.create({
             uri: EumsConfig.CONTACT_SERVICE_URL,
             changeCase: false,
@@ -89,6 +102,13 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             methods: {
                 get: function (id) {
                     return $http.get(EumsConfig.CONTACT_SERVICE_URL + id + '/').then(function (response) {
+                        return response.data;
+                    }).catch(function () {
+                        return undefined;
+                    });
+                },
+                findContacts: function (currentUserId) {
+                    return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?createdbyuserid=' + currentUserId).then(function (response) {
                         return response.data;
                     }).catch(function () {
                         return undefined;
@@ -163,12 +183,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     } else {
                         scope.contact.phone = undefined;
                     }
-
                 };
 
                 scope.$on('add-contact', function (_, object, objectIndex) {
                     isEdit = false;
                     scope.contact = {};
+                    scope.contact.createdByUserId = scope.currentUser.userid;
                     scope.object = object;
                     scope.objectIndex = objectIndex;
                     contactInput.val('');

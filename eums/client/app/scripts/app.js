@@ -197,7 +197,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ContactController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_contacts');
+                        return UserService.checkUserPermission('auth.can_view_self_contacts');
                     }
                 }
             })
