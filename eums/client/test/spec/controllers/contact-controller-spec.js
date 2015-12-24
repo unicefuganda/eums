@@ -1,17 +1,13 @@
 describe('ContactController', function () {
-    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService, mockToastProvider;
-
-    var stubNewContact = {
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '+234778922674'
-    };
+    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService,
+        mockToastProvider, findStubContactsPromise, mockUserService, userHasPermissionToPromise, userGetCurrentUserPromise;
 
     var stubContact = {
         _id: 3,
         firstName: 'John',
         lastName: 'Doe',
-        phone: '+234778922674'
+        phone: '+234778922674',
+        createdByUserId: 5
     };
 
     var stubContacts = [
@@ -19,15 +15,26 @@ describe('ContactController', function () {
             _id: 1,
             firstName: 'Andrew',
             lastName: 'Mukiza',
-            phone: '+234778945674'
+            phone: '+234778945674',
+            createdByUserId: 5
         },
         {
             _id: 2,
             firstName: 'James',
             lastName: 'Oloo',
-            phone: '+234778945675'
+            phone: '+234778945675',
+            createdByUserId: 5
         }
     ];
+
+    var stubCurrentUser = {
+        username: "admin",
+        first_name: "",
+        last_name: "",
+        userid: 5,
+        consignee_id: null,
+        email: "admin@tw.org"
+    };
 
     var mockElement = {
         modal: function () {
@@ -41,21 +48,28 @@ describe('ContactController', function () {
         module('ngTable');
         module('siTable');
 
-        mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'create', 'update', 'del']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermissionTo', 'getCurrentUser'])
 
         inject(function ($rootScope, $controller, $compile, $q, $sorter) {
             scope = $rootScope.$new();
             sorter = $sorter;
             stubContactsPromise = $q.defer();
+            findStubContactsPromise = $q.defer();
             deferred = $q.defer();
             stubContactPromise = $q.defer();
             toastPromise = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
             mockContactService.all.and.returnValue(stubContactsPromise.promise);
+            mockContactService.findContacts.and.returnValue(findStubContactsPromise.promise);
             mockContactService.create.and.returnValue(stubContactPromise.promise);
             mockContactService.update.and.returnValue(deferred.promise);
             mockContactService.del.and.returnValue(deferred.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
+            mockUserService.hasPermissionTo.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
 
             spyOn(angular, 'element').and.returnValue(mockElement);
 
@@ -66,7 +80,8 @@ describe('ContactController', function () {
                 $scope: scope,
                 ContactService: mockContactService,
                 $sorter: sorter,
-                ngToast: mockToastProvider
+                ngToast: mockToastProvider,
+                UserService: mockUserService
             });
         });
     });
@@ -93,6 +108,8 @@ describe('ContactController', function () {
     });
 
     it('should fetch all contacts', function () {
+        userGetCurrentUserPromise.resolve(stubCurrentUser);
+        userHasPermissionToPromise.resolve(true);
         stubContactsPromise.resolve(stubContacts);
         scope.initialize();
         scope.$apply();
@@ -186,6 +203,8 @@ describe('ContactController', function () {
 
     describe('editing a contact', function () {
         it('should edit a contact', function () {
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+            userHasPermissionToPromise.resolve(true);
             deferred.resolve();
             scope.update(stubContact);
             scope.$apply();
