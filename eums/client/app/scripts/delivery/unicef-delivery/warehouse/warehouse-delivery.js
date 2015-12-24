@@ -79,6 +79,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             var sort = SortByService.sortedBy($scope.sortTerm, sortField);
             this.sortBy(sort.field);
             this.sort.descending = sort.des;
+
         };
 
         $scope.selectReleaseOrder = function (selectedReleaseOrderId) {

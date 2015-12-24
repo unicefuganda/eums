@@ -53,7 +53,7 @@ class StockReportExporterTest(TestCase):
         stocks = [{'total_value_received': total_value_received,
                    'document_number': document_number,
                    'last_received_date': last_received_date,
-                   'answtotal_value_dispenseders': total_value_dispensed,
+                   'total_value_dispensed': total_value_dispensed,
                    'last_shipment_date': last_shipment_date,
                    'balance': balance,
                    'programme': programme,
@@ -83,8 +83,5 @@ class StockReportExporterTest(TestCase):
         assembled_data = csv_exporter.assemble_csv_data(stocks)
         header = csv_exporter.config_headers()
         expect_data = [header, row_value]
-        print expect_data
-        print '\n'
-        print assembled_data
-        # self.assertEqual(expect_data, assembled_data)
-        # self.assertTrue(len(assembled_data) is 2)
+        self.assertEqual(expect_data, assembled_data)
+        self.assertTrue(len(assembled_data) is 2)
