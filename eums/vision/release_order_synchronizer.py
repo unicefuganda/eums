@@ -45,7 +45,8 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
                                                purchase_order=matching_purchase_orders[0])
 
     def _update_or_create_new_item(self, release_order_item, order):
-        if float(release_order_item['value']) == 0 or float(release_order_item['quantity']) == 0:
+        if not(release_order_item['value'] and release_order_item['quantity']) \
+                or float(release_order_item['value']) == 0 or float(release_order_item['quantity']) == 0:
             return None
 
         matching_purchase_orders = self._get_matching_purchase_order(release_order_item)
@@ -58,7 +59,7 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
                 matching_ro_items = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
                                                                     purchase_order_item=matching_purchase_order_items[0])
                 if not len(matching_ro_items):
-                    item, _ = Item.objects.get_or_create(material_code=release_order_item['material_code'])
+                    item, _ = Item.objects.get_or_create(id=matching_purchase_order_items[0].item_id)
 
                     ReleaseOrderItem.objects.create(release_order=order,
                                                     purchase_order_item=matching_purchase_order_items[0],
