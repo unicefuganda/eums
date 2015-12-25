@@ -26,11 +26,12 @@
 
                 {% if form.errors %}
                     <div class="alert alert-danger alert-dismissable">
-                        {{ form.non_field_errors }}
+                        {% if form.non_field_errors %}
+                            {{ form.non_field_errors }}
+                        {% else %}
+                            {{ form.errors }}
+                        {% endif %}
                     </div>
-                {% endif %}
-
-                {% if not form.errors %}
                 {% endif %}
 
                 {% csrf_token %}
