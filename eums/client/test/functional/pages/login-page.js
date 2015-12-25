@@ -14,10 +14,10 @@ LoginPage.prototype = Object.create({}, {
         browser.get('logout');
     }},
 
-    welcomeMessage: { get: function () { return element(by.id('login-welcome')); }},
+    welcomeMessage: { get: function () { return element(by.css('.slogan')); }},
     username: { get: function () { return element(by.id('username')); }},
     password: { get: function () { return element(by.id('password')); }},
-    loginButton: { get: function () { return element(by.id('btn-login')); }},
+    loginButton: { get: function () { return element(by.css('.btn-form')); }},
 
     loginAs: { value: function (username, password) {
         this.username.sendKeys(username);

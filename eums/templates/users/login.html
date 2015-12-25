@@ -12,14 +12,14 @@
           <script src="{{ STATIC_URL }}Respond/respond.min.js"></script>
     <![endif]-->
 </head>
-<body id="login-body">
+<body class="eums-form">
 <div class="container">
-    <div class="row login-row">
-        <div class="col-md-4" id="login-logo">
+    <div class="row">
+        <div class="col-md-4 logo">
             <img src="{{ STATIC_URL }}img/unicef_logo_white.png">
         </div>
-        <div class="col-md-8" id="login-form-container">
-            <form class="login-form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        <div class="col-md-8" id="form-container">
+            <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
             <h3>Welcome to the Electronic Joint Reporting Form</h3>
             {% if form.errors %}
                 <div class="alert alert-danger alert-dismissable">
@@ -39,7 +39,7 @@
                 <label class="control-label" for="inputPassword">Password</label>
                 <input type="password" name="password">
                 </p>
-                <button id="btn-login" type="submit">Sign in</button>
+                <button class="btn-form" type="submit">Sign in</button>
             </form>
         </div>
     </div>
