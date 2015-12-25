@@ -145,7 +145,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
         };
     })
-    .directive('eumsContact', function (ContactService, ngToast, $templateCache) {
+    .directive('eumsContact', function (ContactService, UserService, ngToast, $templateCache) {
         var createToast = function (message, klass) {
             ngToast.create({
                 content: message,
@@ -186,14 +186,16 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 };
 
                 scope.$on('add-contact', function (_, object, objectIndex) {
-                    isEdit = false;
-                    scope.contact = {};
-                    scope.contact.createdByUserId = scope.currentUser.userid;
-                    scope.object = object;
-                    scope.objectIndex = objectIndex;
-                    contactInput.val('');
-                    $('#model-name').text('Add Contact');
-                    $('#add-contact-modal').modal();
+                    UserService.getCurrentUser().then(function (user) {
+                        isEdit = false;
+                        scope.contact = {};
+                        scope.contact.createdByUserId = user.userid;
+                        scope.object = object;
+                        scope.objectIndex = objectIndex;
+                        contactInput.val('');
+                        $('#model-name').text('Add Contact');
+                        $('#add-contact-modal').modal();
+                    });
                 });
 
                 scope.$on('edit-contact', function (_, contact) {

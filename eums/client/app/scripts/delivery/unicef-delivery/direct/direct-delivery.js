@@ -8,7 +8,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
         var rootPath = '/direct-delivery/new/';
 
-
         $scope.searchFields = ['orderNumber', 'lastShipmentDate'];
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -37,8 +36,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.initialize = function (urlArgs) {
             loadPurchaseOrders(urlArgs);
         };
-
-
 
         $scope.$watch('[fromDate,toDate,query]', function (newValue, oldValue) {
             if (angular.equals(newValue, oldValue)) return;
@@ -91,6 +88,5 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
                 ngToast.create({content: errorMessage, class: 'danger'})
             });
         };
-
     });
 

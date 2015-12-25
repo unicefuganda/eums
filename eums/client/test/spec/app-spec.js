@@ -155,4 +155,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('SystemSettingsController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/system/settings.html');
     });
+
+    it('should have contacts route pointing to the right controller', function () {
+        var route = '/contacts';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('ContactController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/contacts/contacts.html');
+    });
 });

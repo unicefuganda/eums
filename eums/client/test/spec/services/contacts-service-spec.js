@@ -4,7 +4,8 @@ describe('Contacts Service', function () {
         _id: 1,
         firstName: 'Andrew',
         lastName: 'Mukiza',
-        phone: '+234778945674'
+        phone: '+234778945674',
+        createdByUserId: 5
     };
 
     beforeEach(function () {
@@ -16,10 +17,20 @@ describe('Contacts Service', function () {
         });
     });
 
-    it('should search for contact by search string', function (done) {
+    it('should search for contacts by search string', function (done) {
         var searchString = expectedContact.firstName;
         mockHttpBackend.whenGET(config.CONTACT_SERVICE_URL + '?searchfield=' + searchString).respond([expectedContact]);
         contactService.search(searchString).then(function (contact) {
+            expect(contact).toEqual([expectedContact]);
+            done();
+        });
+        mockHttpBackend.flush();
+    });
+
+    it('should search for contacts by creator-user-id', function (done) {
+        var createdByUserId = expectedContact.createdByUserId;
+        mockHttpBackend.whenGET(config.CONTACT_SERVICE_URL + '?createdbyuserid=' + createdByUserId).respond([expectedContact]);
+        contactService.findContacts(createdByUserId).then(function (contact) {
             expect(contact).toEqual([expectedContact]);
             done();
         });
@@ -44,11 +55,11 @@ describe('Contacts Service', function () {
         mockHttpBackend.flush();
     });
 
-    it('should not delete contact when contact has associated deliveries', function(done) {
+    it('should not delete contact when contact has associated deliveries', function (done) {
         var contactPersonId = 'FDFD86B7-47D1-46FC-B722-A22F5F14F06D';
         var contactDeliveriesUrl = config.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contactPersonId;
         mockHttpBackend.whenGET(contactDeliveriesUrl).respond([1]);
-        contactService.del({_id: contactPersonId}).catch(function(reason) {
+        contactService.del({_id: contactPersonId}).catch(function (reason) {
             expect(reason).toBe('Cannot delete contact that has deliveries');
             done();
         });
