@@ -35,6 +35,7 @@ class CurrentUserEndpointTest(TestCase):
         expected_data = self.data.copy()
         expected_data.pop('password')
         expected_data['consignee_id'] = consignee_id
+        expected_data['userid'] = self.user.id
 
         response_data = json.loads(response.content)
         self.assertEqual(response_data, expected_data)
@@ -48,6 +49,7 @@ class CurrentUserEndpointTest(TestCase):
         expected_data = self.data.copy()
         expected_data.pop('password')
         expected_data['consignee_id'] = None
+        expected_data['userid'] = self.user.id
 
         response_data = json.loads(response.content)
         self.assertEqual(response_data, expected_data)
