@@ -3,68 +3,65 @@
 <head>
     <title>SEUMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.css">
     <link rel="icon" href="{{ STATIC_URL }}app/media/favicon.ico">
 </head>
 
-<body id="login-body">
-<div class="container col-md-offset-1">
-    <div class="row login-row col-md-10">
-        <div class="col-md-5" id="login-logo">
-            <img src="/static/app/media/unicef-logo-white.png">
-        </div>
-        <div class="col-md-7" id="login-form-container">
-            <form class="form-horizontal login-form" role="form" method="post"
-                  action="{% url 'django.contrib.auth.views.login' %}">
+<body class="eums-form">
+<div class="row col-md-offset-1 col-md-10">
+    <div class="col-md-5 logo">
+        <img src="/static/app/media/unicef-logo-white.png">
+    </div>
+    <div class="col-md-7 form-container">
+        <form class="form-horizontal" role="form" method="post"
+              action="{% url 'django.contrib.auth.views.login' %}">
 
-                <div class="form-group">
-                    <div id="login-welcome" class="col-md-10 col-sm-offset-1 center">
-                        <h3>Welcome to the Supply End User Monitoring System</h3>
-                    </div>
+            <div class="form-group">
+                <div class="col-md-10 col-sm-offset-1 center slogan">
+                    <h3>Welcome to the Supply End User Monitoring System</h3>
                 </div>
+            </div>
 
-                {% if form.errors %}
-                    <div class="alert alert-danger alert-dismissable">
-                        {% if form.non_field_errors %}
-                            {{ form.non_field_errors }}
-                        {% else %}
-                            {{ form.errors }}
-                        {% endif %}
-                    </div>
-                {% endif %}
-
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="username">Username</label>
-
-                    <div class="col-sm-6">
-                        <input class="form-control" name="username" type="text" id="username">
-                    </div>
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissable">
+                    {% if form.non_field_errors %}
+                        {{ form.non_field_errors }}
+                    {% else %}
+                        {{ form.errors }}
+                    {% endif %}
                 </div>
+            {% endif %}
 
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="password">Password</label>
+            {% csrf_token %}
 
-                    <div class="col-sm-6">
-                        <input class="form-control" name="password" type="password" id="password">
-                    </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="username">Username</label>
+
+                <div class="col-sm-6">
+                    <input id="username" class="form-control" name="username" type="text">
                 </div>
-                <div class="form-group">
+            </div>
 
-                    <div class="col-sm-offset-3 col-sm-2">
-                        <button id="btn-login" type="submit" value="submit" class="btn btn-default">Sign in</button>
-                    </div>
-                    <div class="col-sm-offset-1 col-sm-3">
-                        <a href="/password_reset" class="forgot-password">
-                            Forgot Password
-                        </a>
-                    </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="password">Password</label>
 
+                <div class="col-sm-6">
+                    <input id="password" class="form-control" name="password" type="password">
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="form-group">
+
+                <div class="col-sm-offset-3 col-sm-2">
+                    <button type="submit" value="submit" class="btn btn-default btn-form">Sign in
+                    </button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-3">
+                    <a href="/password_reset" class="lk-form">
+                        Forgot Password
+                    </a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 </body>
