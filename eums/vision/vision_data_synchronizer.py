@@ -42,27 +42,27 @@ class VisionDataSynchronizer:
         return []
 
     def _load_records(self):
-        # try:
-        logger.info(repr(settings.VISION_PASSWORD))
-        response = requests.get(self.url, headers={'Content-Type': 'application/json'},
-                                    auth=(r'.\biservice', settings.VISION_PASSWORD))
-        # except Exception:
-        #     raise VisionException(message='Load data failed')
-        #
+        try:
+            response = requests.get(self.url, headers={'Content-Type': 'application/json'},
+                                    auth=(r'.\biservice', settings.VISION_PASSWORD),
+                                    verify=False)
+        except Exception:
+            raise VisionException(message='Load data failed')
+
         if response.status_code != 200:
             raise VisionException(message=('Load data failed! Http code:%s' % response.status_code))
 
         return self._get_json(response.json())
 
     def sync(self):
-        # try:
+        try:
             original_records = self._load_records()
             records = self._convert_records(original_records)
             self._save_records(records)
-        # except VisionException, e:
-        #     raise e
-        # except Exception:
-        #     raise VisionException(message='Sync failed')
+        except VisionException, e:
+            raise e
+        except Exception:
+            raise VisionException(message='Sync failed')
 
     @staticmethod
     def _convert_date_format(date_str):
