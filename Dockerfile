@@ -161,8 +161,9 @@ COPY ./eums/requirements.txt /opt/app/eums/requirements.txt
 RUN virtualenv ~/.virtualenvs/eums
 RUN /bin/bash -c "source ~/.virtualenvs/eums/bin/activate && cd /opt/app/eums && pip install -r requirements.txt"
 
-COPY ./eums/eums/client /opt/app/eums/eums/client
+COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
+COPY ./eums/eums/client /opt/app/eums/eums/client
 
 COPY ./eums /opt/app/eums
 COPY ./contacts /opt/app/contacts
