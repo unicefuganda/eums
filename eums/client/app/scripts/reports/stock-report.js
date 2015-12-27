@@ -6,7 +6,7 @@ angular.module('StockReport', [
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, SortByService, ReportService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast, $sorter) {
+                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};

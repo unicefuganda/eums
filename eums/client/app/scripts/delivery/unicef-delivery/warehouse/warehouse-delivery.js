@@ -5,9 +5,8 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService, SortService, SystemSettingsService, SortByService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService, SortService, SystemSettingsService, SortByService, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
         var SUPPORTED_FIELD = ['orderNumber', 'deliveryDate', 'trackedDate'];
-        $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
         $scope.searchFields = ['waybill', 'deliveryDate'];//, 'programme'];
