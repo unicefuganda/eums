@@ -9,7 +9,7 @@ from rest_framework import status
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.api.filter.filter_mixin import RequestFilterMixin
 
-PAGE_SIZE = 4
+PAGE_SIZE = 10
 sort = StandardDicSort('last_shipment_date', 'last_received_date',
                        'total_value_received', 'total_value_dispensed','balance')
 
