@@ -2,7 +2,6 @@ angular.module('SortArrow', [])
     .service('SortArrowService', function () {
         return {
             setSortArrow: function (criteria, sortOptions) {
-
                 var output = '';
 
                 if (sortOptions.field === criteria) {

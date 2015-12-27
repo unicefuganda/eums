@@ -9,7 +9,7 @@ from rest_framework import status
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.api.filter.filter_mixin import RequestFilterMixin
 
-PAGE_SIZE = 10
+PAGE_SIZE = 4
 sort = StandardDicSort('last_shipment_date', 'last_received_date',
                        'total_value_received', 'total_value_dispensed','balance')
 
@@ -20,7 +20,6 @@ class StockReport(APIView):
     def get(self, request):
         reduced_stock_report = filter_stock_report(request)
         totals = _compute_totals(reduced_stock_report)
-
         reduced_stock_report = sort.sort_by(request, reduced_stock_report)
         paginated_results = Paginator(reduced_stock_report, PAGE_SIZE)
 

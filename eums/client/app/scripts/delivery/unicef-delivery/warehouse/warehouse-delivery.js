@@ -5,7 +5,8 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SystemSettingsService, SortByService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService, SortService, SystemSettingsService, SortByService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
+        var SUPPORTED_FIELD = ['orderNumber', 'deliveryDate', 'trackedDate'];
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -14,7 +15,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         $scope.releaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
-        $scope.sortTerm = {field: 'trackedDate', orderIndex: 0};
+        $scope.sortTerm = {field: 'trackedDate', order: 'desc'};
 
         $scope.documentColumnTitle = 'Waybill #';
         $scope.dateColumnTitle = 'Date Shipped';
@@ -25,10 +26,10 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             LoaderService.showLoader();
 
             initAutoTrack();
-            options = angular.extend({'paginate': 'true'}, options);
+            options = angular.extend({'paginate': 'true'}, options, $scope.sortTerm);
 
             ReleaseOrderService.all(undefined, options).then(function (response) {
-                $scope.releaseOrders = response.results.sort();
+                $scope.releaseOrders = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
 
@@ -53,34 +54,35 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         }
 
         $scope.initialize = function (urlArgs) {
-            this.sortBy('trackedDate');
-            this.sort.descending = false;
-
             loadReleaseOrder(urlArgs);
         };
 
         $scope.goToPage = function (page) {
+
             loadReleaseOrder(angular.extend({'page': page}, changedFilters()));
         };
 
         $scope.sortArrowClass = function (criteria) {
-            var output = '';
+            return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
+        };
 
-            if (this.sort.criteria === criteria) {
-                output = 'active glyphicon glyphicon-arrow-down';
-                if (this.sort.descending) {
-                    output = 'active glyphicon glyphicon-arrow-up';
-                }
+        $scope.sortBy = function (sortField) {
+            if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
+                $scope.goToPage(1);
+                $scope.currentPage = 1;
+                loadReleaseOrder()
             }
-            return output;
         };
 
-        $scope.sortedBy = function (sortField) {
-            var sort = SortByService.sortedBy($scope.sortTerm, sortField);
-            this.sortBy(sort.field);
-            this.sort.descending = sort.des;
+        $scope.changeField = function(sortTerm) {
+            var map = [{'trackedDate': 'tracked_date'},
+                       {'deliveryDate': 'delivery_date'},
+                       {'orderNumber': 'waybill'}];
 
+            sortTerm.field = map[sortTerm.field]
         };
+
 
         $scope.selectReleaseOrder = function (selectedReleaseOrderId) {
             $location.path('/warehouse-delivery/new/' + selectedReleaseOrderId);

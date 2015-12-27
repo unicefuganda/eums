@@ -80,16 +80,16 @@
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
                 <th>
-                    <a ng-click="sortedBy('orderNumber')">{{ documentColumnTitle }} <i
+                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
                             ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
                 <th>
-                    <a ng-click="sortedBy('deliveryDate')">{{ dateColumnTitle }}
+                    <a ng-click="sortBy('deliveryDate')">{{ dateColumnTitle }}
                         <i ng-class="sortArrowClass('deliveryDate');"></i>
                     </a>
                 </th>
                 <th>
-                    <a ng-click="sortedBy('trackedDate')">{{ trackedDateColumnTitle }}
+                    <a ng-click="sortBy('trackedDate')">{{ trackedDateColumnTitle }}
                         <i ng-class="sortArrowClass('trackedDate');"></i>
                     </a>
                 </th>
@@ -103,7 +103,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
+            <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields">
                 <td>
                     <span ng-class="releaseOrder.track ? 'glyphicon glyphicon-ok text-success' :
                      (autoTrack?'glyphicon glyphicon-globe text-warning':'glyphicon glyphicon-remove text-danger')"></span>

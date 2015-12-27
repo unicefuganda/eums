@@ -28,6 +28,7 @@ class ReleaseOrder(TimeStampedModel):
     consignee = models.ForeignKey(Consignee)
     waybill = models.IntegerField()
     delivery_date = models.DateField(auto_now=False)
+    tracked_date = models.DateTimeField(null=True)
 
     objects = ReleaseOrderManager()
 
@@ -39,9 +40,9 @@ class ReleaseOrder(TimeStampedModel):
         delivery_id = self.delivery()
         return getattr(Runnable.objects.get(pk=delivery_id), 'track', None) if delivery_id else None
 
-    def tracked_date(self):
-        delivery_id = self.delivery()
-        return DistributionPlan.objects.get(pk=delivery_id).tracked_date if delivery_id  else None
+    # def tracked_date(self):
+    #     delivery_id = self.delivery()
+    #     return DistributionPlan.objects.get(pk=delivery_id).tracked_date if delivery_id  else None
 
     def last_shipment_date(self):
         delivery_id = self.delivery()

@@ -2,12 +2,12 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
+import unicodedata
 
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.api.standard_pagination import StandardResultsSetPagination
 
 from eums.models import ReleaseOrder
-
 
 class ReleaseOrderSerializer(serializers.ModelSerializer):
     programme = serializers.CharField(read_only=True, source='sales_order.programme.name')
@@ -30,15 +30,24 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
     }
 
     def list(self, request, *args, **kwargs):
+
         if request.GET.get('paginate', None) != 'true':
             self.paginator.page_size = 0
 
         queryset = self.filter_queryset(self.__get_release_orders(request))
-        page = self.paginate_queryset(queryset)
+        if request.GET.get('field') :
+            sort_field = unicodedata.normalize('NFKD',request.GET.get('field')).encode('ascii','ignore')
+            map = {'trackedDate': 'tracked_date',
+                   'deliveryDate': 'delivery_date',
+                   'orderNumber': 'waybill'}
 
+            sort_field = '-' + map[sort_field] if request.GET.get('order') == 'desc' else map[sort_field]
+            queryset = queryset.order_by(sort_field)
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            release = self.get_paginated_response(serializer.data)
+            return release
 
         return Response(self.get_serializer(queryset, many=True).data)
 
@@ -62,6 +71,10 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
         if delivery_is_null == 'false':
             return self.queryset.filter(delivery__isnull=False)
         return self.queryset._clone()
+
+
+    def sort_by(self, queryset, request):
+        return queryset.order_by('delivery_date')
 
 releaseOrderRouter = DefaultRouter()
 releaseOrderRouter.register(r'release-order', ReleaseOrderViewSet)

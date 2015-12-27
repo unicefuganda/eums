@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'ReportService', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SortBy', 'Loader', 'ReportService', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, ReportService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
+    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, SortByService, ReportService, IPService, LoaderService, UserService,
+                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast, $sorter) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
