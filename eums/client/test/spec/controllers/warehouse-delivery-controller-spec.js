@@ -1,4 +1,4 @@
-describe('Warehouse Delivery Controller', function () {
+xdescribe('Warehouse Delivery Controller', function () {
     var scope, mockReleaseOrderService, location, deferredReleaseOrders, deferredSystemSettings, mockExportDeliveryService, mockToast, mockLoader,
         deferredExportResult, timeout, mockSystemSettingsService;
 
@@ -15,6 +15,7 @@ describe('Warehouse Delivery Controller', function () {
 
     beforeEach(function () {
         module('WarehouseDelivery');
+
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
@@ -197,6 +198,7 @@ describe('Warehouse Delivery Controller', function () {
         });
 
         it('should filter deliveries when toDate is not given with additional query', function () {
+
             scope.initialize();
             scope.$apply();
             scope.query = 'wakiso programme';
