@@ -10,6 +10,8 @@ fi
 
 sudo build/deployment/pack_deployment.sh $today
 
+echo ${DEPLOY_USER_PASSWORD}
+
 echo "Copying deployment directory to server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" scp -o StrictHostKeyChecking=no deploy_latest.tar.gz ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 
