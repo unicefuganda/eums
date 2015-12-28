@@ -11,14 +11,14 @@ describe('Contacts', function () {
         contactsPage.visit();
     });
 
-    f   it('Existing contacts should be shown on the contacts page', function () {
+    it('Existing contacts should be shown on the contacts page', function () {
         expect(contactsPage.contactCount).toEqual(3);
         expect(contactsPage.contactFirstNames).toContain('John');
         expect(contactsPage.contactLastNames).toContain('Doe');
         expect(contactsPage.contactPhoneNumbers).toContain('+256771234567');
     });
 
-    fit('Searching for contacts should show only relevant results', function () {
+    it('Searching for contacts should show only relevant results', function () {
         contactsPage.searchForThisContact('Non-existent Contact');
         expect(contactsPage.contactCount).toEqual(0);
 
@@ -35,7 +35,7 @@ describe('Contacts', function () {
         contactsPage.visit();
     });
 
-    fit('IP\'s contacts should be shown on the contacts page', function () {
+    it('IP\'s contacts should be shown on the contacts page', function () {
         expect(contactsPage.contactCount).toEqual(2);
         expect(contactsPage.contactFirstNames).toContain('John');
         expect(contactsPage.contactLastNames).toContain('Doe');
