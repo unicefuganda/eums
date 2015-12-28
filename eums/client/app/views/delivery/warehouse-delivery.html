@@ -16,7 +16,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-xs-3 pull-right">
+        <div class="col-xs-4 pull-right">
             <div class="col-md-6 pad-small">
                 <span class="input-group" eums-date-picker>
                     <input type="text"
@@ -28,7 +28,7 @@
                            show-button-bar="false"
                            ng-required="true"
                            ng-disabled="false"
-                           placeholder="From date"
+                           placeholder="From Shipment Date"
                            required="required"
                            value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
@@ -48,7 +48,7 @@
                            show-button-bar="false"
                            ng-required="true"
                            ng-disabled="false"
-                           placeholder="To date"
+                           placeholder="To Shipment Date"
                            required="required"
                            value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
