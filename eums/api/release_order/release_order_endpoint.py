@@ -1,13 +1,13 @@
+from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 import unicodedata
-
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.api.standard_pagination import StandardResultsSetPagination
-
 from eums.models import ReleaseOrder
+
 
 class ReleaseOrderSerializer(serializers.ModelSerializer):
     programme = serializers.CharField(read_only=True, source='sales_order.programme.name')
@@ -35,15 +35,19 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
             self.paginator.page_size = 0
 
         queryset = self.filter_queryset(self.__get_release_orders(request))
-        if request.GET.get('field') :
-            sort_field = unicodedata.normalize('NFKD',request.GET.get('field')).encode('ascii','ignore')
+
+        if request.GET.get('field'):
+            sort_field = str(request.GET.get('field'))
             map = {'trackedDate': 'tracked_date',
                    'deliveryDate': 'delivery_date',
                    'orderNumber': 'waybill'}
+            map_field = map[sort_field]
+            sort_field = '-' + map_field if request.GET.get('order') == 'desc' else map_field
+            null_date_setting = '-null_date' if sort_field.__contains__('-') else 'null_date'
+            queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
 
-            sort_field = '-' + map[sort_field] if request.GET.get('order') == 'desc' else map[sort_field]
-            queryset = queryset.order_by(sort_field)
         page = self.paginate_queryset(queryset)
+
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             release = self.get_paginated_response(serializer.data)
@@ -72,9 +76,9 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
             return self.queryset.filter(delivery__isnull=False)
         return self.queryset._clone()
 
-
     def sort_by(self, queryset, request):
         return queryset.order_by('delivery_date')
+
 
 releaseOrderRouter = DefaultRouter()
 releaseOrderRouter.register(r'release-order', ReleaseOrderViewSet)
