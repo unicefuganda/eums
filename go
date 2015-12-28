@@ -192,7 +192,7 @@ function runserver {
 }
 
 function seed {
-  python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py
+  python manage.py loaddata eums/fixtures/sample_data.json
 }
 
 function setupmap {
