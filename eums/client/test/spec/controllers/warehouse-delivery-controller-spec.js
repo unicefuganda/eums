@@ -1,6 +1,6 @@
-xdescribe('Warehouse Delivery Controller', function () {
-    var scope, mockReleaseOrderService, location, deferredReleaseOrders, deferredSystemSettings, mockExportDeliveryService, mockToast, mockLoader,
-        deferredExportResult, timeout, mockSystemSettingsService;
+describe('Warehouse Delivery Controller', function () {
+    var scope, mockReleaseOrderService, location, deferredReleaseOrders, deferredSystemSettings, deferredSortResult, deferredSortArrowResult, mockExportDeliveryService, mockToast, mockLoader,
+        deferredExportResult, timeout, mockSystemSettingsService, mockSortService, mockSortArrowService;
 
     var releaseOrders = {
         'count': 2,
@@ -20,15 +20,21 @@ xdescribe('Warehouse Delivery Controller', function () {
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings']);
+        mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
+        mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
         inject(function ($controller, $rootScope, $location, $q, $sorter, $timeout) {
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
             deferredSystemSettings = $q.defer();
+            deferredSortResult = $q.defer();
+            deferredSortArrowResult = $q.defer();
             mockSystemSettingsService.getSettings.and.returnValue(deferredSystemSettings.promise);
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
+            mockSortService.sortBy.and.returnValue(deferredSortResult.promise);
+            mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
             scope = $rootScope.$new();
             location = $location;
             timeout = $timeout;
@@ -44,6 +50,8 @@ xdescribe('Warehouse Delivery Controller', function () {
                 ReleaseOrderService: mockReleaseOrderService,
                 ExportDeliveriesService: mockExportDeliveryService,
                 SystemSettingsService: mockSystemSettingsService,
+                SortService: mockSortService,
+                SortArrowService: mockSortArrowService,
                 $timeout: timeout
             });
         });
@@ -98,7 +106,7 @@ xdescribe('Warehouse Delivery Controller', function () {
 
     describe('on filter by date range', function () {
         it('should not filter when fromDate and toDate is empty', function () {
-            scope.initialize();
+            scope.initialize('fsdf');
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
@@ -112,7 +120,12 @@ xdescribe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate : 'true',
+                from : '2014-07-07',
+                field : 'trackedDate',
+                order : 'desc'
+            });
         });
 
         it('should still filter when fromDate is empty', function () {
@@ -124,7 +137,12 @@ xdescribe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', to: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate : 'true',
+                to : '2014-07-07',
+                field : 'trackedDate',
+                order : 'desc'
+            });
         });
 
         it('should filter deliveries when date range is given', function () {
@@ -140,7 +158,9 @@ xdescribe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
                 paginate: 'true',
                 from: '2014-05-07',
-                to: '2014-07-07'
+                to: '2014-07-07',
+                field: 'trackedDate',
+                order: 'desc'
             });
         });
 
@@ -157,7 +177,9 @@ xdescribe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
                 paginate: 'true',
                 from: '2015-08-30',
-                to: '2015-09-10'
+                to: '2015-09-10',
+                field: 'trackedDate',
+                order: 'desc'
             });
         });
 
@@ -176,7 +198,9 @@ xdescribe('Warehouse Delivery Controller', function () {
                 paginate: 'true',
                 from: '2014-05-07',
                 to: '2014-07-07',
-                query: 'wakiso programme'
+                query: 'wakiso programme',
+                field: 'trackedDate',
+                order: 'desc'
             })
         });
 
@@ -192,8 +216,10 @@ xdescribe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
                 paginate: 'true',
+                to: '2014-07-07',
                 query: 'wakiso programme',
-                to: '2014-07-07'
+                field: 'trackedDate',
+                order: 'desc'
             })
         });
 
@@ -210,8 +236,10 @@ xdescribe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
                 paginate: 'true',
+                from: '2014-07-07',
                 query: 'wakiso programme',
-                from: '2014-07-07'
+                field: 'trackedDate',
+                order: 'desc'
             });
 
         });

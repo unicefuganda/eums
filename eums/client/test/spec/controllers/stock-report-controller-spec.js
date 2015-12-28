@@ -65,7 +65,6 @@ describe('StockReportController', function () {
 
     ipUser = {"username": "wakiso", "first_name": "", "last_name": "", "email": "ip@ip.com", "consignee_id": 5};
 
-
     beforeEach(function () {
         module('StockReport');
 

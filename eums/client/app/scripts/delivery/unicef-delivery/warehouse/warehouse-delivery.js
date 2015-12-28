@@ -74,15 +74,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             }
         };
 
-        $scope.changeField = function(sortTerm) {
-            var map = [{'trackedDate': 'tracked_date'},
-                       {'deliveryDate': 'delivery_date'},
-                       {'orderNumber': 'waybill'}];
-
-            sortTerm.field = map[sortTerm.field]
-        };
-
-
         $scope.selectReleaseOrder = function (selectedReleaseOrderId) {
             $location.path('/warehouse-delivery/new/' + selectedReleaseOrderId);
         };
