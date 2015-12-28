@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
-
+from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
 
 from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPlanSerializer
@@ -40,6 +40,19 @@ class PurchaseOrderViewSet(ModelViewSet):
             self.paginator.page_size = 0
 
         queryset = self.filter_queryset(self.__get_direct_delivery())
+
+        if request.GET.get('field'):
+            map = {'orderNumber': 'order_number',
+                   'date': 'date',
+                   'trackedDate': 'tracked_date',
+                   'lastShipmentDate': 'last_shipment_date',
+                   'poType': 'po_type',
+                   'programmeName': 'programme_name'}
+            map_field = map[request.GET.get('field')]
+            sort_field = '-' + map_field if request.GET.get('order') == 'desc' else map_field
+            null_date_setting = '-null_date' if sort_field.__contains__('-') else 'null_date'
+            queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
+
         page = self.paginate_queryset(queryset)
 
         if page is not None:

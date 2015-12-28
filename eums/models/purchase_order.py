@@ -34,6 +34,7 @@ class PurchaseOrder(TimeStampedModel):
     is_single_ip = models.NullBooleanField(null=True)
     po_type = models.CharField(max_length=255, null=True)
     last_shipment_date = models.DateField(null=True)
+    tracked_date = models.DateTimeField(null=True)
 
     objects = PurchaseOrderManager()
 
@@ -66,13 +67,6 @@ class PurchaseOrder(TimeStampedModel):
         if self.is_fully_delivered() and not (False in track_list):
             return PurchaseOrder.FULLY_TRACKED
         return PurchaseOrder.PARTIALLY_TRACKED
-
-    def tracked_date(self):
-        track_list = [delivery[0] for delivery in self.deliveries(is_root=True).values_list('tracked_date')]
-        while None in track_list:
-            track_list.remove(None)
-        track_list.sort()
-        return track_list[0] if (len(track_list)) else ''
 
     class Meta:
         app_label = 'eums'

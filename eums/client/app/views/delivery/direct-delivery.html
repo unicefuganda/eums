@@ -81,21 +81,22 @@
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
-                <th sort-by="orderNumber">{{ documentColumnTitle }}
+                <th><a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
+                            ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
-                <th sort-by="date">
-                    {{ dateColumnTitle }}
+                <th><a ng-click="sortBy('date')">{{ dateColumnTitle }} <i
+                            ng-class="sortArrowClass('date');"></i></a>
                 </th>
-                <th sort-by="trackedDate" sort-init="desc">
-                    {{ trackedDateColumnTitle }}
+                <th><a ng-click="sortBy('trackedDate')">{{ trackedDateColumnTitle }} <i
+                            ng-class="sortArrowClass('trackedDate');"></i></a>
                 </th>
-                <th sort-by="lastShipmentDate">
-                    {{ lastShipmentDateColumnTitle }}
+                <th><a ng-click="sortBy('lastShipmentDate')">{{ lastShipmentDateColumnTitle }} <i
+                            ng-class="sortArrowClass('lastShipmentDate');"></i></a>
                 </th>
-                <th sort-by="poType">{{ poTypeColumnTitle }}
+                <th><a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i
+                            ng-class="sortArrowClass('poType');"></i></a>
                 </th>
-                <th sort-by="programmeName">
-                    {{ outcomeColumnTitle }}
+                <th>{{ outcomeColumnTitle }}
                 </th>
                 <th class="col-xs-4 aligned-left" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
@@ -178,8 +179,11 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="7">
-                    <si-table-pagination limit="10" indices="5"/>
+                <td class="pagination-row" colspan="7">
+                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
+                    </pagination>
                 </td>
             </tr>
             </tfoot>

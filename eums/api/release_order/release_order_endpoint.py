@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-import unicodedata
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import ReleaseOrder

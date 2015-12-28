@@ -27,19 +27,23 @@ class DistributionPlan(Runnable):
         purchase_order = eums.models.PurchaseOrder.objects.filter(
                 purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
         shipment_date = self.delivery_date
+        tracked_date = self.tracked_date
 
         if purchase_order and purchase_order.last_shipment_date and (
                     (purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
             purchase_order.last_shipment_date = shipment_date
             purchase_order.save()
-        if self.tracked_date:
-            item_id = DistributionPlanNode.objects.filter(distribution_plan_id=self.id).values_list('item_id')
-            if item_id:
-                release_order_id = ReleaseOrderItem.objects.filter(orderitem_ptr_id=item_id).values_list('release_order_id')
-                if release_order_id:
-                    release_order = eums.models.ReleaseOrder.objects.get(id=release_order_id)
-                    release_order.tracked_date = self.tracked_date
-                    release_order.save()
+        if purchase_order:
+            purchase_order.tracked_date = tracked_date
+            purchase_order.save()
+
+        item_id = DistributionPlanNode.objects.filter(distribution_plan_id=self.id).values_list('item_id')
+        if item_id:
+            release_order_id = ReleaseOrderItem.objects.filter(orderitem_ptr_id=item_id).values_list('release_order_id')
+            if release_order_id:
+                release_order = eums.models.ReleaseOrder.objects.get(id=release_order_id)
+                release_order.tracked_date = tracked_date
+                release_order.save()
 
     def has_existing_run(self):
         return Run.objects.filter(runnable=self).exists()

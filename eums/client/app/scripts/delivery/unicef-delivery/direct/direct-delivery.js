@@ -4,10 +4,11 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, SortByService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast, $timeout) {
+    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, SortByService, SortArrowService, SortService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast, $timeout) {
 
         var rootPath = '/direct-delivery/new/';
 
+        var SUPPORTED_FIELD = ['orderNumber', 'date', 'trackedDate', 'lastShipmentDate', 'poType', 'programmeName'];
         $scope.searchFields = ['orderNumber', 'lastShipmentDate'];
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -22,11 +23,15 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.lastShipmentDateColumnTitle = 'Last Shipment Date';
         $scope.poTypeColumnTitle = 'PO Type';
         $scope.outcomeColumnTitle = 'Outcome';
+        $scope.sortTerm = {field: 'trackedDate', order: 'desc'};
 
         function loadPurchaseOrders(options) {
             LoaderService.showLoader();
+            options = angular.extend({'paginate': 'true'}, options, $scope.sortTerm);
             PurchaseOrderService.forDirectDelivery(undefined, options).then(function (response) {
-                $scope.purchaseOrders = response;
+                $scope.purchaseOrders = response.results;
+                $scope.count = response.count;
+                $scope.pageSize = response.pageSize;
                 LoaderService.hideLoader();
             }).catch(function () {
                 ngToast.create({content: 'Failed to load purchase orders', class: 'danger'});
@@ -35,6 +40,23 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
         $scope.initialize = function (urlArgs) {
             loadPurchaseOrders(urlArgs);
+        };
+
+        $scope.goToPage = function (page) {
+            loadPurchaseOrders(angular.extend({'page': page}, changedFilters()));
+        };
+
+        $scope.sortArrowClass = function (criteria) {
+            return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
+        };
+
+        $scope.sortBy = function (sortField) {
+            if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
+                $scope.goToPage(1);
+                $scope.currentPage = 1;
+                loadPurchaseOrders();
+            }
         };
 
         $scope.$watch('[fromDate,toDate,query]', function (newValue, oldValue) {
