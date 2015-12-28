@@ -6,45 +6,44 @@
 
     <h4 class="page-header">
         <div class="row">
-            <div class="col-lg-2">Users List</div>
-            <div class="col-lg-1 col-lg-offset-9">
-                <a href="{% url 'create_user_page' %}" class="btn btn-primary" id="add-new-user">
+            <div class="col-md-2">Users List</div>
+            <div class="col-md-10">
+                <a href="{% url 'create_user_page' %}" class="btn btn-primary pull-right" id="add-new-user">
                     <span class="cyan"><i class="glyphicon glyphicon-plus-sign"></i> Add user</span></a>
             </div>
         </div>
-
     </h4>
 
-        <table class="table table-hover table-condensed table-striped table-bordered">
-            <thead>
+    <table class="table table-hover table-condensed table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Implementing Partner</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
             <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Implementing Partner</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.groups.all | display_list }}</td>
+                <td>{{ user.user_profile.consignee| default_if_none:"&nbsp" }}</td>
+                <td>
+                    {% if user.is_active %}
+                        Active
+                    {% else %}
+                        Inactive
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-default"> <span
+                        class="glyphicon glyphicon-pencil"></span> Edit</a></td>
             </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.groups.all | display_list }}</td>
-                    <td>{{ user.user_profile.consignee| default_if_none:"&nbsp" }}</td>
-                    <td>
-                        {% if user.is_active %}
-                            Active
-                        {% else %}
-                            Inactive
-                        {% endif %}
-                    </td>
-                    <td><a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-default"> <span
-                            class="glyphicon glyphicon-pencil"></span> Edit</a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% endfor %}
+        </tbody>
+    </table>
     {% paginate %}
 {% endblock %}
