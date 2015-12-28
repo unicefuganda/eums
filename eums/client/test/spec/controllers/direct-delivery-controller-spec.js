@@ -2,9 +2,10 @@ describe('DirectDeliveryController', function () {
 
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
-    var mockContactService, mockProgrammeService, mockPurchaseOrderService, mockLoaderService;
+    var mockContactService, mockProgrammeService, mockPurchaseOrderService,
+        mockLoaderService, mockSortByService, mockSortArrowService;
     var deferred, deferredPlan, deferredPurchaseOrder, mockExportDeliveryService, mockToast,
-        deferredExportResult, timeout;
+        deferredSortResult, deferredSortArrowResult, deferredExportResult, timeout;
 
     var programmeOne = {
         id: 1, name: 'Test Programme'
@@ -27,6 +28,8 @@ describe('DirectDeliveryController', function () {
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
+        mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
+        mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig, $timeout) {
@@ -34,12 +37,16 @@ describe('DirectDeliveryController', function () {
             deferredPlan = $q.defer();
             deferredPurchaseOrder = $q.defer();
             deferredExportResult = $q.defer();
+            deferredSortResult = $q.defer();
+            deferredSortArrowResult = $q.defer();
             mockContactService.create.and.returnValue(deferred.promise);
             mockProgrammeService.get.and.returnValue(deferred.promise);
             mockProgrammeService.all.and.returnValue(deferred.promise);
             mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrder.promise);
             mockPurchaseOrderService.forDirectDelivery.and.returnValue(deferredPurchaseOrder.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
+            mockSortService.sortBy.and.returnValue(deferredSortResult.promise);
+            mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
 
             timeout = $timeout;
 
@@ -60,7 +67,9 @@ describe('DirectDeliveryController', function () {
                     LoaderService: mockLoaderService,
                     ExportDeliveriesService: mockExportDeliveryService,
                     ngToast: mockToast,
-                    $timeout: timeout
+                    $timeout: timeout,
+                    SortService: mockSortService,
+                    SortArrowService: mockSortArrowService,
                 });
         });
     });
