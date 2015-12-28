@@ -4,8 +4,8 @@
         </div>
         <ng-toast></ng-toast>
         <div class="row-padding">
-            <button id="add-consignee" ng-show="hasPermissionTo('eums.add_consignee')" class="btn btn-primary"
-                ng-click="addConsignee()">
+            <button id="add-consignee" ng-show="hasPermission('eums.add_consignee')" class="btn btn-primary"
+                    ng-click="addConsignee()">
             Add Consignee
         </button>
         </div>
@@ -38,7 +38,7 @@
                     <th><a>Location</a></th>
                     <th class="centered"><a>Vision ID</a></th>
                     <th><a>General Remarks</a></th>
-                    <th ng-show="hasPermissionTo('eums.change_consignee')"></th>
+                    <th ng-show="hasPermission('eums.change_consignee')"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -74,14 +74,14 @@
                                 <input class="table-input form-control" ng-model="consignee.remarks">
                             </span>
                     </td>
-                    <td ng-show="hasPermissionTo('eums.change_consignee')">
+                    <td ng-show="hasPermission('eums.change_consignee')">
                             <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
-                                <button ng-show="hasPermissionTo('eums.change_consignee')"
+                                <button ng-show="hasPermission('eums.change_consignee')"
                                         class="btn btn-sm btn-default blue-border-button editBtn"
                                         ng-click="edit(consignee)">
                                     Edit
                                 </button>
-                                <button ng-show="hasPermissionTo('eums.delete_consignee')"
+                                <button ng-show="hasPermission('eums.delete_consignee')"
                                         class="btn btn-sm btn-default red-border-button deleteBtn"
                                         ng-click="showDeleteDialog(consignee)"
                                         ng-class="{'invisible': consignee.importedFromVision}">

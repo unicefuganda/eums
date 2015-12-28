@@ -25,5 +25,4 @@ describe('Contacts', function () {
         contactsPage.searchForThisContact('John');
         expect(contactsPage.contactCount).toEqual(1);
     });
-
 });

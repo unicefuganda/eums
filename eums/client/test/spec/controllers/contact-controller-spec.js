@@ -50,7 +50,7 @@ describe('ContactController', function () {
 
         mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermissionTo', 'getCurrentUser'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser'])
 
         inject(function ($rootScope, $controller, $compile, $q, $sorter) {
             scope = $rootScope.$new();
@@ -68,7 +68,7 @@ describe('ContactController', function () {
             mockContactService.update.and.returnValue(deferred.promise);
             mockContactService.del.and.returnValue(deferred.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
-            mockUserService.hasPermissionTo.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
 
             spyOn(angular, 'element').and.returnValue(mockElement);

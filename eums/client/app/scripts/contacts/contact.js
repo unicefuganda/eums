@@ -9,7 +9,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         $scope.currentUser = {};
 
         function loadContacts() {
-            UserService.hasPermissionTo('auth.can_view_contacts').then(function (isPermissionGranted) {
+            UserService.hasPermission('auth.can_view_contacts').then(function (isPermissionGranted) {
                 if (isPermissionGranted) {
                     ContactService.all().then(function (resultContacts) {
                         $scope.contacts = resultContacts.sort();

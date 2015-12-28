@@ -154,32 +154,32 @@ describe('Consignees Controller', function () {
 
         it('should return back true when first permission in list exists for user', function () {
             scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermissionTo('permission_one')).toBeTruthy();
+            expect(scope.hasPermission('permission_one')).toBeTruthy();
         });
 
         it('should return back true when second permission in list exists for user', function () {
             scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermissionTo('permission_two')).toBeTruthy();
+            expect(scope.hasPermission('permission_two')).toBeTruthy();
         });
 
         it('should return back false when permissions do not exist for user', function () {
             scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermissionTo('permission_three')).toBeFalsy();
+            expect(scope.hasPermission('permission_three')).toBeFalsy();
         });
 
         it('should return back false when scope permissions is empty', function () {
             scope.userPermissions = [];
-            expect(scope.hasPermissionTo('some_permission')).toBeFalsy();
+            expect(scope.hasPermission('some_permission')).toBeFalsy();
         });
 
         it('should return back false when scope permissions is undefined', function () {
             scope.userPermissions = undefined;
-            expect(scope.hasPermissionTo('some_permission')).toBeFalsy();
+            expect(scope.hasPermission('some_permission')).toBeFalsy();
         });
 
         it('should return back false when permission to check is undefined', function () {
             scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermissionTo(undefined)).toBeFalsy();
+            expect(scope.hasPermission(undefined)).toBeFalsy();
         });
     });
 

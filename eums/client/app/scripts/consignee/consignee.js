@@ -110,12 +110,11 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             createToast('Failed to fetch consignees', 'danger');
         }).finally(hideLoader);
 
-        $scope.hasPermissionTo = function (permissionToCheck) {
+        $scope.hasPermission = function (permissionToCheck) {
             if (permissionToCheck && $scope.userPermissions) {
                 return ($scope.userPermissions.indexOf(permissionToCheck) > -1);
-            } else {
-                return false;
             }
+            return false;
         };
 
         $scope.addConsignee = function () {
