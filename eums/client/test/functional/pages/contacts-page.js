@@ -1,33 +1,70 @@
-var ContactsPage = function () {};
+var ContactsPage = function () {
+};
 
 ContactsPage.prototype = Object.create({}, {
-    url: { get: function () { return '/#/contacts'; }},
-    visit: { value: function () {
-        browser.get(this.url);
-    }},
+    url: {
+        get: function () {
+            return '/#/contacts';
+        }
+    },
+    visit: {
+        value: function () {
+            browser.get(this.url);
+        }
+    },
 
-    contactFirstNames: { get: function () { return element.all(by.repeater('contact in contacts').column('contact.firstName')).getText(); }},
-    contactLastNames: { get: function () { return element.all(by.repeater('contact in contacts').column('contact.lastName')).getText(); }},
-    contactPhoneNumbers: { get: function () { return element.all(by.repeater('contact in contacts').column('contact.phone')).getText(); }},
+    contactFirstNames: {
+        get: function () {
+            return element.all(by.repeater('contact in contacts').column('contact.firstName')).getText();
+        }
+    },
+    contactLastNames: {
+        get: function () {
+            return element.all(by.repeater('contact in contacts').column('contact.lastName')).getText();
+        }
+    },
+    contactPhoneNumbers: {
+        get: function () {
+            return element.all(by.repeater('contact in contacts').column('contact.phone')).getText();
+        }
+    },
 
-    contactCount: { get: function () { return element.all(by.repeater('contact in contacts')).count(); }},
+    contactCount: {
+        get: function () {
+            return element.all(by.repeater('contact in contacts')).count();
+        }
+    },
 
-    searchBar: { get: function () { return element(by.id('filter')); }},
-    searchForThisContact: { value: function (searchTerm) {
-        this.searchBar.clear().sendKeys(searchTerm);
-    }},
+    searchBar: {
+        get: function () {
+            return element(by.id('filter'));
+        }
+    },
+    searchForThisContact: {
+        value: function (searchTerm) {
+            this.searchBar.clear().sendKeys(searchTerm);
+        }
+    },
 
-    clickAddContact: { value: function() {
-        element(by.css('#input-contact button')).click();
-        waitForContactModalCondition(visibilityFunction);
-    }},
+    clickAddContact: {
+        value: function () {
+            element(by.css('#input-contact button')).click();
+            waitForContactModalCondition(visibilityFunction);
+        }
+    },
 
-    closeContactModal: {value: function () {
-        element(by.css('#add-contact-modal button.close')).click();
-        waitForContactModalCondition(invisibilityFunction);
-    }},
+    closeContactModal: {
+        value: function () {
+            element(by.css('#add-contact-modal button.close')).click();
+            waitForContactModalCondition(invisibilityFunction);
+        }
+    },
 
-    contactModal: {get: function () { return element(by.css('#add-contact-modal .modal-header')); }}
+    contactModal: {
+        get: function () {
+            return element(by.css('#add-contact-modal .modal-header'));
+        }
+    }
 });
 
 module.exports = new ContactsPage;

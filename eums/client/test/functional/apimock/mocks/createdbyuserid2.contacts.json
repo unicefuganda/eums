@@ -12,12 +12,5 @@
     "lastName":"Sam",
     "phone":"+256771234568",
     "createdByUserId": 2
-  },
-  {
-    "_id":"559281d40c42914aad3d6008",
-    "firstName":"Ming",
-    "lastName":"Xiao",
-    "phone":"+256771234568",
-    "createdByUserId": 1
   }
 ]

@@ -11,7 +11,8 @@
     "api/contacts": {
       "mockFile": "contacts.json",
       "latency": 20,
-      "verbs": ["get"]
+      "verbs": ["get"],
+      "switch": "createdbyuserid"
     },
     "api/contacts/559281d40c42914aad3d6006": {
       "mockFile": "contact.json",

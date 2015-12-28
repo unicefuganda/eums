@@ -23,7 +23,7 @@ angular.module('User', ['eums.config']).factory('UserService', function ($http, 
         },
         hasPermission: function (permissionToCheck) {
             return this.retrieveUserPermissions().then(function (permissions) {
-                return permissions.contains(permissionToCheck);
+                return _.contains(permissions, permissionToCheck);
             });
         },
         retrieveUserPermissions: function () {

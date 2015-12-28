@@ -292,8 +292,6 @@ module.exports = function (grunt) {
                 configFile: 'test/functional/apimock/apimock.json'
             }
         }
-
-
     });
 
     grunt.loadNpmTasks('grunt-contrib-less');
