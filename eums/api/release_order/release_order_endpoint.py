@@ -37,11 +37,10 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
         queryset = self.filter_queryset(self.__get_release_orders(request))
 
         if request.GET.get('field'):
-            sort_field = str(request.GET.get('field'))
             map = {'trackedDate': 'tracked_date',
                    'deliveryDate': 'delivery_date',
                    'orderNumber': 'waybill'}
-            map_field = map[sort_field]
+            map_field = map[request.GET.get('field')]
             sort_field = '-' + map_field if request.GET.get('order') == 'desc' else map_field
             null_date_setting = '-null_date' if sort_field.__contains__('-') else 'null_date'
             queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
@@ -50,8 +49,7 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
 
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            release = self.get_paginated_response(serializer.data)
-            return release
+            return self.get_paginated_response(serializer.data)
 
         return Response(self.get_serializer(queryset, many=True).data)
 
