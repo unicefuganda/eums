@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/ngtoast/dist/ngToast.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/angular-busy/dist/angular-busy.min.css">
-    <link rel="stylesheet"
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/tree-grid-directive/src/treeGrid.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/chosen/chosen.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/angular-chosen-localytics/chosen-spinner.css">
@@ -16,11 +15,11 @@
     <link rel="icon" href="{{ STATIC_URL }}app/media/favicon.ico">
 </head>
 
-<body>
+<body ng-app="eums">
 {% load generic_tags %}
 {% include "base/header.html" %}
 
-<div ng-view="" class="container-content full-page ng-scope">
+<div class="container-content full-page">
     <div class="container-fluid">
         <div class="content">
             {% if messages %}
@@ -42,7 +41,11 @@
 
 <script src="{{ STATIC_URL }}app/media/lodash.js"></script>
 <script src="{{ STATIC_URL }}bower_components/jquery/dist/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/sugar/release/sugar.min.js"></script>
 <script src="{{ STATIC_URL }}bower_components/angular/angular.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/angular-gs-capitalize/build/angular-gs-capitalize.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/angular-gs-to-camel-case/build/angular-gs-to-camel-case.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/angular-gs-to-snake-case/build/angular-gs-to-snake-case.min.js"></script>
 <script src="{{ STATIC_URL }}bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="{{ STATIC_URL }}bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="{{ STATIC_URL }}bower_components/angular-route/angular-route.min.js"></script>
@@ -62,6 +65,10 @@
 <script src="{{ STATIC_URL }}bower_components/es5-shim/es5-shim.min.js"></script>
 <script src="{{ STATIC_URL }}bower_components/es5-shim/es5-sham.min.js"></script>
 <script src="{{ STATIC_URL }}bower_components/angular-file-upload/angular-file-upload.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/intl-tel-input/build/js/intlTelInput.min.js"></script>
+<script src="{{ STATIC_URL }}app/vendor/scripts/ngPercentDisplay.js"></script>
+<script src="{{ STATIC_URL }}bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.min.js"></script>
 <script src="{{ STATIC_URL }}dist/app.min.js"></script>
 {% block javascripts %}
 {% endblock %}
