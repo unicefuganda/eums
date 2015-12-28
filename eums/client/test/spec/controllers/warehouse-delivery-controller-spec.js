@@ -106,7 +106,7 @@ describe('Warehouse Delivery Controller', function () {
 
     describe('on filter by date range', function () {
         it('should not filter when fromDate and toDate is empty', function () {
-            scope.initialize('fsdf');
+            scope.initialize();
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
