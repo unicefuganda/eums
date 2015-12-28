@@ -57,7 +57,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         };
 
         $scope.goToPage = function (page) {
-
+            $scope.currentPage = page;
             loadReleaseOrder(angular.extend({'page': page}, changedFilters()));
         };
 
@@ -69,7 +69,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
-                $scope.currentPage = 1;
                 loadReleaseOrder()
             }
         };

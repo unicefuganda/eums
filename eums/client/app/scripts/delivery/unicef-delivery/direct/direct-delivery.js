@@ -43,6 +43,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         };
 
         $scope.goToPage = function (page) {
+            $scope.currentPage = page;
             loadPurchaseOrders(angular.extend({'page': page}, changedFilters()));
         };
 
@@ -54,7 +55,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
-                $scope.currentPage = 1;
                 loadPurchaseOrders();
             }
         };
