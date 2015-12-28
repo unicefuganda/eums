@@ -41,7 +41,7 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
                    'orderNumber': 'waybill'}
             map_field = map[request.GET.get('field')]
             sort_field = '-' + map_field if request.GET.get('order') == 'desc' else map_field
-            null_date_setting = '-null_date' if sort_field.__contains__('-') else 'null_date'
+            null_date_setting = '-null_date' if ('-' in sort_field) else 'null_date'
             queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
 
         page = self.paginate_queryset(queryset)
