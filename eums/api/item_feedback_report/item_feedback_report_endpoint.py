@@ -92,7 +92,9 @@ def _get_delivery_date(delivery_answers):
 def build_answers_for_nodes(nodes, response):
     for node in nodes:
         node_responses = node.responses()
+        node_plan_responses = node.distribution_plan.responses() if node.distribution_plan else {}
         answer_list = _build_answer_list(node_responses)
+        plan_answer_list = _build_answer_list(node_plan_responses)
         delivery_node = {
             'item_description': node.item.item.description,
             'programme': {'id': node.programme.id, 'name': node.programme.name},
@@ -101,6 +103,7 @@ def build_answers_for_nodes(nodes, response):
             'order_number': node.item.number(),
             'quantity_shipped': node.quantity_in(),
             'value': node.total_value,
+            'plan_answers': plan_answer_list,
             'answers': answer_list,
             'location': node.location,
             'tree_position': node.tree_position}

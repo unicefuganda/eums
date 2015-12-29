@@ -160,7 +160,7 @@
                         <span ng-if="itemReport.answers.productReceived == 'No' || itemReport.answers.itemReceived == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
                     <td><span
-                            class="padded-multi-line-5">{{ formatDate(itemReport.answers.dateOfReceipt)}}</span>
+                            class="padded-multi-line-5">{{ formatDate(itemReport.answers.dateOfReceipt) || formatDate(itemReport.plan_answers.dateOfReceipt)}}</span>
                     </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
                     <td>
