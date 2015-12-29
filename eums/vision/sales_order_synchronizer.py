@@ -77,6 +77,10 @@ class SalesOrderSynchronizer(OrderSynchronizer):
     @staticmethod
     def _convert_wbs_code_format(wbs_code):
         wbs_code_without_suffix = ''
+
+        if not wbs_code:
+            return wbs_code_without_suffix
+
         if len(wbs_code) == 17:
             wbs_code_without_suffix = wbs_code[0:-6]
 
