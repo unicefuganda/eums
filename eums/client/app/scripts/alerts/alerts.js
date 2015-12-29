@@ -22,7 +22,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         function loadInitialAlerts() {
             LoaderService.showLoader();
-            var urlArgs = {type: $scope.type, paginate: 'true', page: 1};
+            var urlArgs = {type: $scope.type, paginate: 'true', page: $scope.currentPage ? $scope.currentPage: 1};
             AlertsService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
                 LoaderService.hideLoader();
@@ -59,6 +59,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.setResolve = function () {
             var remarksModalId = 'resolve-confirm-modal';
             LoaderService.showModal(remarksModalId);
+            $scope.currentPage = 1;
         };
 
         $scope.remark = function (index) {
