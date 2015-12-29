@@ -23,6 +23,7 @@ RUN apt-get purge -y python.*
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
+ENV LANGUAGE en_US
 
 #The properties below are not used as parameters to facilitate docker caching and faster builds
 #They have been left here more as doc so be sure to update them if you change the version
@@ -164,7 +165,9 @@ RUN /bin/bash -c "source ~/.virtualenvs/eums/bin/activate && cd /opt/app/eums &&
 COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
 COPY ./eums/eums/client/bower.json /opt/app/eums/eums/client/bower.json
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
-COPY ./eums/eums/client /opt/app/eums/eums/client
+
+COPY ./contacts/package.json /opt/app/contacts/package.json
+RUN cd /opt/app/contacts/ && npm install
 
 COPY ./eums /opt/app/eums
 COPY ./contacts /opt/app/contacts
