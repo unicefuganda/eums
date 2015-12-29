@@ -21,29 +21,24 @@
             <span class="well-sm"></span>
 
             <div class="table-wrapper">
-                <table class="table table-bordered table-striped table-hover table-condensed">
+                <table class="table table-bordered table-striped table-hover table-condensed" si-table>
                     <thead ng-init="initialize()">
                     <tr>
                         <th>
-                            <a ng-click="sortBy('firstName')"> First Name <i
-                                    ng-class="sortArrowClass('firstName')"></i></a>
+                            <a sort-by="firstName" sort-init="asc">First Name</a>
                         </th>
                         <th>
-                            <a ng-click="sortBy('lastName')">Last Name
-                                <i ng-class="sortArrowClass('lastName');"></i>
-                            </a>
+                            <a sort-by="lastName">First Name</a>
                         </th>
                         <th>
-                            <a ng-click="sortBy('phone')">Phone
-                                <i ng-class="sortArrowClass('phone')"></i>
-                            </a>
+                            <a sort-by="phone">Phone</a>
                         </th>
                         <th>
                         </th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="contact in contacts | contactsFilter: query | orderBy: sort.criteria:!sort.descending  track by contact._id">
+                    <tr si-sortable="single" ng-repeat="contact in contacts | contactsFilter: query">
                         <td class="text-left">{{ contact.firstName }}</td>
                         <td class="text-left">{{ contact.lastName }}</td>
                         <td class="text-left">{{ contact.phone }}</td>
