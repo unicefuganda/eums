@@ -44,7 +44,7 @@ class VisionDataSynchronizer:
     def _load_records(self):
         try:
             response = requests.get(self.url, headers={'Content-Type': 'application/json'},
-                                    auth=(r'.\biservice', settings.VISION_PASSWORD),
+                                    auth=(settings.VISION_USER, settings.VISION_PASSWORD),
                                     verify=False)
         except Exception:
             raise VisionException(message='Load data failed')
