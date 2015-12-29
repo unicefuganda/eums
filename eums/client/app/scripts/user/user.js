@@ -22,9 +22,9 @@ angular.module('User', ['eums.config', 'NavigationTabs'])
                     return false;
                 });
             },
-            hasPermissionTo: function (permissionToCheck) {
+            hasPermission: function (permissionToCheck) {
                 return this.retrieveUserPermissions().then(function (permissions) {
-                    return (permissions.indexOf(permissionToCheck) > -1);
+                    return _.contains(permissions, permissionToCheck);
                 });
             },
             retrieveUserPermissions: function () {
