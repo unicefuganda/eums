@@ -140,7 +140,19 @@ RUN sed -i '/^ES_GROUP=el/ s/^#*/true\nES_GROUP=root\n#/' /etc/init.d/elasticsea
 RUN sudo update-rc.d elasticsearch defaults 95 10
 
 RUN service elasticsearch start
+##############################################################################
+## Install dependenices
+##############################################################################
+COPY ./eums/requirements.txt /opt/app/eums/requirements.txt
+RUN virtualenv ~/.virtualenvs/eums
+RUN /bin/bash -c "source ~/.virtualenvs/eums/bin/activate && cd /opt/app/eums && pip install -r requirements.txt"
 
+COPY ./contacts/package.json /opt/app/contacts/package.json
+RUN cd /opt/app/contacts/ && npm install
+
+COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
+COPY ./eums/eums/client/bower.json /opt/app/eums/eums/client/bower.json
+RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
 ##############################################################################
 # Install UWSGI
 ##############################################################################
@@ -157,18 +169,6 @@ RUN rm /etc/nginx/sites-enabled/default
 ##############################################################################
 ## Add the codebase to the image
 ##############################################################################
-# Add the code and dependencies
-COPY ./eums/requirements.txt /opt/app/eums/requirements.txt
-RUN virtualenv ~/.virtualenvs/eums
-RUN /bin/bash -c "source ~/.virtualenvs/eums/bin/activate && cd /opt/app/eums && pip install -r requirements.txt"
-
-COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
-COPY ./eums/eums/client/bower.json /opt/app/eums/eums/client/bower.json
-RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
-
-COPY ./contacts/package.json /opt/app/contacts/package.json
-RUN cd /opt/app/contacts/ && npm install
-
 COPY ./eums /opt/app/eums
 COPY ./contacts /opt/app/contacts
 COPY ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
