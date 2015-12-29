@@ -11,7 +11,7 @@
 {% block pre_form_content %}
 {% endblock %}
 
-<form action="{{ action }}" method="post" accept-charset="utf-8" id="{{ id }}" class="form-horizontal {{ class }}" ng-controller="CreateUserController">
+<form action="." method="post" accept-charset="utf-8" id="{{ id }}" class="form-horizontal {{ class }}" ng-controller="CreateUserController">
   {% csrf_token %}
 
   {% block display_form_fields %}{% endblock %}

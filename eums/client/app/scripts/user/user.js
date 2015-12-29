@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('User', ['eums.config'])
+angular.module('User', ['eums.config', 'NavigationTabs'])
     .factory('UserService', function ($http, $q, EumsConfig) {
         var currentUser;
         return {
@@ -38,30 +38,16 @@ angular.module('User', ['eums.config'])
 
         groupRolesBootstrap();
 
-        function hideElements(elements) {
-            for (var index = 0; index < elements.length; ++index) {
-                $(elements[index]).hide();
-            }
+        function hideElement(element) {
+            $(element).hide();
         }
 
-        function showElements(elements) {
-            for (var index = 0; index < elements.length; ++index) {
-                $(elements[index]).show();
-            }
+        function showElement(element) {
+            $(element).show();
         }
 
-        function resetElementValue(elements) {
-            for (var index = 0; index < elements.length; ++index) {
-                $(elements[index]).val('');
-            }
-        }
-
-        function addRequiredValidationRule(elements) {
-            for (var index = 0; index < elements.length; ++index) {
-                if ($(elements[index]).length <= 0)
-                    continue;
-                $(elements[index]).rules("add", {required: true});
-            }
+        function resetElementValue(element) {
+            $(element).val('');
         }
 
         function disableFields(selector) {
@@ -73,19 +59,20 @@ angular.module('User', ['eums.config'])
         }
 
         function groupRolesBootstrap() {
-            var $consignee_element = $('#create-user-form #id_consignee');
+            var $consignee = $('#id_consignee'),
+                $consignee_parent = $consignee.parent().parent();
 
-            hideElements([$consignee_element.parent().parent()]);
+            hideElement($consignee_parent);
 
             $('select.select-roles').on('change', function () {
                 var $selected_role = $.trim($(this).find('option:selected').text());
                 if ($selected_role.indexOf("Implementing Partner") != -1) {
-                    showElements([$consignee_element.parent().parent()]);
+                    showElement($consignee_parent);
                     enableFields('#id_consignee');
                 } else {
-                    disableFields('#create-user-form #id_consignee');
-                    hideElements([$consignee_element.parent().parent()]);
-                    resetElementValue([$consignee_element]);
+                    hideElement($consignee_parent);
+                    disableFields('#id_consignee');
+                    resetElementValue($consignee);
                 }
             });
         }
