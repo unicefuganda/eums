@@ -69,7 +69,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             if (_.include(SUPPORTED_FIELD, sortField)) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
-                loadReleaseOrder()
             }
         };
 

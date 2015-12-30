@@ -55,7 +55,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             if (_.include(SUPPORTED_FIELD, sortField)) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
-                loadPurchaseOrders();
             }
         };
 
