@@ -141,6 +141,18 @@ RUN sudo update-rc.d elasticsearch defaults 95 10
 
 RUN service elasticsearch start
 ##############################################################################
+# Install UWSGI
+##############################################################################
+RUN apt-get install -y python-dev
+RUN pip install uwsgi
+COPY ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
+
+# copy nginx config files
+COPY ./eums/scripts/packaging/nginx.config /etc/nginx/nginx.conf
+COPY ./eums/scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums
+RUN ln -sf /etc/nginx/sites-available/eums /etc/nginx/sites-enabled/eums
+RUN rm /etc/nginx/sites-enabled/default
+##############################################################################
 ## Install dependenices
 ##############################################################################
 COPY ./eums/requirements.txt /opt/app/eums/requirements.txt
@@ -153,19 +165,6 @@ RUN cd /opt/app/contacts/ && npm install
 COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
 COPY ./eums/eums/client/bower.json /opt/app/eums/eums/client/bower.json
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
-##############################################################################
-# Install UWSGI
-##############################################################################
-RUN apt-get install -y python-dev
-RUN pip install uwsgi
-COPY ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
-
-# copy nginx config files
-COPY ./eums/scripts/packaging/nginx.config /etc/nginx/nginx.conf
-COPY ./eums/scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums
-RUN ln -sf /etc/nginx/sites-available/eums /etc/nginx/sites-enabled/eums
-RUN rm /etc/nginx/sites-enabled/default
-
 ##############################################################################
 ## Add the codebase to the image
 ##############################################################################
