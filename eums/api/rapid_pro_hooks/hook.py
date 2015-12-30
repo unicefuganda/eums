@@ -16,6 +16,7 @@ logger = get_task_logger(__name__)
 @csrf_exempt
 def hook(request):
     # TODO: Remove the try catch. This suppresses the errors and was added due to rapidPro flakiness
+    logger.info("access webhook")
     try:
         params = request.POST
         logger.info("params %s:" % params)
@@ -30,7 +31,8 @@ def hook(request):
             _raise_alert(params, run.runnable)
         return HttpResponse(status=200)
 
-    except StandardError:
+    except StandardError, e:
+        logger.error('Exception occurs while access web hook, detail information: %s' % e.message)
         return HttpResponse(status=200)
 
 

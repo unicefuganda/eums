@@ -1,5 +1,6 @@
 import ast
 
+from celery.utils.log import get_task_logger
 from eums.services import flow_scheduler
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -10,9 +11,11 @@ from eums.models import Run, Flow, Runnable, RunQueue
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
 
+logger = get_task_logger(__name__)
 
 @api_view(['POST', ])
 def save_answers(request):
+    logger.info("start to save answers")
     request = request.data
     runnable = Runnable.objects.get(pk=(request['runnable']))
     cancel_existing_runs_for(runnable)
@@ -24,6 +27,7 @@ def save_answers(request):
     rapid_pro_formatted_answers = _process_answers(request['answers'], flow, run)
     _create_alert(run.runnable, rapid_pro_formatted_answers)
     runnable.confirm()
+    logger.info("ready to schedule a flow")
     _dequeue_next_run_for(runnable)
 
     flow_scheduler.distribution_alert_raise()
@@ -32,6 +36,7 @@ def save_answers(request):
 
 def _dequeue_next_run_for(runnable):
     next_run = RunQueue.dequeue(contact_person_id=runnable.contact_person_id)
+    logger.info("next run is %s" % next_run)
     if next_run:
         schedule_run_for(next_run.runnable)
         next_run.update_status(RunQueue.STATUS.started)
