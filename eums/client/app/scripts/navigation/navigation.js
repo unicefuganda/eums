@@ -22,5 +22,4 @@ angular.module('NavigationTabs', ['Alerts'])
         AlertsService.get('count').then(function (alertsCount) {
             $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
         });
-
     });
