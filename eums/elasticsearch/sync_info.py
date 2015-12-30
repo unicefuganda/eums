@@ -1,5 +1,4 @@
 from django.db import models
-from djorm_pgarray.fields import IntegerArrayField
 from model_utils import Choices
 from model_utils.fields import StatusField
 
