@@ -20,8 +20,6 @@ sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountRece
 @api_view(['GET', ])
 def item_feedback_report(request):
     response = filter_item_feedback_report(request)
-
-    response = sorted(response, key=lambda d: d.get('dateOfReceipt'), reverse=True)
     response = sort.sort_by(request, response)
     paginated_results = Paginator(response, PAGE_SIZE)
     page_number = get_page_number(request)
@@ -108,6 +106,10 @@ def build_answers_for_nodes(nodes, response):
             'location': node.location,
             'tree_position': node.tree_position}
         delivery_node.update(answer_list)
+        delivery_node['dateOfReceipt'] = answer_list.get('dateOfReceipt') \
+            if answer_list.get('dateOfReceipt') \
+            else plan_answer_list.get('dateOfReceipt')
+
         response.append(delivery_node)
 
 
@@ -143,7 +145,7 @@ def _filter_answers_by_id(answers, node_id):
 
 def _filter_track_and_confirmed_auto_track_nodes(request):
     nodes = DistributionPlanNode.objects.filter(
-        Q(track=True) | (Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True)))
+            Q(track=True) | (Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True)))
     kwargs = {}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
     kwargs.update(_filter_fields(params))

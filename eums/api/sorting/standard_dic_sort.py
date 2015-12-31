@@ -3,7 +3,6 @@ ORDER = 'order'
 
 
 class StandardDicSort(object):
-
     def __init__(self, *sort_field):
         self.sort_field = sort_field
         super(StandardDicSort, self).__init__()
