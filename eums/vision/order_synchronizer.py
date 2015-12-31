@@ -60,9 +60,10 @@ class OrderSynchronizer(VisionDataSynchronizer):
     def _save_records(self, records):
         for record in records:
             new_order = self._get_or_create_new_order(record)
-            if new_order:
-                for item in record['items']:
-                    self._update_or_create_new_item(item, new_order)
+            map(lambda item: self._update_or_create_new_item(item, new_order), record['items']) if new_order else None
+            # if new_order:
+            #     for item in record['items']:
+            #         self._update_or_create_new_item(item, new_order)
 
     @staticmethod
     def _get_url(base_url, start_date, end_date):
@@ -70,10 +71,12 @@ class OrderSynchronizer(VisionDataSynchronizer):
 
     @staticmethod
     def _index_in_list(number, order_list):
-        for index, order in enumerate(order_list):
-            if order.get('order_number') == number:
-                return index
-        return -1
+        indexes = [index for index, order in enumerate(order_list) if order.get('order_number') is number]
+        return indexes.pop(0) if len(indexes) > 0 else -1
+        # for index, order in enumerate(order_list):
+        #     if order.get('order_number') == number:
+        #         return index
+        # return -1
 
     @staticmethod
     def _is_new_order(order_index):

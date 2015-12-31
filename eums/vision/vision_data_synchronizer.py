@@ -59,10 +59,8 @@ class VisionDataSynchronizer:
             original_records = self._load_records()
             records = self._convert_records(original_records)
             self._save_records(records)
-        except VisionException, e:
-            raise e
-        except Exception:
-            raise VisionException(message='Sync failed')
+        except Exception, e:
+            raise VisionException(message=e.message or 'Sync failed')
 
     @staticmethod
     def _convert_date_format(date_str):
@@ -75,7 +73,7 @@ class VisionDataSynchronizer:
     @staticmethod
     def _clean_value(value):
         parse_string = lambda x: x.isalpha() and x or x.isdigit() and int(x) \
-            or re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$', x) and float(x) or x
+                                 or re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$', x) and float(x) or x
 
         if type(value) == unicode:
             encoded_value = value.encode('ascii', 'ignore')

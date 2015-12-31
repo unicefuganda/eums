@@ -28,7 +28,7 @@ class SalesOrderSynchronizer(OrderSynchronizer):
         order_number = order['order_number']
         matching_sales_orders = SalesOrder.objects.filter(order_number=order_number)
 
-        if len(matching_sales_orders):
+        if len(matching_sales_orders) > 0:
             return matching_sales_orders[0]
 
         wbs_code = self._convert_wbs_code_format(order['programme_wbs_element'])
@@ -50,7 +50,7 @@ class SalesOrderSynchronizer(OrderSynchronizer):
                                                        item=item,
                                                        item_number=sales_order_item['item_number'])
 
-        if len(matching_items):
+        if len(matching_items) > 0:
             return self._update_order_item(matching_items[0], order_date, quantity, net_value, net_price)
 
         return SalesOrderItem.objects.get_or_create(sales_order=order,
@@ -80,11 +80,10 @@ class SalesOrderSynchronizer(OrderSynchronizer):
 
         if not wbs_code:
             return wbs_code_without_suffix
-
+        
         if len(wbs_code) == 17:
             wbs_code_without_suffix = wbs_code[0:-6]
-
-        if len(wbs_code) == 11:
+        elif len(wbs_code) == 11:
             wbs_code_without_suffix = wbs_code
 
         return re.sub(r'(.{4})(.{2})(.{2})', r'\1/\2/\3/', wbs_code_without_suffix) if wbs_code_without_suffix else ''
