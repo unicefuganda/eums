@@ -13,7 +13,8 @@ class TestSyncSalesOrder(TestCase):
         self.downloaded_sales_orders = [{"SALES_ORDER_NO": u"0020173918",
                                          "DOCUMENT_TYPE": "ZCOM",
                                          "DOCUMENT_DATE": "/Date(1449118800000)/",
-                                         "CREATE_DATE": "/Date(1449378000000)/",
+                                         "CREATE_DATE": "/Date(1449118800000)/",
+                                         "UPDATE_DATE": "/Date(1449378000000)/",
                                          "BUDGET_YEAR": 2015,
                                          "SOLD_TO_PARTY": "Z00601",
                                          "SOLD_TO_PARTY_DESCRIPTION": "UNICEF-AFGHANISTAN-KABUL",
@@ -35,7 +36,8 @@ class TestSyncSalesOrder(TestCase):
                                         {"SALES_ORDER_NO": u"0020173918",
                                          "DOCUMENT_TYPE": "ZCOM",
                                          "DOCUMENT_DATE": "/Date(1449118800000)/",
-                                         "CREATE_DATE": "/Date(1449378000000)/",
+                                         "CREATE_DATE": "/Date(1449118800000)/",
+                                         "UPDATE_DATE": "/Date(1449378000000)/",
                                          "BUDGET_YEAR": 2015, "SOLD_TO_PARTY": "Z00601",
                                          "SOLD_TO_PARTY_DESCRIPTION": "UNICEF-AFGHANISTAN-KABUL",
                                          "SHIP_TO_PARTY": "006",
@@ -57,6 +59,7 @@ class TestSyncSalesOrder(TestCase):
                                          "DOCUMENT_TYPE": "ZCOM",
                                          "DOCUMENT_DATE": "/Date(1450069200000)/",
                                          "CREATE_DATE": "/Date(1450069200000)/",
+                                         "UPDATE_DATE": "/Date(1450069200000)/",
                                          "BUDGET_YEAR": 2015,
                                          "SOLD_TO_PARTY": "Z43801",
                                          "SOLD_TO_PARTY_DESCRIPTION": "UNICEF-UGANDA-KAMPALA",
@@ -75,23 +78,73 @@ class TestSyncSalesOrder(TestCase):
                                          "SO_ITEM_DESC": "Laundry soap, Carton, 25 bars, 800 grams",
                                          "NET_VALUE": 2673}]
 
-        self.converted_sales_orders = [{'items': [{'item_number': 80,
-                                                   'material_code': 'S0141021',
-                                                   'net_value': 51322.65,
-                                                   'date': '/Date(1449118800000)/',
-                                                   'item_description': 'Scale,electronic,mother/child,150kgx100g'},
-                                                  {'item_number': 90,
-                                                   'material_code': 'S0145620',
-                                                   'net_value': 3655.16,
-                                                   'date': '/Date(1449118800000)/',
-                                                   'item_description': 'MUAC,Child 11.5 Red/PAC-50'}],
-                                        'order_number': 20173918, 'programme_wbs_element': '0060A007883001002'},
-                                       {'items': [{'item_number': 10,
-                                                   'material_code': 'SL009100',
-                                                   'net_value': 2673,
-                                                   'date': '/Date(1450069200000)/',
-                                                   'item_description': 'Laundry soap, Carton, 25 bars, 800 grams'}],
-                                        'order_number': 20174363, 'programme_wbs_element': '4380A004105007042'}]
+        self.converted_sales_orders = [{"SALES_ORDER_NO": 20173918,
+                                         "DOCUMENT_TYPE": "ZCOM",
+                                         "DOCUMENT_DATE": datetime.datetime(2015, 12, 3, 8, 0),
+                                         "CREATE_DATE": datetime.datetime(2015, 12, 3, 8, 0),
+                                         "UPDATE_DATE": datetime.datetime(2015, 12, 6, 8, 0),
+                                         "BUDGET_YEAR": 2015,
+                                         "SOLD_TO_PARTY": "Z00601",
+                                         "SOLD_TO_PARTY_DESCRIPTION": "UNICEF-AFGHANISTAN-KABUL",
+                                         "SHIP_TO_PARTY": "006",
+                                         "SHIP_TO_PARTY_DESCRIPTION": "Afghanistan",
+                                         "SO_ITEM_NO": 80,
+                                         "REQUISITION_NO": "0030344383",
+                                         "REQUISITION_ITEM_NO": 80,
+                                         "PURCHASING_GROUP_NAME_SHORT": "NUTRITION",
+                                         "WBS_REFERENCE": "0060/A0/07/883",
+                                         "GRANT_REF": "Unknown",
+                                         "GRANT_EXPIRY_DATE": None,
+                                         "DONOR_NAME": "UNICEF-AFGHANISTAN-KABUL",
+                                         "MATERIAL_CODE": "S0141021",
+                                         "MATERIAL_DESC": "Scale,electronic,mother/child,150kgx100g",
+                                         "SO_ITEM_DESC": "Scale,electronic,mother/child,150kgx100g",
+                                         "NET_VALUE": 51322.65},
+
+                                       {"SALES_ORDER_NO": 20173918,
+                                         "DOCUMENT_TYPE": "ZCOM",
+                                         "DOCUMENT_DATE": datetime.datetime(2015, 12, 3, 8, 0),
+                                         "CREATE_DATE": datetime.datetime(2015, 12, 3, 8, 0),
+                                         "UPDATE_DATE": datetime.datetime(2015, 12, 6, 8, 0),
+                                         "BUDGET_YEAR": 2015, "SOLD_TO_PARTY": "Z00601",
+                                         "SOLD_TO_PARTY_DESCRIPTION": "UNICEF-AFGHANISTAN-KABUL",
+                                         "SHIP_TO_PARTY": "006",
+                                         "SHIP_TO_PARTY_DESCRIPTION": "Afghanistan",
+                                         "SO_ITEM_NO": 90,
+                                         "REQUISITION_NO": "0030344383",
+                                         "REQUISITION_ITEM_NO": 90,
+                                         "PURCHASING_GROUP_NAME_SHORT": "NUTRITION",
+                                         "WBS_REFERENCE": "0060/A0/07/883",
+                                         "GRANT_REF": "Unknown",
+                                         "GRANT_EXPIRY_DATE": None,
+                                         "DONOR_NAME": "UNICEF-AFGHANISTAN-KABUL",
+                                         "MATERIAL_CODE": "S0145620",
+                                         "MATERIAL_DESC": "MUAC,Child 11.5 Red/PAC-50",
+                                         "SO_ITEM_DESC": "MUAC,Child 11.5 Red/PAC-50",
+                                         "NET_VALUE": 3655.16},
+
+                                       {"SALES_ORDER_NO": 20174363,
+                                         "DOCUMENT_TYPE": "ZCOM",
+                                         "DOCUMENT_DATE": datetime.datetime(2015, 12, 14, 8, 0),
+                                         "CREATE_DATE": datetime.datetime(2015, 12, 14, 8, 0),
+                                         "UPDATE_DATE": datetime.datetime(2015, 12, 14, 8, 0),
+                                         "BUDGET_YEAR": 2015,
+                                         "SOLD_TO_PARTY": "Z43801",
+                                         "SOLD_TO_PARTY_DESCRIPTION": "UNICEF-UGANDA-KAMPALA",
+                                         "SHIP_TO_PARTY": "438",
+                                         "SHIP_TO_PARTY_DESCRIPTION": "Uganda",
+                                         "SO_ITEM_NO": 10,
+                                         "REQUISITION_NO": "0030344855",
+                                         "REQUISITION_ITEM_NO": 10,
+                                         "PURCHASING_GROUP_NAME_SHORT": "Kampala, Uganda",
+                                         "WBS_REFERENCE": "4380/A0/04/105",
+                                         "GRANT_REF": "SM150377",
+                                         "GRANT_EXPIRY_DATE": datetime.datetime(2015, 12, 31, 8, 0),
+                                         "DONOR_NAME": "UNICEF-UGANDA-KAMPALA",
+                                         "MATERIAL_CODE": "SL009100",
+                                         "MATERIAL_DESC": "Laundry soap, Carton, 25 bars, 800 grams",
+                                         "SO_ITEM_DESC": "Laundry soap, Carton, 25 bars, 800 grams",
+                                         "NET_VALUE": 2673}]
 
         self.expected_programme_1 = Programme(wbs_element_ex='0060/A0/07/883')
         self.expected_programme_2 = Programme(wbs_element_ex='4380/A0/04/105')
@@ -149,12 +202,10 @@ class TestSyncSalesOrder(TestCase):
 
     def test_should_load_sales_orders(self):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_sales_orders)
-        self.synchronizer._convert_records = MagicMock()
         self.synchronizer._save_records = MagicMock()
         self.synchronizer.sync()
 
         self.synchronizer._load_records.assert_called()
-        self.synchronizer._convert_records.assert_called_with(self.downloaded_sales_orders)
         self.synchronizer._save_records.assert_called()
 
     def test_should_convert_original_sales_orders(self):
