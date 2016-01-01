@@ -88,5 +88,4 @@ describe('Stock Report', function () {
         expect(stockReportPage.stockBalances).toContain('$150.00');
         expect(stockReportPage.stockReceivedValues).toContain('$300.00');
     });
-
 });

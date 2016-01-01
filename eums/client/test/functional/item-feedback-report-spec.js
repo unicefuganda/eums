@@ -21,7 +21,6 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.amountReceived).toContain('7');
         expect(itemFeedbackReport.dateOfReceipt).toContain('29-Sep-2014');
         expect(itemFeedbackReport.productReceived).toContain('YES');
-        expect(itemFeedbackReport.productReceived).toContain('NO');
         expect(itemFeedbackReport.qualityOfProduct).toContain('GOOD');
         expect(itemFeedbackReport.satisfiedWithProduct).toContain('glyphicon glyphicon-size-17 glyphicon-top-5 glyphicon-ok-sign eums-text-color-ok');
         expect(itemFeedbackReport.satisfiedWithProduct).toContain('glyphicon glyphicon-size-17 glyphicon-top-5 glyphicon-remove-sign eums-text-color-no');
@@ -90,7 +89,7 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 
-    it('should sort by value', function() {
+    it('should sort by value', function () {
 
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
