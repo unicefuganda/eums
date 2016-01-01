@@ -115,7 +115,7 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
     },
     dateOfReceipt: {
         get: function () {
-            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.dateOfReceipt')).getText();
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.dateOfReceipt')).getText();
         }
     },
     amountReceived: {
