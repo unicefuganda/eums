@@ -7,8 +7,7 @@ from eums.vision.vision_data_synchronizer import VisionDataSynchronizer
 
 class ConsigneeSynchronizer(VisionDataSynchronizer):
     CONSIGNEE_URL = VISION_URL + 'GetConsigneeList_JSON/'
-    MAPPING_TEMPLATE = {'CONSIGNEE_NAME': 'name',
-                        'CONSIGNEE_CODE': 'customer_id'}
+    REQUIRED_KEYS = ('CONSIGNEE_NAME', 'CONSIGNEE_CODE')
 
     def __init__(self):
         super(ConsigneeSynchronizer, self).__init__(self.CONSIGNEE_URL + str(VISION_COUNTRY_CODE))
@@ -17,18 +16,22 @@ class ConsigneeSynchronizer(VisionDataSynchronizer):
         return [] if data == self.NO_DATA_MESSAGE else data
 
     def _convert_records(self, records):
-        consignees = json.loads(records)
-
-        results = []
-        for consignee in consignees:
-            filtered_consignee = self.filter_relevant_value(self.MAPPING_TEMPLATE, consignee)
-            results.append(filtered_consignee)
-
-        return results
+        return json.loads(records)
 
     def _save_records(self, records):
-        for record in records:
-            consignee, _ = Consignee.objects.get_or_create(customer_id=record['customer_id'])
-            consignee.name = record['name']
+        filtered_records = self._filter_records(records)
+        for record in filtered_records:
+            consignee, _ = Consignee.objects.get_or_create(customer_id=record['CONSIGNEE_CODE'])
+            consignee.name = record['CONSIGNEE_NAME']
             consignee.imported_from_vision = True
             consignee.save()
+
+    @staticmethod
+    def _filter_records(records):
+        def is_valid_record(record):
+            for key in ConsigneeSynchronizer.REQUIRED_KEYS:
+                if not record[key]:
+                    return False
+            return True
+
+        return filter(is_valid_record, records)

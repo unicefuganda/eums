@@ -55,10 +55,6 @@ class TestSyncProgramme(TestCase):
                                          '"ACTIVITY_FOCUS_CODE":"6",' \
                                          '"ACTIVITY_FOCUS_NAME":"6 Management/Operations"}]'}
 
-        self.converted_programme = [{'wbs_element_ex': '4380/A0/04/105',
-                                     'name': 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'},
-                                    {'wbs_element_ex': '4380/A0/05/113',
-                                     'name': '3: CHILD PROTECTION'}]
         self.expected_programme_1 = Programme(wbs_element_ex='4380/A0/04/105',
                                               name='YI105 - PCR 1 KEEP CHILDREN AND MOTHERS')
         self.expected_programme_2 = Programme(wbs_element_ex='4380/A0/05/113',
@@ -78,13 +74,6 @@ class TestSyncProgramme(TestCase):
         self.synchronizer._load_records.assert_called()
         self.synchronizer._convert_records.assert_called()
         self.synchronizer._save_records.assert_called()
-
-    def test_should_convert_programmes(self):
-        self.synchronizer._load_records = MagicMock(return_value=self.downloaded_programme)
-        self.synchronizer._save_records = MagicMock()
-        self.synchronizer.sync()
-
-        self.synchronizer._save_records.assert_called_with(self.converted_programme)
 
     def test_should_save_programmes(self):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_programme)

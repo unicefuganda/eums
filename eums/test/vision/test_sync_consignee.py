@@ -16,10 +16,6 @@ class TestSyncConsignee(TestCase):
                                     '"COUNTRY_NAME":"Uganda",' \
                                     '"CONSIGNEE_CODE":"L438001121",' \
                                     '"CONSIGNEE_NAME":"JACOB LONY ALERO HC III"}]'
-        self.converted_consignee = [{'customer_id': 'L438001120',
-                                     'name': 'PATHFINDER INTERNATIONAL'},
-                                    {'customer_id': 'L438001121',
-                                     'name': 'JACOB LONY ALERO HC III'}]
 
         self.expected_consignee_1 = Consignee(customer_id='L438001120',
                                               name='PATHFINDER INTERNATIONAL',
@@ -42,13 +38,6 @@ class TestSyncConsignee(TestCase):
         self.synchronizer._load_records.assert_called()
         self.synchronizer._convert_records.assert_called()
         self.synchronizer._save_records.assert_called()
-
-    def test_should_convert_consignee(self):
-        self.synchronizer._load_records = MagicMock(return_value=self.downloaded_consignee)
-        self.synchronizer._save_records = MagicMock()
-        self.synchronizer.sync()
-
-        self.synchronizer._save_records.assert_called_with(self.converted_consignee)
 
     def test_should_save_consignee(self):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_consignee)

@@ -45,9 +45,9 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
                                                     quantity=record['PO_ITEM_QTY'],
                                                     value=record['AMOUNT_USD'])
         else:
-            return self._update_order_item(matching_po_items[0],
-                                           record['PO_ITEM_QTY'],
-                                           record['AMOUNT_USD'])
+            return self._update_item(matching_po_items[0],
+                                     record['PO_ITEM_QTY'],
+                                     record['AMOUNT_USD'])
 
     @staticmethod
     def _update_order(order, po_date, po_type):
@@ -57,7 +57,7 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
         return order
 
     @staticmethod
-    def _update_order_item(item, quantity, value):
+    def _update_item(item, quantity, value):
         item.quantity = quantity
         item.value = value
         item.save()

@@ -2,7 +2,7 @@ import datetime
 import json
 from abc import ABCMeta, abstractmethod
 
-
+from eums.vision.vision_data_converter import convert_vision_value
 from eums.vision.vision_data_synchronizer import VisionDataSynchronizer, VisionException
 
 
@@ -27,6 +27,11 @@ class OrderSynchronizer(VisionDataSynchronizer):
     def _get_json(self, data):
         # the data got from web service is a string of string
         return [] if data == self.NO_DATA_MESSAGE else json.loads(data)
+
+    def _convert_records(self, records):
+        def _convert_record(record):
+            return {key: convert_vision_value(key, value) for key, value in record.iteritems()}
+        return map(_convert_record, records)
 
     def _save_records(self, records):
         formatted_records = self._format_records(self._filter_records(records))
