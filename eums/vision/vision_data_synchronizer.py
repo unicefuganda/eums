@@ -42,7 +42,7 @@ class VisionDataSynchronizer:
     def sync(self):
         try:
             original_records = self._load_records()
-            converted_records = map(self._convert_record, original_records)
+            converted_records = self._convert_records(original_records)
             self._save_records(converted_records)
         except Exception, e:
             raise VisionException(message=e.message)
@@ -52,5 +52,7 @@ class VisionDataSynchronizer:
         return []
 
     @staticmethod
-    def _convert_record(record):
-        return {key: convert_vision_value(key, value) for key, value in record.iteritems()}
+    def _convert_records(records):
+        def _convert_record(record):
+            return {key: convert_vision_value(key, value) for key, value in record.iteritems()}
+        return map(_convert_record, records)
