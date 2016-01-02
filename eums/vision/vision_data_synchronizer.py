@@ -43,12 +43,12 @@ class VisionDataSynchronizer:
         return self._get_json(response.json())
 
     def sync(self):
-        try:
+        # try:
             original_records = self._load_records()
             converted_records = self._convert_records(original_records)
             self._save_records(converted_records)
-        except Exception, e:
-            raise VisionException(message=e.message)
+        # except Exception, e:
+        #     raise VisionException(message=e.message)
 
     @staticmethod
     def _get_json(self, data):

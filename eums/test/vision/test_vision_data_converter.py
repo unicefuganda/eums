@@ -14,7 +14,7 @@ class TestVisionDataConverter(TestCase):
 
     def test_should_convert_date_string_to_datetime(self):
         value = '/Date(1449118800000)/'
-        self.assertEqual(convert_vision_value(self.key, value), datetime.datetime(2015, 12, 3, 13, 0))
+        self.assertEqual(convert_vision_value(self.key, value), datetime.datetime(2015, 12, 3, 8, 0))
 
     def test_should_convert_wbs_code(self):
         key = 'WBS_REFERENCE'

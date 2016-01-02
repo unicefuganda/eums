@@ -2,9 +2,12 @@ from decimal import Decimal
 from itertools import groupby
 from operator import itemgetter
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from eums.models import SalesOrder, Programme, Item, SalesOrderItem
 from eums.settings import VISION_URL
 from eums.vision.order_synchronizer import OrderSynchronizer
+from eums.vision.vision_data_synchronizer import VisionException
 
 
 class SalesOrderSynchronizer(OrderSynchronizer):
@@ -17,41 +20,41 @@ class SalesOrderSynchronizer(OrderSynchronizer):
 
     def _get_or_create_order(self, record):
         order_number = record['SALES_ORDER_NO']
-        matching_sales_orders = SalesOrder.objects.filter(order_number=order_number)
-        if matching_sales_orders:
-            return matching_sales_orders[0]
-
-        programme, _ = Programme.objects.get_or_create(wbs_element_ex=record['WBS_REFERENCE'])
-        return SalesOrder.objects.create(order_number=order_number,
-                                         programme=programme,
-                                         date=record['UPDATE_DATE'])
+        try:
+            return SalesOrder.objects.get(order_number=order_number)
+        except ObjectDoesNotExist:
+            programme, _ = Programme.objects.get_or_create(wbs_element_ex=record['WBS_REFERENCE'])
+            return SalesOrder.objects.create(order_number=order_number,
+                                             programme=programme,
+                                             date=record['UPDATE_DATE'])
+        except Exception, e:
+            raise VisionException(message='Get or create sales order error: ' + e.message)
 
     def _update_or_create_item(self, record, order):
-        item, _ = Item.objects.get_or_create(material_code=record['MATERIAL_CODE'],
-                                             description=record['SO_ITEM_DESC'])
-
-        matching_items = SalesOrderItem.objects.filter(sales_order=order,
-                                                       item=item,
-                                                       item_number=record['SO_ITEM_NO'])
-
         order_date = record['UPDATE_DATE']
         # There is no quantity info in the sales order records downloaded from web service
         quantity = 0
         net_value = Decimal(record['NET_VALUE'])
         net_price = net_value / quantity if quantity else 0
-
-        if matching_items:
-            return self._update_item(matching_items[0], order_date, quantity, net_value, net_price)
-
-        return SalesOrderItem.objects.create(sales_order=order,
-                                             item=item,
-                                             item_number=record['SO_ITEM_NO'],
-                                             description=record['SO_ITEM_DESC'],
-                                             quantity=quantity,
-                                             issue_date=order_date,
-                                             delivery_date=order_date,
-                                             net_value=net_value,
-                                             net_price=net_price)
+        item, _ = Item.objects.get_or_create(material_code=record['MATERIAL_CODE'],
+                                             description=record['SO_ITEM_DESC'])
+        try:
+            sales_order_item = SalesOrderItem.objects.get(sales_order=order,
+                                                          item=item,
+                                                          item_number=record['SO_ITEM_NO'])
+            return self._update_item(sales_order_item, order_date, quantity, net_value, net_price)
+        except ObjectDoesNotExist:
+            return SalesOrderItem.objects.create(sales_order=order,
+                                                 item=item,
+                                                 item_number=record['SO_ITEM_NO'],
+                                                 description=record['SO_ITEM_DESC'],
+                                                 quantity=quantity,
+                                                 issue_date=order_date,
+                                                 delivery_date=order_date,
+                                                 net_value=net_value,
+                                                 net_price=net_price)
+        except Exception, e:
+            raise VisionException(message='Update or create sales order item error: ' + e.message)
 
     @staticmethod
     def _update_item(item, order_date, quantity, net_value, net_price):

@@ -150,7 +150,7 @@ class TestSyncSalesOrder(TestCase):
         self.expected_programme_2 = Programme(wbs_element_ex='4380/A0/04/105')
         self.expected_sales_order_1 = SalesOrder(programme=self.expected_programme_1,
                                                  order_number=20173918,
-                                                 date=datetime.date(2015, 12, 3))
+                                                 date=datetime.date(2015, 12, 6))
         self.expected_sales_order_2 = SalesOrder(programme=self.expected_programme_2,
                                                  order_number=20174363,
                                                  date=datetime.date(2015, 12, 14))
@@ -164,15 +164,15 @@ class TestSyncSalesOrder(TestCase):
                                                           item=self.expected_item_1,
                                                           net_price=0,
                                                           net_value=Decimal('51322.6500'),
-                                                          issue_date=datetime.date(2015, 12, 3),
-                                                          delivery_date=datetime.date(2015, 12, 3),
+                                                          issue_date=datetime.date(2015, 12, 6),
+                                                          delivery_date=datetime.date(2015, 12, 6),
                                                           description='Scale,electronic,mother/child,150kgx100g')
         self.expected_sales_order_item_2 = SalesOrderItem(sales_order=self.expected_sales_order_1,
                                                           item=self.expected_item_2,
                                                           net_price=0,
                                                           net_value=Decimal('3655.16'),
-                                                          issue_date=datetime.date(2015, 12, 3),
-                                                          delivery_date=datetime.date(2015, 12, 3),
+                                                          issue_date=datetime.date(2015, 12, 6),
+                                                          delivery_date=datetime.date(2015, 12, 6),
                                                           description='MUAC,Child 11.5 Red/PAC-50')
         self.expected_sales_order_item_3 = SalesOrderItem(sales_order=self.expected_sales_order_2,
                                                           item=self.expected_item_3,
