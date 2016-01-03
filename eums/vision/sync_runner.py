@@ -42,7 +42,7 @@ def _sync_orders(sync_record, start_date='', end_date=''):
             logger.info("%s sync successfully" % key)
         except VisionSyncInfo, e:
             sync_record.set_sync_status_failure(key)
-            logger.error("%s sync failed, Reason:%s" % (key, e.get_error_message()))
+            logger.error("%s sync failed, Reason:%s" % (key, e.message))
 
 
 def _sync_consignee(sync_record):
@@ -52,7 +52,7 @@ def _sync_consignee(sync_record):
         logger.info("Consignee sync successfully")
     except VisionException, e:
         sync_record.set_sync_status_failure('CONSIGNEE')
-        logger.error("Consignee sync failed, Reason:%s" % e.get_error_message())
+        logger.error("Consignee sync failed, Reason:%s" % e.message)
 
 
 def _sync_programme(sync_record):
@@ -62,4 +62,4 @@ def _sync_programme(sync_record):
         logger.info("Programme sync successfully")
     except VisionException, e:
         sync_record.set_sync_status_failure('PROGRAMME')
-        logger.error("Programme sync failed, Reason:%s" % e.get_error_message())
+        logger.error("Programme sync failed, Reason:%s" % e.message)
