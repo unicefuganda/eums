@@ -13,6 +13,15 @@ var FunctionalTestUtils = (function () {
             var screenHasLoaded = EC.invisibilityOf(spinner);
             browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
         },
+        waitForElementToBeVisible: function (elem) {
+            var EC = protractor.ExpectedConditions;
+            if (!elem) {
+                throw new Error("The element cannot be empty");
+            }
+            var spinner = elem ? elem : element(by.css('#loading'));
+            var isElementVisible = EC.visibilityOf(spinner);
+            browser.wait(isElementVisible, 5000, "Timeout exceeded while waiting for element to be visible");
+        },
         wait: function (until) {
             browser.sleep(until);
         },

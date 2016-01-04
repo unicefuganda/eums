@@ -7,7 +7,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
             return '/#/direct-delivery';
         }
     },
-
     visit: {
         value: function () {
             browser.get(this.url);
@@ -20,7 +19,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
             var modalControl = element(by.css('.modal.fade'));
             var modal = EC.visibilityOf(modalControl);
             browser.wait(modal, 5000, "Timeout when modal doesn't load");
-
         }
     },
     waitForModalToExit: {
@@ -29,10 +27,8 @@ DirectDeliveryPage.prototype = Object.create({}, {
             var modalControl = element(by.css('.modal.fade'));
             var modal = EC.invisibilityOf(modalControl);
             browser.wait(modal, 10000, "Timeout when modal doesn't exit");
-
         }
     },
-
     purchaseOrders: {
         get: function () {
             return element.all(by.repeater('purchaseOrder in purchaseOrders').column('purchaseOrder.orderNumber')).getText();
@@ -43,14 +39,12 @@ DirectDeliveryPage.prototype = Object.create({}, {
             return element.all(by.repeater('purchaseOrder in purchaseOrders')).count();
         }
     },
-
     selectPurchaseOrderByNumber: {
         value: function (text) {
             element(by.linkText(text)).click();
             waitForPageToLoad();
         }
     },
-
     selectSingleIP: {
         value: function () {
             element(by.id('btn-single-ip')).click();
@@ -63,13 +57,11 @@ DirectDeliveryPage.prototype = Object.create({}, {
             waitForPageToLoad();
         }
     },
-
     implementingPartner: {
         get: function () {
             return element(by.css('#input-consignee')).getText();
         }
     },
-
     programmeName: {
         get: function () {
             return element(by.className('secondary-header')).getText();
@@ -85,13 +77,11 @@ DirectDeliveryPage.prototype = Object.create({}, {
             return element(by.id('po-total-value')).getText();
         }
     },
-
     firstRowQuantityShipped: {
         get: function () {
             return element.all(by.css('.table-row-input-column .form-control')).get(0);
         }
     },
-
     purchaseOrderItemCount: {
         get: function () {
             return element.all(by.repeater('(index, item) in purchaseOrderItems')).count();
@@ -137,7 +127,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
             return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.value')).getText();
         }
     },
-
     searchBar: {
         get: function () {
             return element(by.id('filter'));
@@ -148,13 +137,11 @@ DirectDeliveryPage.prototype = Object.create({}, {
             this.searchBar.clear().sendKeys(searchTerm);
         }
     },
-
     firstPurchaseOrderAttributes: {
         get: function () {
             return element.all(by.repeater('purchaseOrder in purchaseOrder')).first().element(by.css('span')).getAttribute('class');
         }
     },
-
     selectItem: {
         value: function (item) {
             element(by.css('#select-sales-order')).click();
@@ -162,104 +149,87 @@ DirectDeliveryPage.prototype = Object.create({}, {
             waitForPageToLoad();
         }
     },
-
     addConsignee: {
         value: function () {
             element(by.id('addConsigneeBtn')).click();
         }
     },
-
     setQuantity: {
         value: function (quantity) {
             element.all(by.id('input-quantity')).get(0).clear().sendKeys(quantity);
         }
     },
-
     setDeliveryDate: {
         value: function (date) {
             element.all(by.css('#input-delivery-date p input')).get(0).clear().sendKeys(date);
         }
     },
-
     setDeliveryDateForSingleIP: {
         value: function (date) {
             element.all(by.css('#input-delivery-date span input')).get(0).clear().sendKeys(date);
         }
     },
-
     setConsignee: {
         value: function (input) {
             fillSelect2Chosen('input-consignee', input);
         }
     },
-
     setContact: {
         value: function (input) {
             fillSelect2Chosen('input-contact', input);
         }
     },
-
     setContactForSingleIP: {
         value: function (input) {
             fillSelect2Chosen('input-contact-single-ip', input);
         }
     },
-
     setDistrict: {
         value: function (input) {
             fillSelect2Chosen('input-location', input);
         }
     },
-
     setTimeLimitationOnDistribution: {
         value: function (input) {
             fillInput('#input-time-limitation-on-distribution input', input);
         }
     },
-
     enableTracking: {
         value: function (input) {
             element.all(by.css('#input-track div input')).get(0).click();
         }
     },
-
     setDistrictForSingleIP: {
         value: function (input) {
             fillSelect2Chosen('input-location-single-ip', input);
         }
     },
-
     saveDelivery: {
         value: function () {
             element(by.id('directDeliverySaveBtn')).click();
         }
     },
-
     saveDraftDelivery: {
         value: function () {
             element(by.id('save-draft')).click();
         }
     },
-
     saveAndTrackDelivery: {
         value: function () {
             element(by.id('save-and-track')).click();
         }
     },
-
     toastMessage: {
         get: function () {
             return element(by.repeater('message in messages')).getText();
         }
     },
-
     viewFirstPreviousDelivery: {
         value: function () {
             element.all(by.repeater('(index, delivery) in trackedDeliveries')).get(0).click();
             waitForPageToLoad();
         }
     },
-
     previousDeliveryDates: {
         get: function () {
             return element(by.repeater('(index, delivery) in trackedDeliveries').column('delivery.delivery_date')).getText();
@@ -270,7 +240,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
             return element(by.repeater('(index, delivery) in trackedDeliveries').column('delivery.total_value')).getText();
         }
     },
-
     deliveryModalMaterialNumbers: {
         get: function () {
             return element.all(by.repeater('(index, node) in deliveryInView.distributionplannodeSet').column('node.item.item.materialCode')).getText();
@@ -296,7 +265,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
             return element(by.css('#input-time-limitation-on-distribution input')).getAttribute('value');
         }
     }
-
 });
 
 module.exports = new DirectDeliveryPage;

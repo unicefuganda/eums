@@ -6,13 +6,17 @@ var ftUtils = require('./functional-test-utils.js');
 
 describe('Supply Efficiency Report', function () {
 
+    var setFilterTimeRangeForTest = function () {
+        supplyEfficiencyReportPage.filterByStartDate('01-Jan-2015');
+        supplyEfficiencyReportPage.filterByEndDate('31-Dec-2015');
+    }
+
     beforeEach(function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         supplyEfficiencyReportPage.visit();
         ftUtils.waitForPageToLoad();
-        supplyEfficiencyReportPage.filterByStartDate('01-Jan-2015');
-        supplyEfficiencyReportPage.filterByEndDate('31-Dec-2015');
+        setFilterTimeRangeForTest();
     });
 
     describe('Delivery report Page', function () {
@@ -120,6 +124,7 @@ describe('Supply Efficiency Report', function () {
         beforeEach(function () {
             supplyEfficiencyReportPage.goToItemView();
             ftUtils.waitForPageToLoad();
+            setFilterTimeRangeForTest();
         });
 
         it('should show the item reports header', function () {
@@ -183,6 +188,7 @@ describe('Supply Efficiency Report', function () {
         beforeEach(function () {
             supplyEfficiencyReportPage.goToOutcomeView();
             ftUtils.waitForPageToLoad();
+            setFilterTimeRangeForTest();
         });
 
         it('should show the outcome reports header', function () {
@@ -232,6 +238,7 @@ describe('Supply Efficiency Report', function () {
         beforeEach(function () {
             supplyEfficiencyReportPage.goToPoWayBillView();
             ftUtils.waitForPageToLoad();
+            setFilterTimeRangeForTest();
         });
 
         it('should show the po or waybill reports header', function () {
@@ -283,6 +290,7 @@ describe('Supply Efficiency Report', function () {
         beforeEach(function () {
             supplyEfficiencyReportPage.goToIPView();
             ftUtils.waitForPageToLoad();
+            setFilterTimeRangeForTest();
         });
 
         it('should show the ip reports header', function () {
@@ -342,6 +350,7 @@ describe('Supply Efficiency Report', function () {
         beforeEach(function () {
             supplyEfficiencyReportPage.goToDistrictView();
             ftUtils.waitForPageToLoad();
+            setFilterTimeRangeForTest();
         });
 
         it('should show the district reports header', function () {
@@ -386,7 +395,6 @@ describe('Supply Efficiency Report', function () {
             it('should show no data', function () {
                 expect(supplyEfficiencyReportPage.reportsCount).toEqual(0);
             });
-
         });
     });
 });

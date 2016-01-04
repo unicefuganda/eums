@@ -22,7 +22,7 @@ describe('Delivery Feedback Report', function () {
     });
 
     it('should sort by shipment date', function () {
-        ftUtils.wait(3000);
+        ftUtils.waitForPageToLoad();
 
         report.sortBy('shipment-date', 'desc');
 
