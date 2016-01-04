@@ -1,6 +1,5 @@
 import logging
 
-from eums.celery import app
 from eums.models import ReleaseOrder, DistributionPlan, DistributionPlanNode, Runnable
 
 logger = logging.getLogger(__name__)
@@ -27,7 +26,6 @@ class ReleaseOrderToDeliveryService(object):
                                                 is_auto_track_confirmed=False)
 
 
-@app.task
 def execute_sync_release_order_to_delivery():
     for release_order in ReleaseOrder.objects.all():
         if ReleaseOrderToDeliveryService.is_release_order_not_sync(release_order):

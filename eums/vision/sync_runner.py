@@ -2,6 +2,7 @@ from celery.schedules import crontab
 from celery.task import periodic_task
 from celery.utils.log import get_task_logger
 
+from eums.celery import app
 from eums.models import VisionSyncInfo, SystemSettings
 from eums.services.release_order_to_delivery_service import execute_sync_release_order_to_delivery
 from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
@@ -25,7 +26,7 @@ def sync(start_date='', end_date=''):
     _sync_consignee(sync_record)
     _sync_programme(sync_record)
     _sync_orders(sync_record, start_date, end_date)
-    execute_sync_release_order_to_delivery.apply_async()
+    _auto_track_release_orders.apply_async()
 
 
 def _sync_orders(sync_record, start_date='', end_date=''):
@@ -65,3 +66,8 @@ def _sync_programme(sync_record):
     except VisionException, e:
         sync_record.set_sync_status_failure('PROGRAMME')
         logger.error("Programme sync failed, Reason:%s" % e.message)
+
+
+@app.task
+def _auto_track_release_orders():
+    execute_sync_release_order_to_delivery()
