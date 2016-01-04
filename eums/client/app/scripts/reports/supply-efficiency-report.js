@@ -50,7 +50,6 @@ angular.module('SupplyEfficiencyReport', [
                 return current[fields[0]][fields[1]][fields[2]] + total;
             }, 0);
         }
-
     })
     .factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {
         var BUCKETS = {

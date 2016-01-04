@@ -11,16 +11,18 @@ describe('Supply Efficiency Report', function () {
         loginPage.loginAs('admin', 'admin');
         supplyEfficiencyReportPage.visit();
         ftUtils.waitForPageToLoad();
-
-
+        supplyEfficiencyReportPage.filterByStartDate('01-Jan-2015');
+        supplyEfficiencyReportPage.filterByEndDate('31-Dec-2015');
     });
 
     describe('Delivery report Page', function () {
+
         it('should show the delivery view by default', function () {
             supplyEfficiencyReportPage.contextualHeaderColumns.then(function (columns) {
                 expect(columns[0].getText()).toEqual('DELIVERY');
             });
         });
+
         it('should show reports columns', function () {
             supplyEfficiencyReportPage.standardHeaderColumns.then(function (columns) {
                 expect(columns[0].getText()).toEqual('UNICEF');
@@ -37,6 +39,7 @@ describe('Supply Efficiency Report', function () {
                 expect(columns[2].getText()).toEqual('District');
             });
         });
+
         it('should show standard report subheader columns', function () {
             supplyEfficiencyReportPage.subHeaderStandardColumns.then(function (columns) {
                 expect(columns[0].getText()).toEqual('Value ($)');
@@ -110,7 +113,6 @@ describe('Supply Efficiency Report', function () {
                 expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('-285');
             });
         });
-
     });
 
     describe('Item View', function () {
@@ -133,7 +135,6 @@ describe('Supply Efficiency Report', function () {
             });
         });
 
-
         it('should show a correct count of report data', function () {
             expect(supplyEfficiencyReportPage.reportsCount).toEqual(5);
         });
@@ -155,7 +156,7 @@ describe('Supply Efficiency Report', function () {
 
         describe('On filter by IP', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
                 supplyEfficiencyReportPage.filterBy('ip', 'WAKISO DHO');
             });
 
@@ -175,7 +176,6 @@ describe('Supply Efficiency Report', function () {
 
             });
         });
-
     });
 
     describe('Outcome View', function () {
@@ -197,7 +197,6 @@ describe('Supply Efficiency Report', function () {
             });
         });
 
-
         it('should show a correct count of report data', function () {
             expect(supplyEfficiencyReportPage.reportsCount).toEqual(2);
         });
@@ -213,12 +212,11 @@ describe('Supply Efficiency Report', function () {
             expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
-
         });
 
         describe('On filter by PO/Waybill', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
                 supplyEfficiencyReportPage.input('po-or-waybill', '555');
             });
 
@@ -227,9 +225,7 @@ describe('Supply Efficiency Report', function () {
             });
 
         });
-
     });
-
 
     describe('PO/Waybill View', function () {
 
@@ -249,7 +245,6 @@ describe('Supply Efficiency Report', function () {
                 expect(columns[0].getText()).toContain('Doc. Number');
             });
         });
-
 
         it('should show a correct count of report data', function () {
             expect(supplyEfficiencyReportPage.reportsCount).toEqual(1);
@@ -272,7 +267,7 @@ describe('Supply Efficiency Report', function () {
 
         describe('On filter by District', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
                 supplyEfficiencyReportPage.filterBy('district', 'Adjumani');
             });
 
@@ -281,9 +276,7 @@ describe('Supply Efficiency Report', function () {
             });
 
         });
-
     });
-
 
     describe('IP View', function () {
 
@@ -303,7 +296,6 @@ describe('Supply Efficiency Report', function () {
                 expect(columns[0].getText()).toContain('Name');
             });
         });
-
 
         it('should show a correct count of report data', function () {
             expect(supplyEfficiencyReportPage.reportsCount).toEqual(3);
@@ -325,7 +317,7 @@ describe('Supply Efficiency Report', function () {
 
         describe('On filter by start date', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
                 supplyEfficiencyReportPage.filterByStartDate('10-Jul-2014');
             });
 
@@ -341,10 +333,8 @@ describe('Supply Efficiency Report', function () {
                 expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
-
             });
         });
-
     });
 
     describe('District View', function () {
@@ -389,7 +379,7 @@ describe('Supply Efficiency Report', function () {
 
         describe('On filter by end date', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
                 supplyEfficiencyReportPage.filterByEndDate('10-Jul-2015');
             });
 
@@ -399,5 +389,4 @@ describe('Supply Efficiency Report', function () {
 
         });
     });
-
 });
