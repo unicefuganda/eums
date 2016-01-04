@@ -3,6 +3,7 @@ from celery.task import periodic_task
 from celery.utils.log import get_task_logger
 
 from eums.models import VisionSyncInfo, SystemSettings
+from eums.services.release_order_to_delivery_service import execute_sync_release_order_to_delivery
 from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
 from eums.vision.programme_synchronizer import ProgrammeSynchronizer
 from eums.vision.purchase_order_synchronizer import PurchaseOrderSynchronizer
@@ -24,6 +25,7 @@ def sync(start_date='', end_date=''):
     _sync_consignee(sync_record)
     _sync_programme(sync_record)
     _sync_orders(sync_record, start_date, end_date)
+    execute_sync_release_order_to_delivery.apply_async()
 
 
 def _sync_orders(sync_record, start_date='', end_date=''):
