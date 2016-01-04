@@ -59,14 +59,16 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             };
 
             $scope.saveNotificationMessage = function (isValid) {
+                console.log(isValid);
+                console.log($scope.notificationMessage);
                 if (isValid) {
-                    if ($scope.notificationMessage && $scope.notificationMessage != $scope.currentNotificationMessage) {
+                    if ($scope.notificationMessage != $scope.currentNotificationMessage) {
                         SystemSettingsService.updateSettings({notification_message: $scope.notificationMessage}).then(function (response) {
                             $scope.currentNotificationMessage = $scope.notificationMessage;
                             ngToast.create({content: "Notification message saved successfully", class: 'success'});
                         });
                     } else {
-                        ngToast.create({content: "Notification message is empty or not changed", class: 'danger'});
+                        ngToast.create({content: "Notification message not changed", class: 'danger'});
                     }
                 } else {
                     ngToast.create({content: "Notification message word limit to 300", class: 'danger'});

@@ -4,7 +4,7 @@ from django.db import models
 class SystemSettings(models.Model):
     auto_track = models.BooleanField(default=False)
     sync_start_date = models.DateTimeField(null=True)
-    notification_message = models.TextField(max_length=300, default='')
+    notification_message = models.TextField(max_length=300, blank=True, default='')
 
     class Meta:
         app_label = 'eums'

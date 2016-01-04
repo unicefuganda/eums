@@ -9,12 +9,12 @@
                 </div>
                 <div class="col-md-4">
                     <p>
-                        <form name="settingsForm" novalidate>
+                    <form name="settingsForm" novalidate>
                             <textarea class="form-control" rows="5" id="notification" name="notification"
                                       ng-class="{ 'maxlength-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
-                                      placeholder="Enter notification message (300 word limit)"
+
                                       ng-model="notificationMessage" ng-maxlength="300"></textarea>
-                        </form>
+                    </form>
                     </p>
                     <p ng-show="settingsForm.notification.$error.maxlength" class="text-danger" ng-cloak>
                         Notification message word limit to 300
@@ -82,8 +82,8 @@
                             </span>
                     </span>
                 </div>
-                    <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">
-                        <i class="glyphicon glyphicon-log-out"></i> Start sync</a>
+                <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">
+                    <i class="glyphicon glyphicon-log-out"></i> Start sync</a>
             </div>
         </div>
     </div>
