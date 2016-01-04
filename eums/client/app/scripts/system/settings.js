@@ -59,8 +59,6 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             };
 
             $scope.saveNotificationMessage = function (isValid) {
-                console.log(isValid);
-                console.log($scope.notificationMessage);
                 if (isValid) {
                     if ($scope.notificationMessage != $scope.currentNotificationMessage) {
                         SystemSettingsService.updateSettings({notification_message: $scope.notificationMessage}).then(function (response) {
