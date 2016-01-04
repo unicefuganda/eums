@@ -25,6 +25,10 @@ class OrderSynchronizer(VisionDataSynchronizer):
     def _update_or_create_item(self, record, order):
         pass
 
+    @abstractmethod
+    def _filter_records(self, records):
+        return []
+
     def _get_json(self, data):
         # the data got from web service is a string of string
         return [] if data == self.NO_DATA_MESSAGE else json.loads(data)
@@ -45,10 +49,6 @@ class OrderSynchronizer(VisionDataSynchronizer):
     @staticmethod
     def _get_url(base_url, start_date, end_date):
         return base_url + start_date + '/' + end_date
-
-    @staticmethod
-    def _filter_records(records):
-        return []
 
     @staticmethod
     def _is_all_digit(fields, key, record):

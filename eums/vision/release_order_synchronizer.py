@@ -16,6 +16,16 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
         super(ReleaseOrderSynchronizer, self).__init__(ReleaseOrderSynchronizer.RELEASE_ORDER_URL, start_date, end_date,
                                                        ReleaseOrderSynchronizer.ORDER_INFO)
 
+    def _filter_records(self, records):
+        def is_valid_record(record):
+            digit_fields = ('RELEASE_ORDER_NUMBER', 'SO_NUMBER', 'PO_NUMBER')
+            for key in ReleaseOrderSynchronizer.REQUIRED_KEYS:
+                if not (record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record)):
+                    return False
+            return True
+
+        return filter(is_valid_record, records)
+
     def _get_or_create_order(self, record):
         try:
             return ReleaseOrder.objects.get(order_number=record['RELEASE_ORDER_NUMBER'])
@@ -70,17 +80,3 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
         item.value = value
         item.save()
         return item
-
-    @staticmethod
-    def _filter_records(records):
-        def is_valid_record(record):
-            for key in ReleaseOrderSynchronizer.REQUIRED_KEYS:
-                if not (record[key] and OrderSynchronizer._is_all_digit(('RELEASE_ORDER_NUMBER',
-                                                                         'SO_NUMBER',
-                                                                         'PO_NUMBER'),
-                                                                        key,
-                                                                        record)):
-                    return False
-            return True
-
-        return filter(is_valid_record, records)

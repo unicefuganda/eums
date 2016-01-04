@@ -17,6 +17,18 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
         super(PurchaseOrderSynchronizer, self).__init__(PurchaseOrderSynchronizer.PURCHASE_ORDER_URL, start_date,
                                                         end_date, PurchaseOrderSynchronizer.ORDER_INFO)
 
+    def _filter_records(self, records):
+        def is_valid_record(record):
+            digit_fields = ('SO_NUMBER', 'PO_NUMBER')
+            for key in PurchaseOrderSynchronizer.REQUIRED_KEYS:
+                if not record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record):
+                    return False
+            if not record['PO_TYPE'] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE:
+                return False
+            return True
+
+        return filter(is_valid_record, records)
+
     def _get_or_create_order(self, record):
         try:
             purchase_order = PurchaseOrder.objects.get(order_number=record['PO_NUMBER'])
@@ -66,15 +78,3 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
         item.value = value
         item.save()
         return item
-
-    @staticmethod
-    def _filter_records(records):
-        def is_valid_record(record):
-            for key in PurchaseOrderSynchronizer.REQUIRED_KEYS:
-                if not record[key] and OrderSynchronizer._is_all_digit(('SO_NUMBER', 'PO_NUMBER'), key, record):
-                    return False
-            if not record['PO_TYPE'] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE:
-                return False
-            return True
-
-        return filter(is_valid_record, records)

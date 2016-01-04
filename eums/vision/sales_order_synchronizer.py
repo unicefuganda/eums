@@ -18,6 +18,16 @@ class SalesOrderSynchronizer(OrderSynchronizer):
         super(SalesOrderSynchronizer, self).__init__(SalesOrderSynchronizer.SALES_ORDER_URL, start_date, end_date,
                                                      SalesOrderSynchronizer.ORDER_INFO)
 
+    def _filter_records(self, records):
+        def is_valid_record(record):
+            digit_fields = ('SALES_ORDER_NO',)
+            for key in SalesOrderSynchronizer.REQUIRED_KEYS:
+                if not (record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record)):
+                    return False
+            return True
+
+        return filter(is_valid_record, records)
+
     def _get_or_create_order(self, record):
         order_number = record['SALES_ORDER_NO']
         try:
@@ -65,13 +75,3 @@ class SalesOrderSynchronizer(OrderSynchronizer):
         item.net_price = net_price
         item.save()
         return item
-
-    @staticmethod
-    def _filter_records(records):
-        def is_valid_record(record):
-            for key in SalesOrderSynchronizer.REQUIRED_KEYS:
-                if not (record[key] and OrderSynchronizer._is_all_digit('SALES_ORDER_NO', key, record)):
-                    return False
-            return True
-
-        return filter(is_valid_record, records)
