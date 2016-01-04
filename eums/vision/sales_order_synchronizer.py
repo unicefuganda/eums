@@ -1,6 +1,4 @@
 from decimal import Decimal
-from itertools import groupby
-from operator import itemgetter
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -14,9 +12,11 @@ class SalesOrderSynchronizer(OrderSynchronizer):
     SALES_ORDER_URL = VISION_URL + 'GetSalesOrderInfo_JSON/'
     REQUIRED_KEYS = ('SALES_ORDER_NO', 'MATERIAL_CODE', 'SO_ITEM_DESC',
                      'UPDATE_DATE', 'NET_VALUE', 'WBS_REFERENCE', 'SO_ITEM_NO')
+    ORDER_INFO = ('SALES_ORDER_NO', 'WBS_REFERENCE', 'UPDATE_DATE')
 
     def __init__(self, start_date, end_date=''):
-        super(SalesOrderSynchronizer, self).__init__(SalesOrderSynchronizer.SALES_ORDER_URL, start_date, end_date)
+        super(SalesOrderSynchronizer, self).__init__(SalesOrderSynchronizer.SALES_ORDER_URL, start_date, end_date,
+                                                     SalesOrderSynchronizer.ORDER_INFO)
 
     def _get_or_create_order(self, record):
         order_number = record['SALES_ORDER_NO']
@@ -75,15 +75,3 @@ class SalesOrderSynchronizer(OrderSynchronizer):
             return True
 
         return filter(is_valid_record, records)
-
-    @staticmethod
-    def _format_records(records):
-        def _to_dict(record_order, record_items):
-            return {'SALES_ORDER_NO': record_order[0],
-                    'WBS_REFERENCE': record_order[1],
-                    'UPDATE_DATE': record_order[2],
-                    'ITEMS': list(record_items)}
-
-        return [_to_dict(order, items) for order, items in groupby(records, key=itemgetter('SALES_ORDER_NO',
-                                                                                           'WBS_REFERENCE',
-                                                                                           'UPDATE_DATE'))]

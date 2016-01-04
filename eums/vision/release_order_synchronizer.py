@@ -1,6 +1,3 @@
-from itertools import groupby
-from operator import itemgetter
-
 from django.core.exceptions import ObjectDoesNotExist
 
 from eums.models import ReleaseOrder, Consignee, PurchaseOrderItem, ReleaseOrderItem, Item, SalesOrder, PurchaseOrder
@@ -13,9 +10,11 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
     RELEASE_ORDER_URL = VISION_URL + 'GetReleaseOrderInfo_JSON/'
     REQUIRED_KEYS = ('RELEASE_ORDER_NUMBER', 'RELEASE_ORDER_ITEM', 'SHIPMENT_END_DATE', 'MATERIAL_NUMBER',
                      'DELIVERY_QUANTITY', 'VALUE', 'CONSIGNEE', 'SO_NUMBER', 'PO_NUMBER', 'WAYBILL_NUMBER', 'PO_ITEM')
+    ORDER_INFO = ('RELEASE_ORDER_NUMBER', 'WAYBILL_NUMBER', 'SO_NUMBER', 'PO_NUMBER', 'CONSIGNEE', 'SHIPMENT_END_DATE')
 
     def __init__(self, start_date, end_date=''):
-        super(ReleaseOrderSynchronizer, self).__init__(ReleaseOrderSynchronizer.RELEASE_ORDER_URL, start_date, end_date)
+        super(ReleaseOrderSynchronizer, self).__init__(ReleaseOrderSynchronizer.RELEASE_ORDER_URL, start_date, end_date,
+                                                       ReleaseOrderSynchronizer.ORDER_INFO)
 
     def _get_or_create_order(self, record):
         try:
@@ -85,21 +84,3 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
             return True
 
         return filter(is_valid_record, records)
-
-    @staticmethod
-    def _format_records(records):
-        def _to_dict(record_order, record_items):
-            return {'RELEASE_ORDER_NUMBER': record_order[0],
-                    'WAYBILL_NUMBER': record_order[1],
-                    'SO_NUMBER': record_order[2],
-                    'PO_NUMBER': record_order[3],
-                    'CONSIGNEE': record_order[4],
-                    'SHIPMENT_END_DATE': record_order[5],
-                    'ITEMS': list(record_items)}
-
-        return [_to_dict(order, items) for order, items in groupby(records, key=itemgetter('RELEASE_ORDER_NUMBER',
-                                                                                           'WAYBILL_NUMBER',
-                                                                                           'SO_NUMBER',
-                                                                                           'PO_NUMBER',
-                                                                                           'CONSIGNEE',
-                                                                                           'SHIPMENT_END_DATE'))]

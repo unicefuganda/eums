@@ -2,18 +2,19 @@ import datetime
 import json
 from abc import ABCMeta, abstractmethod
 
-from eums.vision.vision_data_converter import convert_vision_value
+from eums.vision.vision_data_converter import convert_vision_value, format_records
 from eums.vision.vision_data_synchronizer import VisionDataSynchronizer, VisionException
 
 
 class OrderSynchronizer(VisionDataSynchronizer):
     __metaclass__ = ABCMeta
 
-    def __init__(self, base_url, start_date='', end_date=''):
+    def __init__(self, base_url, start_date='', end_date='', order_info=()):
         if not start_date:
             raise VisionException(message="'start' date is required")
 
         end_date = end_date if end_date else datetime.date.today().strftime('%d%m%Y')
+        self.order_info = order_info
         super(OrderSynchronizer, self).__init__(self._get_url(base_url, start_date, end_date))
 
     @abstractmethod
@@ -34,7 +35,7 @@ class OrderSynchronizer(VisionDataSynchronizer):
         return map(_convert_record, records)
 
     def _save_records(self, records):
-        formatted_records = self._format_records(self._filter_records(records))
+        formatted_records = format_records(self._filter_records(records), self.order_info)
         for record in formatted_records:
             order = self._get_or_create_order(record)
             if order:
@@ -47,10 +48,6 @@ class OrderSynchronizer(VisionDataSynchronizer):
 
     @staticmethod
     def _filter_records(records):
-        return []
-
-    @staticmethod
-    def _format_records(records):
         return []
 
     @staticmethod

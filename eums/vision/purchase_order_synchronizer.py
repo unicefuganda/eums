@@ -1,6 +1,3 @@
-from itertools import groupby
-from operator import itemgetter
-
 from django.core.exceptions import ObjectDoesNotExist
 
 from eums.models import PurchaseOrder, SalesOrder, PurchaseOrderItem, Item
@@ -13,11 +10,12 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
     PURCHASE_ORDER_URL = VISION_URL + 'GetPurchaseOrderInfo_JSON/'
     REQUIRED_KEYS = ('PO_NUMBER', 'PO_ITEM', 'PO_TYPE', 'MATERIAL_CODE', 'MATERIAL_DESC', 'AMOUNT_USD',
                      'PO_ITEM_QTY', 'SO_NUMBER', 'PREQ_ITEM', 'UPDATE_DATE')
+    ORDER_INFO = ('PO_NUMBER', 'SO_NUMBER', 'PO_TYPE', 'UPDATE_DATE')
     SUPPORTED_PO_TYPE = ['NB', 'ZLC', 'ZUB', 'ZOC']
 
     def __init__(self, start_date, end_date=''):
         super(PurchaseOrderSynchronizer, self).__init__(PurchaseOrderSynchronizer.PURCHASE_ORDER_URL, start_date,
-                                                        end_date)
+                                                        end_date, PurchaseOrderSynchronizer.ORDER_INFO)
 
     def _get_or_create_order(self, record):
         try:
@@ -80,17 +78,3 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
             return True
 
         return filter(is_valid_record, records)
-
-    @staticmethod
-    def _format_records(records):
-        def _to_dict(record_order, record_items):
-            return {'PO_NUMBER': record_order[0],
-                    'SO_NUMBER': record_order[1],
-                    'PO_TYPE': record_order[2],
-                    'UPDATE_DATE': record_order[3],
-                    'ITEMS': list(record_items)}
-
-        return [_to_dict(order, items) for order, items in groupby(records, key=itemgetter('PO_NUMBER',
-                                                                                           'SO_NUMBER',
-                                                                                           'PO_TYPE',
-                                                                                           'UPDATE_DATE'))]

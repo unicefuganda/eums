@@ -1,5 +1,7 @@
 import datetime
 import re
+from itertools import groupby
+from operator import itemgetter
 
 
 def convert_vision_value(key, value):
@@ -19,3 +21,12 @@ def convert_vision_value(key, value):
         return re.sub(r'(.{4})(.{2})(.{2})', r'\1/\2/\3/', value[0:11])
 
     return value
+
+
+def format_records(records, order_info):
+    def _to_dict(record_order, record_items):
+        result = dict(zip(order_info, record_order))
+        result.update({'ITEMS': list(record_items)})
+        return result
+
+    return [_to_dict(order, items) for order, items in groupby(records, key=itemgetter(*order_info))]
