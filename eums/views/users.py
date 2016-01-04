@@ -8,6 +8,7 @@ from eums.forms.filter import UserFilterForm
 from eums.forms.user_profile import UserProfileForm, EditUserProfileForm
 from eums.models import Consignee
 
+
 class UsersList(PermissionRequiredMixin, ListView):
     permission_required = 'auth.can_view_users'
 

@@ -55,6 +55,8 @@ DATABASES = {
 
 ROOT_URLCONF = 'eums.urls'
 
+CSRF_FAILURE_VIEW = 'eums.views.csrf.csrf_failure'
+
 WSGI_APPLICATION = 'eums.wsgi.application'
 
 LANGUAGE_CODE = 'en-gb'
