@@ -70,7 +70,7 @@ class SalesOrderSynchronizer(OrderSynchronizer):
     def _filter_records(records):
         def is_valid_record(record):
             for key in SalesOrderSynchronizer.REQUIRED_KEYS:
-                if not record[key]:
+                if not (record[key] and OrderSynchronizer._is_all_digit('SALES_ORDER_NO', key, record)):
                     return False
             return True
 

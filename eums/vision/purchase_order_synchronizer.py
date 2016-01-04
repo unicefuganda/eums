@@ -73,9 +73,10 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
     def _filter_records(records):
         def is_valid_record(record):
             for key in PurchaseOrderSynchronizer.REQUIRED_KEYS:
-                if not record[key] \
-                        or key == 'PO_TYPE' and not record[key] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE:
+                if not record[key] and OrderSynchronizer._is_all_digit(('SO_NUMBER', 'PO_NUMBER'), key, record):
                     return False
+            if not record['PO_TYPE'] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE:
+                return False
             return True
 
         return filter(is_valid_record, records)

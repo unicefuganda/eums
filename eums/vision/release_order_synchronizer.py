@@ -76,7 +76,11 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
     def _filter_records(records):
         def is_valid_record(record):
             for key in ReleaseOrderSynchronizer.REQUIRED_KEYS:
-                if not record[key]:
+                if not (record[key] and OrderSynchronizer._is_all_digit(('RELEASE_ORDER_NUMBER',
+                                                                         'SO_NUMBER',
+                                                                         'PO_NUMBER'),
+                                                                        key,
+                                                                        record)):
                     return False
             return True
 

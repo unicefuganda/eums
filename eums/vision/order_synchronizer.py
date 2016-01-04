@@ -53,3 +53,9 @@ class OrderSynchronizer(VisionDataSynchronizer):
     def _format_records(records):
         return []
 
+    @staticmethod
+    def _is_all_digit(fields, key, record):
+        if key in fields and not isinstance(record[key], int):
+            return False
+        return True
+

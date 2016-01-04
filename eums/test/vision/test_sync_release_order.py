@@ -19,8 +19,8 @@ class TestSyncReleaseOrder(TestCase):
                                            "SHIP_TO_PARTY": "L626010384",
                                            "WAREHOUSE_NUMBER": "492",
                                            "CONSIGNEE": "L626010384",
-                                           "DOCUMENT_DATE": "/Date(1447390800000)/",
-                                           "GOODS_ISSUE_DATE": "/Date(1448254800000)/",
+                                           "DOCUMENT_DATE": u"/Date(1447390800000)/",
+                                           "GOODS_ISSUE_DATE": u"/Date(1448254800000)/",
                                            "MATERIAL_NUMBER": "S0141021",
                                            "DELIVERY_QUANTITY": 55,
                                            "VALUE": 15030.86,
@@ -31,10 +31,10 @@ class TestSyncReleaseOrder(TestCase):
                                            "WBS_ELEMENT": "6260\/A0\/05\/401\/005\/001",
                                            "WAYBILL_NUMBER": u"0072124798",
                                            "FORWARDER_NO": None,
-                                           "SHIPMENT_END_DATE": "/Date(1448254800000)/",
+                                           "SHIPMENT_END_DATE": u"/Date(1448254800000)/",
                                            "ACTUAL_SHIPMENT_START_DATE": None,
                                            "SHIPMENT_COMPLETION_DATE": None,
-                                           "RELEASE_ORDER_CREATE_DATE": "/Date(1447390800000)/"}]
+                                           "RELEASE_ORDER_CREATE_DATE": u"/Date(1447390800000)/"}]
         self.converted_release_orders = [{"RELEASE_ORDER_NUMBER": 54155912,
                                           "RELEASE_ORDER_ITEM": 10,
                                           "RELEASE_ORDER_TYPE": "ZLO",

@@ -8,9 +8,9 @@ def convert_vision_value(key, value):
             encoded_value = value.encode('ascii', 'ignore')
             return int(encoded_value)
         except ValueError:
-            return value
+            pass
 
-    if type(value) == str:
+    if isinstance(value, basestring):
         matched_date = re.match(r'/Date\((\d+)\)/', value, re.I)
         if matched_date:
             return datetime.datetime.fromtimestamp(int(matched_date.group(1)) / 1000.0)
