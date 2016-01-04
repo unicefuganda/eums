@@ -95,7 +95,7 @@ describe('Item Feedback Report', function () {
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
 
-        ftUtils.wait(2500);
+        ftUtils.wait(5000);
 
         itemFeedbackReport.sortBy('value', 'desc');
 
