@@ -32,6 +32,10 @@ class VisionDataSynchronizer:
     def _save_records(self, records):
         pass
 
+    @abstractmethod
+    def _get_json(self, data):
+        return []
+
     def _load_records(self):
         response = requests.get(self.url, headers={'Content-Type': 'application/json'},
                                 auth=(settings.VISION_USER, settings.VISION_PASSWORD),
@@ -49,7 +53,3 @@ class VisionDataSynchronizer:
             self._save_records(converted_records)
         except Exception, e:
             raise VisionException(message=e.message)
-
-    @staticmethod
-    def _get_json(self, data):
-        return []
