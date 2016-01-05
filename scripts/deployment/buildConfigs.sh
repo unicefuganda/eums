@@ -21,8 +21,5 @@ sed -i "s/stg.eum.unicefuganda.org/${HOST}/" config/config.json
 cd /opt/app/eums/eums
 sed -i -e "s/os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')/'${RAPIDPRO_API_TOKEN}'/g" settings.py
 sed -i -e "s/os.getenv('EMAIL_PASSWORD', 'invalid_if_no_email')/'${EMAIL_PASSWORD}'/g" settings.py
-
-user=$(echo ${VISION_USER} | sed "s|\\\|\\\\\\\\\\\\|g")
-sed -i -e "s/os.getenv('VISION_USER', 'invalid_vision_user')/r'${user}'/g" settings.py
-password=$(echo ${VISION_PASSWORD} | sed "s|\\\|\\\\\\\\\\\\|g")
-sed -i -e "s/os.getenv('VISION_PASSWORD', 'invalid_vision_password')/r'${password}'/g" settings.py
+sed -i -e "s/os.getenv('VISION_USER', 'invalid_vision_user')/r'${VISION_USER}'/g" settings.py
+sed -i -e "s/os.getenv('VISION_PASSWORD', 'invalid_vision_password')/r'${VISION_PASSWORD}'/g" settings.py
