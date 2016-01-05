@@ -125,7 +125,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 });
 
                 $scope.$watch('distributionPlanNodes', function (newPlanNodes) {
-                    if (isNaN($scope.invalidNodes) && !$scope.distributionPlanNodes.length) {
+                    if (isNaN($scope.invalidNodes) && $scope.distributionPlanNodes.length) {
                         $scope.invalidNodes = true;
                         return;
                     }
@@ -133,10 +133,10 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                     if (newPlanNodes.length) {
                         $scope.quantityLeft = $scope.computeQuantityLeft(newPlanNodes);
                         var hasInvalidNodes = anyInvalidFields(newPlanNodes);
-                        var isAllSavedAndTrackedItems = _.all(newPlanNodes, function (item) {
+                        var areAllItemsSavedAndTracked = _.all(newPlanNodes, function (item) {
                             return item.track && item.trackSubmitted;
                         });
-                        $scope.invalidNodes = hasInvalidNodes || isAllSavedAndTrackedItems;
+                        $scope.invalidNodes = hasInvalidNodes || areAllItemsSavedAndTracked;
                     }
                 }, true);
             }
