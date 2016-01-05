@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Q
 from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, TextAnswer, \
     MultipleChoiceQuestion, NumericAnswer, NumericQuestion, Run
-from eums.models import Runnable, DistributionPlanNode, ReleaseOrderItem
+from eums.models import Runnable, DistributionPlanNode
 from eums.models.answers import Answer
 from eums.models.programme import Programme
 import eums.models
@@ -22,28 +22,29 @@ class DistributionPlan(Runnable):
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
         if self.track:
             self.update_purchase_order()
+            self.update_release_order()
 
     def update_purchase_order(self):
         purchase_order = eums.models.PurchaseOrder.objects.filter(
-                purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
-        shipment_date = self.delivery_date
-        tracked_date = self.tracked_date
+                purchaseorderitem__distributionplannode__distribution_plan_id=self.id).first()
+        if purchase_order is None:
+            return
 
-        if purchase_order and purchase_order.last_shipment_date and (
-                    (purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
-            purchase_order.last_shipment_date = shipment_date
-            purchase_order.save()
-        if purchase_order:
-            purchase_order.tracked_date = tracked_date
-            purchase_order.save()
+        if purchase_order.last_shipment_date is None or self.delivery_date > purchase_order.last_shipment_date:
+            purchase_order.last_shipment_date = self.delivery_date
 
-        item_id = DistributionPlanNode.objects.filter(distribution_plan_id=self.id).values_list('item_id')
-        if item_id:
-            release_order_id = ReleaseOrderItem.objects.filter(orderitem_ptr_id=item_id).values_list('release_order_id')
-            if release_order_id:
-                release_order = eums.models.ReleaseOrder.objects.get(id=release_order_id)
-                release_order.tracked_date = tracked_date
-                release_order.save()
+        purchase_order.tracked_date = self.tracked_date
+        purchase_order.save()
+
+    def update_release_order(self):
+        release_order = eums.models.ReleaseOrder.objects.filter(
+                purchase_order__purchaseorderitem__releaseorderitem__distributionplannode__distribution_plan_id=self.id).first()
+
+        if release_order is None:
+            return
+
+        release_order.tracked_date = self.tracked_date
+        release_order.save()
 
     def has_existing_run(self):
         return Run.objects.filter(runnable=self).exists()

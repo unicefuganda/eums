@@ -12,6 +12,7 @@ class PurchaseOrderManager(models.Manager):
         if from_date:
             no_release_orders = no_release_orders.filter(last_shipment_date__gte=from_date)
         if to_date:
+
             no_release_orders = no_release_orders.filter(last_shipment_date__lte=to_date)
         if search_term:
             no_release_orders = no_release_orders.filter(order_number__icontains=search_term)

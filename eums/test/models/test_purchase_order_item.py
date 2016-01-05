@@ -1,5 +1,4 @@
 from unittest import TestCase
-from eums.models.purchase_order_item import PurchaseOrderItem
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -7,19 +6,18 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as Nod
 
 
 class PurchaseOrderItemTest(TestCase):
-
     def test_should_show_total_quantity_as_balance_when_no_nodes_exist(self):
         purchase_order = PurchaseOrderFactory()
         purchase_order_item = PurchaseOrderItemFactory(
-            purchase_order=purchase_order,
-            quantity=500)
+                purchase_order=purchase_order,
+                quantity=500)
         self.assertEquals(purchase_order_item.available_balance(), 500)
 
     def test_balance_should_decrease_when_tracked_nodes_exist(self):
-        purchase_order_item = PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory()), quantity=500)
+        purchase_order_item = PurchaseOrderItemFactory(quantity=500)
 
         delivery = DeliveryFactory()
-        node_one = NodeFactory(item=purchase_order_item, quantity=200, distribution_plan=delivery)
+        NodeFactory(item=purchase_order_item, quantity=200, distribution_plan=delivery)
         self.assertEquals(purchase_order_item.available_balance(), 500)
 
         delivery.track = True
@@ -31,7 +29,7 @@ class PurchaseOrderItemTest(TestCase):
         self.assertEquals(purchase_order_item.available_balance(), 180)
 
     def test_should_only_include_top_level_nodes_when_calculating_available_balance(self):
-        purchase_order_item = PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory()), quantity=500)
+        purchase_order_item = PurchaseOrderItemFactory(quantity=500)
 
         root_one = NodeFactory(item=purchase_order_item, quantity=200, distribution_plan=DeliveryFactory(track=True))
         self.assertEquals(purchase_order_item.available_balance(), 300)

@@ -1,5 +1,5 @@
 import factory
-from datetime import datetime
+from datetime import date, datetime
 
 from eums.models import PurchaseOrder
 from eums.test.factories.sales_order_factory import SalesOrderFactory
