@@ -68,8 +68,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             }
         });
     })
-    .
-    controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
+    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
         function createToast(message, klass) {
             ngToast.create({content: message, class: klass});
         }

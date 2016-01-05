@@ -14,52 +14,22 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.constant_type_delivery = 'delivery';
         $scope.constant_type_item = 'item';
         $scope.constant_type_distribution = 'distribution';
-
         $scope.remarks = '';
         $scope.type = $scope.constant_type_delivery;
 
-        loadInitialAlerts();
-
-        function loadInitialAlerts() {
-            LoaderService.showLoader();
-            var urlArgs = {type: $scope.type, paginate: 'true', page: $scope.currentPage ? $scope.currentPage: 1};
-            AlertsService.all([], urlArgs).then(function (response) {
-                setScopeDataFromResponse(response);
-                LoaderService.hideLoader();
-            });
-        }
-
-        function createToast(message, klass) {
-            ngToast.create({content: message, class: klass});
-        }
-
         $scope.changeAlertType = function (type) {
             $scope.type = type;
-            loadInitialAlerts();
+            initializeCurrentTypeView();
         };
-
-        function setScopeDataFromResponse(response) {
-            $scope.alerts = response.results;
-            $scope.count = response.count;
-            $scope.pageSize = response.pageSize;
-        }
 
         $scope.goToPage = function (page) {
             LoaderService.showLoader();
-            var urlArgs = {type: $scope.type, paginate: 'true', page: page};
-            AlertsService.all([], urlArgs).then(function (response) {
-                setScopeDataFromResponse(response);
-            }).catch(function () {
-                createToast('Failed to load alerts', 'danger');
-            }).finally(function () {
-                LoaderService.hideLoader()
-            });
+            loadInitialAlerts(angular.extend({page: page}, changedFilters()));
         };
 
         $scope.setResolve = function () {
             var remarksModalId = 'resolve-confirm-modal';
             LoaderService.showModal(remarksModalId);
-            $scope.currentPage = 1;
         };
 
         $scope.remark = function (index) {
@@ -69,15 +39,15 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         $scope.resolveAlert = function (alertId, alertRemarks, alertResolve) {
             AlertsService.update({
-                id: alertId,
-                remarks: alertRemarks ? alertRemarks : '',
-                is_resolved: alertResolve
-            }, 'PATCH')
+                    id: alertId,
+                    remarks: alertRemarks ? alertRemarks : '',
+                    is_resolved: alertResolve
+                }, 'PATCH')
                 .then(function () {
                     AlertsService.get('count').then(function (alertsCount) {
                         $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
                     });
-                    loadInitialAlerts();
+                    initializeCurrentTypeView();
                 })
                 .catch(function () {
                     createToast('Failed to resolve alert', 'danger')
@@ -108,10 +78,47 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                     AlertsService.get('count').then(function (alertsCount) {
                         $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
                     });
-                    loadInitialAlerts();
+                    initializeCurrentTypeView();
                 })
                 .catch(function () {
                     createToast('Failed to retrigger alert', 'danger');
                 })
         };
+
+        initializeCurrentTypeView();
+
+        function initializeCurrentTypeView() {
+            loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
+        }
+
+        function loadInitialAlerts(urlArgs) {
+            $scope.currentPage = urlArgs.page;
+            LoaderService.showLoader();
+            AlertsService.all([], urlArgs).then(function (response) {
+                setScopeDataFromResponse(response);
+            }).catch(function () {
+                createToast('Failed to load alerts', 'danger');
+            }).finally(function () {
+                LoaderService.hideLoader()
+            });
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass});
+        }
+
+        function setScopeDataFromResponse(response) {
+            $scope.alerts = response.results;
+            $scope.count = response.count;
+            $scope.pageSize = response.pageSize;
+        }
+
+        function changedFilters() {
+            var urlArgs = {};
+            urlArgs.paginate = 'true';
+            if ($scope.type) {
+                urlArgs.type = $scope.type;
+            }
+            return urlArgs
+        }
     });
