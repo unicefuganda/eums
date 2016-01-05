@@ -169,8 +169,8 @@
                 </button>
                 <div ng-show="distributionPlanNodes.length" class="pull-right">
                     <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
-                            ng-click="save()"
-                            ng-disabled="invalidNodes">
+                            ng-click="isSaving || save()"
+                            ng-disabled="isSaving || invalidNodes">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save
                     </button>
