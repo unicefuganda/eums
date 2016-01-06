@@ -1,8 +1,9 @@
+import datetime as datetime
 import json
 from django.db.models import Q
 from mock import MagicMock, patch
 from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
-    NumericAnswer, Alert, RunQueue
+    NumericAnswer, Alert, RunQueue, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
@@ -47,11 +48,14 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         TextQuestion.objects.all().delete()
         NumericAnswer.objects.all().delete()
         Flow.objects.all().delete()
+        DistributionPlan.objects.all().delete()
+        RunQueue.objects.all().delete()
+        Run.objects.all().delete()
         Runnable.build_contact = self.build_contact
 
     def test_should_save_answers(self):
         delivery = DeliveryFactory()
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         good_comment = "All is good"
 
         data = {
@@ -81,7 +85,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     @patch('eums.models.DistributionPlan.confirm')
     def test_should_confirm_delivery_when_answers_are_saved(self, mock_confirm):
         delivery = DeliveryFactory()
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         good_comment = "All is good"
 
         data = {
@@ -103,7 +107,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def test_should_format_answers_to_rapidpro_hook_api_and_handle_corresponding_alerts(self, mock_confirm,
                                                                                         mock_alert_handler):
         delivery = DeliveryFactory()
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         good_comment = "All is good"
 
         data = {
@@ -132,7 +136,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     @patch('eums.models.DistributionPlan.confirm')
     def test_should_process_alerts(self, mock_confirm, mock_process):
         delivery = DeliveryFactory()
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         good_comment = "All is good"
 
         data = {
@@ -157,7 +161,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         delivery = DeliveryFactory(consignee=consignee)
         DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
 
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         good_comment = "All is good"
 
         data = {
@@ -200,7 +204,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def test_should_save_delivery_node_answers(self):
         self.setup_flow_with_questions(Flow.Label.WEB)
         node = DeliveryNodeFactory()
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         data = {
             'runnable': node.id, 'answers': [
                 {'question_label': 'deliveryReceived', 'value': 'Yes'},
@@ -218,7 +222,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.setup_flow_with_questions(Flow.Label.WEB)
         node = DeliveryNodeFactory()
 
-        date_of_receipt = '10-10-2014'
+        date_of_receipt = self.__get_current_date()
         data = {
             'runnable': node.id, 'answers': [
                 {'question_label': 'deliveryReceived', 'value': 'Yes'},
@@ -281,3 +285,6 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
                 task = '231x31231231'
                 Run.objects.create(scheduled_message_task_id=task, runnable=runnable,
                                    status=Run.STATUS.scheduled, phone=contact['phone'] if contact else None)
+
+    def __get_current_date(self):
+        return datetime.datetime.strftime(datetime.datetime.now().date(),'%Y-%m-%d')

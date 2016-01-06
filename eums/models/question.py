@@ -1,4 +1,6 @@
 import ast
+import datetime as datetime
+import re
 
 from django.db import models
 from djorm_pgarray.fields import TextArrayField
@@ -43,8 +45,20 @@ class TextQuestion(Question):
 
     def create_answer(self, params, run):
         value = params['text']
+        if self.label == Question.LABEL.dateOfReceipt:
+            value = self.__format_date(value)
         answer = self.textanswer_set.create(question=self, value=value, run=run)
         return answer
+
+    def __format_date(self, val):
+        is_simple_date_format = re.match('^\d{1,2}/(0?[1-9]|10|11|12)/\d{4}$', val)
+        is_complete_date_format = re.search('^\d{4}-(0?[1-9]|10|11|12)-\d{1,2}.*', val)
+        if is_simple_date_format:
+            return datetime.datetime.strptime(val, '%d/%m/%Y').date()
+        elif is_complete_date_format:
+            return val
+        else:
+            return ''
 
 
 class MultipleChoiceQuestion(Question):

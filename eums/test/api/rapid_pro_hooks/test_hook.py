@@ -119,7 +119,7 @@ class HookTest(APITestCase):
                             flow=self.flow)
 
         run = RunFactory(phone=('%s' % self.PHONE))
-        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, 'Some Text', None, 'dateOfReceipt')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, '21/12/2015', None, 'dateOfReceipt')
 
         response = self.client.post(HOOK_URL, url_params)
 
@@ -127,7 +127,7 @@ class HookTest(APITestCase):
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(created_answer.value, 'Some Text')
+        self.assertEqual(created_answer.value, '2015-12-21')
 
     @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self, *_):

@@ -1,7 +1,6 @@
 from unittest import TestCase
-
 from eums.models import Option
-from eums.models.question import Question
+from eums.models.question import Question, datetime
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
     NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
@@ -69,6 +68,17 @@ class TextQuestionTest(QuestionTest):
         self.assertEqual(answers.count(), 1)
         self.assertEqual(answers.first().value, text)
 
+        self.text_question = TextQuestionFactory(text='When did you receive items', label="dateOfReceipt")
+        params = {'text': self.__get_current_date('%d/%m/%Y')}
+
+        self.text_question.create_answer(params, self.run)
+        answers = self.text_question.textanswer_set.all()
+
+        self.assertEqual(answers.first().value, self.__get_current_date('%Y-%m-%d'))
+
+    def __get_current_date(self, pattern):
+        return datetime.datetime.strftime(datetime.datetime.now().date(), pattern)
+
 
 class MultipleChoiceQuestionTest(QuestionTest):
     def test_should_save_multiple_choice_answer(self):
@@ -77,8 +87,8 @@ class MultipleChoiceQuestionTest(QuestionTest):
 
         label = 'gender'
         params = {u'values': [u'[{"category": {"eng":"%s"}, "time": "2014-10-22T11:56:52.836354Z", '
-                               u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (text, label)],
-                   u'time': [u'2014-10-22T11:57:35.606372Z']}
+                              u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (text, label)],
+                  u'time': [u'2014-10-22T11:57:35.606372Z']}
 
         self.multiple_choice_question.create_answer(params, self.run)
         answers = self.multiple_choice_question.answers.all()

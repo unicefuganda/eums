@@ -1,12 +1,12 @@
 import datetime
 import json
 import logging
-
 from mock import patch
+from psycopg2.tests import unittest
 
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
     DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Flow, SystemSettings, ReleaseOrder, ReleaseOrderItem, \
-    OrderItem, Item
+    OrderItem, Item, Run, Runnable, RunQueue
 from eums.services.release_order_to_delivery_service import execute_sync_release_order_to_delivery
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
@@ -41,6 +41,10 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         super(DeliveryEndPointTest, self).setUp()
         self.clean_up()
         SystemSettingsFactory()
+        self.mock_start_flow_run_for = patch('eums.services.flow_scheduler.schedule_run_directly_for')
+        self.mock_start_flow_run_for.start()
+        self.MockClass = self.mock_start_flow_run_for.start()
+        self.addCleanup(self.mock_start_flow_run_for.stop)
 
     def tearDown(self):
         self.clean_up()
@@ -505,3 +509,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         SystemSettings.objects.all().delete()
         OrderItem.objects.all().delete()
         Item.objects.all().delete()
+        Delivery.objects.all().delete()
+        Run.objects.all().delete()
+        Runnable.objects.all().delete()
+        RunQueue.objects.all().delete()
