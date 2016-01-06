@@ -30,10 +30,14 @@ class DistributionPlan(Runnable):
         if purchase_order is None:
             return
 
-        if purchase_order.last_shipment_date is None or self.delivery_date > purchase_order.last_shipment_date:
+        last_shipment_data_need_updated = purchase_order.last_shipment_date is None \
+                                          or self.delivery_date > purchase_order.last_shipment_date
+        if last_shipment_data_need_updated:
             purchase_order.last_shipment_date = self.delivery_date
 
-        purchase_order.tracked_date = self.tracked_date
+        if purchase_order.tracked_date is None:
+            purchase_order.tracked_date = self.tracked_date
+
         purchase_order.save()
 
     def update_release_order(self):

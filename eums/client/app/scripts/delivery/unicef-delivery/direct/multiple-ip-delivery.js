@@ -217,7 +217,9 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                     distribution_plan: uiPlanNode.distributionPlan
                 };
 
-                uiPlanNode.trackedDate = (!uiPlanNode.id && uiPlanNode.track) ? new Date() : uiPlanNode.trackedDate;
+                if (uiPlanNode.track && (uiPlanNode.id == null || uiPlanNode.trackedDate == null)) {
+                    uiPlanNode.trackedDate = new Date();
+                }
 
                 var delivery = {
                     programme: $scope.selectedPurchaseOrder.programme,
