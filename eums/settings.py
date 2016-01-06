@@ -94,7 +94,7 @@ DELIVERY_BUFFER_IN_SECONDS = 10
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
-RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', '7abf056a242ca14ea18d091ad5fbee41d1e8026a')
+RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
 RAPIDPRO_URL = 'https://app.rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
