@@ -29,6 +29,7 @@ class ReleaseOrder(TimeStampedModel):
     waybill = models.IntegerField()
     delivery_date = models.DateField(auto_now=False)
     tracked_date = models.DateTimeField(null=True)
+    date = models.DateField(auto_now=False, null=True)
 
     objects = ReleaseOrderManager()
 

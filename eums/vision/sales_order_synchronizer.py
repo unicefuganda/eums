@@ -31,7 +31,9 @@ class SalesOrderSynchronizer(OrderSynchronizer):
     def _get_or_create_order(self, record):
         order_number = record['SALES_ORDER_NO']
         try:
-            return SalesOrder.objects.get(order_number=order_number)
+            sales_order = SalesOrder.objects.get(order_number=order_number)
+            return self._update_order(sales_order, record['UPDATE_DATE']) \
+                if self._is_newer_order(sales_order.date, record['UPDATE_DATE']) else None
         except ObjectDoesNotExist:
             programme, _ = Programme.objects.get_or_create(wbs_element_ex=record['WBS_REFERENCE'])
             return SalesOrder.objects.create(order_number=order_number,
@@ -65,6 +67,12 @@ class SalesOrderSynchronizer(OrderSynchronizer):
                                                  net_price=net_price)
         except Exception, e:
             raise VisionException(message='Update or create sales order item error: ' + e.message)
+
+    @staticmethod
+    def _update_order(order, date):
+        order.date = date
+        order.save()
+        return order
 
     @staticmethod
     def _update_item(item, order_date, quantity, net_value, net_price):

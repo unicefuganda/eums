@@ -56,3 +56,7 @@ class OrderSynchronizer(VisionDataSynchronizer):
             return False
         return True
 
+    @staticmethod
+    def _is_newer_order(order_date, record_time):
+        return record_time.date() >= order_date
+

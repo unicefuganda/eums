@@ -34,7 +34,8 @@ class TestSyncReleaseOrder(TestCase):
                                            "SHIPMENT_END_DATE": u"/Date(1448254800000)/",
                                            "ACTUAL_SHIPMENT_START_DATE": None,
                                            "SHIPMENT_COMPLETION_DATE": None,
-                                           "RELEASE_ORDER_CREATE_DATE": u"/Date(1447390800000)/"}]
+                                           "RELEASE_ORDER_CREATE_DATE": u"/Date(1447390800000)/",
+                                           "RELEASE_ORDER_UPDATE_DATE": u"/Date(1447390800000)/"}]
         self.converted_release_orders = [{"RELEASE_ORDER_NUMBER": 54155912,
                                           "RELEASE_ORDER_ITEM": 10,
                                           "RELEASE_ORDER_TYPE": "ZLO",
@@ -58,7 +59,8 @@ class TestSyncReleaseOrder(TestCase):
                                           "SHIPMENT_END_DATE": datetime.datetime(2015, 11, 23, 8, 0),
                                           "ACTUAL_SHIPMENT_START_DATE": None,
                                           "SHIPMENT_COMPLETION_DATE": None,
-                                          "RELEASE_ORDER_CREATE_DATE": datetime.datetime(2015, 11, 13, 8, 0)}]
+                                          "RELEASE_ORDER_CREATE_DATE": datetime.datetime(2015, 11, 13, 8, 0),
+                                          "RELEASE_ORDER_UPDATE_DATE": datetime.datetime(2015, 11, 13, 8, 0)}]
         self._prepare_sales_and_purchase_order()
         consignee_1 = Consignee(customer_id='L626010384')
         self.expected_release_order_1 = ReleaseOrder(order_number=54155912,
@@ -74,28 +76,32 @@ class TestSyncReleaseOrder(TestCase):
                                                               item_number=10,
                                                               quantity=55,
                                                               value=Decimal('15030.86'))
-        self.release_order_which_can_not_refer_to_sales_order = [{'PO_ITEM': 10,
-                                                                  'MATERIAL_NUMBER': 'S0141021',
-                                                                  'RELEASE_ORDER_ITEM': 10,
-                                                                  'VALUE': 15030.86,
-                                                                  'DELIVERY_QUANTITY': 55,
-                                                                  'PO_NUMBER': 45143984,
-                                                                  'SHIPMENT_END_DATE': '/Date(1448254800000)/',
-                                                                  'WAYBILL_NUMBER': 72124798,
-                                                                  'CONSIGNEE': 'L626010384',
-                                                                  'SO_NUMBER': 20170001,
-                                                                  'RELEASE_ORDER_NUMBER': 54155912}]
-        self.release_order_which_can_not_refer_to_purchase_order = [{'PO_ITEM': 10,
-                                                                     'MATERIAL_NUMBER': 'S0141021',
-                                                                     'RELEASE_ORDER_ITEM': 10,
-                                                                     'VALUE': 15030.86,
-                                                                     'DELIVERY_QUANTITY': 55,
-                                                                     'PO_NUMBER': 45140001,
-                                                                     'SHIPMENT_END_DATE': '/Date(1448254800000)/',
-                                                                     'WAYBILL_NUMBER': 72124798,
-                                                                     'CONSIGNEE': 'L626010384',
-                                                                     'SO_NUMBER': 20173918,
-                                                                     'RELEASE_ORDER_NUMBER': 54155912}]
+        self.release_order_which_can_not_refer_to_sales_order \
+            = [{'PO_ITEM': 10,
+                'MATERIAL_NUMBER': 'S0141021',
+                'RELEASE_ORDER_ITEM': 10,
+                'VALUE': 15030.86,
+                'DELIVERY_QUANTITY': 55,
+                'PO_NUMBER': 45143984,
+                'SHIPMENT_END_DATE': '/Date(1448254800000)/',
+                'WAYBILL_NUMBER': 72124798,
+                'CONSIGNEE': 'L626010384',
+                'SO_NUMBER': 20170001,
+                'RELEASE_ORDER_NUMBER': 54155912,
+                'RELEASE_ORDER_UPDATE_DATE': datetime.datetime(2015, 11, 13, 8, 0)}]
+        self.release_order_which_can_not_refer_to_purchase_order \
+            = [{'PO_ITEM': 10,
+                'MATERIAL_NUMBER': 'S0141021',
+                'RELEASE_ORDER_ITEM': 10,
+                'VALUE': 15030.86,
+                'DELIVERY_QUANTITY': 55,
+                'PO_NUMBER': 45140001,
+                'SHIPMENT_END_DATE': '/Date(1448254800000)/',
+                'WAYBILL_NUMBER': 72124798,
+                'CONSIGNEE': 'L626010384',
+                'SO_NUMBER': 20173918,
+                'RELEASE_ORDER_NUMBER': 54155912,
+                'RELEASE_ORDER_UPDATE_DATE': datetime.datetime(2015, 11, 13, 8, 0)}]
 
         start_date = '01122015'
         end_date = datetime.date.today().strftime('%d%m%Y')
@@ -161,11 +167,85 @@ class TestSyncReleaseOrder(TestCase):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
 
     def test_should_NOT_save_release_order_which_can_not_refer_to_exsiting_purchase_order(self):
-        self.synchronizer._load_records = MagicMock(
-                return_value=self.release_order_which_can_not_refer_to_purchase_order)
+        self.synchronizer._load_records = \
+            MagicMock(return_value=self.release_order_which_can_not_refer_to_purchase_order)
         self.synchronizer.sync()
 
         self.assertEqual(ReleaseOrder.objects.count(), 0)
+
+    def test_should_NOT_update_when_got_an_older_release_order(self):
+        self.synchronizer._load_records = MagicMock(return_value=self.downloaded_release_orders)
+        self.synchronizer.sync()
+        older_release_order = [{"RELEASE_ORDER_NUMBER": u"0054155912",
+                                "RELEASE_ORDER_ITEM": 10,
+                                "RELEASE_ORDER_TYPE": "ZLO",
+                                "SALES_UNIT": "EA",
+                                "PLANT": "5631",
+                                "SHIP_TO_PARTY": "L62601000",
+                                "WAREHOUSE_NUMBER": "492",
+                                "CONSIGNEE": "L626010384",
+                                "DOCUMENT_DATE": u"/Date(1447390800000)/",
+                                "GOODS_ISSUE_DATE": u"/Date(1448254800000)/",
+                                "MATERIAL_NUMBER": "S0141021",
+                                "DELIVERY_QUANTITY": 100,
+                                "VALUE": 15030.86,
+                                "MOVING_AVG_PRICE": 273.29,
+                                "SO_NUMBER": u"0020173918",
+                                "PO_NUMBER": u"0045143984",
+                                "PO_ITEM": 10,
+                                "WBS_ELEMENT": "6260\/A0\/05\/401\/005\/001",
+                                "WAYBILL_NUMBER": u"0072124798",
+                                "FORWARDER_NO": None,
+                                "SHIPMENT_END_DATE": u"/Date(1440004800000)/",
+                                "ACTUAL_SHIPMENT_START_DATE": None,
+                                "SHIPMENT_COMPLETION_DATE": None,
+                                "RELEASE_ORDER_CREATE_DATE": u"/Date(1440390800000)/",
+                                "RELEASE_ORDER_UPDATE_DATE": u"/Date(1440390800000)/"}]
+        self.synchronizer._load_records = MagicMock(return_value=older_release_order)
+        self.synchronizer.sync()
+
+        release_order = ReleaseOrder.objects.get(order_number=54155912)
+        self.assertEqual(Consignee.objects.get(pk=release_order.consignee.id).customer_id, 'L626010384')
+
+        release_order_item = ReleaseOrderItem.objects.get(release_order=release_order)
+        self.assertEqual(release_order_item.quantity, 55)
+
+    def test_should_update_when_got_a_newer_release_order(self):
+        self.synchronizer._load_records = MagicMock(return_value=self.downloaded_release_orders)
+        self.synchronizer.sync()
+        newer_release_order = [{"RELEASE_ORDER_NUMBER": u"0054155912",
+                                "RELEASE_ORDER_ITEM": 10,
+                                "RELEASE_ORDER_TYPE": "ZLO",
+                                "SALES_UNIT": "EA",
+                                "PLANT": "5631",
+                                "SHIP_TO_PARTY": "L626010384",
+                                "WAREHOUSE_NUMBER": "492",
+                                "CONSIGNEE": "L62601000",
+                                "DOCUMENT_DATE": u"/Date(1447390800000)/",
+                                "GOODS_ISSUE_DATE": u"/Date(1448254800000)/",
+                                "MATERIAL_NUMBER": "S0141021",
+                                "DELIVERY_QUANTITY": 100,
+                                "VALUE": 15030.86,
+                                "MOVING_AVG_PRICE": 273.29,
+                                "SO_NUMBER": u"0020173918",
+                                "PO_NUMBER": u"0045143984",
+                                "PO_ITEM": 10,
+                                "WBS_ELEMENT": "6260\/A0\/05\/401\/005\/001",
+                                "WAYBILL_NUMBER": u"0072124798",
+                                "FORWARDER_NO": None,
+                                "SHIPMENT_END_DATE": u"/Date(1448254800000)/",
+                                "ACTUAL_SHIPMENT_START_DATE": None,
+                                "SHIPMENT_COMPLETION_DATE": None,
+                                "RELEASE_ORDER_CREATE_DATE": u"/Date(1447390800000)/",
+                                "RELEASE_ORDER_UPDATE_DATE": u"/Date(1448390800000)/"}]
+        self.synchronizer._load_records = MagicMock(return_value=newer_release_order)
+        self.synchronizer.sync()
+
+        release_order = ReleaseOrder.objects.get(order_number=54155912)
+        self.assertEqual(Consignee.objects.get(pk=release_order.consignee.id).customer_id, 'L62601000')
+
+        release_order_item = ReleaseOrderItem.objects.get(release_order=release_order)
+        self.assertEqual(release_order_item.quantity, 100)
 
     def _prepare_sales_and_purchase_order(self):
         self.programme_1 = Programme(wbs_element_ex='0060/A0/07/883')

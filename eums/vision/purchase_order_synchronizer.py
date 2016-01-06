@@ -32,7 +32,8 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
     def _get_or_create_order(self, record):
         try:
             purchase_order = PurchaseOrder.objects.get(order_number=record['PO_NUMBER'])
-            return self._update_order(purchase_order, record['UPDATE_DATE'], record['PO_TYPE'])
+            return self._update_order(purchase_order, record['UPDATE_DATE'], record['PO_TYPE']) \
+                if self._is_newer_order(purchase_order.date, record['UPDATE_DATE']) else None
         except ObjectDoesNotExist:
             try:
                 sales_order = SalesOrder.objects.get(order_number=record['SO_NUMBER'])

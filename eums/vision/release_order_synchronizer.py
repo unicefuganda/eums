@@ -9,8 +9,10 @@ from eums.vision.vision_data_synchronizer import VisionException
 class ReleaseOrderSynchronizer(OrderSynchronizer):
     RELEASE_ORDER_URL = VISION_URL + 'GetReleaseOrderInfo_JSON/'
     REQUIRED_KEYS = ('RELEASE_ORDER_NUMBER', 'RELEASE_ORDER_ITEM', 'SHIPMENT_END_DATE', 'MATERIAL_NUMBER',
-                     'DELIVERY_QUANTITY', 'VALUE', 'CONSIGNEE', 'SO_NUMBER', 'PO_NUMBER', 'WAYBILL_NUMBER', 'PO_ITEM')
-    ORDER_INFO = ('RELEASE_ORDER_NUMBER', 'WAYBILL_NUMBER', 'SO_NUMBER', 'PO_NUMBER', 'CONSIGNEE', 'SHIPMENT_END_DATE')
+                     'DELIVERY_QUANTITY', 'VALUE', 'CONSIGNEE', 'SO_NUMBER', 'PO_NUMBER', 'WAYBILL_NUMBER', 'PO_ITEM',
+                     'RELEASE_ORDER_UPDATE_DATE')
+    ORDER_INFO = ('RELEASE_ORDER_NUMBER', 'WAYBILL_NUMBER', 'SO_NUMBER', 'PO_NUMBER', 'CONSIGNEE', 'SHIPMENT_END_DATE',
+                  'RELEASE_ORDER_UPDATE_DATE')
 
     def __init__(self, start_date, end_date=''):
         super(ReleaseOrderSynchronizer, self).__init__(ReleaseOrderSynchronizer.RELEASE_ORDER_URL, start_date, end_date,
@@ -28,7 +30,11 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
 
     def _get_or_create_order(self, record):
         try:
-            return ReleaseOrder.objects.get(order_number=record['RELEASE_ORDER_NUMBER'])
+            release_order = ReleaseOrder.objects.get(order_number=record['RELEASE_ORDER_NUMBER'])
+            return self._update_order(release_order,
+                                      record['RELEASE_ORDER_UPDATE_DATE'],
+                                      self._update_or_create_consignee(record)) \
+                if self._is_newer_order(release_order.date, record['RELEASE_ORDER_UPDATE_DATE']) else None
         except ObjectDoesNotExist:
             try:
                 consignee = self._update_or_create_consignee(record)
@@ -39,7 +45,8 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
                                                    delivery_date=record['SHIPMENT_END_DATE'],
                                                    consignee=consignee,
                                                    sales_order=sales_order,
-                                                   purchase_order=purchase_order)
+                                                   purchase_order=purchase_order,
+                                                   date=record['RELEASE_ORDER_UPDATE_DATE'])
             except ObjectDoesNotExist:
                 pass
         except Exception, e:
@@ -73,6 +80,13 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
         consignee.imported_from_vision = True
         consignee.save()
         return consignee
+
+    @staticmethod
+    def _update_order(order, date, consignee):
+        order.date = date
+        order.consignee = consignee
+        order.save()
+        return order
 
     @staticmethod
     def _update_item(item, quantity, value):

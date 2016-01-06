@@ -200,17 +200,17 @@ class TestSyncPurchaseOrder(TestCase):
 
     def test_should_NOT_import_purchase_order_which_can_not_refer_to_existing_sales_order(self):
         self.synchronizer._load_records = MagicMock()
-        self.synchronizer._convert_records = MagicMock(
-                return_value=self.purchase_order_which_do_not_have_reference_to_sales_order)
+        self.synchronizer._convert_records = \
+            MagicMock(return_value=self.purchase_order_which_do_not_have_reference_to_sales_order)
         self.synchronizer.sync()
 
-        # self.assertEqual(PurchaseOrder.objects.count(), 0)
-        # self.assertEqual(PurchaseOrderItem.objects.count(), 0)
+        self.assertEqual(PurchaseOrder.objects.count(), 0)
+        self.assertEqual(PurchaseOrderItem.objects.count(), 0)
 
     def test_should_import_purchase_order_item_which_can_not_refer_to_existing_sales_order_item(self):
         self.synchronizer._load_records = MagicMock()
-        self.synchronizer._convert_records = MagicMock(
-                return_value=self.purchase_order_item_which_do_not_have_reference_to_sales_order_item)
+        self.synchronizer._convert_records = \
+            MagicMock(return_value=self.purchase_order_item_which_do_not_have_reference_to_sales_order_item)
         self.synchronizer.sync()
 
         purchase_order = PurchaseOrder.objects.all()[0]
@@ -226,6 +226,84 @@ class TestSyncPurchaseOrder(TestCase):
 
         self.assertEqual(PurchaseOrder.objects.count(), 0)
         self.assertEqual(PurchaseOrderItem.objects.count(), 0)
+
+    def test_should_NOT_update_when_got_an_older_purchase_order(self):
+        self.synchronizer._load_records = MagicMock(return_value=self.downloaded_purchase_orders)
+        self.synchronizer.sync()
+        older_purchase_order = [{"PURCHASING_ORG_CODE": "1000",
+                                 "PURCHASING_GROUP_CODE": "104",
+                                 "PURCHASING_GROUP_NAME": "IMMUNIZATION",
+                                 "PLANT_CODE": "1000",
+                                 "VENDOR_CODE": "1900000501",
+                                 "VENDOR_NAME": "P.T. BIO FARMA (PERSERO)",
+                                 "VENDOR_CTRY_NAME": "Indonesia",
+                                 "GRANT_REF": "XP154478",
+                                 "EXPIRY_DATE": u"/Date(1483160400000)/",
+                                 "DONOR_NAME": "Ministry of National Health",
+                                 "PREQ_NO": "0030344125",
+                                 "PREQ_ITEM": 80,
+                                 "PREQ_QTY": 51322.65,
+                                 "SO_NUMBER": u"0020173918",
+                                 "PO_NUMBER": u"0045143984",
+                                 "PO_ITEM": 10,
+                                 "PO_TYPE": "NB",
+                                 "PO_DATE": u"/Date(1448859600000)/",
+                                 "CREATE_DATE": u"/Date(1440859600000)/",
+                                 "UPDATE_DATE": u"/Date(1440859600000)/",
+                                 "PO_ITEM_QTY": 99,
+                                 "CURRENCY_CODE": "USD",
+                                 "AMOUNT_CURR": 51322.65,
+                                 "AMOUNT_USD": 51322.65,
+                                 "MATERIAL_CODE": "S0141021",
+                                 "MATERIAL_DESC": "Scale,electronic,mother/child,150kgx100g"}]
+
+        self.synchronizer._load_records = MagicMock(return_value=older_purchase_order)
+        self.synchronizer.sync()
+
+        purchase_order = PurchaseOrder.objects.get(order_number=45143984)
+        self.assertEqual(purchase_order.date, datetime.datetime(2015, 11, 30, 13, 0).date())
+
+        purchase_order_item = PurchaseOrderItem.objects.get(purchase_order=purchase_order, item_number=10)
+        self.assertEqual(purchase_order_item.quantity, 100)
+
+    def test_should_update_when_got_a_newer_purchase_order(self):
+        self.synchronizer._load_records = MagicMock(return_value=self.downloaded_purchase_orders)
+        self.synchronizer.sync()
+        older_purchase_order = [{"PURCHASING_ORG_CODE": "1000",
+                                 "PURCHASING_GROUP_CODE": "104",
+                                 "PURCHASING_GROUP_NAME": "IMMUNIZATION",
+                                 "PLANT_CODE": "1000",
+                                 "VENDOR_CODE": "1900000501",
+                                 "VENDOR_NAME": "P.T. BIO FARMA (PERSERO)",
+                                 "VENDOR_CTRY_NAME": "Indonesia",
+                                 "GRANT_REF": "XP154478",
+                                 "EXPIRY_DATE": u"/Date(1483160400000)/",
+                                 "DONOR_NAME": "Ministry of National Health",
+                                 "PREQ_NO": "0030344125",
+                                 "PREQ_ITEM": 80,
+                                 "PREQ_QTY": 51322.65,
+                                 "SO_NUMBER": u"0020173918",
+                                 "PO_NUMBER": u"0045143984",
+                                 "PO_ITEM": 10,
+                                 "PO_TYPE": "NB",
+                                 "PO_DATE": u"/Date(1448859600000)/",
+                                 "CREATE_DATE": u"/Date(1458859600000)/",
+                                 "UPDATE_DATE": u"/Date(1458859600000)/",
+                                 "PO_ITEM_QTY": 99,
+                                 "CURRENCY_CODE": "USD",
+                                 "AMOUNT_CURR": 51322.65,
+                                 "AMOUNT_USD": 51322.65,
+                                 "MATERIAL_CODE": "S0141021",
+                                 "MATERIAL_DESC": "Scale,electronic,mother/child,150kgx100g"}]
+
+        self.synchronizer._load_records = MagicMock(return_value=older_purchase_order)
+        self.synchronizer.sync()
+
+        purchase_order = PurchaseOrder.objects.get(order_number=45143984)
+        self.assertEqual(purchase_order.date, datetime.datetime(2016, 3, 25, 6, 46, 40).date())
+
+        purchase_order_item = PurchaseOrderItem.objects.get(purchase_order=purchase_order, item_number=10)
+        self.assertEqual(purchase_order_item.quantity, 99)
 
     def _prepare_sales_orders_and_items(self):
         self.expected_programme_1 = Programme(wbs_element_ex='0060/A0/07/883')
