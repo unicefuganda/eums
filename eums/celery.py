@@ -10,7 +10,7 @@ app = Celery('eums', broker='redis://localhost:6379/0', backend='redis://',
                       'eums.services.csv_clear_service', 'eums.elasticsearch.synchroniser',
                       'eums.vision.sync_runner', 'eums.signals.handlers'])
 
-CELERY_TIMEZONE = 'Africa/Kampala'
+CELERY_TIMEZONE = settings.TIME_ZONE
 
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
