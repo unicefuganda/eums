@@ -139,6 +139,7 @@
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">REMARKS</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">IP NOTES</span></th>
                 </tr>
                 </thead>
 
@@ -226,6 +227,11 @@
                             </div>
                         </div>
                     </td>
+                    <td class="align-center">
+                    <span ng-if="itemReport.additional_remarks" class="glyphicon glyphicon-comment glyphicon-comment-color
+                                        glyphicon-size-17 glyphicon-top-5"
+                          ng-click="showAdditionalRemarks(itemReport.additional_remarks)"></span>
+                </td>
                 </tr>
                 </tbody>
                 <tfoot>
@@ -245,4 +251,5 @@
             </table>
         </div>
     </div>
+    <ng-include src="'/static/app/views/delivery/partials/additional-remarks-dialog.html'"></ng-include>
 </div>

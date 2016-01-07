@@ -52,6 +52,11 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
             createToast('failed to load deliveries', 'danger');
         }).finally(LoaderService.hideLoader);
 
+        $scope.showAdditionalRemarks = function (msg) {
+            $scope.additional_remarks = msg;
+            LoaderService.showModal("additional-remarks-modal-dialog");
+        };
+
         function setScopeDataFromResponse(response) {
             $scope.deliveryNodes = response.results;
             $scope.count = response.count;

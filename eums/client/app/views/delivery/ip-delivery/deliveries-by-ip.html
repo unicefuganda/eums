@@ -63,6 +63,7 @@
                 <th class="left-aligned">Consignee</th>
                 <th class="left-aligned">Contact Person</th>
                 <th class="left-aligned">District</th>
+                <th class="left-aligned">IP Notes</th>
                 <th class="left-aligned"></th>
             </tr>
             </thead>
@@ -78,6 +79,11 @@
                 </td>
                 <td ng-if="!node.contactPerson" class="left-aligned">Contact Not Found</td>
                 <td class="left-aligned">{{ node.location }}</td>
+                <td class="align-center">
+                    <span ng-if="node.additionalRemarks" class="glyphicon glyphicon-comment glyphicon-comment-color
+                                        glyphicon-size-17 glyphicon-top-5"
+                          ng-click="showAdditionalRemarks(node.additionalRemarks)"></span>
+                </td>
                 <td class="table-row-input-column subconsignee-column">
                     <a href="#/deliveries-by-ip/{{ itemId }}/{{ node.id }}/new"
                        class="btn btn-sm btn-primary" ng-hide="node.isEndUser">
@@ -102,7 +108,10 @@
 
     <div class="col-lg-12 row-padding" ng-show="!deliveryNodes.length && !searchTerm.length">
         <div class="no-items-div">
-            <span class="glyphicon glyphicon-warning-sign font-size-large text-warning"></span>&nbsp;You have not reported any deliveries for this item. Please click the button above to start reporting deliveries to sub-consignees.
+            <span class="glyphicon glyphicon-warning-sign font-size-large text-warning"></span>&nbsp;You have not
+            reported any deliveries for this item. Please click the button above to start reporting deliveries to
+            sub-consignees.
         </div>
     </div>
+    <ng-include src="'/static/app/views/delivery/partials/additional-remarks-dialog.html'"></ng-include>
 </div>

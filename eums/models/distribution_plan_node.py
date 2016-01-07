@@ -17,8 +17,8 @@ class DistributionPlanNode(Runnable):
     acknowledged = models.IntegerField(null=True, blank=True, default=0)
     parents = None
     quantity = None
+    additional_remarks = models.TextField(null=True, blank=True)
     objects = DeliveryNodeManager()
-
 
     def save(self, *args, **kwargs):
         _is_root = self.is_root()

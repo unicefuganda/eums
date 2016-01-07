@@ -104,6 +104,7 @@ def build_answers_for_nodes(nodes, response):
             'plan_answers': plan_answer_list,
             'answers': answer_list,
             'location': node.location,
+            'additional_remarks': node.additional_remarks,
             'tree_position': node.tree_position}
         delivery_node.update(answer_list)
         delivery_node['dateOfReceipt'] = answer_list.get('dateOfReceipt') \
@@ -124,7 +125,6 @@ def _build_answer_list(node_responses):
 
 def item_tracked_nodes(request, ip=None):
     nodes = _filter_track_and_confirmed_auto_track_nodes(request)
-
     po_waybill = request.GET.get('po_waybill')
     if po_waybill:
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_waybill)

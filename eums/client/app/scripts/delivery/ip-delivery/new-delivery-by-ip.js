@@ -6,9 +6,12 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
     }])
     .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
                                                        DeliveryNode, ngToast, LoaderService, $q, ItemService,
-                                                       ConsigneeItemService, $location, $timeout) {
+                                                       ConsigneeItemService, $location) {
         $scope.districts = [];
-        $scope.newDelivery = new DeliveryNode({track: true});
+        $scope.newDelivery = new DeliveryNode({
+            track: true
+        });
+
         $scope.errors = false;
         LoaderService.showLoader();
 
@@ -144,7 +147,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             }
         };
 
-        $scope.discard = function(itemId) {
+        $scope.discard = function (itemId) {
             $location.path('/deliveries-by-ip/' + itemId);
         };
 

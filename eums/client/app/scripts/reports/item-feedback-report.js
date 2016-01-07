@@ -123,4 +123,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 ngToast.create({content: errorMessage, class: 'danger'})
             });
         }
+
+        $scope.showAdditionalRemarks = function (msg) {
+            $scope.additional_remarks = msg;
+            LoaderService.showModal("additional-remarks-modal-dialog");
+        };
     });
