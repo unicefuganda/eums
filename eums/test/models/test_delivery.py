@@ -1,7 +1,10 @@
+import logging
 from unittest import TestCase
 
+import datetime
+
 from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
-    MultipleChoiceQuestion, Run, Flow, Option, Runnable
+    MultipleChoiceQuestion, Run, Flow, Option, Runnable, PurchaseOrder, PurchaseOrderItem
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -15,6 +18,8 @@ from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
+logger = logging.getLogger(__name__)
+
 
 class DeliveryTest(TestCase):
     @classmethod
@@ -22,6 +27,9 @@ class DeliveryTest(TestCase):
         Flow.objects.all().delete()
         SalesOrder.objects.all().delete()
         Delivery.objects.all().delete()
+        PurchaseOrder.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
+        DeliveryNode.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
 
     @classmethod
@@ -483,7 +491,7 @@ class DeliveryTest(TestCase):
 
     def test_delivery_does_not_have_item_description(self):
         delivery = DeliveryFactory()
-        
+
         self.assertIsNone(delivery.item_description())
 
     def test_delivery_flow_is_ipflow_for_ip(self):
@@ -491,3 +499,32 @@ class DeliveryTest(TestCase):
         runnable = DeliveryFactory()
 
         self.assertEqual(runnable.flow(), ip_flow)
+
+    def test_save_distribution_should_update_purchase_order_tracked_date(self):
+        tracked_date = datetime.datetime.today()
+        updated_tracked_date = self.pair_tracked_date_on_updated(
+                delivery_tracked_date=tracked_date)
+        self.assertIsNotNone(updated_tracked_date)
+        self.assertEqual(updated_tracked_date, tracked_date)
+
+    def test_save_distribution_should_not_update_purchase_order_tracked_date(self):
+        pre_purchase_order_tracked_date = datetime.datetime.strptime('2015-12-08 08:08:08', '%Y-%m-%d %H:%M:%S')
+        tracked_date = datetime.datetime.today()
+        updated_tracked_date = self.pair_tracked_date_on_updated(
+                pre_purchase_order_tracked_date=pre_purchase_order_tracked_date,
+                delivery_tracked_date=tracked_date)
+
+        self.assertIsNotNone(updated_tracked_date)
+        self.assertNotEqual(updated_tracked_date, tracked_date)
+        self.assertEqual(updated_tracked_date, pre_purchase_order_tracked_date)
+
+    def pair_tracked_date_on_updated(self, pre_purchase_order_tracked_date=None, delivery_tracked_date=None):
+        purchase_order = PurchaseOrderFactory(tracked_date=pre_purchase_order_tracked_date)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        logger.info(purchase_order.tracked_date)
+        delivery = DeliveryFactory(track=True, tracked_date=delivery_tracked_date)
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item)
+        delivery.save()
+
+        updated_tracked_date = PurchaseOrder.objects.get(pk=purchase_order.id).tracked_date
+        return updated_tracked_date

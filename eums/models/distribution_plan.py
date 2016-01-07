@@ -1,3 +1,5 @@
+import logging
+
 from django.db import models
 from django.db.models import Q
 from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, TextAnswer, \
@@ -6,6 +8,8 @@ from eums.models import Runnable, DistributionPlanNode
 from eums.models.answers import Answer
 from eums.models.programme import Programme
 import eums.models
+
+logger = logging.getLogger(__name__)
 
 
 class DistributionPlan(Runnable):
@@ -27,6 +31,7 @@ class DistributionPlan(Runnable):
     def update_purchase_order(self):
         purchase_order = eums.models.PurchaseOrder.objects.filter(
                 purchaseorderitem__distributionplannode__distribution_plan_id=self.id).first()
+
         if purchase_order is None:
             return
 
@@ -35,10 +40,11 @@ class DistributionPlan(Runnable):
         if last_shipment_data_need_updated:
             purchase_order.last_shipment_date = self.delivery_date
 
-        if purchase_order.tracked_date is None:
+        tracked_need_updated = purchase_order.tracked_date is None
+        if tracked_need_updated:
             purchase_order.tracked_date = self.tracked_date
 
-        purchase_order.save()
+        purchase_order.save() if last_shipment_data_need_updated or tracked_need_updated else None
 
     def update_release_order(self):
         release_order = eums.models.ReleaseOrder.objects.filter(

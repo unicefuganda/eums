@@ -31,6 +31,7 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
 logger = logging.getLogger(__name__)
 
+
 @unittest.skip("not affected others")
 class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
     @classmethod

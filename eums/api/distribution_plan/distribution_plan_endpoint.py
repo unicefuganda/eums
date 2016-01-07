@@ -89,7 +89,7 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
         filters = self.build_filters(request.query_params, **{'consignee': consignee})
 
         deliveries = DistributionPlanViewSet.__filter_deliveries_by_query(query, filtered_distribution_plans.filter(
-            **filters).distinct())
+                **filters).distinct())
 
         filtered_deliveries = filter(
                 lambda x: x.is_partially_received() is None or x.is_partially_received() or x.is_retriggered,
@@ -102,8 +102,7 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
             return DistributionPlan.objects.filter(
                     Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(
                             track=True)).distinct()
-
-        return DistributionPlan.objects.filter(Q(track=True))
+        return DistributionPlan.objects.filter(Q(track=True) | (Q(track=False) & Q(is_auto_track_confirmed=True)))
 
     @staticmethod
     def __filter_deliveries_by_query(query, deliveries):
