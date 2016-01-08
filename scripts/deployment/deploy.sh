@@ -12,7 +12,7 @@ sudo build/deployment/pack_deployment.sh $today
 
 if [ -d ./map ]; then
     echo "Copying the map file to server ..."
-    sshpass -p "${DEPLOY_USER_PASSWORD}" scp -r map ${DEPLOY_USER}@${DEPLOY_HOST}:/opt/app
+    sshpass -p "${DEPLOY_USER_PASSWORD}" scp -r map ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 fi
 
 echo "Copying deployment directory to server ..."
