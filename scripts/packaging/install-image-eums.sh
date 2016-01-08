@@ -37,6 +37,9 @@ EMAIL_PASSWORD=$3
 VISION_USER=$4
 VISION_PASSWORD=$5
 SECRET_KEY=$6
+LATITUDE=$7
+LONGITUDE=$8
+LEVEL=$9
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "LC_ALL=C" \
@@ -45,11 +48,16 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "VISION_USER=${VISION_USER}" \
 -e "VISION_PASSWORD=${VISION_PASSWORD}" \
 -e "SECRET_KEY=${SECRET_KEY}" \
+-e "MAP_LATITUDE=${LATITUDE}" \
+-e "MAP_LONGITUDE=${LONGITUDE}" \
+-e "MAP_LEVEL=${LEVEL}" \
 -d --name=eums \
+-v /opt/app/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
-/bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} ${VISION_USER} ${VISION_PASSWORD} ${SECRET_KEY}&& /usr/bin/supervisord && service elasticsearch start"
+/bin/bash -c "opt/scripts/setupmap/setup-map.sh && opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} \
+${EMAIL_PASSWORD} ${VISION_USER} ${VISION_PASSWORD} ${SECRET_KEY}&& /usr/bin/supervisord && service elasticsearch start"
 
 echo "Cleaning older eums docker images..."
 sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=3 {print$3}' | xargs -I {} sudo docker rmi {} || true

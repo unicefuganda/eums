@@ -1,5 +1,5 @@
 {
-    "districtNameLocator": "DNAME_2010",
+    "districtNameLocator": "name",
     "inputFilePath": "/districts.json",
     "outFilePath": "./district_name.json"
 }
