@@ -40,6 +40,7 @@ SECRET_KEY=$6
 LATITUDE=$7
 LONGITUDE=$8
 LEVEL=$9
+TIME_ZONE=${10}
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "LC_ALL=C" \
@@ -51,6 +52,7 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "MAP_LATITUDE=${LATITUDE}" \
 -e "MAP_LONGITUDE=${LONGITUDE}" \
 -e "MAP_LEVEL=${LEVEL}" \
+-e "TIME_ZONE=${TIME_ZONE}" \
 -d --name=eums \
 -v /opt/app/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
