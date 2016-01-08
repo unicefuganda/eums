@@ -7,6 +7,9 @@ from datetime import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# default settings read from environment
+DJANGO_SETTINGS_MODULE = os.getenv('DJANGO_SETTINGS_MODULE', 'eums.settings_production')
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'invalid_secret_key')
 

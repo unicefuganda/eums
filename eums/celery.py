@@ -3,7 +3,7 @@ import os
 from celery import Celery
 from django.conf import settings
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eums.settings_staging')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings.DJANGO_SETTINGS_MODULE)
 
 app = Celery('eums', broker='redis://localhost:6379/0', backend='redis://',
              include=['eums.services.flow_scheduler', 'eums.services.csv_export_service',

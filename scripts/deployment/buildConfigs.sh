@@ -25,3 +25,5 @@ sed -i -e "s/os.getenv('EMAIL_PASSWORD', 'invalid_if_no_email')/'${EMAIL_PASSWOR
 sed -i -e "s/os.getenv('VISION_USER', 'invalid_vision_user')/r'${VISION_USER}'/g" settings.py
 sed -i -e "s/os.getenv('VISION_PASSWORD', 'invalid_vision_password')/r'${VISION_PASSWORD}'/g" settings.py
 sed -i -e "s/os.getenv('SECRET_KEY', 'invalid_secret_key')/r'${SECRET_KEY}'/g" settings.py
+
+sed -i -e "s/--env DJANGO_SETTINGS_MODULE=eums.settings_production/r--env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}/g" /usr/bin/supervisord

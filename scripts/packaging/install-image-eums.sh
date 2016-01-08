@@ -42,6 +42,13 @@ LONGITUDE=$8
 LEVEL=$9
 TIME_ZONE=${10}
 
+if [ ${11} ]
+then
+    DJANGO_SETTINGS_MODULE=${11}
+else
+    DJANGO_SETTINGS_MODULE='eums.settings_production'
+fi
+
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "LC_ALL=C" \
 -e "RAPIDPRO_API_TOKEN=${RAPIDPRO_API_TOKEN}" \
@@ -53,6 +60,7 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "MAP_LONGITUDE=${LONGITUDE}" \
 -e "MAP_LEVEL=${LEVEL}" \
 -e "TIME_ZONE=${TIME_ZONE}" \
+-e "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}"
 -d --name=eums \
 -v /opt/app/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
