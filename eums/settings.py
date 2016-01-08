@@ -61,7 +61,7 @@ WSGI_APPLICATION = 'eums.wsgi.application'
 
 LANGUAGE_CODE = 'en-gb'
 
-TIME_ZONE = 'Africa/Kampala'
+TIME_ZONE = os.getenv('TIME_ZONE', 'Africa/Kampala')
 
 USE_I18N = True
 
