@@ -23,18 +23,18 @@ from eums.services import flow_scheduler as my_flow_scheduler
 
 
 class FlowSchedulerTest(TestCase):
-    def backup_original_methods(self):
+    def __backup_original_methods(self):
         self.original_app_task = local_celery.app.task
         self.original_periodic_task = celery.task.periodic_task
         self.original_rapid_pro_service_create_run = rapid_pro_service.create_run
 
-    def back_to_original(self):
+    def __back_to_original(self):
         local_celery.app.task = self.original_app_task
         celery.task.periodic_task = self.original_periodic_task
         rapid_pro_service.create_run = self.original_rapid_pro_service_create_run
         self.flow_scheduler = reload(my_flow_scheduler)
 
-    def mock_ready(self):
+    def __mock_ready(self):
         self.mock_celery = MockCelery()
         local_celery.app.task = self.mock_celery.task
         celery.task.periodic_task = MockPeriodicTask
@@ -45,8 +45,8 @@ class FlowSchedulerTest(TestCase):
         self.flow_scheduler = reload(my_flow_scheduler)
 
     def setUp(self):
-        self.backup_original_methods()
-        self.mock_ready()
+        self.__backup_original_methods()
+        self.__mock_ready()
         self.flow_scheduler.settings.RAPIDPRO_LIVE = True
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
@@ -70,7 +70,7 @@ class FlowSchedulerTest(TestCase):
         Run.objects.all().delete()
         RunQueue.objects.all().delete()
         Node.objects.all().delete()
-        self.back_to_original()
+        self.__back_to_original()
 
     def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self):
         node = NodeFactory(tree_position=Node.MIDDLE_MAN)
