@@ -11,15 +11,16 @@ describe('Item Feedback Report', function () {
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
 
-        expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
-        expect(itemFeedbackReport.programmes).toContain('AAASpecial Programme');
-        expect(itemFeedbackReport.implementingPartners).toContain('Consignee 62');
-        expect(itemFeedbackReport.consignees).toContain('AMUDAT DHO');
-        expect(itemFeedbackReport.orderNumbers).toContain('2014111');
-        expect(itemFeedbackReport.quantitiesShipped).toContain('7');
-        expect(itemFeedbackReport.values).toContain('$140.00');
-        expect(itemFeedbackReport.amountReceived).toContain('7');
-        expect(itemFeedbackReport.dateOfReceipt).toContain('29-Sep-2014');
+        expect(itemFeedbackReport.itemDescriptions).toContain('MUAC,Child 11.5 Red/PAC-50');
+        expect(itemFeedbackReport.programmes).toContain('YI107 - PCR 3 KEEP CHILDREN SAFE');
+        expect(itemFeedbackReport.implementingPartners).toContain('WAKISO DHO');
+        expect(itemFeedbackReport.consignees).toContain('WAKISO DHO');
+        expect(itemFeedbackReport.orderNumbers).toContain('12345');
+        expect(itemFeedbackReport.quantitiesShipped).toContain('700');
+        expect(itemFeedbackReport.values).toContain('$42.86');
+        expect(itemFeedbackReport.amountReceived).toContain('50');
+        expect(itemFeedbackReport.dateOfReceipt).toContain('02-Dec-2015');
+
         expect(itemFeedbackReport.productReceived).toContain('YES');
         expect(itemFeedbackReport.qualityOfProduct).toContain('GOOD');
         expect(itemFeedbackReport.satisfiedWithProduct).toContain('glyphicon glyphicon-size-17 glyphicon-top-5 glyphicon-ok-sign eums-text-color-ok');
