@@ -1,8 +1,8 @@
+from django.db.models import Count
 from rest_framework import serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
-from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
 
 from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPlanSerializer
@@ -54,7 +54,6 @@ class PurchaseOrderViewSet(ModelViewSet):
             queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
 
         page = self.paginate_queryset(queryset)
-
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -63,10 +62,16 @@ class PurchaseOrderViewSet(ModelViewSet):
         return Response(serializer.data)
 
     def __get_direct_delivery(self):
-        query = self.request.GET.get('query')
-        from_date = self.request.GET.get('from')
-        to_date = self.request.GET.get('to')
-        return PurchaseOrder.objects.for_direct_delivery(search_term=query, from_date=from_date, to_date=to_date)
+        purchase_order = self.request.GET.get('purchaseOrder')  # query
+        programme_id = self.request.GET.get('programmeId')
+        item_description = self.request.GET.get('itemDescription')
+        selected_location = self.request.GET.get('selectedLocation')
+        from_date = self.request.GET.get('fromDate')
+        to_date = self.request.GET.get('toDate')
+        ip_id = self.request.GET.get('ipId')
+        return PurchaseOrder.objects.for_direct_delivery(purchase_order=purchase_order, programme_id=programme_id,
+                                                         item_description=item_description, selected_location=selected_location,
+                                                         from_date=from_date, to_date=to_date, ip_id=ip_id)
 
     @detail_route()
     def deliveries(self, request, pk=None):

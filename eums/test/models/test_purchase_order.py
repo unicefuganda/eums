@@ -161,7 +161,7 @@ class PurchaseOrderTest(TestCase):
         PurchaseOrderItemFactory(purchase_order=po_two, quantity=100)
 
         self.assertEquals(len(PurchaseOrder.objects.for_direct_delivery(123)), 1)
-        self.assertEquals(PurchaseOrder.objects.for_direct_delivery(search_term='123').first().id, po_one.id)
+        self.assertEquals(PurchaseOrder.objects.for_direct_delivery(purchase_order='123').first().id, po_one.id)
 
     def test_for_direct_delivery_filtered_by_date(self):
         fake_today = FakeDate.today()

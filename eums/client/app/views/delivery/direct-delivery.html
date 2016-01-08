@@ -3,8 +3,62 @@
 
 <div class="container-fluid">
 
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3 filter-label pad-small">
+                    <label class="control-label description-label">Purchase Order:</label>
+                </div>
+                <div class="col-md-4 margin-bottom-10">
+                    <div class="inner-addon right-addon">
+                        <i class="glyphicon blue-unicef"
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <input type="text" id="filter-purchase-order" class="form-control" name="filter"
+                               ng-model="searchTerm.purchaseOrder"
+                               placeholder="All Purchase Orders"/>
+                    </div>
+                </div>
+                <div class="col-md-1 filter-label pad-small">
+                    <label class="control-label description-label">Outcome:</label>
+                </div>
+                <div class="col-md-4 margin-bottom-10" id="filter-programme-container">
+                    <input id="filter-programme" type="hidden" search-programmes ng-model="searchTerm.programmeId"
+                           value="{{ item.programme.id }}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3 filter-label pad-small">
+                    <label class="control-label description-label">Item Description:</label>
+                </div>
+                <div class="col-md-4 margin-bottom-10">
+                    <div class="inner-addon right-addon">
+                        <i class="glyphicon blue-unicef"
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <input type="text" id="filter-item-description" class="form-control" name="filter"
+                               ng-model="searchTerm.itemDescription"
+                               placeholder="Item Description"/>
+                    </div>
+                </div>
+                <div class="col-md-1 filter-label pad-small">
+                    <label class="control-label description-label">District:</label>
+                </div>
+                <div class="col-md-4 margin-bottom-10">
+                    <input id="select-district" class="form-control" type="hidden" placeholder="All Districts"
+                           search-from-list list="$districts" ng-model="searchTerm.selectedLocation">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row filter-bar">
-        <div class="col-xs-4 text-muted">
+        <div class="col-md-4 text-muted">
             <ul class="list-inline">
                 <li>
                     <span class="glyphicon glyphicon-ok text-success pad-right-5"></span>Fully Tracked
@@ -17,93 +71,97 @@
                 </li>
             </ul>
         </div>
-
-        <div class="col-xs-4 pull-right">
-            <div class="col-md-6 pad-small">
-                <span class="input-group" eums-date-picker>
-                    <input type="text"
-                           class="form-control white-bg"
-                           datepicker-popup="dd-MMM-yyyy"
-                           ng-model="fromDate"
-                           is-open="datepicker[0]"
-                           datepicker-options="dateOptions"
-                           show-button-bar="false"
-                           ng-required="true"
-                           ng-disabled="false"
-                           placeholder="From Shipment Date"
-                           required="required"
-                           value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
-                        <span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="open($event, 0)">
-                              <i class="glyphicon glyphicon-calendar"></i>
-                          </button>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3 filter-label pad-small">
+                    <label class="control-label description-label">Last Shipment Date:</label>
+                </div>
+                <div class="col-md-2 pad-right-5">
+                        <span class="input-group" eums-date-picker>
+                            <input type="text"
+                                   class="form-control white-bg"
+                                   datepicker-popup="dd-MMM-yyyy"
+                                   ng-model="searchTerm.fromDate"
+                                   is-open="datepicker[0]"
+                                   datepicker-options="dateOptions"
+                                   show-button-bar="false"
+                                   ng-required="true"
+                                   ng-disabled="false"
+                                   placeholder="From"
+                                   required="required"
+                                   value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default" ng-click="open($event, 0)">
+                                      <i class="glyphicon glyphicon-calendar"></i>
+                                  </button>
+                                </span>
                         </span>
-                </span>
-            </div>
-            <div class="col-md-6 pad-small">
-                <span class="input-group" eums-date-picker>
-                    <input type="text" class="form-control white-bg"
-                           datepicker-popup="dd-MMM-yyyy"
-                           ng-model="toDate"
-                           is-open="datepicker[1]"
-                           datepicker-options="dateOptions"
-                           show-button-bar="false"
-                           ng-required="true"
-                           ng-disabled="false"
-                           placeholder="To Shipment Date"
-                           required="required"
-                           value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
-                        <span class="input-group-btn">
-                          <button type="button"
-                                  class="btn btn-default"
-                                  ng-click="open($event, 1)">
-                              <i class="glyphicon glyphicon-calendar"></i>
-                          </button>
+                </div>
+                <div class="col-md-2 pad-left-5">
+                        <span class="input-group" eums-date-picker>
+                            <input type="text"
+                                   class="form-control white-bg"
+                                   datepicker-popup="dd-MMM-yyyy"
+                                   ng-model="searchTerm.toDate"
+                                   is-open="datepicker[1]"
+                                   datepicker-options="dateOptions"
+                                   show-button-bar="false"
+                                   ng-required="true"
+                                   ng-disabled="false"
+                                   placeholder="To"
+                                   required="required"
+                                   value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
+                                <span class="input-group-btn">
+                                  <button type="button"
+                                          class="btn btn-default"
+                                          ng-click="open($event, 1)">
+                                      <i class="glyphicon glyphicon-calendar"></i>
+                                  </button>
+                                </span>
                         </span>
-                </span>
-            </div>
-        </div>
-        <div class="col-xs-3 pull-right">
-            <div class="inner-addon right-addon">
-                <i class="glyphicon glyphicon-search blue-unicef"></i>
-                <input type="text"
-                       id="filter"
-                       class="form-control"
-                       name="filter"
-                       ng-model="query"
-                       placeholder="Search by purchase order number"/>
+                </div>
+                <div class="col-md-1 filter-label pad-small">
+                    <label class="control-label description-label">IP:</label>
+                </div>
+                <div class="col-md-4 margin-bottom-10" id="filter-ip-container">
+                    <input id="filter-by-ip" type="hidden" select-i-p ng-model="searchTerm.ipId"
+                           value="{{ item.consignee.id }}">
+                </div>
             </div>
         </div>
     </div>
 
     <div class="table-wrapper">
         <table si-table class="table table-bordered table-hover table-striped delivery">
-            <thead ng-init="initialize()">
+            <thead>
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
-                <th><a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
+                <th>
+                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
                             ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
-                <th><a ng-click="sortBy('date')">{{ dateColumnTitle }} <i
-                            ng-class="sortArrowClass('date');"></i></a>
+                <th>
+                    <a ng-click="sortBy('date')">{{ dateColumnTitle }} <i ng-class="sortArrowClass('date');"></i></a>
                 </th>
-                <th><a ng-click="sortBy('trackedDate')">{{ trackedDateColumnTitle }} <i
+                <th>
+                    <a ng-click="sortBy('trackedDate')">{{ trackedDateColumnTitle }} <i
                             ng-class="sortArrowClass('trackedDate');"></i></a>
                 </th>
-                <th><a ng-click="sortBy('lastShipmentDate')">{{ lastShipmentDateColumnTitle }} <i
+                <th>
+                    <a ng-click="sortBy('lastShipmentDate')">{{ lastShipmentDateColumnTitle }} <i
                             ng-class="sortArrowClass('lastShipmentDate');"></i></a>
                 </th>
-                <th><a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i
-                            ng-class="sortArrowClass('poType');"></i></a>
+                <th>
+                    <a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i ng-class="sortArrowClass('poType');"></i></a>
                 </th>
-                <th>{{ outcomeColumnTitle }}
+                <th>
+                    {{ outcomeColumnTitle }}
                 </th>
                 <th class="col-xs-4 aligned-left" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
                 </th>
             </tr>
             </thead>
-
             <tbody>
             <tr si-sortable="single"
                 ng-repeat="purchaseOrder in purchaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
@@ -113,9 +171,7 @@
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
                     <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
-
                     <div class="modal fade text-left" id="select-modal-{{ purchaseOrder.id }}">
-
                         <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">
                                 <div class="modal-header">
@@ -155,7 +211,6 @@
                             </div>
                         </div>
                     </div>
-
                 </td>
                 <td data-header="Date Created">
                     {{ purchaseOrder.date | date : 'dd-MMM-yyyy' }}

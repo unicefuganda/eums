@@ -84,7 +84,6 @@ describe('ItemFeedbackReportController', function () {
                 ip: 2
             }, 1);
         });
-
     });
 
     describe('on paginate', function () {
@@ -103,5 +102,4 @@ describe('ItemFeedbackReportController', function () {
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
         });
     });
-
 });

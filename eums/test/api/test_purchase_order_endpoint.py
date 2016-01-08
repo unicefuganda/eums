@@ -38,7 +38,7 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         PurchaseOrderFactory()
         po_two = PurchaseOrderFactory(order_number=12345)
 
-        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?query=123')
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?purchaseOrder=123')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -49,11 +49,29 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         PurchaseOrderFactory()
         po_two = PurchaseOrderFactory(last_shipment_date=date)
 
-        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?from=2014-07-6&to=2016-07-16')
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?fromDate=2014-07-6&to=2016-07-16')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], po_two.id)
+
+    # todo: build sample po data for this test case, filtering by itemDescription & selectedLocation
+    def test_should_get_purchase_orders_without_release_orders_by_multi_search_fields(self):
+        date = datetime.date(2014, 07, 9)
+        PurchaseOrderFactory()
+        po_two = PurchaseOrderFactory(last_shipment_date=date)
+
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'purchaseOrder=201410&'
+                                                  'itemDescription=&'
+                                                  'fromDate=2014-07-09&'
+                                                  'toDate=2014-07-09&'
+                                                  'programmeId=12&'
+                                                  'selectedLocation=&'
+                                                  'ipId=')
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
 
     def test_fetched_purchase_orders_should_have_programme_name_and_programme_id(self):
         programme = ProgrammeFactory()

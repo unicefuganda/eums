@@ -3,14 +3,14 @@ describe('DirectDeliveryController', function () {
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
     var mockContactService, mockProgrammeService, mockPurchaseOrderService,
-        mockLoaderService, mockSortByService, mockSortArrowService;
+        mockLoaderService, mockSortService, mockSortArrowService;
     var deferred, deferredPlan, deferredPurchaseOrder, mockExportDeliveryService, mockToast,
         deferredSortResult, deferredSortArrowResult, deferredExportResult, timeout;
 
     var programmeOne = {
-        id: 1, name: 'Test Programme'
+        id: 1,
+        name: 'Test Programme'
     };
-
     var purchaseOrderOne = {
         id: 1,
         'order_number': '00001',
@@ -49,7 +49,6 @@ describe('DirectDeliveryController', function () {
             mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
 
             timeout = $timeout;
-
             location = $location;
             scope = $rootScope.$new();
             sorter = $sorter;
@@ -77,13 +76,11 @@ describe('DirectDeliveryController', function () {
     describe('when initialized', function () {
         xit('should set all sales orders on initialize to the scope', function () {
             deferredPurchaseOrder.resolve(purchaseOrderDetails);
-            scope.initialize();
             scope.$apply();
             expect(scope.salesOrders).toEqual(purchaseOrderDetails);
         });
 
         it('should show loader', function () {
-            scope.initialize();
             scope.$apply();
             expect(mockLoaderService.showLoader).toHaveBeenCalled();
             expect(mockLoaderService.hideLoader).not.toHaveBeenCalled();
@@ -115,7 +112,7 @@ describe('DirectDeliveryController', function () {
             expect(location.path()).toBe('/direct-delivery/new/1/multiple');
         });
 
-        it('should not show modal if purchase order is multiple and redirect', function(){
+        it('should not show modal if purchase order is multiple and redirect', function () {
             purchaseOrderOne.isSingleIp = false;
             scope.selectPurchaseOrder(purchaseOrderOne);
             expect(mockLoaderService.showModal).not.toHaveBeenCalled();
@@ -123,7 +120,7 @@ describe('DirectDeliveryController', function () {
 
         });
 
-        it('should not show modal if purchase order is multiple and redirect', function(){
+        it('should not show modal if purchase order is multiple and redirect', function () {
             purchaseOrderOne.isSingleIp = true;
             scope.selectPurchaseOrder(purchaseOrderOne);
             expect(mockLoaderService.showModal).not.toHaveBeenCalled();
@@ -132,64 +129,140 @@ describe('DirectDeliveryController', function () {
         })
     });
 
-    describe('when filtered by date range', function () {
-        it('should not filter empty when query, fromDate and toDate are empty', function () {
+    describe('when filtered by last shipment date range', function () {
+        beforeEach(function () {
+            scope.searchTerm = {};
             scope.$apply();
-
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(0);
+            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
         });
 
-        it('should filter fromDate when toDate is empty', function () {
+        it('should perform filtering with fromDate while toDate is empty', function () {
+            scope.searchTerm.fromDate = '2014-07-07';
             scope.$apply();
-            scope.fromDate = '2014-07-07';
-            scope.$apply();
-            timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2014-07-07' }));
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({fromDate: '2014-07-07'}));
         });
 
-        it('should filter toDate when fromDate is empty', function () {
+        it('should perform filtering with toDate while fromDate is empty', function () {
+            scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
-            scope.toDate = '2014-07-07';
-            scope.$apply();
-            timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ to: '2014-07-07' }));
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({toDate: '2014-07-07'}));
         });
 
-        it('should filter deliveries when date range is given', function () {
+        it('should perform filtering when the date range is given', function () {
+            scope.searchTerm.fromDate = '2014-05-07';
+            scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
-            scope.fromDate = '2014-05-07';
-            scope.toDate = '2014-07-07';
-            scope.$apply();
-            timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2014-05-07', to: '2014-07-07' }));
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                fromDate: '2014-05-07',
+                toDate: '2014-07-07'
+            }));
         });
 
-        it('should format dates before filtering deliveries ', function () {
+        it('should format dates before filtering', function () {
+            scope.searchTerm.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
+            scope.searchTerm.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
             scope.$apply();
-            scope.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
-            scope.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
-            scope.$apply();
-            timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2015-08-30', to: '2015-09-10' }));
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                fromDate: '2015-08-30',
+                toDate: '2015-09-10'
+            }));
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
+            scope.searchTerm.purchaseOrder = 'wakiso';
             scope.$apply();
-            scope.query = 'wakiso programme';
-            scope.fromDate = '2014-05-07';
+            scope.searchTerm.fromDate = '2014-05-07';
+            scope.$apply();
+
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: 'wakiso',
+                fromDate: '2014-05-07',
+            }))
+        });
+    });
+
+    describe('when filtered by other fields', function () {
+        beforeEach(function () {
+            scope.searchTerm = {};
+            scope.$apply();
+            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
+        });
+
+        it('should perform filtering when purchase order is given', function () {
+            scope.searchTerm.purchaseOrder = '00001';
             scope.$apply();
             timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2014-05-07', query: 'wakiso programme' }))
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: '00001',
+            }));
+        });
+
+        it('should perform filtering when item description is given', function () {
+            scope.searchTerm.itemDescription = 'Leaflet 2013';
+            scope.$apply();
+            timeout.flush();
+
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                itemDescription: 'Leaflet 2013',
+            }));
+        });
+
+        it('should perform filtering when outcome/programme is selected', function () {
+            scope.searchTerm.programmeId = '5';
+            scope.$apply();
+
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                programmeId: '5',
+            }));
+        });
+
+        it('should perform filtering when district is selected', function () {
+            scope.searchTerm.selectedLocation = 'Adjumani';
+            scope.$apply();
+
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                selectedLocation: 'Adjumani',
+            }));
+        });
+
+        it('should perform filtering when IP is selected', function () {
+            scope.searchTerm.ipId = '3';
+            scope.$apply();
+
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                ipId: '3',
+            }));
+        });
+
+        it('should perform filtering when multi-fields are specified', function () {
+            scope.searchTerm.purchaseOrder = '00001';
+            scope.searchTerm.itemDescription = 'Leaflet 2013';
+            scope.searchTerm.fromDate = '2014-05-07';
+            scope.searchTerm.toDate = '2014-07-07';
+            scope.searchTerm.programmeId = '5';
+            scope.searchTerm.selectedLocation = 'Adjumani';
+            scope.searchTerm.ipId = '3';
+            scope.$apply();
+            timeout.flush();
+
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: '00001',
+                itemDescription: 'Leaflet 2013',
+                fromDate: '2014-05-07',
+                toDate: '2014-07-07',
+                programmeId: '5',
+                selectedLocation: 'Adjumani',
+                ipId: '3',
+            }));
         });
     });
 
     describe('exporter to CSV', function () {
-
         it('should call the exporter direct deliveries to exporter', function () {
             scope.exportToCSV();
             expect(mockExportDeliveryService.export).toHaveBeenCalledWith('direct');
@@ -207,6 +280,7 @@ describe('DirectDeliveryController', function () {
                 class: 'info'
             });
         });
+
         it('should show toast with error message', function () {
             deferredExportResult.reject({status: 500});
 
@@ -217,6 +291,5 @@ describe('DirectDeliveryController', function () {
                 class: 'danger'
             });
         });
-
     });
 });

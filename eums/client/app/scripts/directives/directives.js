@@ -357,18 +357,18 @@ angular.module('Directives', ['eums.ip'])
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {
                 Promise.resolve([
-                    {id: 'IMPLEMENTING_PARTNER', text: 'IP'},
-                    {id: 'MIDDLE_MAN', text: 'Sub-consignee'},
-                    {id: 'END_USER', text: 'End-user'}])
+                        {id: 'IMPLEMENTING_PARTNER', text: 'IP'},
+                        {id: 'MIDDLE_MAN', text: 'Sub-consignee'},
+                        {id: 'END_USER', text: 'End-user'}])
                     .then(function (treePositions) {
                         return treePositions;
                     }).then(function (data) {
-                        $(elem).select2({
-                            placeholder: 'Recipient Type',
-                            allowClear: true,
-                            data: data
-                        });
+                    $(elem).select2({
+                        placeholder: 'Recipient Type',
+                        allowClear: true,
+                        data: data
                     });
+                });
 
                 elem.change(function () {
                     var recipientType = $(elem).select2('data');
@@ -391,7 +391,7 @@ angular.module('Directives', ['eums.ip'])
                     var originOptions = _.uniq(options, function (option) {
                         return option.text;
                     });
-                    return _.reject(originOptions, function(option) {
+                    return _.reject(originOptions, function (option) {
                         return option.text == 'UNCATEGORISED';
                     });
                 }).then(function (data) {

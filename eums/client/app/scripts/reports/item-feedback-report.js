@@ -8,14 +8,13 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                                                           ReportService, LoaderService, ErrorMessageService, SortService, ContactService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
+        var initializing = true;
 
         $scope.searchTerm = {};
+        $scope.sortTerm = {field: 'dateOfReceipt', order: 'desc'};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
-        $scope.sortTerm = {field: 'dateOfReceipt', order: 'desc'};
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
-
-        var initializing = true;
 
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
@@ -24,13 +23,12 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 initializing = false;
             } else {
                 $scope.searching = true;
-
                 if (timer) {
                     $timeout.cancel(timer);
                 }
 
-                if (oldSearchTerm.itemDescription != newSearchTerm.itemDescription
-                    || oldSearchTerm.poWaybill != newSearchTerm.poWaybill) {
+                if (oldSearchTerm.itemDescription != newSearchTerm.itemDescription ||
+                    oldSearchTerm.poWaybill != newSearchTerm.poWaybill) {
                     startTimer();
                 } else {
                     loadItemFeedbackReport();
@@ -67,6 +65,16 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.formatDate = function (date) {
             return SysUtilsService.formatDate(date);
         };
+
+        $scope.exportToCSV = function () {
+            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm());
+            ReportService.exportItemFeedbackReport(allFilters).then(function (response) {
+                ngToast.create({content: response.message, class: 'info'});
+            }, function () {
+                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                ngToast.create({content: errorMessage, class: 'danger'})
+            });
+        }
 
         function startTimer() {
             timer = $timeout(function () {
@@ -132,19 +140,4 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         function getSortTerm() {
             return $scope.sortTerm;
         }
-
-        $scope.exportToCSV = function () {
-            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm());
-            ReportService.exportItemFeedbackReport(allFilters).then(function (response) {
-                ngToast.create({content: response.message, class: 'info'});
-            }, function () {
-                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
-                ngToast.create({content: errorMessage, class: 'danger'})
-            });
-        }
-
-        $scope.showAdditionalRemarks = function (msg) {
-            $scope.additional_remarks = msg;
-            LoaderService.showModal("additional-remarks-modal-dialog");
-        };
     });
