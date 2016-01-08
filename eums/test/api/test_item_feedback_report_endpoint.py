@@ -79,6 +79,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertFieldExists({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertFieldExists({'value': node_one.total_value}, results)
         self.assertFieldExists({'tree_position': node_one.tree_position}, results)
+        self.assertFieldExists({'additional_remarks': node_one.additional_remarks}, results)
         self.assertGreaterEqual(len(results[0]['answers']), 3)
 
     def assertFieldExists(self, field, value_list):

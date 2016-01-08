@@ -77,11 +77,12 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
     def test_should_filter_distribution_plan_nodes_by_contact_person_id(self):
         contact_person_id = '8541BD02-E862-48FD-952D-470445347DAE'
         DeliveryNodeFactory()
-        node = DeliveryNodeFactory(contact_person_id=contact_person_id)
+        node = DeliveryNodeFactory(contact_person_id=contact_person_id, additional_remarks='It is very good')
         self.assertEqual(DeliveryNode.objects.count(), 2)
         response = self.client.get('%s?contact_person_id=%s' % (ENDPOINT_URL, contact_person_id))
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], node.id)
+        self.assertEqual(response.data[0]['additional_remarks'], node.additional_remarks)
 
     def test_should_create_delivery_node_without_parents_with_quantity(self):
         self.node_details['quantity'] = 100
@@ -90,7 +91,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         node = DeliveryNode.objects.get(pk=response.data['id'])
 
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(node.quantity_in(), 100)
+        self.assertTrue(node.quantity_in(), 100)\
 
     def test_should_create_delivery_node_with_parents(self):
         node_one = DeliveryNodeFactory()
@@ -206,13 +207,17 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertItemsEqual([300, 200], node_order_numbers)
 
     def test_should_filter_out_distributable_nodes(self):
-        distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee, tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+        distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee,
+                                                   tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         delivery = DeliveryFactory(confirmed=True)
-        distributable_confirmed_parent = DeliveryNodeFactory(quantity=50, consignee=self.consignee, distribution_plan=delivery,
-                                                             acknowledged=50, tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+        distributable_confirmed_parent = DeliveryNodeFactory(quantity=50, consignee=self.consignee,
+                                                             distribution_plan=delivery,
+                                                             acknowledged=50,
+                                                             tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(parents=[(distributable_parent, 50)])
         DeliveryNodeFactory(parents=[(distributable_confirmed_parent, 30)])
-        closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee, tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+        closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee,
+                                            tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(parents=[(closed_parent, 80)])
 
         self.logout()
@@ -283,10 +288,10 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
 
 def test_returned_nodes_should_have_order_type_field(self):
-        po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
-        ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))
+    po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
+    ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))
 
-        response = self.client.get(ENDPOINT_URL)
-        node_order_types = [node['order_type'] for node in response.data]
+    response = self.client.get(ENDPOINT_URL)
+    node_order_types = [node['order_type'] for node in response.data]
 
-        self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)
+    self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)
