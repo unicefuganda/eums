@@ -1,9 +1,7 @@
 import json
-
 import requests
 from celery.utils.log import get_task_logger
 from django.conf import settings
-
 from eums.models import Flow
 from eums.rapid_pro.exception.rapid_pro_exception import FlowLabelNonExistException
 from eums.rapid_pro.flow_request_template import FlowRequestTemplate
@@ -15,6 +13,19 @@ logger = get_task_logger(__name__)
 
 
 class RapidProService(object):
+    rapid_pro_label_map = {
+        'IMPLEMENTING_PARTNER': 'IMPLEMENTING_PARTNER',
+        'MIDDLE_MAN': 'SUB_CONSIGNEES',
+        'END_USER': 'END_USER'
+    }
+
+    @staticmethod
+    def rapid_pro_label(flow_label):
+        if flow_label in RapidProService.rapid_pro_label_map:
+            return RapidProService.rapid_pro_label_map[flow_label]
+        else:
+            return None
+
     def __init__(self):
         super(RapidProService, self).__init__()
         self.cache = InMemoryCache()
@@ -41,10 +52,11 @@ class RapidProService(object):
 
     def flow_id(self, flow):
         self.__sync_if_required()
-
-        for flow_id, labels in self.cache.flow_label_mapping.iteritems():
-            if flow.label in labels:
-                return flow_id
+        rapid_pro_flow_label = RapidProService.rapid_pro_label(flow.label)
+        if rapid_pro_flow_label is not None:
+            for flow_id, labels in self.cache.flow_label_mapping.iteritems():
+                if rapid_pro_flow_label in labels:
+                    return flow_id
 
         raise FlowLabelNonExistException()
 

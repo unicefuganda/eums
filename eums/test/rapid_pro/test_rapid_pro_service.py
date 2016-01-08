@@ -1,6 +1,7 @@
 import json
 import os
 from unittest import TestCase
+
 import requests
 from django.conf import settings
 from mock import patch, MagicMock
@@ -55,3 +56,13 @@ class TestRapidProService(TestCase):
         requests.get.assert_called_with(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER)
 
         mock_filter.assert_called_with(label__in=[Flow.Label.IMPLEMENTING_PARTNER])
+
+    @patch('eums.rapid_pro.rapid_pro_service.logger.info')
+    def test_should_get_middle_man_flow_id(self, _):
+        requests.get = MagicMock(return_value=self.response)
+        self.rapid_pro_service.flow(FLOW_ID)
+        mock_flow = MagicMock(label='MIDDLE_MAN')
+
+        flow_id = self.rapid_pro_service.flow_id(mock_flow)
+
+        self.assertEquals(flow_id, 19773)

@@ -8,7 +8,9 @@
       "archived": false,
       "expires": 30,
       "name": "EUMS IP & Sub-consignees",
-      "labels": [],
+      "labels": [
+        "SUB_CONSIGNEES"
+      ],
       "participants": 1,
       "runs": 1,
       "completed_runs": 0,
