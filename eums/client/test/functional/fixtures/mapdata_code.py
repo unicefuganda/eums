@@ -144,15 +144,15 @@ MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_que
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_78)
 
 # delivery answers
-TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-02-12', run=run_80)
+TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_80)
 
 MultipleChoiceAnswerFactory(question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'],
                             run=run_81)
-TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-02-12', run=run_81)
+TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_81)
 
 MultipleChoiceAnswerFactory(question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'],
                             run=run_82)
-TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-02-12', run=run_82)
+TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_82)
 
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_83)
 NumericAnswerFactory(question=web_questions.web_question_2, value=80, run=run_83)
