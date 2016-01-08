@@ -51,13 +51,21 @@ class TextQuestion(Question):
         return answer
 
     def __format_date(self, val):
-        is_simple_date_format = re.match('^\d{1,2}/(0?[1-9]|10|11|12)/\d{4}$', val)
         is_complete_date_format = re.search('^\d{4}-(0?[1-9]|10|11|12)-\d{1,2}.*', val)
-        if is_simple_date_format:
-            return datetime.datetime.strptime(val, '%d/%m/%Y').date()
-        elif is_complete_date_format:
+        if is_complete_date_format:
             return val
         else:
+            date_part_matcher = re.search('^\d+[^\d]+\d+[^\d]+\d+', val)
+            if date_part_matcher:
+                raw_date = re.sub(r'[^\d]+', '-',date_part_matcher.group(0))
+
+                date_patterns = ['%d-%m-%Y', '%m-%d-%Y', '%Y-%m-%d']
+                for pattern in date_patterns:
+                    try:
+                        return datetime.datetime.strptime(raw_date, pattern).date()
+                    except StandardError:
+                        pass
+
             return ''
 
 
