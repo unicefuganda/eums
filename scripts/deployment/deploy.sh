@@ -10,14 +10,16 @@ fi
 
 sudo build/deployment/pack_deployment.sh $today
 
+if [ -d ./map ]; then
+    echo "Copying the map file to server ..."
+    sshpass -p "${DEPLOY_USER_PASSWORD}" scp -r map ${DEPLOY_USER}@${DEPLOY_HOST}:/opt/app
+fi
+
 echo "Copying deployment directory to server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" scp -o StrictHostKeyChecking=no deploy_latest.tar.gz ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 
 echo "Copying unpack script to server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" scp build/deployment/unpack_deployment_and_install.sh ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
-
-echo "Copying the map file to server ..."
-sshpass -p "${DEPLOY_USER_PASSWORD}" scp -r map ${DEPLOY_USER}@${DEPLOY_HOST}:/opt/app
 
 echo "running the unpack script via ssh on the server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" ssh ${DEPLOY_USER}@${DEPLOY_HOST} "cd /home/${DEPLOY_USER}/ \
