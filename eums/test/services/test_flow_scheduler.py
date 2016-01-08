@@ -1,6 +1,7 @@
-import unittest
 from unittest import TestCase
 import celery
+import datetime
+from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
 from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
@@ -11,29 +12,42 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
-from eums.models import DistributionPlanNode as Node, Question
+from eums.models import DistributionPlanNode as Node, Question, Runnable, Flow, Run, RunQueue, Alert
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime, FakeDate
-
-mock_celery = MockCelery()
-local_celery.app.task = mock_celery.task
-celery.task.periodic_task = MockPeriodicTask
-
-mocked_create_run = MagicMock()
-rapid_pro_service.create_run = mocked_create_run
-
-from eums.services.flow_scheduler import *
+from eums.services import flow_scheduler as my_flow_scheduler
 
 
-# TODO-RAPID: mock rapid service
-@unittest.skip("not affected by others")
 class FlowSchedulerTest(TestCase):
+    def backup_original_methods(self):
+        self.original_app_task = local_celery.app.task
+        self.original_periodic_task = celery.task.periodic_task
+        self.original_rapid_pro_service_create_run = rapid_pro_service.create_run
+
+    def back_to_original(self):
+        local_celery.app.task = self.original_app_task
+        celery.task.periodic_task = self.original_periodic_task
+        rapid_pro_service.create_run = self.original_rapid_pro_service_create_run
+        self.flow_scheduler = reload(my_flow_scheduler)
+
+    def mock_ready(self):
+        self.mock_celery = MockCelery()
+        local_celery.app.task = self.mock_celery.task
+        celery.task.periodic_task = MockPeriodicTask
+
+        self.mocked_create_run = MagicMock()
+        rapid_pro_service.create_run = self.mocked_create_run
+
+        self.flow_scheduler = reload(my_flow_scheduler)
+
     def setUp(self):
-        settings.RAPIDPRO_LIVE = True
+        self.backup_original_methods()
+        self.mock_ready()
+        self.flow_scheduler.settings.RAPIDPRO_LIVE = True
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
         self.node = NodeFactory()
@@ -51,11 +65,12 @@ class FlowSchedulerTest(TestCase):
         self.IMPLEMENTING_PARTNER_FLOW_ID = 3
 
     def tearDown(self):
-        settings.RAPIDPRO_LIVE = False
+        self.flow_scheduler.settings.RAPIDPRO_LIVE = False
         Flow.objects.all().delete()
         Run.objects.all().delete()
         RunQueue.objects.all().delete()
         Node.objects.all().delete()
+        self.back_to_original()
 
     def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self):
         node = NodeFactory(tree_position=Node.MIDDLE_MAN)
@@ -63,9 +78,9 @@ class FlowSchedulerTest(TestCase):
 
         Runnable.objects.get = MagicMock(return_value=node)
 
-        schedule_run_for(node)
+        self.flow_scheduler.schedule_run_for(node)
 
-        mocked_create_run.assert_called_with(self.contact, self.middle_man_flow, ANY, ANY)
+        self.mocked_create_run.assert_called_with(self.contact, self.middle_man_flow, ANY, ANY)
 
     def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self):
         node = NodeFactory(tree_position=Node.END_USER)
@@ -73,9 +88,9 @@ class FlowSchedulerTest(TestCase):
 
         Runnable.objects.get = MagicMock(return_value=node)
 
-        schedule_run_for(node)
+        self.flow_scheduler.schedule_run_for(node)
 
-        mocked_create_run.assert_called_with(self.contact, self.end_user_flow, ANY, ANY)
+        self.mocked_create_run.assert_called_with(self.contact, self.end_user_flow, ANY, ANY)
 
     def test_should_schedule_implementing_partner_flow_if_runnable_is_delivery(self):
         delivery = DeliveryFactory()
@@ -84,16 +99,16 @@ class FlowSchedulerTest(TestCase):
 
         Runnable.objects.get = MagicMock(return_value=delivery)
 
-        schedule_run_for(delivery)
+        self.flow_scheduler.schedule_run_for(delivery)
 
-        mocked_create_run.assert_called_with(self.contact, self.ip_flow,
-                                             ANY, ANY)
+        self.mocked_create_run.assert_called_with(self.contact, self.ip_flow,
+                                                  ANY, ANY)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         self.node.build_contact = MagicMock(return_value=self.contact)
-        schedule_run_for(self.node)
+        self.flow_scheduler.schedule_run_for(self.node)
 
-        mocked_create_run.assert_called_with(self.contact, ANY, self.node.item.item.description, 'UNICEF')
+        self.mocked_create_run.assert_called_with(self.contact, ANY, self.node.item.item.description, 'UNICEF')
 
     def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
@@ -105,18 +120,18 @@ class FlowSchedulerTest(TestCase):
         Runnable.objects.get = MagicMock(return_value=node)
         node.consignee.build_contact = MagicMock(return_value=self.contact)
 
-        schedule_run_for(node)
+        self.flow_scheduler.schedule_run_for(node)
 
-        mocked_create_run.assert_called_with(self.contact, ANY, node.item.item.description, sender_org_name)
+        self.mocked_create_run.assert_called_with(self.contact, ANY, node.item.item.description, sender_org_name)
 
     def test_should_save_a_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
-        schedule_run_for(self.node)
+        self.flow_scheduler.schedule_run_for(self.node)
 
         run_set = self.node.run_set.all()
 
         self.assertEqual(len(run_set), 1)
         self.assertEqual(run_set[0].phone, self.contact['phone'])
-        self.assertEqual(run_set[0].scheduled_message_task_id, mock_celery.task_id)
+        self.assertEqual(run_set[0].scheduled_message_task_id, self.mock_celery.task_id)
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         with patch('eums.services.flow_scheduler.datetime') as mock_datetime:
@@ -125,25 +140,25 @@ class FlowSchedulerTest(TestCase):
             mock_datetime.datetime.min.time.side_effect = datetime.datetime.min.time
             mock_datetime.timedelta.side_effect = datetime.timedelta
 
-            schedule_run_for(self.node)
+            self.flow_scheduler.schedule_run_for(self.node)
 
-            self.assertEqual(mock_celery.invoked_after, 604800.0)
+            self.assertEqual(self.mock_celery.invoked_after, 604800.0)
 
     def test_should_schedule_flow_to_start_after_buffer_when_calculated_send_time_is_in_past(self):
         some_date = FakeDate.today() - datetime.timedelta(days=10)
         node = NodeFactory(delivery_date=some_date)
         node.build_contact = MagicMock(return_value=self.contact)
 
-        schedule_run_for(node)
+        self.flow_scheduler.schedule_run_for(node)
 
-        self.assertEqual(mock_celery.invoked_after, 10.0)
+        self.assertEqual(self.mock_celery.invoked_after, 10.0)
 
     def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node(self):
         run = RunFactory(runnable=self.node)
 
         self.node.current_run = MagicMock(return_value=run)
 
-        schedule_run_for(self.node)
+        self.flow_scheduler.schedule_run_for(self.node)
 
         self.assertEqual(run.status, Run.STATUS.cancelled)
 
@@ -153,7 +168,7 @@ class FlowSchedulerTest(TestCase):
         RunFactory(runnable=self.node, status=Run.STATUS.completed)
         self.assertEqual(Run.objects.count(), 1)
 
-        schedule_run_for(self.node)
+        self.flow_scheduler.schedule_run_for(self.node)
         self.assertEqual(Run.objects.count(), 1)
         self.assertEqual(Run.objects.filter(runnable=self.node, status=Run.STATUS.scheduled).count(), 0)
 
@@ -164,7 +179,7 @@ class FlowSchedulerTest(TestCase):
         node_two = NodeFactory(contact_person_id=self.node.contact_person_id)
         node_two.build_contact = MagicMock(return_value=self.contact)
         mock_run_queue_enqueue.return_value = None
-        schedule_run_for(node_two)
+        self.flow_scheduler.schedule_run_for(node_two)
 
         mock_run_queue_enqueue.assert_called_with(node_two, ANY)
 
@@ -173,7 +188,7 @@ class FlowSchedulerTest(TestCase):
         run = RunFactory()
         mock_get_overdue_runs.return_value = [run]
 
-        expire_overdue_runs()
+        self.flow_scheduler.expire_overdue_runs()
 
         mock_get_overdue_runs.assert_called()
         self.assertEqual(run.status, Run.STATUS.expired)
@@ -193,7 +208,7 @@ class FlowSchedulerTest(TestCase):
         mock_schedule_run_for.return_value = None
         mock_deque.return_value = run_queue_item
 
-        expire_overdue_runs()
+        self.flow_scheduler.expire_overdue_runs()
 
         mock_deque.assert_called_with(self.node.contact_person_id)
         mock_schedule_run_for.assert_called_with(run_queue_item.runnable)
@@ -209,11 +224,11 @@ class FlowSchedulerTest(TestCase):
 
     def test_is_distribution_expired_alert_not_raised_should_return_true(self):
         alert = AlertFactory(issue=Alert.ISSUE_TYPES.not_received)
-        self.assertTrue(is_distribution_expired_alert_not_raised(alert.runnable))
+        self.assertTrue(self.flow_scheduler.is_distribution_expired_alert_not_raised(alert.runnable))
 
     def test_is_distribution_expired_alert_not_raised_should_return_false(self):
         alert = AlertFactory(issue=Alert.ISSUE_TYPES.distribution_expired)
-        self.assertFalse(is_distribution_expired_alert_not_raised(alert.runnable))
+        self.assertFalse(self.flow_scheduler.is_distribution_expired_alert_not_raised(alert.runnable))
 
     def test_is_shipment_received_but_not_distributed_should_return_true(self):
         delivery = DeliveryFactory()
@@ -224,7 +239,7 @@ class FlowSchedulerTest(TestCase):
         DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
-        self.assertTrue(is_shipment_received_but_not_distributed(delivery))
+        self.assertTrue(self.flow_scheduler.is_shipment_received_but_not_distributed(delivery))
 
     def test_is_shipment_received_but_not_distributed_should_return_false(self):
         delivery = DeliveryFactory()
@@ -235,19 +250,19 @@ class FlowSchedulerTest(TestCase):
         DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
-        self.assertFalse(is_shipment_received_but_not_distributed(delivery))
+        self.assertFalse(self.flow_scheduler.is_shipment_received_but_not_distributed(delivery))
 
     def test_is_distribution_expired_should_return_true(self):
         delivery = DeliveryFactory(time_limitation_on_distribution=3)
         self.__prepare_for_is_distribution_expired_test(delivery)
 
-        self.assertTrue(is_distribution_expired(delivery))
+        self.assertTrue(self.flow_scheduler.is_distribution_expired(delivery))
 
     def test_is_distribution_expired_should_return_false(self):
         delivery = DeliveryFactory(time_limitation_on_distribution=7)
         self.__prepare_for_is_distribution_expired_test(delivery)
 
-        self.assertFalse(is_distribution_expired(delivery))
+        self.assertFalse(self.flow_scheduler.is_distribution_expired(delivery))
 
     def __prepare_for_is_distribution_expired_test(self, delivery):
         flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)

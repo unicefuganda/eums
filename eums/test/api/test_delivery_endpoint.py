@@ -1,9 +1,6 @@
 import datetime
 import logging
-import unittest
-
 from mock import patch
-
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
     DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Flow, SystemSettings, ReleaseOrder, ReleaseOrderItem, \
     OrderItem, Item, Run, Runnable, RunQueue
@@ -32,7 +29,6 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 logger = logging.getLogger(__name__)
 
 
-@unittest.skip("not affected others")
 class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
     @classmethod
     def setUpClass(cls):
@@ -42,10 +38,6 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         super(DeliveryEndPointTest, self).setUp()
         self.clean_up()
         SystemSettingsFactory()
-        self.mock_start_flow_run_for = patch('eums.services.flow_scheduler.schedule_run_directly_for')
-        self.mock_start_flow_run_for.start()
-        self.MockClass = self.mock_start_flow_run_for.start()
-        self.addCleanup(self.mock_start_flow_run_for.stop)
 
     def tearDown(self):
         self.clean_up()
@@ -491,7 +483,8 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertNotIn(first_delivery.id, ids)
         self.assertIn(second_delivery.id, ids)
 
-    def test_should_set_retriggered_flag_on_retrigger_delivery(self):
+    @patch("eums.services.flow_scheduler.schedule_run_directly_for")
+    def test_should_set_retriggered_flag_on_retrigger_delivery(self, _):
         delivery = DeliveryFactory(is_retriggered=False)
         response = self.client.patch('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'retrigger_delivery'))
         self.assertEqual(response.status_code, 200)

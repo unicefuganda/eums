@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 import datetime
 import logging
-
 from celery.schedules import crontab
 from celery.task import periodic_task
 from django.conf import settings
@@ -87,8 +86,8 @@ def distribution_alert_raise():
 
 def is_distribution_expired_alert_not_raised(runnable):
     logger.info('is_distribution_expired_alert_not_raised:' + str(
-            not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired,
-                                     runnable=runnable)))
+        not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired,
+                                 runnable=runnable)))
     return not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired,
                                     runnable=runnable)
 
@@ -98,8 +97,8 @@ def is_shipment_received_but_not_distributed(distribution_plan):
     not_distributed = DistributionPlanNode.objects.filter(Q(distribution_plan_id=runnable_id) & (
         Q(tree_position=Flow.Label.MIDDLE_MAN) | Q(tree_position=Flow.Label.END_USER))).count() == 0
     logger.info(
-            'is_shipment_received_but_not_distributed:' + str(
-                    distribution_plan.shipment_received() and not_distributed))
+        'is_shipment_received_but_not_distributed:' + str(
+            distribution_plan.shipment_received() and not_distributed))
     return distribution_plan.shipment_received() and not_distributed
 
 
@@ -109,7 +108,7 @@ def is_distribution_expired(distribution_plan):
     if time_limitation and date_received_str:
         date_received = datetime.datetime.strptime(date_received_str.split('T')[0], '%Y-%m-%d').date()
         logger.info(
-                'is_distribution_expired:' + str((datetime.date.today() - date_received).days - 2 > time_limitation))
+            'is_distribution_expired:' + str((datetime.date.today() - date_received).days - 2 > time_limitation))
         if (datetime.date.today() - date_received).days - 2 >= time_limitation:
             return True
     return False

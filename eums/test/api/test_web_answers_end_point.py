@@ -1,13 +1,10 @@
 import datetime as datetime
 import json
-import unittest
-
 from django.db.models import Q
 from mock import MagicMock, patch
 from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
     NumericAnswer, Alert, RunQueue, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
-
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -21,7 +18,7 @@ from eums.test.factories.question_factory import TextQuestionFactory, MultipleCh
 
 ENDPOINT_URL = BACKEND_URL + 'web-answers'
 
-@unittest.skip("not affected others")
+
 class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(WebAnswerEndpointTest, self).setUp()
@@ -289,4 +286,4 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
                                    status=Run.STATUS.scheduled, phone=contact['phone'] if contact else None)
 
     def __get_current_date(self):
-        return datetime.datetime.strftime(datetime.datetime.now().date(),'%Y-%m-%d')
+        return datetime.datetime.strftime(datetime.datetime.now().date(), '%Y-%m-%d')
