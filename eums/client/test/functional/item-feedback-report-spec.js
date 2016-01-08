@@ -6,27 +6,6 @@ var ftUtils = require('./functional-test-utils.js');
 
 describe('Item Feedback Report', function () {
 
-    it('should show the Item Feedback report', function () {
-        loginPage.visit();
-        loginPage.loginAs('admin', 'admin');
-        itemFeedbackReport.visit();
-
-        expect(itemFeedbackReport.itemDescriptions).toContain('MUAC,Child 11.5 Red/PAC-50');
-        expect(itemFeedbackReport.programmes).toContain('YI107 - PCR 3 KEEP CHILDREN SAFE');
-        expect(itemFeedbackReport.implementingPartners).toContain('WAKISO DHO');
-        expect(itemFeedbackReport.consignees).toContain('WAKISO DHO');
-        expect(itemFeedbackReport.orderNumbers).toContain('12345');
-        expect(itemFeedbackReport.quantitiesShipped).toContain('700');
-        expect(itemFeedbackReport.values).toContain('$42.86');
-        expect(itemFeedbackReport.amountReceived).toContain('50');
-        expect(itemFeedbackReport.dateOfReceipt).toContain('02-Dec-2015');
-
-        expect(itemFeedbackReport.productReceived).toContain('YES');
-        expect(itemFeedbackReport.qualityOfProduct).toContain('GOOD');
-        expect(itemFeedbackReport.satisfiedWithProduct).toContain('glyphicon glyphicon-size-17 glyphicon-top-5 glyphicon-ok-sign eums-text-color-ok');
-        expect(itemFeedbackReport.satisfiedWithProduct).toContain('glyphicon glyphicon-size-17 glyphicon-top-5 glyphicon-remove-sign eums-text-color-no');
-    });
-
     it('should search the Item report by item description', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
