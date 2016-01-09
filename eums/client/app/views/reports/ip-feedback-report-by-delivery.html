@@ -21,49 +21,43 @@
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Outcome:</label>
                     </div>
-
-                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-programme-container">
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-programme-container">
                         <input id="filter-programme" type="hidden" search-programmes
                                ng-model="searchTerm.programmeId"
                                value="{{ item.programme.id }}">
                     </div>
-
-
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Received:</label>
                     </div>
-                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-received-container">
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-received-container">
                         <input id="filter-by-received" type="hidden" placeholder="Received"
                                select-option="delivery received"
                                ng-model="searchTerm.received">
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">IP:</label>
                     </div>
-                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-consignee-container">
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-consignee-container">
                         <input id="filter-by-consignee" type="hidden" select-i-p
                                ng-model="searchTerm.consigneeId"
                                value="{{ item.consignee.id }}">
                     </div>
-
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Satisfied:</label>
                     </div>
-                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-satisfied-container">
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-satisfied-container">
                         <input id="filter-by-satisfied" type="hidden" placeholder="Satisfied"
                                select-option="delivery satisfied"
                                ng-model="searchTerm.satisfied">
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">PO or Waybill:</label>
                     </div>
-                    <div class="col-xs-3 margin-bottom-20 pad-small">
+                    <div class="col-xs-3 margin-bottom-10 pad-small">
                         <div class="inner-addon right-addon">
                             <i class="glyphicon "
                                ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
@@ -72,11 +66,10 @@
                                    placeholder="PO or Waybill"/>
                         </div>
                     </div>
-
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Condition:</label>
                     </div>
-                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-condition-container">
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-condition-container">
                         <input id="filter-by-condition" type="hidden" placeholder="Good Condition"
                                select-option="delivery good_condition"
                                ng-model="searchTerm.good_condition">
