@@ -8,10 +8,11 @@ rapidpro_token=$3
 email_password=$4
 vision_user=$5
 vision_password=$6
-latitude=$7
-longitude=$8
-level=$9
-time_zone=${10}
+vision_business_area_code=$7
+latitude=$8
+longitude=$9
+level=${10}
+time_zone=${11}
 
 echo "Unpacking deployment directory..."
 tar --force-local -xzvf deploy_latest.tar.gz
@@ -25,4 +26,4 @@ chmod a+x scripts/*.sh
 
 echo "Running install script..."
 scripts/install-image-eums.sh ${hostip} ${rapidpro_token} ${email_password} ${vision_user} \
-${vision_password} ${latitude} ${longitude} ${level} ${time_zone}
+${vision_password} ${vision_business_area_code} ${latitude} ${longitude} ${level} ${time_zone}

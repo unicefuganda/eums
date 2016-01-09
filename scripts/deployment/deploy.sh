@@ -25,7 +25,7 @@ echo "running the unpack script via ssh on the server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" ssh ${DEPLOY_USER}@${DEPLOY_HOST} "cd /home/${DEPLOY_USER}/ \
 && sudo ./unpack_deployment_and_install.sh \
 $today ${CONTACTS_HOST} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} \
-${VISION_USER} ${VISION_PASSWORD} ${MAP_LATITUDE} ${MAP_LONGITUDE} \
+${VISION_USER} ${VISION_PASSWORD} ${VISION_BUSINESS_AREA_CODE} ${MAP_LATITUDE} ${MAP_LONGITUDE} \
 ${MAP_LEVEL} ${TIME_ZONE}"
 
 # uninstall ssh-pass

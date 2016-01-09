@@ -36,13 +36,18 @@ RAPIDPRO_API_TOKEN=$2
 EMAIL_PASSWORD=$3
 VISION_USER=$4
 VISION_PASSWORD=$5
-LATITUDE=$6
-LONGITUDE=$7
-LEVEL=$8
-TIME_ZONE=$9
+VISION_BUSINESS_AREA_CODE=$6
+LATITUDE=$7
+LONGITUDE=$8
+LEVEL=$9
+TIME_ZONE=${10}
 
-if [ -z "$9" ]; then
-    TIME_ZONE='Africa/Kampala'
+if [ -z "$6" ]; then
+    VISION_BUSINESS_AREA_CODE=4380
+fi
+
+if [ -z "${10}" ]; then
+    TIME_ZONE=Africa/Kampala
 fi
 
 USER_DIR=`eval echo ~/`
@@ -59,9 +64,11 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
-/bin/bash -c "opt/scripts/setupmap/setup-map.sh && opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} \
-${EMAIL_PASSWORD} ${VISION_USER} ${VISION_PASSWORD} ${TIME_ZONE} \
-&& /usr/bin/supervisord && service elasticsearch start"
+/bin/bash -c "opt/scripts/setupmap/setup-map.sh \
+&& opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} \
+${VISION_USER} ${VISION_PASSWORD} ${VISION_BUSINESS_AREA_CODE} ${TIME_ZONE} \
+&& /usr/bin/supervisord \
+&& service elasticsearch start"
 
 echo "Cleaning older eums docker images..."
 sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=3 {print$3}' | xargs -I {} sudo docker rmi {} || true

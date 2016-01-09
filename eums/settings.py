@@ -108,8 +108,8 @@ RAPIDPRO_LIVE = False
 VISION_USER = os.getenv('VISION_USER', 'invalid_vision_user')
 VISION_PASSWORD = os.getenv('VISION_PASSWORD', 'invalid_vision_password')
 VISION_URL = 'https://devapis.unicef.org/BIService/BIWebService.svc/'
-VISION_BUSINESS_AREA_CODE = 4380
-VISION_COUNTRY_CODE = 438
+VISION_BUSINESS_AREA_CODE = os.getenv('VISION_BUSINESS_AREA_CODE', 'invalid_code')
+VISION_COUNTRY_CODE = os.getenv('VISION_COUNTRY_CODE', 'invalid_code')
 
 NON_RESPONSE_GRACE_PERIOD = DELIVERY_STATUS_CHECK_DELAY  # in days
 
