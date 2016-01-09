@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DJANGO_SETTINGS_MODULE = os.getenv('DJANGO_SETTINGS_MODULE', 'eums.settings_production')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'invalid_secret_key')
+SECRET_KEY = '3=$_20f=x$+*wp(xm07^8m-n=n2zy+w6hc7u985p@4$wad3q3t'
 
 # SECURITY WARNING: don't run withe debug turned on in production!
 DEBUG = True
