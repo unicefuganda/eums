@@ -62,7 +62,7 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "MAP_LONGITUDE=${LONGITUDE}" \
 -e "MAP_LEVEL=${LEVEL}" \
 -e "TIME_ZONE=${TIME_ZONE}" \
--e "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}"
+-e "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}" \
 -d --name=eums \
 -v ${USER_DIR}/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
