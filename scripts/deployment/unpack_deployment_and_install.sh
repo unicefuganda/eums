@@ -12,7 +12,6 @@ latitude=$7
 longitude=$8
 level=$9
 time_zone=${10}
-django_settings=${11}
 
 echo "Unpacking deployment directory..."
 tar --force-local -xzvf deploy_latest.tar.gz
@@ -26,4 +25,4 @@ chmod a+x scripts/*.sh
 
 echo "Running install script..."
 scripts/install-image-eums.sh ${hostip} ${rapidpro_token} ${email_password} ${vision_user} \
-${vision_password} ${latitude} ${longitude} ${level} ${time_zone} ${django_settings}
+${vision_password} ${latitude} ${longitude} ${level} ${time_zone}

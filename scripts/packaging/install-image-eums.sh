@@ -41,13 +41,6 @@ LONGITUDE=$7
 LEVEL=$8
 TIME_ZONE=$9
 
-if [ ${10} ]
-then
-    DJANGO_SETTINGS_MODULE=${10}
-else
-    DJANGO_SETTINGS_MODULE='eums.settings_production'
-fi
-
 USER_DIR=`eval echo ~/`
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
@@ -60,14 +53,13 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "MAP_LONGITUDE=${LONGITUDE}" \
 -e "MAP_LEVEL=${LEVEL}" \
 -e "TIME_ZONE=${TIME_ZONE}" \
--e "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}" \
 -d --name=eums \
 -v ${USER_DIR}/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
 /bin/bash -c "opt/scripts/setupmap/setup-map.sh && opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} \
-${EMAIL_PASSWORD} ${VISION_USER} ${VISION_PASSWORD} ${DJANGO_SETTINGS_MODULE} \
+${EMAIL_PASSWORD} ${VISION_USER} ${VISION_PASSWORD} \
 && /usr/bin/supervisord && service elasticsearch start"
 
 echo "Cleaning older eums docker images..."
