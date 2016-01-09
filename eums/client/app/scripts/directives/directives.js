@@ -313,7 +313,6 @@ angular.module('Directives', ['eums.ip'])
                     scope.$apply();
                 });
 
-
                 scope.$on('clear-consignee', function () {
                     var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     consigneeSelect2Input.text('');

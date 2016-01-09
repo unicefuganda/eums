@@ -135,8 +135,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
             console.log(allFilters);
             PurchaseOrderService.forDirectDelivery(undefined, allFilters).then(function (response) {
-                console.log("---------------");
-                console.log(response.results);
                 $scope.purchaseOrders = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
@@ -168,10 +166,3 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             return filters;
         }
     });
-
-//$scope.$watch('[fromDate,toDate,query]', function (newValue, oldValue) {
-//    if (angular.equals(newValue, oldValue)) return;
-//    $timeout(function () {
-//        loadPurchaseOrders();
-//    }, 2000);
-//}, true);
