@@ -10,7 +10,7 @@ class ProgrammeSynchronizer(VisionDataSynchronizer):
     REQUIRED_KEYS = ('OUTCOME_DESCRIPTION', 'OUTCOME_WBS')
 
     def __init__(self):
-        super(ProgrammeSynchronizer, self).__init__(ProgrammeSynchronizer.PROGRAMME_URL + str(VISION_BUSINESS_AREA_CODE))
+        super(ProgrammeSynchronizer, self).__init__(ProgrammeSynchronizer.PROGRAMME_URL + VISION_BUSINESS_AREA_CODE)
 
     def _get_json(self, data):
         return [] if data == self.NO_DATA_MESSAGE else data

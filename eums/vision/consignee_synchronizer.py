@@ -10,7 +10,7 @@ class ConsigneeSynchronizer(VisionDataSynchronizer):
     REQUIRED_KEYS = ('CONSIGNEE_NAME', 'CONSIGNEE_CODE')
 
     def __init__(self):
-        super(ConsigneeSynchronizer, self).__init__(self.CONSIGNEE_URL + str(VISION_COUNTRY_CODE))
+        super(ConsigneeSynchronizer, self).__init__(self.CONSIGNEE_URL + VISION_COUNTRY_CODE)
 
     def _get_json(self, data):
         return [] if data == self.NO_DATA_MESSAGE else data
