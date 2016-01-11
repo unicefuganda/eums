@@ -5,22 +5,17 @@
             <li role="presentation" id="delivery-alerts-button"
                 ng-class="{active : isActiveAlertType(constant_type_delivery)}">
                 <a class="btn blue-border-button btn-xs" ng-click="changeAlertType(constant_type_delivery)">Alerts
-                    by
-                    Delivery</a>
+                    by Delivery</a>
             </li>
-            <li role="presentation" id="item-alerts-button" ng-class="{active :  isActiveAlertType(constant_type_item)}"
-                class="pad-left-10">
+            <li role="presentation" id="item-alerts-button" class="pad-left-10"
+                ng-class="{active : isActiveAlertType(constant_type_item)}">
                 <a class="btn blue-border-button btn-xs" ng-click="changeAlertType(constant_type_item)">Alerts
-                    by
-                    Item</a>
+                    by Item</a>
             </li>
-            <li role="presentation" id="distribution-alerts-button"
-                ng-class="{active :  isActiveAlertType(constant_type_distribution)}"
-                class="pad-left-10">
-                <a class="btn blue-border-button btn-xs"
-                   ng-click="changeAlertType(constant_type_distribution)">Alerts
-                    by
-                    Distribution</a>
+            <li role="presentation" id="distribution-alerts-button" class="pad-left-10"
+                ng-class="{active : isActiveAlertType(constant_type_distribution)}">
+                <a class="btn blue-border-button btn-xs" ng-click="changeAlertType(constant_type_distribution)">Alerts
+                    by Distribution</a>
             </li>
         </ul>
     </div>
@@ -90,13 +85,13 @@
                 </td>
                 <td>
                     <span class="glyphicon glyphicon-comment glyphicon-comment-color
-                                        glyphicon-size-17 glyphicon-top-5" ng-click="remark($index)"></span>
+                                 glyphicon-size-17 glyphicon-top-5" ng-click="remark($index)"></span>
                 </td>
                 <td>
                     <button class="btn btn-primary btn-sm resolve-alert-button"
                             ng-if="!alert.isResolved"
                             type="button"
-                            ng-click="setResolve()">
+                            ng-click="setResolve($index)">
                         Resolve
                     </button>
 
@@ -149,7 +144,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade text-left" id="resolve-confirm-modal">
+                    <div class="modal fade text-left" id="resolve-confirm-modal-{{$index}}">
                         <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">
                                 <div class="modal-header">
@@ -171,7 +166,8 @@
                                     <button type="button"
                                             class="btn btn-primary resolve"
                                             ng-click="resolveAlert(alert.id, alert.remarks, true)"
-                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span> Resolve
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span>
+                                        Resolve
                                     </button>
                                 </div>
                             </div>

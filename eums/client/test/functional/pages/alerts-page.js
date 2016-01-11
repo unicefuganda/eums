@@ -29,13 +29,13 @@ AlertsPage.prototype = Object.create({}, {
 
     resolveAlert: { value: function () {
         element.all(by.css('.resolve-alert-button')).get(0).click();
-        waitForModalToLoad();
+        waitForModalToLoad(0);
         element.all(by.css('.btn btn-primary resolve')).click();
     }},
 
     viewResolutionDetails: { value: function () {
         element(by.id('resolved-alert-link-1')).click();
-        waitForModalToLoad();
+        waitForModalToLoad(1);
     }},
 
     alertResolutionRemarks: { get: function () {
@@ -55,9 +55,9 @@ function waitForPageToLoad() {
     browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
 }
 
-function waitForModalToLoad() {
-    resolveModal = element(by.id('resolve-confirm-modal'));
+function waitForModalToLoad(elementIndex) {
     //resolvedAlertModal = element(by.id('resolved-alert-modal-1'));
+    var resolveModal = element(by.id('resolve-confirm-modal-' + elementIndex));
     var modalHasLoaded = EC.visibilityOf(resolveModal);
     browser.wait(modalHasLoaded, 5000, "Timeout exceeded while waiting for modal to load");
 }

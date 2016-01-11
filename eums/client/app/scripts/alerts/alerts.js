@@ -27,8 +27,8 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             loadInitialAlerts(angular.extend({page: page}, changedFilters()));
         };
 
-        $scope.setResolve = function () {
-            var remarksModalId = 'resolve-confirm-modal';
+        $scope.setResolve = function (index) {
+            var remarksModalId = 'resolve-confirm-modal-' + index;
             LoaderService.showModal(remarksModalId);
         };
 
