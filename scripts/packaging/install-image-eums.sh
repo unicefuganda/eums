@@ -31,7 +31,7 @@ if [ $(sudo docker ps -a | grep eums | awk '{print$1}') ]; then
 fi
 
 echo "Running image..."
-HOST_IP=$1
+EUMS_HOST=$1
 RAPIDPRO_API_TOKEN=$2
 EMAIL_PASSWORD=$3
 VISION_USER=$4
@@ -39,8 +39,9 @@ VISION_PASSWORD=$5
 VISION_BUSINESS_AREA_CODE=$6
 LATITUDE=$7
 LONGITUDE=$8
-LEVEL=$9
+ZOOM_LEVEL=$9
 TIME_ZONE=${10}
+DJANGO_SECRET_KEY=${11}
 
 if [ -z "$6" ]; then
     VISION_BUSINESS_AREA_CODE=4380
@@ -54,19 +55,14 @@ USER_DIR=`eval echo ~/`
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "LC_ALL=C" \
--e "RAPIDPRO_API_TOKEN=${RAPIDPRO_API_TOKEN}" \
--e "EMAIL_PASSWORD=${EMAIL_PASSWORD}" \
--e "MAP_LATITUDE=${LATITUDE}" \
--e "MAP_LONGITUDE=${LONGITUDE}" \
--e "MAP_LEVEL=${LEVEL}" \
 -d --name=eums \
 -v ${USER_DIR}/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
-/bin/bash -c "opt/scripts/setupmap/setup-map.sh \
-&& opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} \
-${VISION_USER} ${VISION_PASSWORD} ${VISION_BUSINESS_AREA_CODE} ${TIME_ZONE} \
+/bin/bash -c "opt/scripts/setupmap/setup-map.sh ${LATITUDE} ${LONGITUDE} ${ZOOM_LEVEL} \
+&& opt/scripts/buildConfigs.sh ${EUMS_HOST} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} \
+${VISION_USER} ${VISION_PASSWORD} ${VISION_BUSINESS_AREA_CODE} ${TIME_ZONE} ${DJANGO_SECRET_KEY} \
 && /usr/bin/supervisord \
 && service elasticsearch start"
 

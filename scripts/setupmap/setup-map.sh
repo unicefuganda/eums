@@ -1,5 +1,9 @@
 #!/bin/bash
 
+LATITUDE=$1
+LONGITUDE=$2
+ZOOM_LEVEL=$3
+
 echo 'Process the map file'
 if [ -f /opt/map/districts.json ]; then
     #Clone extractor app and get region names
@@ -15,19 +19,19 @@ if [ -f /opt/map/districts.json ]; then
 
     #Set map constant
     cd /opt/app/eums/eums/client/config
-    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${MAP_LATITUDE}', '${MAP_LONGITUDE}'],/g' development.json
-    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${MAP_LEVEL}'/g' development.json
+    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${LATITUDE}', '${LONGITUDE}'],/g' development.json
+    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${ZOOM_LEVEL}'/g' development.json
     rm development.json.bak
-    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${MAP_LATITUDE}', '${MAP_LONGITUDE}'],/g' environment.json
-    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${MAP_LEVEL}'/g' environment.json
+    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${LATITUDE}', '${LONGITUDE}'],/g' environment.json
+    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${ZOOM_LEVEL}'/g' environment.json
     rm environment.json.bak
-    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${MAP_LATITUDE}', '${MAP_LONGITUDE}'],/g' production.json
-    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${MAP_LEVEL}'/g' production.json
+    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${LATITUDE}', '${LONGITUDE}'],/g' production.json
+    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${ZOOM_LEVEL}'/g' production.json
     rm production.json.bak
-    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${MAP_LATITUDE}', '${MAP_LONGITUDE}'],/g' staging.json
-    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${MAP_LEVEL}'/g' staging.json
+    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${LATITUDE}', '${LONGITUDE}'],/g' staging.json
+    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${ZOOM_LEVEL}'/g' staging.json
     rm staging.json.bak
-    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${MAP_LATITUDE}', '${MAP_LONGITUDE}'],/g' test.json
-    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${MAP_LEVEL}'/g' test.json
+    sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${LATITUDE}', '${LONGITUDE}'],/g' test.json
+    sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${ZOOM_LEVEL}'/g' test.json
     rm test.json.bak
 fi
