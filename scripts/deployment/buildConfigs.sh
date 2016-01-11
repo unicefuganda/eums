@@ -24,6 +24,6 @@ sed -i -e "s/os.getenv('VISION_USER', 'invalid_vision_user')/r'${VISION_USER}'/g
 sed -i -e "s/os.getenv('VISION_PASSWORD', 'invalid_vision_password')/r'${VISION_PASSWORD}'/g" settings.py
 sed -i -e "s/os.getenv('VISION_BUSINESS_AREA_CODE', 'invalid_code')/'${VISION_BUSINESS_AREA_CODE}'/g" settings.py
 sed -i -e "s/os.getenv('VISION_COUNTRY_CODE', 'invalid_code')/'${VISION_BUSINESS_AREA_CODE:0:3}'/g" settings.py
-sed -i -e "s/os.getenv('TIME_ZONE', 'Africa/Kampala')/'${TIME_ZONE}'/g" settings.py
-sed -i -e "s/os.getenv('SECRET_KEY', 'invalid_secret_key')/'${DJANGO_SECRET_KEY}'/g" settings.py
+sed -i -e "s|os.getenv('TIME_ZONE', 'Africa/Kampala')|'${TIME_ZONE}'|g" settings.py
+sed -i -e "s/os.getenv('SECRET_KEY', 'invalid_secret_key')/'`echo ${DJANGO_SECRET_KEY} | sed 's#\&#\\\&#g'`'/g" settings.py
 sed -i -e "s/os.getenv('DJANGO_ALLOWED_HOST', 'invalid_allowed_host')/'${EUMS_HOST}'/g" settings.py
