@@ -43,14 +43,6 @@ LATITUDE=$9
 LONGITUDE=$10
 ZOOM_LEVEL=$11
 
-if [ -z "$6" ]; then
-    VISION_BUSINESS_AREA_CODE=4380
-fi
-
-if [ -z "${10}" ]; then
-    TIME_ZONE=Africa/Kampala
-fi
-
 USER_DIR=`eval echo ~/`
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
