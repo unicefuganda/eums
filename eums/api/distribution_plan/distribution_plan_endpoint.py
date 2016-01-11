@@ -10,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
-from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem, DistributionPlanNode
+from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem, DistributionPlanNode, Runnable
 from eums.services.flow_scheduler import schedule_run_directly_for
 
 logger = logging.getLogger(__name__)
@@ -39,6 +39,15 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
         'to': 'delivery_date__lte',
         'consignee': 'consignee'
     }
+
+    def perform_update(self, serializer):
+        super(DistributionPlanViewSet, self).perform_update(serializer)
+        distribution_plan_node_for_ip_filter = {
+            'distribution_plan': serializer.data['id'],
+            'tree_position': Runnable.IMPLEMENTING_PARTNER
+        }
+        DistributionPlanNode.objects.filter(**distribution_plan_node_for_ip_filter).update(
+                location=serializer.data['location'], contact_person_id=serializer.data['contact_person_id'])
 
     @detail_route(['GET', ])
     def answers(self, request, *args, **kwargs):
