@@ -52,9 +52,9 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
-/bin/bash -c "opt/scripts/setupmap/setup-map.sh ${LATITUDE} ${LONGITUDE} ${ZOOM_LEVEL} \
-&& opt/scripts/buildConfigs.sh ${EUMS_HOST} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} \
-${VISION_USER} ${VISION_PASSWORD} ${VISION_BUSINESS_AREA_CODE} ${TIME_ZONE} ${DJANGO_SECRET_KEY} \
+/bin/bash -c "opt/scripts/setupmap/setup-map.sh '${LATITUDE}' '${LONGITUDE}' '${ZOOM_LEVEL}' \
+&& opt/scripts/buildConfigs.sh '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' \
+'${VISION_USER}' '${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${TIME_ZONE}' '${DJANGO_SECRET_KEY}' \
 && /usr/bin/supervisord \
 && service elasticsearch start"
 

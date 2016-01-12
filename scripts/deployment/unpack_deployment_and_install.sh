@@ -26,5 +26,5 @@ cd deploy_$today
 chmod a+x scripts/*.sh
 
 echo "Running install script..."
-scripts/install-image-eums.sh ${eums_host} ${rapidpro_token} ${email_password} ${vision_user} \
-${vision_password} ${vision_business_area_code} ${time_zone} ${django_secret_key} ${latitude} ${longitude} ${level}
+scripts/install-image-eums.sh '${eums_host}' '${rapidpro_token}' '${email_password}' '${vision_user}' \
+'${vision_password}' '${vision_business_area_code}' '${time_zone}' '${django_secret_key}' '${latitude}' '${longitude}' '${level}'
