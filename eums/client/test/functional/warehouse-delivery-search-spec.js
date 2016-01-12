@@ -11,24 +11,54 @@ describe('Search Delivery by Date range', function () {
         warehouseDeliverySearchPage.visit();
     });
 
-    it('Search Warehouse Delivery by From Date', function () {
-        warehouseDeliverySearchPage.searchFromDate('06-11-2014');
-        warehouseDeliverySearchPage.verifyPOExists('72089797');
+    it('Search warehouse delivery by waybill number', function () {
+        warehouseDeliverySearchPage.searchByWaybillNumber('72089797');
+        warehouseDeliverySearchPage.verifyROExists('72089797');
+        warehouseDeliverySearchPage.clearWaybillNumber();
+    });
+
+    it('Search warehouse delivery by item description', function () {
+        warehouseDeliverySearchPage.searchByItemDescription("Birth Cushion set");
+        warehouseDeliverySearchPage.verifyROExists('72082647');
+        warehouseDeliverySearchPage.clearItemDescription();
+    });
+
+    it('Search warehouse delivery by outcome/programme', function () {
+        warehouseDeliverySearchPage.searchByProgramme("PCR: 123 - Test Outcome 1");
+        warehouseDeliverySearchPage.verifyROExists('72077574');
+        warehouseDeliverySearchPage.clearProgramme();
+    });
+
+    it('Search warehouse delivery by district', function () {
+        warehouseDeliverySearchPage.searchByDistrict("Wakiso");
+        warehouseDeliverySearchPage.verifyROExists('72082647');
+        warehouseDeliverySearchPage.clearDistrict();
+    });
+
+    it('Search warehouse delivery by IP', function () {
+        warehouseDeliverySearchPage.searchByIP("ARUA DHO DR. ANGUZU PATRICK");
+        warehouseDeliverySearchPage.verifyROExists('72082647');
+        warehouseDeliverySearchPage.clearIP();
+    });
+
+    it('Search warehouse delivery by from date', function () {
+        warehouseDeliverySearchPage.searchByFromDate('06-11-2014');
+        warehouseDeliverySearchPage.verifyROExists('72089797');
         warehouseDeliverySearchPage.clearFromDate();
     });
 
-    it('Search Warehouse Delivery by To Date', function () {
-        warehouseDeliverySearchPage.searchToDate('18/11/2014');
-        warehouseDeliverySearchPage.verifyPOExists('72090975');
+    it('Search warehouse delivery by to date', function () {
+        warehouseDeliverySearchPage.searchByToDate('18/11/2014');
+        warehouseDeliverySearchPage.verifyROExists('72090975');
         warehouseDeliverySearchPage.clearToDate();
     });
 
-    it('Search warehouse Delivery by Date Range From-To', function () {
+    it('Search warehouse Delivery by date range from-to', function () {
         warehouseDeliverySearchPage.clearFromDate();
         warehouseDeliverySearchPage.clearToDate();
-        warehouseDeliverySearchPage.searchFromDate('06-11-2014');
-        warehouseDeliverySearchPage.searchToDate('18/11/2014');
-        warehouseDeliverySearchPage.verifyPOExists('72089797');
-        warehouseDeliverySearchPage.verifyPOExists('72090975');
+        warehouseDeliverySearchPage.searchByFromDate('06-11-2014');
+        warehouseDeliverySearchPage.searchByToDate('18/11/2014');
+        warehouseDeliverySearchPage.verifyROExists('72089797');
+        warehouseDeliverySearchPage.verifyROExists('72090975');
     })
 });

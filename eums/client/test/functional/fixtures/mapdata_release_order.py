@@ -9,3 +9,4 @@ ro_3 = ReleaseOrder.objects.create(sales_order=sales_order_105, waybill=72088441
 ro_4 = ReleaseOrder.objects.create(sales_order=sales_order_105, waybill=72090975, consignee=consignee_44, purchase_order=po_106, order_number=54112876, delivery_date="2014-11-18")
 ro_5 = ReleaseOrder.objects.create(sales_order=sales_order_105, waybill=72102556, consignee=consignee_44, purchase_order=po_106, order_number=54127722, delivery_date="2015-03-25")
 ro_6 = ReleaseOrder.objects.create(sales_order=sales_order_105, waybill=72077697, consignee=consignee_45, purchase_order=po_106, order_number=57006881, delivery_date="2014-06-25")
+ro_7 = ReleaseOrder.objects.create(sales_order=sales_order_106, waybill=72077574, consignee=consignee_27, purchase_order=po_106, order_number=57006875, delivery_date="2014-06-25")

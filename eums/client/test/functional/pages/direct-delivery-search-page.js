@@ -45,36 +45,36 @@ DirectDeliverySearchPage.prototype = Object.create({}, {
     searchByProgramme: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-programme-container', searchTerm);
+            functionalTestUtils.fillSelect2Chosen('filter-programme-container', searchTerm);
         }
     },
     clearProgramme: {
         value: function() {
-            clearSelect2Chosen('filter-programme-container');
+            functionalTestUtils.clearSelect2Chosen('filter-programme-container');
         }
     },
 
     searchByDistrict: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-district-container', searchTerm);
+            functionalTestUtils.fillSelect2Chosen('filter-district-container', searchTerm);
         }
     },
     clearDistrict: {
         value: function() {
-            clearSelect2Chosen('filter-district-container');
+            functionalTestUtils.clearSelect2Chosen('filter-district-container');
         }
     },
 
     searchByIP: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-ip-container', searchTerm);
+            functionalTestUtils.fillSelect2Chosen('filter-ip-container', searchTerm);
         }
     },
     clearIP: {
         value: function() {
-            clearSelect2Chosen('filter-ip-container');
+            functionalTestUtils.clearSelect2Chosen('filter-ip-container');
         }
     },
 
@@ -114,14 +114,3 @@ DirectDeliverySearchPage.prototype = Object.create({}, {
 });
 
 module.exports = new DirectDeliverySearchPage;
-
-function fillSelect2Chosen(id, input) {
-    element(by.id(id)).click();
-    element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
-    element(by.css('.select2-results li')).click();
-}
-
-function clearSelect2Chosen(id) {
-    element(by.id(id)).click();
-    element(by.css('.select2-input.select2-focused')).clear();
-}
