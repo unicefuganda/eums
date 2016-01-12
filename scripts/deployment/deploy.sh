@@ -24,9 +24,9 @@ sshpass -p "${DEPLOY_USER_PASSWORD}" scp build/deployment/unpack_deployment_and_
 echo "running the unpack script via ssh on the server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" ssh ${DEPLOY_USER}@${DEPLOY_HOST} "cd /home/${DEPLOY_USER}/ \
 && sudo ./unpack_deployment_and_install.sh \
-$today ${EUMS_HOST} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD} \
-${VISION_USER} ${VISION_PASSWORD} ${VISION_BUSINESS_AREA_CODE} ${TIME_ZONE} ${DJANGO_SECRET_KEY} \
-${MAP_LATITUDE} ${MAP_LONGITUDE} ${MAP_LEVEL}"
+$today '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' \
+'${VISION_USER}' '${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${TIME_ZONE}' '${DJANGO_SECRET_KEY}' \
+'${MAP_LATITUDE}' '${MAP_LONGITUDE}' '${MAP_LEVEL}'"
 
 # uninstall ssh-pass
 sudo apt-get -y --purge remove sshpass
