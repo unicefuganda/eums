@@ -54,7 +54,8 @@
     "DELIVERY_STATS_DETAILS": "/api/delivery-stats/details/",
     "MAP_DELIVERY_STATS": "/api/delivery-stats/map/",
     "LATEST_DELIVERIES": "/api/latest-deliveries/",
-    "SYSTEM_SETTINGS": "/api/system-settings"
+    "SYSTEM_SETTINGS": "/api/system-settings",
+    "UPLOAD_IMAGE": "/api/upload-image/"
   },
   "CONTACT_SERVICE_URL": "http://localhost:9005/api/contacts/",
   "ELASTIC_SEARCH_URL": "http://localhost:9200/eums_test/delivery_node/",

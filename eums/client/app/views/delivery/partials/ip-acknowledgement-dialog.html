@@ -9,7 +9,6 @@
                         <span class="sr-only">No</span>
                     </button>
                 </h4>
-
             </div>
             <div class="modal-body confirm-modal">
                 <div class="text-warning pad-bottom-5">Items will only appear in your stock upon confirmation of
@@ -31,13 +30,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td></td>
                             <td class="pad-left-5 pad-bottom-5">
                                 <h6 class="text-warning">
                                     If the contact person is not listed, you should add the person from the <a
                                         href="javascript:void(0)" ng-click="toContactPage()">ContactPage</a>
                                 </h6>
                             </td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td class="pad-5">Choose District</td>
@@ -103,7 +102,50 @@
                                 </p>
                             </td>
                         </tr>
+                        <tr ng-show="imageUploader.isHTML5">
+                            <td class="pad-5">
+                                Pictures for delivery
+                                <h6 class="text-warning">You can upload up to 3 pictures and each picture should NOT be
+                                    greater than 1MB</h6>
+                            </td>
+                            <td>
+                                <input type="file" nv-file-select="" id="file" name="file"
+                                       accept="image/jpg,image/jpeg,image/gif,image/png"
+                                       uploader="imageUploader" multiple/>
+                                <strong class="eums-block" ng-show="uploadedImages.length>0">Uploaded Photos:</strong>
+                                <ol>
+                                    <li ng-repeat="image in uploadedImages">
+                                        <a href="/media/{{ image.url }}" target="_blank">
+                                            <img ng-src="/media/{{ image.url }}"/>
+                                        </a>
+                                    </li>
+                                </ol>
+                                <strong class="eums-block" ng-show="imageUploader.queue.length>0">Ready to Upload:</strong>
+                                <ol>
+                                    <li ng-repeat="image in imageUploader.queue">
+                                        <ul class="list-unstyled">
+                                            <li>Name: {{ image.file.name|strLimit:20 }}</li>
+                                            <li ng-show="imageUploader.isHTML5" nowrap>
+                                                Size: {{ image.file.size/1024/1024|number:2 }}MB
+                                            </li>
+                                            <li>
+                                                <span ng-show="imageUploader.isHTML5"
+                                                      ng-thumb="{ file: image._file, height: 80 }"></span>
+                                                <i type="button" class="glyphicon glyphicon-remove"
+                                                   ng-click="imageRemove(image)">
+                                                </i>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                                <strong class="eums-block text-danger">{{ fileError }}</strong>
+                            </td>
+                        </tr>
                     </table>
+                    <div class="progress" style="">
+                        <div class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': imageUploader.progress + '%' }"></div>
+                    </div>
                 </div>
 
                 <div ng-hide="hasReceivedDelivery">

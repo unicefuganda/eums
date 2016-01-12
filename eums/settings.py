@@ -53,6 +53,10 @@ DATABASES = {
     }
 }
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'eums/uploads')
+
+MEDIA_URL = '/media/'
+
 ROOT_URLCONF = 'eums.urls'
 
 CSRF_FAILURE_VIEW = 'eums.views.csrf.csrf_failure'

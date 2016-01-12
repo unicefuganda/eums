@@ -7,7 +7,7 @@ from rest_framework.utils.urls import replace_query_param
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode, Runnable, Flow, SystemSettings
+    DistributionPlanNode, Runnable, Flow, SystemSettings, Upload
 
 PAGE_SIZE = 10
 DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,
@@ -65,6 +65,7 @@ def _build_delivery_result(deliveries):
     delivery_answers = []
     for delivery in deliveries:
         answers = delivery.answers()
+        uploads = _get_uploads(delivery)
 
         delivery_answers.append(
                 {Question.LABEL.deliveryReceived: _get_answer(Question.LABEL.deliveryReceived, answers),
@@ -80,7 +81,8 @@ def _build_delivery_result(deliveries):
                  Question.LABEL.additionalDeliveryComments:
                      _get_answer(Question.LABEL.additionalDeliveryComments, answers),
                  'value': int(delivery.total_value),
-                 'location': delivery.location
+                 'location': delivery.location,
+                 'urls': uploads
                  })
 
     return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
@@ -170,3 +172,10 @@ def _get_query_answer_from_url(request, questions):
 
 def _get_answer(question_label, answers):
     return filter(lambda answer: answer['question_label'] == question_label, answers)[0]['value']
+
+def _get_uploads(delivery):
+    data = []
+    uploads = Upload.objects.filter(plan=delivery)
+    for upload in uploads.iterator():
+            data.append(str(upload.file))
+    return data

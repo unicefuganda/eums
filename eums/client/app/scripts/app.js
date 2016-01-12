@@ -15,7 +15,7 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
 angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
         'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable',
         'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport',
-        'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData', 'SystemSettings',
+        'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData', 'SystemSettings', 'FileUploadService',
         'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
         'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp',
         'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'ItemFeedbackReport', 'ngPercentDisplay',
