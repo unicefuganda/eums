@@ -5,7 +5,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, SortService, ContactService, SortArrowService, SysUtilsService, ngToast) {
+                                                          ReportService, LoaderService, ErrorMessageService, SortService,
+                                                          ContactService, SortArrowService, SysUtilsService, ngToast) {
+        
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
         var initializing = true;
@@ -84,8 +86,8 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
 
         function loadItemFeedbackReport() {
             LoaderService.showLoader();
-            var allFilter = angular.extend({}, getLocationTerm(), getSearchTerm(), getSortTerm());
-            ReportService.itemFeedbackReport(allFilter, $scope.pagination.page).then(function (response) {
+            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm(), getSortTerm());
+            ReportService.itemFeedbackReport(allFilters, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;

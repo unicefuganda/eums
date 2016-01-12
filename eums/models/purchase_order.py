@@ -18,15 +18,18 @@ class PurchaseOrderManager(models.Manager):
         if programme_id and programme_id.isdigit():
             no_release_orders = no_release_orders.filter(sales_order__programme_id=programme_id)
         if item_description:
-            no_release_orders = no_release_orders.filter(purchaseorderitem__item__description__icontains=item_description)
+            no_release_orders = no_release_orders.filter(
+                    purchaseorderitem__item__description__icontains=item_description)
         if selected_location:
-            no_release_orders = no_release_orders.filter(purchaseorderitem__distributionplannode__location__icontains=selected_location)
+            no_release_orders = no_release_orders.filter(
+                    purchaseorderitem__distributionplannode__location__icontains=selected_location)
         if from_date:
             no_release_orders = no_release_orders.filter(last_shipment_date__gte=from_date)
         if to_date:
             no_release_orders = no_release_orders.filter(last_shipment_date__lte=to_date)
         if ip_id and ip_id.isdigit():
             no_release_orders = no_release_orders.filter(purchaseorderitem__distributionplannode__ip_id=ip_id)
+
         return no_release_orders
 
     def for_consignee(self, consignee_id):
@@ -63,9 +66,13 @@ class PurchaseOrder(TimeStampedModel):
 
     def deliveries(self, is_root=False):
         if is_root:
-            plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all(),arcs_in__source__isnull=True).values_list('distribution_plan_id').distinct()
+            plan_ids = DeliveryNode.objects \
+                .filter(item__in=self.purchaseorderitem_set.all(), arcs_in__source__isnull=True) \
+                .values_list('distribution_plan_id').distinct()
         else:
-            plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list('distribution_plan_id').distinct()
+            plan_ids = DeliveryNode.objects \
+                .filter(item__in=self.purchaseorderitem_set.all()) \
+                .values_list('distribution_plan_id').distinct()
 
         return DistributionPlan.objects.filter(id__in=plan_ids)
 

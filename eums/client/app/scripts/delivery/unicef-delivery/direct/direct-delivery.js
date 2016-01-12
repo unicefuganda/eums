@@ -133,7 +133,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
                 'page': $scope.pagination.page
             }, getSearchTerms(), $scope.sortTerm);
 
-            console.log(allFilters);
             PurchaseOrderService.forDirectDelivery(undefined, allFilters).then(function (response) {
                 $scope.purchaseOrders = response.results;
                 $scope.count = response.count;

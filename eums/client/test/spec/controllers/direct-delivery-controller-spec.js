@@ -130,7 +130,7 @@ describe('DirectDeliveryController', function () {
     });
 
     describe('when filtered by last shipment date range', function () {
-        beforeEach(function () {
+        it('should perform filtering while fromDate and toDate are empty', function () {
             scope.searchTerm = {};
             scope.$apply();
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
@@ -186,16 +186,9 @@ describe('DirectDeliveryController', function () {
     });
 
     describe('when filtered by other fields', function () {
-        beforeEach(function () {
-            scope.searchTerm = {};
-            scope.$apply();
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-        });
-
         it('should perform filtering when purchase order is given', function () {
             scope.searchTerm.purchaseOrder = '00001';
             scope.$apply();
-            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 purchaseOrder: '00001',
@@ -205,7 +198,6 @@ describe('DirectDeliveryController', function () {
         it('should perform filtering when item description is given', function () {
             scope.searchTerm.itemDescription = 'Leaflet 2013';
             scope.$apply();
-            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 itemDescription: 'Leaflet 2013',
@@ -248,7 +240,6 @@ describe('DirectDeliveryController', function () {
             scope.searchTerm.selectedLocation = 'Adjumani';
             scope.searchTerm.ipId = '3';
             scope.$apply();
-            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 purchaseOrder: '00001',
@@ -258,6 +249,21 @@ describe('DirectDeliveryController', function () {
                 programmeId: '5',
                 selectedLocation: 'Adjumani',
                 ipId: '3',
+            }));
+        });
+
+        it('should perform filtering while timer has been initialized', function () {
+            scope.searchTerm = {};
+            scope.$apply();
+            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.fromDate = '2014-07-07';
+            scope.$apply()
+            timeout.flush();
+
+            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(2);
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: 'wakiso programme',
+                fromDate: '2014-07-07',
             }));
         });
     });

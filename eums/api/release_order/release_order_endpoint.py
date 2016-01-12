@@ -23,9 +23,13 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
     serializer_class = ReleaseOrderSerializer
     pagination_class = StandardResultsSetPagination
     supported_filters = {
-        'query': 'waybill__icontains',
-        'from': 'delivery_date__gte',
-        'to': 'delivery_date__lte'
+        'purchaseOrder': 'waybill__icontains',
+        'programmeId': 'sales_order__programme_id',
+        'itemDescription': 'items__item__description__contains',
+        'selectedLocation': 'items__distributionplannode__location__contains',
+        'fromDate': 'delivery_date__gte',
+        'toDate': 'delivery_date__lte',
+        'ipId': 'items__distributionplannode__ip_id',
     }
 
     def list(self, request, *args, **kwargs):
@@ -34,7 +38,6 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
             self.paginator.page_size = 0
 
         queryset = self.filter_queryset(self.__get_release_orders(request))
-
         if request.GET.get('field'):
             map = {'trackedDate': 'tracked_date',
                    'deliveryDate': 'delivery_date',
@@ -45,11 +48,9 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
             queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
 
         page = self.paginate_queryset(queryset)
-
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
         return Response(self.get_serializer(queryset, many=True).data)
 
     def __get_release_orders(self, request):
@@ -62,7 +63,6 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
                 orders = ReleaseOrder.objects.delivered().order_by('waybill')
             else:
                 orders = self.get_queryset()
-
         return orders.filter(**(self.build_filters(request.query_params)))
 
     def get_queryset(self):

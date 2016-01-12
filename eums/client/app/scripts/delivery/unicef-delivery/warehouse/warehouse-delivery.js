@@ -1,19 +1,27 @@
 'use strict';
 
-
 angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'SortBy', 'SystemSettingsService', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService, SortService, SystemSettingsService, SortByService, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService,
+                                                         SortService, SystemSettingsService, SortByService, ExportDeliveriesService,
+                                                         ngToast, LoaderService, $timeout) {
         var SUPPORTED_FIELD = ['orderNumber', 'deliveryDate', 'trackedDate'];
+        var timer;
+        var initializing = true;
+
+        $scope.searchFields = ['waybill', 'deliveryDate'];//, 'programme'];
         $scope.errorMessage = '';
         $scope.planId = '';
-        $scope.searchFields = ['waybill', 'deliveryDate'];//, 'programme'];
 
         $scope.releaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
+        $scope.directiveValues = {};
+
+        $scope.pagination = {page: 1};
+        $scope.searchTerm = {};
         $scope.sortTerm = {field: 'trackedDate', order: 'desc'};
 
         $scope.documentColumnTitle = 'Waybill #';
@@ -21,44 +29,34 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         $scope.trackedDateColumnTitle = 'Tracked Date';
         $scope.descriptionColumnTitle = 'Outcome Name';
 
-        function loadReleaseOrder(options) {
-            LoaderService.showLoader();
-
-            initAutoTrack();
-            options = angular.extend({'paginate': 'true'}, options, $scope.sortTerm);
-
-            ReleaseOrderService.all(undefined, options).then(function (response) {
-                $scope.releaseOrders = response.results;
-                $scope.count = response.count;
-                $scope.pageSize = response.pageSize;
-
-                if (options) {
-                    if (options.from) {
-                        $scope.fromDate = moment(Date.parse(options.from)).format('DD-MMM-YYYY');
-                        initializing = true;
-                    }
-
-                    if (options.to) {
-                        $scope.toDate = moment(Date.parse(options.to)).format('DD-MMM-YYYY');
-                        initializing = true;
-                    }
+        $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
+            $scope.pagination.page = 1;
+            if (initializing) {
+                loadReleaseOrder();
+                initializing = false;
+            } else {
+                $scope.searching = true;
+                if (timer) {
+                    $timeout.cancel(timer);
                 }
-                LoaderService.hideLoader();
 
+                if (oldSearchTerm.itemDescription != newSearchTerm.itemDescription ||
+                    oldSearchTerm.purchaseOrder != newSearchTerm.purchaseOrder) {
+                    startTimer();
+                } else {
+                    loadReleaseOrder();
+                }
+            }
+        });
 
-            }).catch(function () {
-                ngToast.create({content: 'Failed to load release orders', class: 'danger'});
-            });
-
-        }
-
-        $scope.initialize = function (urlArgs) {
-            loadReleaseOrder(urlArgs);
+        // todo: remove ng-init="initialize" from corresponding html
+        $scope.initialize = function () {
+            loadReleaseOrder();
         };
 
         $scope.goToPage = function (page) {
-            $scope.currentPage = page;
-            loadReleaseOrder(angular.extend({'page': page}, changedFilters()));
+            $scope.pagination.page = page;
+            loadReleaseOrder();
         };
 
         $scope.sortArrowClass = function (criteria) {
@@ -85,42 +83,45 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             });
         };
 
-        var timer, initializing = true;
+        function formatDate(date) {
+            return moment(date).format('YYYY-MM-DD')
+        }
 
-        $scope.$watch('[fromDate,toDate,query]', function () {
-            if (initializing) {
-                initializing = false;
-            }
-            else {
-                if (timer) {
-                    $timeout.cancel(timer);
-                }
-                delaySearch();
-            }
-        }, true);
-
-        function delaySearch() {
+        // todo: rename this function to delaySearch, maybe
+        function startTimer() {
             timer = $timeout(function () {
-                $scope.initialize(changedFilters());
+                loadReleaseOrder()
             }, 2000);
         }
 
-        function changedFilters() {
-            var urlArgs = {};
-            if ($scope.fromDate) {
-                urlArgs.from = formatDate($scope.fromDate);
-            }
-            if ($scope.toDate) {
-                urlArgs.to = formatDate($scope.toDate);
-            }
-            if ($scope.query) {
-                urlArgs.query = $scope.query;
-            }
-            return urlArgs
+        function loadReleaseOrder() {
+            LoaderService.showLoader();
+            initAutoTrack();
+
+            var allFilters = angular.extend({
+                'paginate': 'true',
+                'page': $scope.pagination.page
+            }, getSearchTerms(), $scope.sortTerm);
+
+            ReleaseOrderService.all(undefined, allFilters).then(function (response) {
+                $scope.releaseOrders = response.results;
+                $scope.count = response.count;
+                $scope.pageSize = response.pageSize;
+            }).catch(function () {
+                ngToast.create({content: 'Failed to load release orders', class: 'danger'});
+            }).finally(function () {
+                LoaderService.hideLoader();
+                $scope.searching = false;
+            });
         }
 
-        function formatDate(date) {
-            return moment(date).format('YYYY-MM-DD')
+        function getSearchTerms() {
+            var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
+            if (filters.fromDate)
+                filters.fromDate = formatDate(filters.fromDate);
+            if (filters.toDate)
+                filters.toDate = formatDate(filters.toDate);
+            return filters;
         }
 
         function initAutoTrack() {
@@ -128,6 +129,48 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
                 $scope.autoTrack = data.auto_track;
             });
         }
-    })
-;
+    });
 
+//$scope.$watch('[fromDate,toDate,query]', function () {
+//    if (initializing) {
+//        initializing = false;
+//    }
+//    else {
+//        if (timer) {
+//            $timeout.cancel(timer);
+//        }
+//        delaySearch();
+//    }
+//}, true);
+
+//function delaySearch() {
+//    timer = $timeout(function () {
+//        $scope.initialize(changedFilters());
+//    }, 2000);
+//}
+
+//function changedFilters() {
+//    var urlArgs = {};
+//    if ($scope.fromDate) {
+//        urlArgs.from = formatDate($scope.fromDate);
+//    }
+//    if ($scope.toDate) {
+//        urlArgs.to = formatDate($scope.toDate);
+//    }
+//    if ($scope.query) {
+//        urlArgs.query = $scope.query;
+//    }
+//    return urlArgs
+//}
+
+//if (allFilters) {
+//    if (allFilters.from) {
+//        $scope.fromDate = moment(Date.parse(allFilters.from)).format('DD-MMM-YYYY');
+//        initializing = true;
+//    }
+//
+//    if (allFilters.to) {
+//        $scope.toDate = moment(Date.parse(allFilters.to)).format('DD-MMM-YYYY');
+//        initializing = true;
+//    }
+//}

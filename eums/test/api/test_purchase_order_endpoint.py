@@ -1,14 +1,18 @@
 import datetime
+
+from django.contrib.auth.models import User
 from mock import patch
 
 from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, \
-    SalesOrderItem
+    SalesOrderItem, Consignee, Item
 from eums.test.api.api_test_helpers import create_release_order
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
+from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
-from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -34,44 +38,77 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
-    def test_should_get_purchase_orders_without_release_orders_and_purchase_order_number(self):
-        PurchaseOrderFactory()
-        po_two = PurchaseOrderFactory(order_number=12345)
-
-        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?purchaseOrder=123')
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], po_two.id)
-
-    def test_should_get_purchase_orders_without_release_orders_by_date_range(self):
-        date = datetime.date(2014, 07, 9)
-        PurchaseOrderFactory()
-        po_two = PurchaseOrderFactory(last_shipment_date=date)
-
-        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?fromDate=2014-07-6&to=2016-07-16')
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], po_two.id)
-
-    # todo: build sample po data for this test case, filtering by itemDescription & selectedLocation
-    def test_should_get_purchase_orders_without_release_orders_by_multi_search_fields(self):
-        date = datetime.date(2014, 07, 9)
-        PurchaseOrderFactory()
-        po_two = PurchaseOrderFactory(last_shipment_date=date)
-
+    def test_should_get_purchase_orders_by_multi_search_fields(self):
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
         response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
-                                                  'purchaseOrder=201410&'
-                                                  'itemDescription=&'
-                                                  'fromDate=2014-07-09&'
-                                                  'toDate=2014-07-09&'
-                                                  'programmeId=12&'
-                                                  'selectedLocation=&'
-                                                  'ipId=')
-        print(response.data)
+                                                  'purchaseOrder=40141010&'
+                                                  'itemDescription=HEK2013&'
+                                                  'fromDate=2014-07-08&'
+                                                  'toDate=2014-07-10&'
+                                                  'programmeId=%s&'
+                                                  'selectedLocation=Wakiso&'
+                                                  'ipId=%s' % (programme.id, consignee.id))
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_by_date_range(self):
+        date = datetime.date(2014, 07, 9)
+        PurchaseOrderFactory()
+        po_two = PurchaseOrderFactory(last_shipment_date=date)
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'fromDate=2014-07-6&'
+                                                  'toDate=2016-07-16')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_by_purchase_order_number(self):
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'purchaseOrder=40141010')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_by_programme_id(self):
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'programmeId=%s' % programme.id)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_by_item_description(self):
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'itemDescription=HEK2013')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_by_location(self):
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'selectedLocation=Wakiso')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_by_ip(self):
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
+                                                  'ipId=%s' % consignee.id)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
 
     def test_fetched_purchase_orders_should_have_programme_name_and_programme_id(self):
         programme = ProgrammeFactory()
@@ -94,7 +131,7 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         purchase_order = PurchaseOrderFactory()
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
         delivery = DeliveryFactory()
-        node = NodeFactory(item=purchase_order_item, distribution_plan=delivery)
+        node = DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
 
         response = self.client.get(ENDPOINT_URL + str(purchase_order.id) + '/deliveries/')
 
@@ -112,3 +149,19 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         PurchaseOrderItemFactory(purchase_order=order, value=200)
         response = self.client.get(total_value_route)
         self.assertEqual(response.data, 300)
+
+    def create_purchase_orders(self):
+        programme = ProgrammeFactory(name='YP104 MANAGEMENT RESULTS')
+        consignee = ConsigneeFactory(name='Wakiso DHO')
+        date = datetime.date(2014, 07, 9)
+        po_one = PurchaseOrderFactory(order_number=45143984)
+        po_two = PurchaseOrderFactory(order_number=40141010,
+                                      sales_order=SalesOrderFactory(programme=programme),
+                                      last_shipment_date=date)
+        po_item = PurchaseOrderItemFactory(purchase_order=po_two, item=ItemFactory(description="HEK2013"))
+        distribution_plan = DeliveryFactory()
+        DeliveryNodeFactory(item=po_item,
+                            distribution_plan=distribution_plan,
+                            location="Wakiso",
+                            consignee=consignee)
+        return po_one, po_two, programme, consignee

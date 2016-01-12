@@ -1,6 +1,7 @@
 describe('Warehouse Delivery Controller', function () {
-    var scope, mockReleaseOrderService, location, deferredReleaseOrders, deferredSystemSettings, deferredSortResult, deferredSortArrowResult, mockExportDeliveryService, mockToast, mockLoader,
-        deferredExportResult, timeout, mockSystemSettingsService, mockSortService, mockSortArrowService;
+    var scope, mockReleaseOrderService, location, deferredReleaseOrders, deferredSystemSettings, deferredSortResult,
+        deferredSortArrowResult, mockExportDeliveryService, mockToast, mockLoader, deferredExportResult, timeout,
+        mockSystemSettingsService, mockSortService, mockSortArrowService;
 
     var releaseOrders = {
         'count': 2,
@@ -15,7 +16,6 @@ describe('Warehouse Delivery Controller', function () {
 
     beforeEach(function () {
         module('WarehouseDelivery');
-
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
@@ -57,19 +57,21 @@ describe('Warehouse Delivery Controller', function () {
         });
     });
 
-    it('should fetch release orders and put them on the scope.', function () {
-        deferredReleaseOrders.resolve(releaseOrders);
-        scope.initialize();
-        scope.$apply();
-        expect(mockReleaseOrderService.all).toHaveBeenCalled();
-        expect(scope.releaseOrders).toEqual(releaseOrders.results);
-    });
+    describe('when initialized', function () {
+        it('should fetch release orders and put them on the scope.', function () {
+            deferredReleaseOrders.resolve(releaseOrders);
+            scope.initialize();
+            scope.$apply();
+            expect(mockReleaseOrderService.all).toHaveBeenCalled();
+            expect(scope.releaseOrders).toEqual(releaseOrders.results);
+        });
 
-    it('should redirect to new warehouse delivery page when release order is selected', function () {
-        var id = 39;
-        scope.selectReleaseOrder(id);
-        scope.$apply();
-        expect(location.path()).toBe('/warehouse-delivery/new/' + id);
+        it('should redirect to new warehouse delivery page when release order is selected', function () {
+            var id = 39;
+            scope.selectReleaseOrder(id);
+            scope.$apply();
+            expect(location.path()).toBe('/warehouse-delivery/new/' + id);
+        });
     });
 
     describe('exporter to exporter', function () {
@@ -91,6 +93,7 @@ describe('Warehouse Delivery Controller', function () {
                 class: 'info'
             });
         });
+
         it('should show toast with error message', function () {
             deferredExportResult.reject({status: 500});
 
@@ -101,147 +104,178 @@ describe('Warehouse Delivery Controller', function () {
                 class: 'danger'
             });
         });
-
     });
 
-    describe('on filter by date range', function () {
+    describe('when filtered by last shipment date range', function () {
         it('should not filter when fromDate and toDate is empty', function () {
-            scope.initialize();
+            scope.searchTerm = {};
             scope.$apply();
-
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
         });
 
         it('should filter when toDate is empty', function () {
-            scope.initialize();
+            scope.searchTerm.fromDate = '2014-07-07';
             scope.$apply();
-            scope.fromDate = '2014-07-07';
-            scope.$apply();
-            timeout.flush();
 
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate : 'true',
-                from : '2014-07-07',
-                field : 'trackedDate',
-                order : 'desc'
-            });
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                fromDate: '2014-07-07',
+            }));
         });
 
         it('should still filter when fromDate is empty', function () {
-            scope.initialize();
-            scope.$apply();
-            scope.toDate = '2014-07-07';
+            scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
 
-            timeout.flush();
-
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate : 'true',
-                to : '2014-07-07',
-                field : 'trackedDate',
-                order : 'desc'
-            });
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                toDate: '2014-07-07',
+            }));
         });
 
         it('should filter deliveries when date range is given', function () {
-            scope.initialize();
-            scope.$apply();
-            scope.fromDate = '2014-05-07';
-            scope.toDate = '2014-07-07';
+            scope.searchTerm.fromDate = '2014-05-07';
+            scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
 
-            timeout.flush();
-
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate: 'true',
-                from: '2014-05-07',
-                to: '2014-07-07',
-                field: 'trackedDate',
-                order: 'desc'
-            });
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                fromDate: '2014-05-07',
+                toDate: '2014-07-07',
+            }));
         });
 
         it('should format dates before filtering deliveries ', function () {
-            scope.initialize();
-            scope.$apply();
-            scope.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
-            scope.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
+            scope.searchTerm.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
+            scope.searchTerm.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
             scope.$apply();
 
-            timeout.flush();
-
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate: 'true',
-                from: '2015-08-30',
-                to: '2015-09-10',
-                field: 'trackedDate',
-                order: 'desc'
-            });
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                fromDate: '2015-08-30',
+                toDate: '2015-09-10',
+            }));
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
-            scope.initialize();
-            scope.$apply();
-            scope.query = 'wakiso programme';
-            scope.fromDate = '2014-05-07';
-            scope.toDate = '2014-07-07';
+            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.fromDate = '2014-05-07';
+            scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
 
-            timeout.flush();
-
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate: 'true',
-                from: '2014-05-07',
-                to: '2014-07-07',
-                query: 'wakiso programme',
-                field: 'trackedDate',
-                order: 'desc'
-            })
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: 'wakiso programme',
+                fromDate: '2014-05-07',
+                toDate: '2014-07-07',
+            }));
         });
 
         it('should filter deliveries when fromDate is not given with additional query', function () {
-            scope.initialize();
-            scope.$apply();
-            scope.query = 'wakiso programme';
-            scope.toDate = '2014-07-07';
+            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
 
-            timeout.flush();
-
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate: 'true',
-                to: '2014-07-07',
-                query: 'wakiso programme',
-                field: 'trackedDate',
-                order: 'desc'
-            })
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: 'wakiso programme',
+                toDate: '2014-07-07',
+            }));
         });
 
         it('should filter deliveries when toDate is not given with additional query', function () {
-
-            scope.initialize();
-            scope.$apply();
-            scope.query = 'wakiso programme';
-            scope.fromDate = '2014-07-07';
+            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.fromDate = '2014-07-07';
             scope.$apply();
 
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: 'wakiso programme',
+                fromDate: '2014-07-07',
+            }));
+        });
+    });
+
+    describe('when filtered by other fields', function () {
+        it('should perform filtering when waybill number is given', function () {
+            scope.searchTerm.purchaseOrder = '00001';
+            scope.$apply();
+
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: '00001',
+            }));
+        });
+
+        it('should perform filtering when item description is given', function () {
+            scope.searchTerm.itemDescription = 'Leaflet 2013';
+            scope.$apply();
+
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                itemDescription: 'Leaflet 2013',
+            }));
+        });
+
+        it('should perform filtering when outcome/programme is selected', function () {
+            scope.searchTerm.programmeId = '5';
+            scope.$apply();
+
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                programmeId: '5',
+            }));
+        });
+
+        it('should perform filtering when district is selected', function () {
+            scope.searchTerm.selectedLocation = 'Adjumani';
+            scope.$apply();
+
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                selectedLocation: 'Adjumani',
+            }));
+        });
+
+        it('should perform filtering when IP is selected', function () {
+            scope.searchTerm.ipId = '3';
+            scope.$apply();
+
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                ipId: '3',
+            }));
+        });
+
+        it('should perform filtering when multi-fields are specified', function () {
+            scope.searchTerm.purchaseOrder = '00001';
+            scope.searchTerm.itemDescription = 'Leaflet 2013';
+            scope.searchTerm.fromDate = '2014-05-07';
+            scope.searchTerm.toDate = '2014-07-07';
+            scope.searchTerm.programmeId = '5';
+            scope.searchTerm.selectedLocation = 'Adjumani';
+            scope.searchTerm.ipId = '3';
+            scope.$apply();
+
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: '00001',
+                itemDescription: 'Leaflet 2013',
+                fromDate: '2014-05-07',
+                toDate: '2014-07-07',
+                programmeId: '5',
+                selectedLocation: 'Adjumani',
+                ipId: '3',
+            }));
+        });
+
+        it('should perform filtering while timer has been initialized', function () {
+            scope.searchTerm = {};
+            scope.$apply();
+            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.fromDate = '2014-07-07';
+            scope.$apply()
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
-                paginate: 'true',
-                from: '2014-07-07',
-                query: 'wakiso programme',
-                field: 'trackedDate',
-                order: 'desc'
-            });
-
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
+                purchaseOrder: 'wakiso programme',
+                fromDate: '2014-07-07',
+            }));
         });
-    });
+    })
 });
