@@ -2,6 +2,10 @@
 
 set -e
 
+cd /opt/app/eums/eums/client
+grunt build-staging:$1
+grunt build-staging:$1
+
 EUMS_HOST=$1
 RAPIDPRO_API_TOKEN=$2
 EMAIL_PASSWORD=$3
@@ -10,9 +14,6 @@ VISION_PASSWORD=$5
 VISION_BUSINESS_AREA_CODE=$6
 TIME_ZONE=$7
 DJANGO_SECRET_KEY=$8
-
-cd /opt/app/eums/eums/client
-grunt build-staging:${EUMS_HOST}
 
 cd /opt/app/contacts
 sed -i "s/stg.eum.unicefuganda.org/${EUMS_HOST}/" config/config.json
