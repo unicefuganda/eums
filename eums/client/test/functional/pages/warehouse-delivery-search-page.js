@@ -20,13 +20,13 @@ WarehouseDeliverySearchPage.prototype = Object.create({}, {
     },
 
     searchByWaybillNumber: {
-        value: function (purchaseOrder) {
-            element(by.model('searchTerm.purchaseOrder')).sendKeys(purchaseOrder);
+        value: function (waybill) {
+            element(by.model('searchTerm.waybill')).sendKeys(waybill);
         }
     },
     clearWaybillNumber: {
         value: function () {
-            element(by.model('searchTerm.purchaseOrder')).clear();
+            element(by.model('searchTerm.waybill')).clear();
         }
     },
 

@@ -157,39 +157,39 @@ describe('Warehouse Delivery Controller', function () {
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
-            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.waybill = 'wakiso programme';
             scope.searchTerm.fromDate = '2014-05-07';
             scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: 'wakiso programme',
+                waybill: 'wakiso programme',
                 fromDate: '2014-05-07',
                 toDate: '2014-07-07',
             }));
         });
 
         it('should filter deliveries when fromDate is not given with additional query', function () {
-            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.waybill = 'wakiso programme';
             scope.searchTerm.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: 'wakiso programme',
+                waybill: 'wakiso programme',
                 toDate: '2014-07-07',
             }));
         });
 
         it('should filter deliveries when toDate is not given with additional query', function () {
-            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.waybill = 'wakiso programme';
             scope.searchTerm.fromDate = '2014-07-07';
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: 'wakiso programme',
+                waybill: 'wakiso programme',
                 fromDate: '2014-07-07',
             }));
         });
@@ -197,11 +197,11 @@ describe('Warehouse Delivery Controller', function () {
 
     describe('when filtered by other fields', function () {
         it('should perform filtering when waybill number is given', function () {
-            scope.searchTerm.purchaseOrder = '00001';
+            scope.searchTerm.waybill = '00001';
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: '00001',
+                waybill: '00001',
             }));
         });
 
@@ -242,7 +242,7 @@ describe('Warehouse Delivery Controller', function () {
         });
 
         it('should perform filtering when multi-fields are specified', function () {
-            scope.searchTerm.purchaseOrder = '00001';
+            scope.searchTerm.waybill = '00001';
             scope.searchTerm.itemDescription = 'Leaflet 2013';
             scope.searchTerm.fromDate = '2014-05-07';
             scope.searchTerm.toDate = '2014-07-07';
@@ -252,7 +252,7 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: '00001',
+                waybill: '00001',
                 itemDescription: 'Leaflet 2013',
                 fromDate: '2014-05-07',
                 toDate: '2014-07-07',
@@ -265,14 +265,14 @@ describe('Warehouse Delivery Controller', function () {
         it('should perform filtering while timer has been initialized', function () {
             scope.searchTerm = {};
             scope.$apply();
-            scope.searchTerm.purchaseOrder = 'wakiso programme';
+            scope.searchTerm.waybill = 'wakiso programme';
             scope.searchTerm.fromDate = '2014-07-07';
             scope.$apply()
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: 'wakiso programme',
+                waybill: 'wakiso programme',
                 fromDate: '2014-07-07',
             }));
         });

@@ -43,7 +43,7 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_return_release_orders_by_multi_search_fields(self):
         ro_one, ro_tow, programme, consignee = self.create_release_orders()
-        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'purchaseOrder=234256&'
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'waybill=234256&'
                                                             'itemDescription=HEK2013&'
                                                             'fromDate=2014-10-04&'
                                                             'toDate=2014-10-06&'
@@ -66,7 +66,7 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_return_release_orders_filtered_by_waybill_number(self):
         ro_one, ro_tow, programme, consignee = self.create_release_orders()
-        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'purchaseOrder=234256'))
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'waybill=234256'))
 
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], ro_tow.id)

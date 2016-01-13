@@ -23,7 +23,7 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
     serializer_class = ReleaseOrderSerializer
     pagination_class = StandardResultsSetPagination
     supported_filters = {
-        'purchaseOrder': 'waybill__icontains',
+        'waybill': 'waybill__icontains',
         'programmeId': 'sales_order__programme_id',
         'itemDescription': 'items__item__description__contains',
         'selectedLocation': 'items__distributionplannode__location__contains',

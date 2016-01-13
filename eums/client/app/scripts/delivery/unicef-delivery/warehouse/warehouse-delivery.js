@@ -41,7 +41,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
                 }
 
                 if (oldSearchTerm.itemDescription != newSearchTerm.itemDescription ||
-                    oldSearchTerm.purchaseOrder != newSearchTerm.purchaseOrder) {
+                    oldSearchTerm.waybill != newSearchTerm.waybill) {
                     startTimer();
                 } else {
                     loadReleaseOrder();
