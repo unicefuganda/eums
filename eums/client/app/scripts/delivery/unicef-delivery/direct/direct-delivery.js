@@ -63,11 +63,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             loadPurchaseOrders();
         };
 
-        // todo: to check if this function is useful
-        $scope.convertToDate = function (dateString) {
-            return Date.parse(dateString);
-        };
-
         $scope.sortBy = function (sortField) {
             if (_.include(SUPPORTED_FIELD, sortField)) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
@@ -75,25 +70,13 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             }
         };
 
-        // todo: to check if this function is useful
-        $scope.showRemarks = function (index) {
-            var remarksModalId = 'remarks-modal-' + index;
-            LoaderService.showModal(remarksModalId)
-        };
-
         $scope.exportToCSV = function () {
-            // todo: export items with filters, e.g: item-feedback-report
             ExportDeliveriesService.export('direct').then(function (response) {
                 ngToast.create({content: response.data.message, class: 'info'});
             }, function () {
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
                 ngToast.create({content: errorMessage, class: 'danger'})
             });
-        };
-
-        // todo: remove ng-init="initialize" from corresponding html
-        $scope.initialize = function () {
-            loadPurchaseOrders();
         };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
@@ -115,8 +98,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         };
 
         function formatDate(date) {
-            // todo: use formate-date from SysUtilsService instead of construct it our own
-            //return SysUtilsService.formatDate(date);
             return moment(date).format('YYYY-MM-DD')
         }
 

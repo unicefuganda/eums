@@ -47,10 +47,6 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             loadItemFeedbackReport()
         };
 
-        $scope.convertToDate = function (dateString) {
-            return Date.parse(dateString);
-        };
-
         $scope.sortBy = function (sortField) {
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
@@ -76,7 +72,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
                 ngToast.create({content: errorMessage, class: 'danger'})
             });
-        }
+        };
 
         function startTimer() {
             timer = $timeout(function () {
