@@ -123,6 +123,7 @@
                     <th class="align-left"><span class="padded-multi-line-5">IMPLEMENTING PARTNER</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">LAST RECIPIENT</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">DISTRIBUTION STAGE</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">CONTACT</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
                     <th class="align-left"><a ng-click="sortBy('quantity_shipped')"
                                               class="padded-multi-line-5 quantity_shipped">QUANTITY SHIPPED<i
@@ -138,7 +139,7 @@
                             ng-class="sortArrowClass('amountReceived')"></i></a></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">REMARKS</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">RECIPIENT REMARKS</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">IP NOTES</span></th>
                 </tr>
                 </thead>
@@ -149,7 +150,14 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.programme.name }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.implementing_partner }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.tree_position | treePositionFilter }}</span>
+                    <td>
+                        <span class="padded-multi-line-5">{{ itemReport.tree_position | treePositionFilter }}</span>
+                    </td>
+                    <td>
+                        <div class="pad-left-10">{{ itemReport.contactName }}</div>
+                        <div class="pad-left-10">
+                            <small>{{ itemReport.contactPhone }}</small>
+                        </div>
                     </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
@@ -231,12 +239,12 @@
                     <span ng-if="itemReport.additional_remarks" class="glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5"
                           ng-click="showAdditionalRemarks(itemReport.additional_remarks)"></span>
-                </td>
+                    </td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="15" class="centered">
+                    <td colspan="16" class="centered">
                         <pagination total-items="count"
                                     ng-model="pagination.page"
                                     boundary-links="true"

@@ -90,46 +90,53 @@
             </div>
         </div>
         <div class="table-wrapper">
-    <table class="table table-bordered table-hover table-striped table-condensed">
-        <thead>
-        <tr>
-            <th class="align-center"><span class="pad-left-5">RECEIVED</span></th>
-            <th class="align-left"><a ng-click="sortBy('shipmentDate')" class="pad-left-5 shipment-date">SHIPMENT
-                DATE<i ng-class="sortArrowClass('shipmentDate')"></i></a></th>
-            <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="pad-left-5 date-of-receipt">DATE
-                RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
-            <th class="align-left"><span class="pad-left-5">PO/WAYBILL</span></th>
-            <th class="align-left"><span class="pad-left-5">OUTCOME</span></th>
-            <th class="align-left"><span class="pad-left-5">IMPLEMENTING PARTNER</span></th>
-            <th class="align-left"><a ng-click="sortBy('value')" class="pad-left-5 value">VALUE<i
-                    ng-class="sortArrowClass('value')"></i></a></th>
-            <th class="align-center"><span class="pad-left-5">CONDITION</span></th>
-            <th class="align-left"><span class="pad-left-5">SATISFIED</span></th>
-            <th class="align-left"><span class="pad-left-5">REMARKS</span></th>
-            <th class="align-left"><span class="pad-left-5">PICTURES</span></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="($index, itemReport) in report" class="align-left">
-            <td><span class=" eums-border-status eums-border-center eums-border-width-35"
-                      ng-class="{ 'eums-bg-color-yes': itemReport.deliveryReceived == 'Yes',
+            <table class="table table-bordered table-hover table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th class="align-center"><span class="pad-left-5">RECEIVED</span></th>
+                    <th class="align-left"><a ng-click="sortBy('shipmentDate')" class="pad-left-5 shipment-date">SHIPMENT
+                        DATE<i ng-class="sortArrowClass('shipmentDate')"></i></a></th>
+                    <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="pad-left-5 date-of-receipt">DATE
+                        RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
+                    <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
+                    <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
+                    <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
+                    <th class="align-left"><span class="pad-left-10">CONTACT</span></th>
+                    <th class="align-left"><a ng-click="sortBy('value')" class="pad-left-10 value">VALUE<i
+                            ng-class="sortArrowClass('value')"></i></a></th>
+                    <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
+                    <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
+                    <th class="align-left"><span class="pad-left-10">IP REMARKS</span></th>
+                    <th class="align-left"><span class="pad-left-5">PICTURES</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="($index, itemReport) in report" class="align-left">
+                    <td><span class=" eums-border-status eums-border-center eums-border-width-35"
+                              ng-class="{ 'eums-bg-color-yes': itemReport.deliveryReceived == 'Yes',
                               'eums-bg-color-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
-            <td><span class="pad-left-5">{{ formatDate(itemReport.shipmentDate)}}</span></td>
-            <td><span class="pad-left-5">{{ formatDate(itemReport.dateOfReceipt)}}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.orderNumber }}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.programme.name }}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.consignee.name }}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.value | currency }}</span></td>
-            <td>
+                    <td><span class="pad-left-10">{{ formatDate(itemReport.shipmentDate)}}</span></td>
+                    <td><span class="pad-left-10">{{ formatDate(itemReport.dateOfReceipt)}}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.programme.name }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.consignee.name }}</span></td>
+                    <td>
+                        <div class="pad-left-10">{{ itemReport.contactName }}</div>
+                        <div class="pad-left-10">
+                            <small>{{ itemReport.contactPhone }}</small>
+                        </div>
+                    </td>
+                    <td><span class="pad-left-10">{{ itemReport.value | currency }}</span></td>
+                    <td>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'Yes'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Good</span>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">Bad</span>
-            </td>
-            <td>
-                <div class="align-center">
+                    </td>
+                    <td>
+                        <div class="align-center">
                             <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
                                   ng-class="{'glyphicon-ok-sign': itemReport.satisfiedWithDelivery == 'Yes',
                                                 'eums-text-color-ok': itemReport.satisfiedWithDelivery == 'Yes',
@@ -137,68 +144,68 @@
                                                 'eums-text-color-no': itemReport.satisfiedWithDelivery == 'No'
                                 }">
                             </span>
-                </div>
-            </td>
-            <td>
-                <div class="align-center">
-                    <a class="button" ng-click="showRemarks($index)"
-                       ng-hide="itemReport.additionalDeliveryComments == '' ">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="align-center">
+                            <a class="button" ng-click="showRemarks($index)"
+                               ng-hide="itemReport.additionalDeliveryComments == '' ">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
-                    </a>
-                </div>
-                <div class="modal fade text-left" id="remarks-modal-{{$index}}">
-                    <div class="modal-dialog modal-sixty-percent-size">
-                        <div class="modal-content col-md-offset-3 col-md-6">
-                            <div class="modal-header">
-                                <button type="button"
-                                        class="close"
-                                        data-dismiss="modal">
-                                    <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
-                                    <span class="sr-only">Close</span>
-                                </button>
-                                <h4 class="eums-modal-header">Additional Remarks</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="eums-modal-content">
-                                    {{ itemReport.additionalDeliveryComments }}
+                            </a>
+                        </div>
+                        <div class="modal fade text-left" id="remarks-modal-{{$index}}">
+                            <div class="modal-dialog modal-sixty-percent-size">
+                                <div class="modal-content col-md-offset-3 col-md-6">
+                                    <div class="modal-header">
+                                        <button type="button"
+                                                class="close"
+                                                data-dismiss="modal">
+                                            <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+                                            <span class="sr-only">Close</span>
+                                        </button>
+                                        <h4 class="eums-modal-header">Additional Remarks</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="eums-modal-content">
+                                            {{ itemReport.additionalDeliveryComments }}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer centered">
+                                        <button type="button"
+                                                class="btn btn-primary"
+                                                data-dismiss="modal"><span
+                                                class='glyphicon glyphicon-ok-sign text-white'></span> OK
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-footer centered">
-                                <button type="button"
-                                        class="btn btn-primary"
-                                        data-dismiss="modal"><span
-                                        class='glyphicon glyphicon-ok-sign text-white'></span> OK
-                                </button>
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </td>
-            <td>
+                    </td>
+                    <td>
                 <span class="pad-left-5 eums-block" ng-repeat="url in itemReport.urls">
                     <a ng-href="/media/{{ url }}" target="_blank">Image{{ $index+1 }}</a>
                 </span>
-            </td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="11" class="centered">
-                <pagination total-items="count"
-                            ng-model="pagination.page"
-                            boundary-links="true"
-                            ng-change="goToPage(pagination.page)"
-                            max-size="5"
-                            rotate="false"
-                            items-per-page="pageSize">
-                </pagination>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-</div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="11" class="centered">
+                        <pagination total-items="count"
+                                    ng-model="pagination.page"
+                                    boundary-links="true"
+                                    ng-change="goToPage(pagination.page)"
+                                    max-size="5"
+                                    rotate="false"
+                                    items-per-page="pageSize">
+                        </pagination>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
 

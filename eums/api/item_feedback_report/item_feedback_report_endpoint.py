@@ -105,7 +105,9 @@ def build_answers_for_nodes(nodes, response):
             'answers': answer_list,
             'location': node.location,
             'additional_remarks': node.additional_remarks,
-            'tree_position': node.tree_position}
+            'tree_position': node.tree_position,
+            'contact_person_id': node.contact_person_id
+        }
         delivery_node.update(answer_list)
         delivery_node['dateOfReceipt'] = answer_list.get('dateOfReceipt') \
             if answer_list.get('dateOfReceipt') \

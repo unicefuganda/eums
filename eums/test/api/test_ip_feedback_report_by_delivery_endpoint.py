@@ -1,6 +1,5 @@
+import logging
 from datetime import date
-
-from django.utils import unittest
 
 from eums.models import Question, DistributionPlan, Runnable, Programme, Consignee, DistributionPlanNode, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -21,11 +20,12 @@ from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery'
 
+logger = logging.getLogger(__name__)
+
+CONTACT_PERSON_ID = '56494e2e1486bd312e4b2f31'
+
 
 class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
-    def tearDown(self):
-        DistributionPlan.objects.all().delete()
-
     def test_consignee_see_only_his_deliveries(self):
         consignee = ConsigneeFactory()
         self.logout()
@@ -55,8 +55,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar',
-                              'urls': []}]
+                              'urls': [],
+                              'additionalDeliveryComments': comment, 'contactPersonId': CONTACT_PERSON_ID, 'value': 100,
+                              'location': 'Madagascar'}]
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
@@ -85,11 +86,13 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self._create_questions()
         programme_name = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
-        delivery = DeliveryFactory(
-                track=True, programme=ProgrammeFactory(name=programme_name),
-                consignee=ConsigneeFactory(name=wakiso), delivery_date=date(2015, 3, 10))
+        shipment_date = date(2015, 3, 10)
+        delivery = DeliveryFactory(contact_person_id=CONTACT_PERSON_ID,
+                                   track=True, programme=ProgrammeFactory(name=programme_name),
+                                   consignee=ConsigneeFactory(name=wakiso), delivery_date=shipment_date)
         order_number = 34230335
-        DeliveryNodeFactory(distribution_plan=delivery, track=True, tree_position=Flow.Label.IMPLEMENTING_PARTNER,
+        DeliveryNodeFactory(contact_person_id=CONTACT_PERSON_ID, distribution_plan=delivery, track=True,
+                            tree_position=Flow.Label.IMPLEMENTING_PARTNER,
                             item=PurchaseOrderItemFactory(
                                     purchase_order=PurchaseOrderFactory(order_number=order_number)))
         run = RunFactory(runnable=delivery)
@@ -107,7 +110,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: empty, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': empty, 'value': 100, 'location': 'Kampala', 'urls': []}]
+                              'urls': [],
+                              'additionalDeliveryComments': empty, 'contactPersonId': CONTACT_PERSON_ID,
+                              'value': 100, 'location': 'Kampala'}]
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
@@ -122,7 +127,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         order_number = 34230305
         comment = 'Not Satisfied!!'
         number_of_deliveries = 1
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso, comment, True, True)
+
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso,
+                                     comment, True, True)
 
         DeliveryNodeFactory()
         self.create_node_and_answers(number_of_deliveries, 57848383, programme_two, napak, comment, True, False)
@@ -136,8 +143,10 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar',
-                              'urls': []}]
+                              'urls': [],
+                              'additionalDeliveryComments': comment,
+                              'contactPersonId': CONTACT_PERSON_ID,
+                              'value': 100, 'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
 
@@ -168,8 +177,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar',
-                              'urls': []}]
+                              'urls': [],
+                              'additionalDeliveryComments': comment, 'contactPersonId': CONTACT_PERSON_ID,
+                              'value': 100, 'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
 
@@ -200,8 +210,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar',
-                              'urls': []}]
+                              'urls': [],
+                              'additionalDeliveryComments': comment, 'contactPersonId': CONTACT_PERSON_ID, 'value': 100,
+                              'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
 
@@ -421,11 +432,13 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
     def create_node_and_answers(self, number_of_deliveries, order_number, programme_name, consignee, comment,
                                 is_purchase, track, tree_position=Flow.Label.IMPLEMENTING_PARTNER,
-                                location='Madagascar'):
+                                location='Madagascar', contact_person_id=CONTACT_PERSON_ID):
         while number_of_deliveries > 0:
-            delivery = DeliveryFactory(
-                    track=track, programme=ProgrammeFactory(name=programme_name),
-                    consignee=ConsigneeFactory(name=consignee), delivery_date=date(2015, 3, 10), location=location)
+            delivery = DeliveryFactory(contact_person_id=contact_person_id,
+                                       track=track, programme=ProgrammeFactory(name=programme_name),
+                                       consignee=ConsigneeFactory(name=consignee), delivery_date=date(2015, 3,
+                                                                                                      10),
+                                       location=location)
 
             self._create_node(delivery, is_purchase, order_number, track, tree_position, location)
 

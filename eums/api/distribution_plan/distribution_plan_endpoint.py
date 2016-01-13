@@ -1,5 +1,6 @@
 import logging
 
+from django.db import transaction
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
@@ -40,11 +41,13 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
         'consignee': 'consignee'
     }
 
+    @transaction.atomic
     def perform_update(self, serializer):
         super(DistributionPlanViewSet, self).perform_update(serializer)
         distribution_plan_node_for_ip_filter = {
             'distribution_plan': serializer.data['id'],
-            'tree_position': Runnable.IMPLEMENTING_PARTNER
+            'tree_position': Runnable.IMPLEMENTING_PARTNER,
+            'location__isnull': True
         }
         DistributionPlanNode.objects.filter(**distribution_plan_node_for_ip_filter).update(
                 location=serializer.data['location'], contact_person_id=serializer.data['contact_person_id'])

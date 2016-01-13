@@ -24,27 +24,6 @@ ENDPOINT_URL = BACKEND_URL + 'item-feedback-report/'
 
 
 class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
-    def tearDown(self):
-        MultipleChoiceQuestion.objects.all().delete()
-        TextQuestion.objects.all().delete()
-        NumericQuestion.objects.all().delete()
-        Option.objects.all().delete()
-
-        MultipleChoiceAnswer.objects.all().delete()
-        NumericAnswer.objects.all().delete()
-        TextAnswer.objects.all().delete()
-        Flow.objects.all().delete()
-        Run.objects.all().delete()
-        DistributionPlan.objects.all().delete()
-        DistributionPlanNode.objects.all().delete()
-        Consignee.objects.all().delete()
-        Programme.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
-        ReleaseOrderItem.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-        SalesOrder.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_ips_see_only_his_deliveries(self):
         consignee = ConsigneeFactory()
         self.logout()
@@ -75,6 +54,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertFieldExists({'programme': {'id': node_one.programme.id, 'name': node_one.programme.name}}, results)
         self.assertFieldExists({'consignee': node_one.consignee.name}, results)
         self.assertFieldExists({'implementing_partner': node_one.ip.name}, results)
+        self.assertFieldExists({'contact_person_id': node_one.contact_person_id}, results)
         self.assertFieldExists({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertFieldExists({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertFieldExists({'value': node_one.total_value}, results)

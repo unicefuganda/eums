@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'Contact', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
+                                                          ReportService, LoaderService, ErrorMessageService, SortService, ContactService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
 
@@ -81,13 +81,32 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
-
+                setContactToReports($scope.report)
                 updateProgrammes(response.programmeIds);
             }, function () {
                 ErrorMessageService.showError();
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
+            });
+        }
+
+        function setContactToReports(reports) {
+            reports.forEach(function (report) {
+                loadContact(report.contact_person_id, function (contact) {
+                    report.contactName = contact.firstName + ' ' + contact.lastName;
+                    report.contactPhone = contact.phone;
+                });
+            });
+        }
+
+        function loadContact(contactId, callback) {
+            if (contactId == null) {
+                return;
+            }
+            ContactService.get(contactId).then(function (contact) {
+                var result = contact != null ? contact : {firstName: "", lastName: "", phone: ""};
+                callback(result);
             });
         }
 

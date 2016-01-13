@@ -82,7 +82,8 @@ def _build_delivery_result(deliveries):
                      _get_answer(Question.LABEL.additionalDeliveryComments, answers),
                  'value': int(delivery.total_value),
                  'location': delivery.location,
-                 'urls': uploads
+                 'urls': uploads,
+                 'contactPersonId': delivery.contact_person_id
                  })
 
     return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
@@ -173,9 +174,10 @@ def _get_query_answer_from_url(request, questions):
 def _get_answer(question_label, answers):
     return filter(lambda answer: answer['question_label'] == question_label, answers)[0]['value']
 
+
 def _get_uploads(delivery):
     data = []
     uploads = Upload.objects.filter(plan=delivery)
     for upload in uploads.iterator():
-            data.append(str(upload.file))
+        data.append(str(upload.file))
     return data
