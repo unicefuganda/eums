@@ -12,9 +12,9 @@ describe('Search Delivery by Date range', function () {
     });
 
     it('Search warehouse delivery by waybill number', function () {
-        warehouseDeliverySearchPage.searchByWaybillNumber('72089797');
+        warehouseDeliverySearchPage.searchByWaybill('72089797');
         warehouseDeliverySearchPage.verifyROExists('72089797');
-        warehouseDeliverySearchPage.clearWaybillNumber();
+        warehouseDeliverySearchPage.clearWaybill();
     });
 
     it('Search warehouse delivery by item description', function () {

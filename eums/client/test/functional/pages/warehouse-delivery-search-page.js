@@ -19,12 +19,12 @@ WarehouseDeliverySearchPage.prototype = Object.create({}, {
         }
     },
 
-    searchByWaybillNumber: {
+    searchByWaybill: {
         value: function (waybill) {
             element(by.model('searchTerm.waybill')).sendKeys(waybill);
         }
     },
-    clearWaybillNumber: {
+    clearWaybill: {
         value: function () {
             element(by.model('searchTerm.waybill')).clear();
         }
