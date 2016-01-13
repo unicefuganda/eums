@@ -2,16 +2,12 @@
 
 set -e
 
-#Ensure that Docker and sshpass are installed
+# Ensure that Docker is installed
 if [ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]; then
     apt-get update
 
     apt-get -y install wget
     wget -qO- https://get.docker.com/ | sh
-fi
-
-if [ ! -f /usr/bin/sshpass ] && [ ! -f /usr/local/bin/sshpass ]; then
-    apt-get -y install sshpass --force-yes
 fi
 
 echo "Loading docker image..."
