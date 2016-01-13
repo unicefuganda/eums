@@ -11,7 +11,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         var timer;
         var initializing = true;
 
-        $scope.searchFields = ['waybill', 'deliveryDate'];//, 'programme'];
+        $scope.searchFields = ['waybill', 'deliveryDate']; //, 'programme'];
         $scope.errorMessage = '';
         $scope.planId = '';
 
@@ -49,11 +49,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             }
         });
 
-        // todo: remove ng-init="initialize" from corresponding html
-        $scope.initialize = function () {
-            loadReleaseOrder();
-        };
-
         $scope.goToPage = function (page) {
             $scope.pagination.page = page;
             loadReleaseOrder();
@@ -87,7 +82,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             return moment(date).format('YYYY-MM-DD')
         }
 
-        // todo: rename this function to delaySearch, maybe
         function startTimer() {
             timer = $timeout(function () {
                 loadReleaseOrder()
@@ -130,47 +124,3 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             });
         }
     });
-
-//$scope.$watch('[fromDate,toDate,query]', function () {
-//    if (initializing) {
-//        initializing = false;
-//    }
-//    else {
-//        if (timer) {
-//            $timeout.cancel(timer);
-//        }
-//        delaySearch();
-//    }
-//}, true);
-
-//function delaySearch() {
-//    timer = $timeout(function () {
-//        $scope.initialize(changedFilters());
-//    }, 2000);
-//}
-
-//function changedFilters() {
-//    var urlArgs = {};
-//    if ($scope.fromDate) {
-//        urlArgs.from = formatDate($scope.fromDate);
-//    }
-//    if ($scope.toDate) {
-//        urlArgs.to = formatDate($scope.toDate);
-//    }
-//    if ($scope.query) {
-//        urlArgs.query = $scope.query;
-//    }
-//    return urlArgs
-//}
-
-//if (allFilters) {
-//    if (allFilters.from) {
-//        $scope.fromDate = moment(Date.parse(allFilters.from)).format('DD-MMM-YYYY');
-//        initializing = true;
-//    }
-//
-//    if (allFilters.to) {
-//        $scope.toDate = moment(Date.parse(allFilters.to)).format('DD-MMM-YYYY');
-//        initializing = true;
-//    }
-//}
