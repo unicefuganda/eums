@@ -6,32 +6,6 @@ from eums.models.time_stamped_model import TimeStampedModel
 
 
 class PurchaseOrderManager(models.Manager):
-    def for_direct_delivery(self,
-                            purchase_order=None, programme_id=None, item_description=None, selected_location=None,
-                            from_date=None, to_date=None, ip_id=None):
-        po_orders = self.model.objects.annotate(release_order_count=Count('release_orders'))
-        no_release_orders = po_orders.filter(release_order_count=0)
-
-        # todo: refactor using request.params, e.g: item_feedback_report_endpoit -> _filter_fields
-        if purchase_order:
-            no_release_orders = no_release_orders.filter(order_number__icontains=purchase_order)
-        if programme_id and programme_id.isdigit():
-            no_release_orders = no_release_orders.filter(sales_order__programme_id=programme_id)
-        if item_description:
-            no_release_orders = no_release_orders.filter(
-                    purchaseorderitem__item__description__icontains=item_description)
-        if selected_location:
-            no_release_orders = no_release_orders.filter(
-                    purchaseorderitem__distributionplannode__location__icontains=selected_location)
-        if from_date:
-            no_release_orders = no_release_orders.filter(last_shipment_date__gte=from_date)
-        if to_date:
-            no_release_orders = no_release_orders.filter(last_shipment_date__lte=to_date)
-        if ip_id and ip_id.isdigit():
-            no_release_orders = no_release_orders.filter(purchaseorderitem__distributionplannode__ip_id=ip_id)
-
-        return no_release_orders
-
     def for_consignee(self, consignee_id):
         order_item_ids = DeliveryNode.objects.filter(consignee__id=consignee_id).values_list('item')
         order_ids = PurchaseOrderItem.objects.filter(id__in=order_item_ids).values_list('purchase_order')

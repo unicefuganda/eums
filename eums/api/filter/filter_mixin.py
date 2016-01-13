@@ -7,6 +7,6 @@ class RequestFilterMixin(object):
             filters.update(additional_filters)
 
         if supported_filters is not None:
-            return {supported_filters.get(key): value for key, value in filters.iteritems() if value and value is not None}
+            return {supported_filters.get(key): value for key, value in filters.iteritems() if value is not None}
 
         return {}

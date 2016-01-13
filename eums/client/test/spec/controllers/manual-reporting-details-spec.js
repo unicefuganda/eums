@@ -15,7 +15,6 @@ describe('ManualReportingDetailsController', function () {
         programmeName = 'Test Programme';
     var nodeResponse;
 
-
     beforeEach(function () {
         stubSalesOrder = {
             id: salesOrderId,

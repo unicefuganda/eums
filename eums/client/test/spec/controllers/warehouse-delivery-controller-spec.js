@@ -60,7 +60,6 @@ describe('Warehouse Delivery Controller', function () {
     describe('when initialized', function () {
         it('should fetch release orders and put them on the scope.', function () {
             deferredReleaseOrders.resolve(releaseOrders);
-            scope.initialize();
             scope.$apply();
             expect(mockReleaseOrderService.all).toHaveBeenCalled();
             expect(scope.releaseOrders).toEqual(releaseOrders.results);

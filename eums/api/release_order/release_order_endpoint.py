@@ -39,13 +39,13 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
 
         queryset = self.filter_queryset(self.__get_release_orders(request))
         if request.GET.get('field'):
-            map = {'trackedDate': 'tracked_date',
-                   'deliveryDate': 'delivery_date',
-                   'orderNumber': 'waybill'}
-            map_field = map[request.GET.get('field')]
-            sort_field = '-' + map_field if request.GET.get('order') == 'desc' else map_field
+            field_map = {'trackedDate': 'tracked_date',
+                         'deliveryDate': 'delivery_date',
+                         'orderNumber': 'waybill'}
+            field = field_map[request.GET.get('field')]
+            sort_field = '-' + field if request.GET.get('order') == 'desc' else field
             null_date_setting = '-null_date' if ('-' in sort_field) else 'null_date'
-            queryset = queryset.annotate(null_date=Count(map_field)).order_by(null_date_setting, sort_field)
+            queryset = queryset.annotate(null_date=Count(field)).order_by(null_date_setting, sort_field)
 
         page = self.paginate_queryset(queryset)
         if page is not None:

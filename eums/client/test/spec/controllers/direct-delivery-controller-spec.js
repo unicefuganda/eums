@@ -88,7 +88,6 @@ describe('DirectDeliveryController', function () {
 
         it('should hide loader after retrieving purchase orders', function () {
             deferredPurchaseOrder.resolve({results: ['po one', 'po two'], count: 2, pageSize: 10});
-            scope.initialize();
             scope.$apply();
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
         });

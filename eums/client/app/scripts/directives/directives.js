@@ -308,8 +308,7 @@ angular.module('Directives', ['eums.ip'])
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
-                    var id = consignee ? parseInt(consignee.id) : "";
-                    ngModel.$setViewValue(String(id));
+                    ngModel.$setViewValue(consignee && consignee.id);
                     scope.$apply();
                 });
 
