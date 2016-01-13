@@ -11,9 +11,6 @@ class SystemSettingsTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(SystemSettingsTest, self).setUp()
 
-    def tearDown(self):
-        SystemSettings.objects.all().delete()
-
     def test_turn_off_auto_track_switch_should_return_false(self):
         system_settings = SystemSettingsFactory(auto_track=True)
         response = self.client.put(ENDPOINT_URL + str(system_settings.id) + '/', {

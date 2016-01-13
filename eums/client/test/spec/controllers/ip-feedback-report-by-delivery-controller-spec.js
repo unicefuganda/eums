@@ -1,28 +1,30 @@
 describe('IpFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout,
-        route = {}, initController, mockEumsErrorMessageService;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, contactDeffer,
+        route = {}, initController, mockEumsErrorMessageService, mockContactService;
 
     beforeEach(function () {
         module('IpFeedbackReportByDelivery');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReportByDelivery']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['ContactService']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
         mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
+
             scope = $rootScope.$new();
             location = $location;
             timeout = $timeout;
 
             mockReportService.ipFeedbackReportByDelivery.and.returnValue(deferredResult.promise);
-
-            initController = function(routeParams) {
+            initController = function (routeParams) {
                 $controller('IpFeedbackReportByDeliveryController', {
                     $scope: scope,
                     $location: location,
                     $routeParams: routeParams,
                     ReportService: mockReportService,
+                    ContactService: mockContactService,
                     LoaderService: mockLoader,
                     ErrorMessageService: mockEumsErrorMessageService
                 });
@@ -34,7 +36,7 @@ describe('IpFeedbackReportController', function () {
 
     describe('on load', function () {
         it('should show the loader and hide it after the loading data', function () {
-            deferredResult.resolve([]);
+            deferredResult.resolve({results: [{}, {}]});
             scope.$apply();
 
             expect(mockLoader.showLoader).toHaveBeenCalled();
@@ -58,7 +60,10 @@ describe('IpFeedbackReportController', function () {
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({ field : 'shipmentDate', order : 'desc' }, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({
+                field: 'shipmentDate',
+                order: 'desc'
+            }, 1);
             expect(scope.report).toEqual(response.results)
         });
 
@@ -71,13 +76,16 @@ describe('IpFeedbackReportController', function () {
 
     describe('on paginate', function () {
         it('should call the service with page number', function () {
-            deferredResult.resolve({});
+            deferredResult.resolve({results:[{},{}]});
             scope.$apply();
 
             scope.goToPage(2);
             scope.$digest();
 
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({ field : 'shipmentDate', order : 'desc' }, 2);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({
+                field: 'shipmentDate',
+                order: 'desc'
+            }, 2);
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
         });
     });
@@ -93,7 +101,10 @@ describe('IpFeedbackReportController', function () {
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith( { field : 'shipmentDate', order : 'desc' }, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({
+                field: 'shipmentDate',
+                order: 'desc'
+            }, 1);
         });
 
         it('should call endpoint when searchTerm programme_id changes', function () {
@@ -105,26 +116,30 @@ describe('IpFeedbackReportController', function () {
             scope.$apply();
 
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({ field : 'shipmentDate', order : 'desc', programme_id : 2 }, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({
+                field: 'shipmentDate',
+                order: 'desc',
+                programme_id: 2
+            }, 1);
         });
 
     });
 
-    describe('on show remark', function(){
-        it('should call show modal with right index', function(){
+    describe('on show remark', function () {
+        it('should call show modal with right index', function () {
             scope.showRemarks(3);
 
             expect(mockLoader.showModal).toHaveBeenCalledWith('remarks-modal-3');
         })
     });
 
-    describe('on loss of connection', function(){
-       it('should show an error message', function(){
-           deferredResult.reject();
-           scope.$apply();
+    describe('on loss of connection', function () {
+        it('should show an error message', function () {
+            deferredResult.reject();
+            scope.$apply();
 
-           expect(mockEumsErrorMessageService.showError).toHaveBeenCalled();
-       });
+            expect(mockEumsErrorMessageService.showError).toHaveBeenCalled();
+        });
     });
 
     describe('on sorting', function () {
@@ -155,9 +170,9 @@ describe('IpFeedbackReportController', function () {
             expect(scope.sortTerm).toEqual({field: 'dateOfReceipt', order: 'desc'});
         });
 
-        it('should sort as default when field is not supported', function() {
+        it('should sort as default when field is not supported', function () {
             scope.sortBy("notSupported");
-            expect(scope.sortTerm).toEqual({field : 'shipmentDate', order : 'desc'});
+            expect(scope.sortTerm).toEqual({field: 'shipmentDate', order: 'desc'});
         })
 
     });

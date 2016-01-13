@@ -1,3 +1,5 @@
+import logging
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 from rest_framework import status
@@ -15,6 +17,8 @@ ITEM_QUESTIONS = {'received': (Question.LABEL.itemReceived, Question.LABEL.produ
                   'satisfied': (Question.LABEL.satisfiedWithProduct,),
                   'quality': (Question.LABEL.qualityOfProduct,)}
 sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived')
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(['GET', ])

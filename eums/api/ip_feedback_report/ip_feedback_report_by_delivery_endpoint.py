@@ -1,3 +1,5 @@
+import logging
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 from rest_framework import status
@@ -14,6 +16,8 @@ DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,
                       'satisfied': Question.LABEL.satisfiedWithDelivery,
                       'good_condition': Question.LABEL.isDeliveryInGoodOrder}
 sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
@@ -61,12 +65,12 @@ def _get_programme_ids(results):
     return programme_ids
 
 
-def _build_delivery_result(deliveries):
+def _build_delivery_result(deliveries, isExport=False):
     delivery_answers = []
+
     for delivery in deliveries:
         answers = delivery.answers()
         uploads = _get_uploads(delivery)
-
         delivery_answers.append(
                 {Question.LABEL.deliveryReceived: _get_answer(Question.LABEL.deliveryReceived, answers),
                  'shipmentDate': delivery.delivery_date,

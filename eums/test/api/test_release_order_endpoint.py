@@ -9,17 +9,10 @@ from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from mock import patch
 
-
 ENDPOINT_URL = BACKEND_URL + 'release-order/'
 
 
 class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
-    def tearDown(self):
-        ReleaseOrder.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-        SalesOrder.objects.all().delete()
-        Consignee.objects.all().delete()
-
     def test_should_get_release_orders(self):
         sales_order = SalesOrderFactory()
         purchase_order = PurchaseOrderFactory()
@@ -47,7 +40,6 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'id': order.id}, response.data[0])
 
     def test_should_return_release_orders_filtered_by_waybill(self):
-
         ReleaseOrderFactory()
         order = ReleaseOrderFactory(waybill=12345)
 

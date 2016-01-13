@@ -4,16 +4,11 @@ from mock import patch
 
 from eums import settings_export
 from eums.settings_export import CSV_EXPIRED_HOURS
-from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.stock_report_csv_exporter import StockReportExporter
 
 
 class StockReportExporterTest(TestCase):
     HOSTNAME = 'http://ha.ha/'
-
-    def tearDown(self):
-        DistributionPlan.objects.all().delete()
-        DistributionPlanNode.objects.all().delete()
 
     @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
     def test_generate_stock_report_should_return_correct_notification_details(self,

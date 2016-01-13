@@ -1,10 +1,10 @@
+import logging
 from unittest import TestCase
 
 import requests
 from django.conf import settings
 import requests_mock
 from mock import MagicMock
-from requests import patch
 
 from eums.models import Alert, Question, PurchaseOrder, Consignee, DistributionPlan, DistributionPlanNode
 from eums.services.response_alert_handler import ResponseAlertHandler
@@ -13,6 +13,8 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+
+logger = logging.getLogger(__name__)
 
 
 class ResponseAlertHandlerTest(TestCase):
@@ -145,7 +147,6 @@ class ResponseAlertHandlerTest(TestCase):
         ResponseAlertHandler(runnable=delivery, answer_values=answer_values).process()
 
         alert = Alert.objects.get(consignee_name="Liverpool FC - Unique", order_number=5678)
-
         self.assertEqual(alert.contact_name, "chris george")
 
     def test_should_not_create_alert_when_no_issues_with_delivery(self):

@@ -21,15 +21,6 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         super(PurchaseOrderEndPointTest, self).setUp()
         PurchaseOrder.objects.all().delete()
 
-    def tearDown(self):
-        DistributionPlan.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
-        DistributionPlanNode.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-        Programme.objects.all().delete()
-        SalesOrderItem.objects.all().delete()
-        SalesOrder.objects.all().delete()
-
     def test_should_get_purchase_orders_without_release_orders(self):
         purchase_order = PurchaseOrderFactory()
         create_release_order(self)

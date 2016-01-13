@@ -8,8 +8,7 @@ from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
 from eums.test.factories.run_factory import RunFactory
-from eums.models import DistributionPlanNode, Run, SalesOrderItem, PurchaseOrderItem, ReleaseOrderItem, \
-    ReleaseOrder, PurchaseOrder, SalesOrder, Alert
+from eums.models import Run, PurchaseOrderItem, Alert
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, \
@@ -23,15 +22,6 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 class RunnableTest(TestCase):
     def setUp(self):
         self.node = DeliveryNodeFactory()
-
-    def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
-        ReleaseOrderItem.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
-        SalesOrderItem.objects.all().delete()
-        ReleaseOrder.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-        SalesOrder.objects.all().delete()
 
     @patch('requests.get')
     def test_should_build_contact_with_details_from_contacts_service(self, mock_get):
@@ -156,4 +146,3 @@ class RunnableTest(TestCase):
         self.assertIsNone(alert.remarks)
         self.assertEqual(alert.runnable.id, delivery.id)
         self.assertIsNone(alert.item_description)
-

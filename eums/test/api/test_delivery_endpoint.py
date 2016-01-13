@@ -36,11 +36,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
     def setUp(self):
         super(DeliveryEndPointTest, self).setUp()
-        self.clean_up()
         SystemSettingsFactory()
-
-    def tearDown(self):
-        self.clean_up()
 
     def test_should_create_delivery(self):
         today = datetime.date.today()
@@ -489,21 +485,3 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         response = self.client.patch('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'retrigger_delivery'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(DistributionPlan.objects.get(id=delivery.id).is_retriggered)
-
-    def clean_up(self):
-        DistributionPlan.objects.all().delete()
-        DistributionPlanNode.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
-        ReleaseOrder.objects.all().delete()
-        ReleaseOrderItem.objects.all().delete()
-        Programme.objects.all().delete()
-        Consignee.objects.all().delete()
-        UserProfile.objects.all().delete()
-        SystemSettings.objects.all().delete()
-        OrderItem.objects.all().delete()
-        Item.objects.all().delete()
-        Delivery.objects.all().delete()
-        Run.objects.all().delete()
-        Runnable.objects.all().delete()
-        RunQueue.objects.all().delete()

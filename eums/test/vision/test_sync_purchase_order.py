@@ -4,7 +4,8 @@ from unittest import TestCase
 
 from mock import MagicMock
 
-from eums.models import SalesOrder, SalesOrderItem, OrderItem, Item, Programme, PurchaseOrder, PurchaseOrderItem
+from eums.models import SalesOrder, SalesOrderItem, OrderItem, Item, Programme, PurchaseOrder, PurchaseOrderItem, \
+    DistributionPlan, DistributionPlanNode
 from eums.vision.purchase_order_synchronizer import PurchaseOrderSynchronizer
 
 
@@ -158,6 +159,8 @@ class TestSyncPurchaseOrder(TestCase):
         Programme.objects.all().delete()
         PurchaseOrder.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
+        DistributionPlan.objects.all().delete()
+        DistributionPlanNode.objects.all().delete()
 
     def test_should_point_to_correct_endpoint(self):
         self.synchronizer._load_records = MagicMock(return_value=[])

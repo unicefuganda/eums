@@ -10,12 +10,6 @@ ENDPOINT_URL = BACKEND_URL + 'item/'
 
 
 class ItemEndPointTest(AuthenticatedAPITestCase):
-    @classmethod
-    def tearDownClass(cls):
-        Consignee.objects.all().delete()
-        User.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_should_create_item(self):
         unit = create_item_unit(self)
         item_details = {'description': "Item 1", 'unit': unit['id'], 'material_code': "Item Code 1"}
@@ -31,7 +25,7 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'LX3'))
         self.assertEqual(len(response.data), 1)
         self.assertIn(item.id, [item['id'] for item in response.data])
-        
+
     def test_should_search_item_by_material_code(self):
         item = ItemFactory(material_code='LX350')
         ItemFactory(material_code='AA')

@@ -9,6 +9,7 @@ from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 from eums.services.exporter.stock_report_csv_exporter import StockReportExporter
+from eums.util.remote_contact_utils import RemoteContactUtils
 
 
 class CSVExportService(object):
@@ -38,8 +39,10 @@ def generate_delivery_export_csv(user, delivery_type, host_name):
 
 @app.task
 def generate_delivery_feedback_report(user, host_name, deliveries_feedback):
+    deliveries_feedback_with_contact = map(set_remote_contact_to_report_item, deliveries_feedback)
     csv_export_service = DeliveryFeedbackReportExporter(host_name)
-    CSVExportService.generate(csv_export_service.assemble_csv_data(deliveries_feedback),
+
+    CSVExportService.generate(csv_export_service.assemble_csv_data(deliveries_feedback_with_contact),
                               csv_export_service.export_category,
                               csv_export_service.get_export_csv_file_name())
 
@@ -48,8 +51,9 @@ def generate_delivery_feedback_report(user, host_name, deliveries_feedback):
 
 @app.task
 def generate_item_feedback_report(user, host_name, items_feedback):
+    items_feedback_with_contact = map(set_remote_contact_to_report_item, items_feedback)
     csv_export_service = ItemFeedbackReportExporter(host_name)
-    CSVExportService.generate(csv_export_service.assemble_csv_data(items_feedback),
+    CSVExportService.generate(csv_export_service.assemble_csv_data(items_feedback_with_contact),
                               csv_export_service.export_category,
                               csv_export_service.get_export_csv_file_name())
 
@@ -64,3 +68,10 @@ def generate_stock_feedback_report(user, host_name, stocks):
                               csv_export_service.get_export_csv_file_name())
 
     CSVExportService.notify(user, *csv_export_service.notification_details())
+
+
+def set_remote_contact_to_report_item(report_item):
+    contact = RemoteContactUtils.load_remote_contact_in_json(report_item.get('contactPersonId', report_item.get('contact_person_id')))
+    report_item['contactName'] = '%s %s' % (contact.get('firstName'), contact.get('lastName'))
+    report_item['contactPhone'] = contact.get('phone')
+    return report_item

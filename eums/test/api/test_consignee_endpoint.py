@@ -15,10 +15,6 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         DistributionPlan.objects.all().delete()
         Consignee.objects.all().delete()
 
-    def tearDown(self):
-        DistributionPlan.objects.all().delete()
-        Consignee.objects.all().delete()
-
     def test_should_get_consignees_sorted_by_name(self):
         consignee_one_details = {'name': "Save the Children", 'type': "implementing_partner",
                                  'customer_id': 'L100', 'imported_from_vision': True}

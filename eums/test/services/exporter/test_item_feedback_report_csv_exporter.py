@@ -4,16 +4,11 @@ from mock import patch
 
 from eums import settings_export
 from eums.settings_export import CSV_EXPIRED_HOURS
-from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 
 
 class ItemFeedbackReportExporterTest(TestCase):
     HOSTNAME = 'http://ha.ha/'
-
-    def tearDown(self):
-        DistributionPlan.objects.all().delete()
-        DistributionPlanNode.objects.all().delete()
 
     @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
     def test_generate_item_feedback_report_should_return_correct_notification_details(self,
@@ -47,6 +42,10 @@ class ItemFeedbackReportExporterTest(TestCase):
         quality_of_product = 'Good'
         satisfied_with_product = 'Yes'
         additional_delivery_comments = ''
+        first_name = 'Shenjian'
+        last_name = 'Yuan'
+        phone = '18192235667'
+        contact_name = '%s %s' % (first_name, last_name)
         items_feedback = [{'tree_position': tree_position,
                            'additionalDeliveryComments': additional_delivery_comments,
                            'qualityOfProduct': quality_of_product,
@@ -58,6 +57,8 @@ class ItemFeedbackReportExporterTest(TestCase):
                            'value': value,
                            'programme': programme,
                            'order_number': order_number,
+                           'contactName': contact_name,
+                           'contactPhone': phone,
                            'item_description': item_description,
                            'quantity_shipped': quantity_shipped}, ]
 
@@ -67,6 +68,8 @@ class ItemFeedbackReportExporterTest(TestCase):
             implementing_partner,
             consignee,
             tree_position,
+            contact_name,
+            phone,
             order_number,
             quantity_shipped,
             value,

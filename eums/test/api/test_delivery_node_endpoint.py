@@ -18,7 +18,6 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
 class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
-        self.clean_up()
         super(DeliveryNodeEndpointTest, self).setUp()
         self.MIDDLEMAN_POSITION = 'MIDDLE_MAN'
         self.END_USER_POSITION = 'END_USER'
@@ -34,9 +33,6 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
             'tree_position': self.END_USER_POSITION,
             'delivery_date': '2015-02-02',
         }
-
-    def tearDown(self):
-        self.clean_up()
 
     def clean_up(self):
         SalesOrder.objects.all().delete()

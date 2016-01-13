@@ -16,12 +16,6 @@ class ConsigneeItemEndpointTest(AuthenticatedAPITestCase):
         self.consignee = ConsigneeFactory()
         self.log_consignee_in(self.consignee)
 
-    @classmethod
-    def tearDownClass(cls):
-        Consignee.objects.all().delete()
-        User.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_should_paginate_items_list(self):
         ConsigneeItemFactory(consignee=self.consignee)
         ConsigneeItemFactory(consignee=self.consignee)

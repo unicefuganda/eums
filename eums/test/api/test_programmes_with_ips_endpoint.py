@@ -12,12 +12,6 @@ ENDPOINT_URL = BACKEND_URL + 'programme/'
 
 class ProgrammesWithIpsEndPointTest(AuthenticatedAPITestCase):
 
-    def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
-        Consignee.objects.all().delete()
-        Programme.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_should_get_programmes_with_associated_ips(self):
         programme = ProgrammeFactory(name='Our Programme')
         delivery = DeliveryFactory(programme=programme)

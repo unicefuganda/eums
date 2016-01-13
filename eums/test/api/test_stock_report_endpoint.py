@@ -32,19 +32,6 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.setup_purchase_orders_and_items()
         self.setup_distribution_plans()
 
-    def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
-        Consignee.objects.all().delete()
-        NumericQuestion.objects.all().delete()
-        TextQuestion.objects.all().delete()
-        Consignee.objects.all().delete()
-        DistributionPlan.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
-        Run.objects.all().delete()
-        SalesOrder.objects.all().delete()
-        SalesOrderItem.objects.all().delete()
-
     def test_gets_stock_value_for_all_purchase_orders_for_an_ip(self):
         self.setup_responses()
 

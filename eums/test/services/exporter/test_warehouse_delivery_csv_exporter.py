@@ -17,11 +17,6 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 class WareHouseDeliveryExporterTest(TestCase):
     HOSTNAME = "http://ha.ha/"
 
-    def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
-        ReleaseOrderItem.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-
     @patch('eums.models.DistributionPlanNode.build_contact')
     def test_should_get_export_list_for_warehouse(self, mock_build_contact):
         contact = {'firstName': 'John', 'lastName': 'Ssenteza', 'phone': '+256 782 123456'}

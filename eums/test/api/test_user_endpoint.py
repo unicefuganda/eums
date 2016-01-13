@@ -17,8 +17,3 @@ class UserEndPointTest(AuthenticatedAPITestCase):
 
         self.assertDictContainsSubset(user_details, user)
 
-    def tearDown(self):
-        users = User.objects.all()
-        for user in users:
-            user.delete()
-

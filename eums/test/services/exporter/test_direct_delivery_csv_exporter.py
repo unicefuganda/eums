@@ -1,9 +1,10 @@
+import logging
 from unittest import TestCase
 
 from mock import patch
 
 from eums.settings_export import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
-from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder
+from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder, DistributionPlan
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -12,17 +13,15 @@ from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
+logger = logging.getLogger(__name__)
+
 
 class DirectDeliveryExporterTest(TestCase):
     HOSTNAME = "http://ha.ha/"
 
-    def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
-        PurchaseOrder.objects.all().delete()
-
     @patch('eums.models.DistributionPlanNode.build_contact')
     def test_should_get_export_list_for_direct_delivery(self, mock_build_contact):
+        self.clean()
         contact = {'firstName': 'John', 'lastName': 'Ssenteza', 'phone': '+256 782 123456'}
         mock_build_contact.return_value = contact
         delivery = DeliveryFactory()
@@ -51,7 +50,9 @@ class DirectDeliveryExporterTest(TestCase):
 
         csv_exporter = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', self.HOSTNAME)
 
-        TestCase.maxDiff = None
+        logger.info(expected_data)
+        logger.info(csv_exporter.assemble_csv_data())
+
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
@@ -66,3 +67,9 @@ class DirectDeliveryExporterTest(TestCase):
                                                                            'http://ha.ha/static/exports/' + category +
                                                                            '/' + file_name, CSV_EXPIRED_HOURS))
         self.assertEqual(direct_csv_export.notification_details(), details)
+
+    def clean(self):
+        DistributionPlanNode.objects.all().delete()
+        DistributionPlan.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
+        PurchaseOrder.objects.all().delete()

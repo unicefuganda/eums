@@ -31,7 +31,7 @@ describe('ItemFeedbackReportController', function () {
 
     describe('on load', function () {
         it('should show the loader and hide it after the loading data', function () {
-            deferredResult.resolve([]);
+            deferredResult.resolve({results:[{},{}]});
             scope.$apply();
 
             expect(mockLoader.showLoader).toHaveBeenCalled();
@@ -71,7 +71,6 @@ describe('ItemFeedbackReportController', function () {
 
     describe('on filtering', function () {
         it('should call endpoint with search term after ', function () {
-            deferredResult.resolve({results: []});
             scope.$apply();
 
             var searchTerm = {ip: 2};
@@ -90,7 +89,7 @@ describe('ItemFeedbackReportController', function () {
 
     describe('on paginate', function () {
         it('should call the service with page number', function () {
-            deferredResult.resolve({});
+            deferredResult.resolve({results:[{},{}]});
             scope.searchTerm = {};
             scope.$apply();
 

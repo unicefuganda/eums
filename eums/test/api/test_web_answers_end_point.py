@@ -2,8 +2,8 @@ import datetime as datetime
 import json
 from django.db.models import Q
 from mock import MagicMock, patch
-from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
-    NumericAnswer, Alert, RunQueue, DistributionPlan
+from eums.models import MultipleChoiceAnswer, TextAnswer, Runnable, Flow, Run, \
+    NumericAnswer, Alert, RunQueue
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -23,9 +23,6 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(WebAnswerEndpointTest, self).setUp()
         self.setup_flow_with_questions(Flow.Label.IMPLEMENTING_PARTNER)
-        self.build_contact = Runnable.build_contact
-        contact = {'name': 'Some name', 'phone': '098765433'}
-        Runnable.build_contact = MagicMock(return_value=contact)
 
     def setup_flow_with_questions(self, flow_type):
         flow = FlowFactory(label=flow_type)
@@ -41,16 +38,6 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         OptionFactory(question=satisfied_qn, text='Yes')
         OptionFactory(question=satisfied_qn, text='No')
         TextQuestionFactory(label='additionalDeliveryComments', flow=flow)
-
-    def tearDown(self):
-        MultipleChoiceQuestion.objects.all().delete()
-        TextQuestion.objects.all().delete()
-        NumericAnswer.objects.all().delete()
-        Flow.objects.all().delete()
-        DistributionPlan.objects.all().delete()
-        RunQueue.objects.all().delete()
-        Run.objects.all().delete()
-        Runnable.build_contact = self.build_contact
 
     def test_should_save_answers(self):
         delivery = DeliveryFactory()
@@ -124,7 +111,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         rapidpro_formatted_answers = [
             {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'deliveryReceived'},
             {"category": {'eng': date_of_receipt, 'base': date_of_receipt}, 'label': 'dateOfReceipt'},
-            {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'isDeliveryInGoodOrder', },
+            {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'isDeliveryInGoodOrder',},
             {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'areYouSatisfied'},
             {"category": {'eng': good_comment, 'base': good_comment}, 'label': 'additionalDeliveryComments'}
         ]
@@ -252,6 +239,8 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_dequeue_next_run_in_the_queue(self):
         first_delivery_to_be_answered = DeliveryFactory(track=True)
+        contact = {'name': 'Some name', 'phone': '098765433'}
+        first_delivery_to_be_answered.build_contact = MagicMock(return_value=contact)
         self._schedule_run_for(first_delivery_to_be_answered)
         second_delivery_to_be_answered = DeliveryFactory(track=True)
         self._schedule_run_for(second_delivery_to_be_answered)
@@ -262,8 +251,9 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         }
 
         next_run = RunQueue.objects.filter(
-            Q(contact_person_id=second_delivery_to_be_answered.contact_person_id) & Q(status='not_started')).order_by(
-            '-run_delay').first()
+                Q(contact_person_id=second_delivery_to_be_answered.contact_person_id) & Q(
+                        status='not_started')).order_by(
+                '-run_delay').first()
         self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
 
         first_runs = Run.objects.filter(runnable=first_delivery_to_be_answered)

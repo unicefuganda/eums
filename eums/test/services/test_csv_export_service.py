@@ -2,7 +2,7 @@ import os
 from unittest import TestCase
 from django.test import override_settings
 from mock import patch, MagicMock
-from eums.services.csv_export_service import CSVExportService
+from eums.services.csv_export_service import CSVExportService, set_remote_contact_to_report_item
 
 DEFAULT_FROM_EMAIL = "hoho@ha.ha"
 
@@ -58,6 +58,26 @@ class ExportServiceTest(TestCase):
         expected_message = "some manchester united message"
 
         mock_send_email.assert_called_once_with(subject, expected_message, DEFAULT_FROM_EMAIL, [email])
+
+    @patch('eums.util.remote_contact_utils.RemoteContactUtils.load_remote_contact_in_json')
+    def test_set_remote_contact_to_report_item(self, load_remote_contact_in_json):
+        contact_id = '5694bdd328c0edad08b0f020'
+
+        first_name = 'Shenjian'
+        last_name = 'Yuan'
+        phone = '18192235667'
+        contact_name = '%s %s' % (first_name, last_name)
+
+        contact = {'firstName': first_name, 'lastName': last_name, 'phone': phone}
+        load_remote_contact_in_json.return_value = contact
+
+        report_item = {'contact_person_id': contact_id}
+
+        set_remote_contact_to_report_item(report_item)
+
+        self.assertEqual(report_item['contactName'], contact_name)
+        self.assertTrue(report_item['contactPhone'], phone)
+        load_remote_contact_in_json.assert_called_once_with(contact_id)
 
     def _read_csv(self, filename):
         file_ = open(filename, 'r')
