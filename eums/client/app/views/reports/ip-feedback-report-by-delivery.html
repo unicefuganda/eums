@@ -89,24 +89,26 @@
                     <span class="blue-unicef bold">{{ district }}</span></div>
             </div>
         </div>
-        <div class="table-wrapper">
+    </div>
+</div>
+
+<div class="table-wrapper">
     <table class="table table-bordered table-hover table-striped table-condensed">
         <thead>
         <tr>
-            <th class="align-center"><span class="pad-left-5">RECEIVED</span></th>
-            <th class="align-left"><a ng-click="sortBy('shipmentDate')" class="pad-left-5 shipment-date">SHIPMENT
+            <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
+            <th class="align-left"><a ng-click="sortBy('shipmentDate')" class="pad-left-10 shipment-date">SHIPMENT
                 DATE<i ng-class="sortArrowClass('shipmentDate')"></i></a></th>
-            <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="pad-left-5 date-of-receipt">DATE
+            <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="pad-left-10 date-of-receipt">DATE
                 RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
-            <th class="align-left"><span class="pad-left-5">PO/WAYBILL</span></th>
-            <th class="align-left"><span class="pad-left-5">OUTCOME</span></th>
-            <th class="align-left"><span class="pad-left-5">IMPLEMENTING PARTNER</span></th>
-            <th class="align-left"><a ng-click="sortBy('value')" class="pad-left-5 value">VALUE<i
+            <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
+            <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
+            <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
+            <th class="align-left"><a ng-click="sortBy('value')" class="pad-left-10 value">VALUE<i
                     ng-class="sortArrowClass('value')"></i></a></th>
-            <th class="align-center"><span class="pad-left-5">CONDITION</span></th>
-            <th class="align-left"><span class="pad-left-5">SATISFIED</span></th>
-            <th class="align-left"><span class="pad-left-5">REMARKS</span></th>
-            <th class="align-left"><span class="pad-left-5">PICTURES</span></th>
+            <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
+            <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
+            <th class="align-left"><span class="pad-left-10">REMARKS</span></th>
         </tr>
         </thead>
         <tbody>
@@ -116,12 +118,15 @@
                               'eums-bg-color-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
-            <td><span class="pad-left-5">{{ formatDate(itemReport.shipmentDate)}}</span></td>
-            <td><span class="pad-left-5">{{ formatDate(itemReport.dateOfReceipt)}}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.orderNumber }}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.programme.name }}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.consignee.name }}</span></td>
-            <td><span class="pad-left-5">{{ itemReport.value | currency }}</span></td>
+            <td><span class="pad-left-10">{{ formatDate(itemReport.shipmentDate)}}</span>
+            </td>
+            <td><span
+                    class="pad-left-10">{{ formatDate(itemReport.dateOfReceipt)}}</span>
+            </td>
+            <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
+            <td><span class="pad-left-10">{{ itemReport.programme.name }}</span></td>
+            <td><span class="pad-left-10">{{ itemReport.consignee.name }}</span></td>
+            <td><span class="pad-left-10">{{ itemReport.value | currency }}</span></td>
             <td>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'Yes'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Good</span>
@@ -176,16 +181,11 @@
                     </div>
                 </div>
             </td>
-            <td>
-                <span class="pad-left-5 eums-block" ng-repeat="url in itemReport.urls">
-                    <a ng-href="/media/{{ url }}" target="_blank">Image{{ $index+1 }}</a>
-                </span>
-            </td>
         </tr>
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="11" class="centered">
+            <td colspan="10" class="centered">
                 <pagination total-items="count"
                             ng-model="pagination.page"
                             boundary-links="true"
@@ -199,9 +199,6 @@
         </tfoot>
     </table>
 </div>
-    </div>
-</div>
-
 <!-- END TABLE -->
 </div>
 </div>

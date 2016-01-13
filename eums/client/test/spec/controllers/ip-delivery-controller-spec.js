@@ -1,5 +1,5 @@
 describe('IP Delivery Controller', function () {
-    var mockDeliveryService, scope, location, mockLoaderService, q, mockSystemSettingsService, mockFileUploadService,
+    var mockDeliveryService, scope, location, mockLoaderService, q, mockSystemSettingsService,
         mockUserService, controller, mockAnswerService, timeout, mockIPService, mockContactService;
 
     var firstDelivery = {
@@ -58,8 +58,7 @@ describe('IP Delivery Controller', function () {
             $timeout: timeout,
             IPService: mockIPService,
             ContactService: mockContactService,
-            SystemSettingsService: mockSystemSettingsService,
-            FileUploadService: mockFileUploadService
+            systemSettingsService: mockSystemSettingsService
         });
     }
 
@@ -67,7 +66,7 @@ describe('IP Delivery Controller', function () {
 
         module('IpDelivery');
 
-        inject(function ($controller, $rootScope, $location, $q, SystemSettingsService, FileUploadService,
+        inject(function ($controller, $rootScope, $location, $q, SystemSettingsService,
                          LoaderService, UserService, AnswerService, DeliveryService, $timeout, IPService, ContactService) {
             controller = $controller;
             scope = $rootScope.$new();
@@ -81,9 +80,9 @@ describe('IP Delivery Controller', function () {
             mockIPService = IPService;
             mockContactService = ContactService;
             mockSystemSettingsService = SystemSettingsService;
-            mockFileUploadService = FileUploadService;
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
+
             spyOn(mockModal, 'modal');
             spyOn(mockLoaderService, 'showLoader');
             spyOn(mockLoaderService, 'hideLoader');
@@ -96,7 +95,7 @@ describe('IP Delivery Controller', function () {
             spyOn(location, 'path');
             spyOn(mockIPService, 'loadAllDistricts');
             spyOn(mockSystemSettingsService, 'getSettings');
-            spyOn(mockFileUploadService, 'getImages');
+
 
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
             mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
@@ -168,21 +167,7 @@ describe('IP Delivery Controller', function () {
                 }
             ];
 
-            var uploads = {
-                "images": [
-                    {
-                        "plan": 1,
-                        "url": "photos/2016/01/12/mock-1.png"
-                    },
-                    {
-                        "plan": 1,
-                        "url": "photos/2016/01/12/mock-2.png"
-                    }
-                ]
-            };
-
             mockDeliveryService.getDetail.and.returnValue(q.when(answers));
-            mockFileUploadService.getImages.and.returnValue(q.when(uploads));
             initializeController();
             var delivery = {id: 1};
             scope.confirm(delivery);
@@ -192,9 +177,7 @@ describe('IP Delivery Controller', function () {
             expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
             expect(scope.activeDelivery).toBe(delivery);
             expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(delivery, 'answers');
-            expect(mockFileUploadService.getImages).toHaveBeenCalledWith(delivery.id);
             expect(scope.answers).toBe(answers);
-            expect(scope.uploadedImages).toBe(uploads.images);
         });
 
         it('should set has received delivery based on the answer of delivery received', function () {

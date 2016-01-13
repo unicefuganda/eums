@@ -1,14 +1,11 @@
 'use strict';
 
-angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters',
-        'eums.ip', 'Contact', 'ngToast', 'SystemSettingsService', 'angularFileUpload', 'FileUploadService'])
+angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact', 'ngToast', 'SystemSettingsService'])
     .controller('IpDeliveryController', function ($scope, $location, $q, ngToast, DeliveryService, LoaderService, SystemSettingsService,
-                                                  UserService, AnswerService, $timeout, IPService, ContactService, FileUploader, FileUploadService) {
+                                                  UserService, AnswerService, $timeout, IPService, ContactService) {
 
-        var timer, initializing = true,
-            questionLabel = 'deliveryReceived',
-            imageUploader = null,
-            selectedFiles = [];
+        var timer, initializing = true;
+        var questionLabel = 'deliveryReceived';
 
         $scope.deliveries = [];
         $scope.answers = [];
@@ -16,16 +13,37 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         $scope.activeDelivery = undefined;
         $scope.hasReceivedDelivery = undefined;
         $scope.searchFields = ['number', 'date'];
+
         $scope.districts = [];
         $scope.contact = {};
         $scope.selectedLocation = {};
         $scope.deliveryNodes = [];
         $scope.delivery = {};
         $scope.districtsLoaded = false;
-        $scope.notificationMessage = "";
-        $scope.uploadedImages = [];
 
-        init();
+        $scope.notificationMessage = "";
+
+
+        loadDeliveries();
+
+
+        UserService.retrieveUserPermissions()
+            .then(function (userPermissions) {
+                $scope.canConfirm = _isSubarray(userPermissions, [
+                    'auth.can_view_distribution_plans',
+                    'auth.can_add_textanswer',
+                    'auth.change_textanswer',
+                    'auth.add_nimericanswer',
+                    'auth.change_nimericanswer'
+                ]);
+            });
+
+        IPService.loadAllDistricts().then(function (response) {
+            $scope.districts = response.data.map(function (district) {
+                return {id: district, name: district};
+            });
+            $scope.districtsLoaded = true;
+        });
 
         $scope.$on('contact-saved', function (event, contact) {
             $scope.contact = {id: contact._id};
@@ -47,13 +65,14 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
             DeliveryService.getDetail(delivery, 'answers')
                 .then(function (answers) {
+                    LoaderService.hideLoader();
                     $scope.activeDelivery = delivery;
                     $scope.answers = answers;
                     $scope.oringalAnswers = angular.copy(answers);
                     $scope.selectedLocation.id = delivery.location;
                     $scope.contact.id = delivery.contactPersonId;
                     setLocationAndContactFields();
-                    getImages(delivery.id);
+                    LoaderService.showModal('ip-acknowledgement-modal');
                 });
         };
 
@@ -61,11 +80,22 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             if (isContactOrLocationInvalid()) {
                 return;
             }
-            if (selectedFiles && selectedFiles.length > 0) {
-                imageUploader.uploadAll();
-            } else {
-                saveAnswer();
-            }
+            var answers;
+            LoaderService.showLoader();
+            confirmToUpdateContactAndLocation();
+
+            answers = _isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
+            AnswerService.createWebAnswer($scope.activeDelivery, answers)
+                .then(function () {
+                    if (_isDeliveryReceived(questionLabel, $scope.answers)) {
+                        $location.path('/items-delivered-to-ip/' + $scope.activeDelivery.id);
+                    } else {
+                        loadDeliveries();
+                    }
+                    $scope.answers = [];
+                    $scope.activeDelivery = undefined;
+                    LoaderService.hideLoader();
+                });
         };
 
         $scope.toContactPage = function () {
@@ -92,27 +122,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         }, true);
 
 
-        function init() {
-            loadDeliveries();
-            UserService.retrieveUserPermissions()
-                .then(function (userPermissions) {
-                    $scope.canConfirm = _isSubarray(userPermissions, [
-                        'auth.can_view_distribution_plans',
-                        'auth.can_add_textanswer',
-                        'auth.change_textanswer',
-                        'auth.add_nimericanswer',
-                        'auth.change_nimericanswer'
-                    ]);
-                });
-            IPService.loadAllDistricts().then(function (response) {
-                $scope.districts = response.data.map(function (district) {
-                    return {id: district, name: district};
-                });
-                $scope.districtsLoaded = true;
-            });
-            initUpload();
-        }
-
         function loadDeliveries(urlArgs) {
             var promises = [];
             LoaderService.showLoader();
@@ -123,78 +132,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 $scope.notificationMessage = returns[1].notification_message;
                 LoaderService.hideLoader();
             });
-        }
-
-        function saveAnswer() {
-            var answers;
-            LoaderService.showLoader();
-            confirmToUpdateContactAndLocation();
-
-            answers = _isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
-            AnswerService.createWebAnswer($scope.activeDelivery, answers)
-                .then(function () {
-                    if (_isDeliveryReceived(questionLabel, $scope.answers)) {
-                        $location.path('/items-delivered-to-ip/' + $scope.activeDelivery.id);
-                    } else {
-                        loadDeliveries();
-                    }
-                    $scope.answers = [];
-                    $scope.activeDelivery = undefined;
-                    LoaderService.hideLoader();
-                });
-        }
-
-        function getImages(id) {
-            FileUploadService.getImages(id).then(function (response) {
-                $scope.uploadedImages = response.images;
-                imageUploader.queueLimit = response.images.length < 3 ? 3 - response.images.length : 0;
-                LoaderService.hideLoader();
-                LoaderService.showModal('ip-acknowledgement-modal');
-            });
-        }
-
-        function initUpload() {
-            var errorList = {
-                'queueLimit': 'Sorry, you can only upload 3 pictures',
-                'sizeFilter': 'Sorry, the maximum size for each file is 1MB'
-            };
-            imageUploader = $scope.imageUploader = new FileUploader({
-                "url": "api/upload-image/",
-                "queueLimit": 3
-            });
-            $scope.imageRemove = function (image) {
-                image.remove();
-                $scope.fileError = "";
-            };
-            imageUploader.filters.push({
-                name: 'typeFilter',
-                fn: function (item /*{File|FileLikeObject}*/, options) {
-                    var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-                    return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-                }
-            }, {
-                name: 'sizeFilter',
-                fn: function (item) {
-                    return item.size <= 1048576;
-                }
-            });
-            imageUploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
-                $scope.fileError = errorList[filter.name];
-            };
-            imageUploader.onAfterAddingFile = function (fileItem) {
-                $scope.fileError = "";
-            };
-            imageUploader.onAfterAddingAll = function (addedFileItems) {
-                selectedFiles = addedFileItems;
-            };
-            imageUploader.onBeforeUploadItem = function (item) {
-                if ($scope.activeDelivery) {
-                    item.formData.push({'plan': $scope.activeDelivery.id});
-                }
-            };
-            imageUploader.onCompleteAll = function () {
-                saveAnswer();
-            };
         }
 
         function setLocationAndContactFields() {
@@ -315,58 +252,4 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 dismissOnTimeout: true
             });
         }
-    })
-    .filter('strLimit', ['$filter', function ($filter) {
-        return function (input, limit) {
-            if (!input) return;
-            if (input.length <= limit) {
-                return input;
-            }
-
-            return $filter('limitTo')(input, limit) + '...';
-        };
-    }])
-    .directive('ngThumb', ['$window', function ($window) {
-        var helper = {
-            support: !!($window.FileReader && $window.CanvasRenderingContext2D),
-            isFile: function (item) {
-                return angular.isObject(item) && item instanceof $window.File;
-            },
-            isImage: function (file) {
-                var type = '|' + file.type.slice(file.type.lastIndexOf('/') + 1) + '|';
-                return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-            }
-        };
-
-        return {
-            restrict: 'A',
-            template: '<canvas/>',
-            link: function (scope, element, attributes) {
-                if (!helper.support) return;
-
-                var params = scope.$eval(attributes.ngThumb);
-
-                if (!helper.isFile(params.file)) return;
-                if (!helper.isImage(params.file)) return;
-
-                var canvas = element.find('canvas');
-                var reader = new FileReader();
-
-                reader.onload = onLoadFile;
-                reader.readAsDataURL(params.file);
-
-                function onLoadFile(event) {
-                    var img = new Image();
-                    img.onload = onLoadImage;
-                    img.src = event.target.result;
-                }
-
-                function onLoadImage() {
-                    var width = params.width || this.width / this.height * params.height;
-                    var height = params.height || this.height / this.width * params.width;
-                    canvas.attr({width: width, height: height});
-                    canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
-                }
-            }
-        };
-    }]);
+    });
