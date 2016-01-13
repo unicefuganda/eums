@@ -59,8 +59,7 @@ angular.module('Directives', ['eums.ip'])
 
                 element.change(function () {
                     var data = element.select2('data');
-                    var id = data ? data.id : undefined;
-                    ngModel.$setViewValue(id);
+                    ngModel.$setViewValue(data && data.id);
                     scope.$apply()
                 });
 
@@ -370,8 +369,7 @@ angular.module('Directives', ['eums.ip'])
 
                 elem.change(function () {
                     var recipientType = $(elem).select2('data');
-                    var id = recipientType ? recipientType.id : "";
-                    ngModel.$setViewValue(id);
+                    ngModel.$setViewValue(recipientType && recipientType.id);
                     scope.$apply();
                 });
             }
@@ -402,8 +400,7 @@ angular.module('Directives', ['eums.ip'])
 
                 elem.change(function () {
                     var option = $(elem).select2('data');
-                    var text = option ? option.text : "";
-                    ngModel.$setViewValue(text);
+                    ngModel.$setViewValue(option && option.text);
                     scope.$apply();
                 });
             }
