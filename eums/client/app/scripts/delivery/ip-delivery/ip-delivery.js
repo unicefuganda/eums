@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters',
-        'eums.ip', 'Contact', 'ngToast', 'SystemSettingsService', 'angularFileUpload', 'FileUploadService'])
+        'eums.ip', 'Contact', 'ngToast', 'SystemSettingsService', 'SysUtils', 'angularFileUpload', 'FileUploadService'])
     .controller('IpDeliveryController', function ($scope, $location, $q, ngToast, DeliveryService, LoaderService, SystemSettingsService,
-                                                  UserService, AnswerService, $timeout, IPService, ContactService, FileUploader, FileUploadService) {
+                                                  UserService, AnswerService, $timeout, IPService, ContactService,
+                                                  SysUtilsService, FileUploader, FileUploadService) {
 
         var timer, initializing = true,
             questionLabel = 'deliveryReceived',
@@ -292,19 +293,15 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function changedFilters() {
             var urlArgs = {};
             if ($scope.fromDate) {
-                urlArgs.from = formatDate($scope.fromDate);
+                urlArgs.from = SysUtilsService.formatDateToYMD($scope.fromDate);
             }
             if ($scope.toDate) {
-                urlArgs.to = formatDate($scope.toDate);
+                urlArgs.to = SysUtilsService.formatDateToYMD($scope.toDate);
             }
             if ($scope.query) {
                 urlArgs.query = $scope.query;
             }
             return urlArgs
-        }
-
-        function formatDate(date) {
-            return moment(date).format('YYYY-MM-DD')
         }
 
         function createToast(message, klass) {

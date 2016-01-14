@@ -73,13 +73,13 @@
                                placeholder="{{ settings.syncStartDate }}"
                                required="required"
                                value="{{ settings.syncStartDate | date : 'dd-MMM-yyyy' }}"/>
-                            <span class="input-group-btn">
-                              <button type="button"
-                                      class="btn btn-default"
-                                      ng-click="open($event, 1)">
-                                  <i class="glyphicon glyphicon-calendar"></i>
-                              </button>
-                            </span>
+                        <span class="input-group-btn">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    ng-click="open($event, 1)">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
                     </span>
                 </div>
                 <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">

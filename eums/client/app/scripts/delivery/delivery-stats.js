@@ -1,18 +1,14 @@
 'use strict';
 
 
-angular.module('DeliveryStats', ['eums.config'])
-    .factory('DeliveryStatsService', function ($http, $timeout, EumsConfig) {
-
-        function formatDate(date) {
-            return date && moment(date).format('YYYY-MM-DD')
-        }
+angular.module('DeliveryStats', ['eums.config', 'SysUtils'])
+    .factory('DeliveryStatsService', function ($http, $timeout, SysUtilsService, EumsConfig) {
 
         function reformatDate(filter){
             var filterCopy = {};
             angular.copy(filter, filterCopy)
-            filterCopy.from = formatDate(filterCopy.from);
-            filterCopy.to = formatDate(filterCopy.to);
+            filterCopy.from = SysUtilsService.formatDateToYMD(filterCopy.from);
+            filterCopy.to = SysUtilsService.formatDateToYMD(filterCopy.to);
             return filterCopy;
         }
 

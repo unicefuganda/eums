@@ -23,6 +23,7 @@ describe('DirectDeliveryController', function () {
 
     beforeEach(function () {
         module('DirectDelivery');
+        module('SysUtils');
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
@@ -32,7 +33,8 @@ describe('DirectDeliveryController', function () {
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
 
-        inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig, $timeout) {
+        inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend,
+                         EumsConfig, SysUtilsService, $timeout) {
             deferred = $q.defer();
             deferredPlan = $q.defer();
             deferredPurchaseOrder = $q.defer();
@@ -57,7 +59,8 @@ describe('DirectDeliveryController', function () {
 
             $controller('DirectDeliveryController',
                 {
-                    $scope: scope, ContactService: mockContactService,
+                    $scope: scope,
+                    ContactService: mockContactService,
                     ProgrammeService: mockProgrammeService,
                     PurchaseOrderService: mockPurchaseOrderService,
                     $sorter: sorter,
@@ -256,7 +259,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
             scope.searchTerm.purchaseOrder = 'wakiso programme';
             scope.searchTerm.fromDate = '2014-07-07';
-            scope.$apply()
+            scope.$apply();
             timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(2);

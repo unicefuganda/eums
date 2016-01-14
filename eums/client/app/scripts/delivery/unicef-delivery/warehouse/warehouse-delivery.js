@@ -1,12 +1,13 @@
 'use strict';
 
-angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'SortBy', 'SystemSettingsService', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
+angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'SortBy', 'SystemSettingsService', 'Contact',
+        'ExportDeliveries', 'ngToast', 'Loader', 'SysUtils'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService,
                                                          SortService, SystemSettingsService, SortByService, ExportDeliveriesService,
-                                                         ngToast, LoaderService, $timeout) {
+                                                         ngToast, LoaderService, SysUtilsService, $timeout) {
         var SUPPORTED_FIELD = ['orderNumber', 'deliveryDate', 'trackedDate'];
         var timer;
         var initializing = true;
@@ -78,10 +79,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             });
         };
 
-        function formatDate(date) {
-            return moment(date).format('YYYY-MM-DD')
-        }
-
         function startTimer() {
             timer = $timeout(function () {
                 loadReleaseOrder()
@@ -112,9 +109,9 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         function getSearchTerms() {
             var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
             if (filters.fromDate)
-                filters.fromDate = formatDate(filters.fromDate);
+                filters.fromDate = SysUtilsService.formatDateToYMD(filters.fromDate);
             if (filters.toDate)
-                filters.toDate = formatDate(filters.toDate);
+                filters.toDate = SysUtilsService.formatDateToYMD(filters.toDate);
             return filters;
         }
 

@@ -1,18 +1,19 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SortBy', 'Loader', 'ReportService', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SortBy', 'Loader', 'ReportService',
+        'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, SortByService, ReportService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
+    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, SortByService,
+                                                   ReportService, IPService, LoaderService, UserService, ErrorMessageService,
+                                                   SortService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
         $scope.sortTerm = {field: 'last_shipment_date', order: 'desc'};
-
 
         function init() {
             loadDistricts();
@@ -66,10 +67,10 @@ angular.module('StockReport', [
                 Object.merge(requestParams, {outcome: $scope.reportParams.selectedOutcomeId});
             }
             if ($scope.reportParams.selectedFromDate) {
-                Object.merge(requestParams, {fromDate: formatDate($scope.reportParams.selectedFromDate)});
+                Object.merge(requestParams, {fromDate: SysUtilsService.formatDateToYMD($scope.reportParams.selectedFromDate)});
             }
             if ($scope.reportParams.selectedToDate) {
-                Object.merge(requestParams, {toDate: formatDate($scope.reportParams.selectedToDate)});
+                Object.merge(requestParams, {toDate: SysUtilsService.formatDateToYMD($scope.reportParams.selectedToDate)});
             }
             if (params) {
                 Object.merge(requestParams, params);
@@ -128,10 +129,6 @@ angular.module('StockReport', [
         $scope.formatDate = function (date) {
             return SysUtilsService.formatDate(date);
         };
-
-        function formatDate(date) {
-            return moment(date).format('YYYY-MM-DD')
-        }
 
         $scope.exportToCSV = function () {
             var allFilters = angular.extend({}, getSearchTerm());

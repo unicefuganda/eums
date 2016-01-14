@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'SortBy',
-        'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'ngToast'])
+        'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'SysUtils', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, SortByService, SortArrowService,
                                                       SortService, PurchaseOrderService, UserService, IPService, $sorter,
-                                                      LoaderService, ExportDeliveriesService, ngToast, $timeout) {
+                                                      LoaderService, ExportDeliveriesService, ngToast, SysUtilsService, $timeout) {
 
         var rootPath = '/direct-delivery/new/';
         var SUPPORTED_FIELD = ['orderNumber', 'date', 'trackedDate', 'lastShipmentDate', 'poType', 'programmeName'];
@@ -97,10 +97,6 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             $location.path(rootPath + selectedPurchaseOrder.id + '/multiple');
         };
 
-        function formatDate(date) {
-            return moment(date).format('YYYY-MM-DD')
-        }
-
         function startTimer() {
             timer = $timeout(function () {
                 loadPurchaseOrders()
@@ -140,9 +136,9 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         function getSearchTerms() {
             var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
             if (filters.fromDate)
-                filters.fromDate = formatDate(filters.fromDate);
+                filters.fromDate = SysUtilsService.formatDateToYMD(filters.fromDate);
             if (filters.toDate)
-                filters.toDate = formatDate(filters.toDate);
+                filters.toDate = SysUtilsService.formatDateToYMD(filters.toDate);
             return filters;
         }
     });
