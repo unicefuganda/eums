@@ -18,13 +18,12 @@
   margin-top: -5px;
 }
 
-
-@btn-eums-success-color:              @brand-success;
-@btn-eums-success-bg:                 #fff;
-@btn-eums-success-border:             darken(@btn-success-bg, 5%);
-@btn-eums-danger-color:               @brand-danger;
-@btn-eums-danger-bg:                  #fff;
-@btn-eums-danger-border:              darken(@btn-danger-bg, 5%);
+@btn-eums-success-color: @brand-success;
+@btn-eums-success-bg: #fff;
+@btn-eums-success-border: darken(@btn-success-bg, 5%);
+@btn-eums-danger-color: @brand-danger;
+@btn-eums-danger-bg: #fff;
+@btn-eums-danger-border: darken(@btn-danger-bg, 5%);
 
 .eums-button-variant(@color; @background; @border) {
   color: @color;
@@ -38,21 +37,21 @@
   &.active& {
     color: @color;
     background-color: darken(@background, 8%);
-        border-color: darken(@border, 12%);
+    border-color: darken(@border, 12%);
   }
   &:active,
   &.active& {
     background-image: none;
   }
   &.disabled,
-  &[disabled]& {
+  &[disabled] & {
     &,
     &:hover,
     &:focus,
     &:active,
     &.active {
       background-color: @background;
-          border-color: @border;
+      border-color: @border;
     }
   }
 }
@@ -75,4 +74,14 @@
     color: @unicef-red;
     font-size: 30px;
   }
+}
+
+.progress {
+  border-radius: 0;
+  height: 3px;
+  margin: 10px -30px -16px;
+}
+
+.progress-bar {
+  line-height: 5px;
 }

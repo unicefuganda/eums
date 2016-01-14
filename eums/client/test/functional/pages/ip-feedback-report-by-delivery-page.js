@@ -80,7 +80,7 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
     },
     sortBy: {
         value: function (className, order) {
-            var toBeSorted = element(by.css('.pad-left-10.' + className));
+            var toBeSorted = element(by.css('.pad-left-5.' + className));
             toBeSorted.click();
             if (order === 'asc') {
                 toBeSorted.click();

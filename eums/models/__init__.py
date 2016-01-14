@@ -29,7 +29,7 @@ from eums.models.system_settings import SystemSettings
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.delete_records import DeleteRecords
 from eums.models.vision_sync_info import VisionSyncInfo
-
+from eums.models.upload import Upload
 
 __all__ = [
     'Consignee',
@@ -65,5 +65,6 @@ __all__ = [
     'SyncInfo',
     'DeleteRecords',
     'SystemSettings',
-    'VisionSyncInfo'
+    'VisionSyncInfo',
+    'Upload'
 ]
