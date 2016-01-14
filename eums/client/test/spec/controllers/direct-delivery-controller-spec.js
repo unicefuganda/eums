@@ -11,7 +11,7 @@ describe('DirectDeliveryController', function () {
         id: 1,
         name: 'Test Programme'
     };
-    var purchaseOrderOne = {
+    var stubPurchaseOrderOne = {
         id: 1,
         'order_number': '00001',
         'date': '2014-10-02',
@@ -19,7 +19,7 @@ describe('DirectDeliveryController', function () {
         description: 'sale',
         hasPlan: 'true'
     };
-    var purchaseOrderDetails = [purchaseOrderOne];
+    var stubPurchaseOrders = [stubPurchaseOrderOne];
 
     beforeEach(function () {
         module('DirectDelivery');
@@ -77,14 +77,17 @@ describe('DirectDeliveryController', function () {
     });
 
     describe('when initialized', function () {
-        xit('should set all sales orders on initialize to the scope', function () {
-            deferredPurchaseOrder.resolve(purchaseOrderDetails);
+        it('should set all sales orders on initialize to the scope', function () {
+            deferredPurchaseOrder.resolve({results: stubPurchaseOrders, count: 2, pageSize: 10});
+            scope.searchTerm = {};
             scope.$apply();
-            expect(scope.salesOrders).toEqual(purchaseOrderDetails);
+
+            expect(scope.purchaseOrders).toEqual(stubPurchaseOrders);
         });
 
         it('should show loader', function () {
             scope.$apply();
+
             expect(mockLoaderService.showLoader).toHaveBeenCalled();
             expect(mockLoaderService.hideLoader).not.toHaveBeenCalled();
         });
@@ -92,42 +95,47 @@ describe('DirectDeliveryController', function () {
         it('should hide loader after retrieving purchase orders', function () {
             deferredPurchaseOrder.resolve({results: ['po one', 'po two'], count: 2, pageSize: 10});
             scope.$apply();
+
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
         });
     });
 
     describe('when purchase order selected', function () {
         it('should show modal', function () {
-            scope.selectPurchaseOrder(purchaseOrderOne);
+            scope.selectPurchaseOrder(stubPurchaseOrderOne);
+
             expect(mockLoaderService.showModal).toHaveBeenCalledWith('select-modal-1');
         });
 
         it('should route to single ip when single ip is selected', function () {
-            scope.showSingleIpMode(purchaseOrderOne);
+            scope.showSingleIpMode(stubPurchaseOrderOne);
             scope.$apply();
+
             expect(location.path()).toBe('/direct-delivery/new/1/single');
         });
 
         it('should route to multiple ip when multiple ip is selected', function () {
-            scope.showMultipleIpMode(purchaseOrderOne);
+            scope.showMultipleIpMode(stubPurchaseOrderOne);
             scope.$apply();
+
             expect(location.path()).toBe('/direct-delivery/new/1/multiple');
         });
 
         it('should not show modal if purchase order is multiple and redirect', function () {
-            purchaseOrderOne.isSingleIp = false;
-            scope.selectPurchaseOrder(purchaseOrderOne);
+            stubPurchaseOrderOne.isSingleIp = false;
+            scope.selectPurchaseOrder(stubPurchaseOrderOne);
+
             expect(mockLoaderService.showModal).not.toHaveBeenCalled();
             expect(location.path()).toBe('/direct-delivery/new/1/multiple');
 
         });
 
         it('should not show modal if purchase order is multiple and redirect', function () {
-            purchaseOrderOne.isSingleIp = true;
-            scope.selectPurchaseOrder(purchaseOrderOne);
+            stubPurchaseOrderOne.isSingleIp = true;
+            scope.selectPurchaseOrder(stubPurchaseOrderOne);
+
             expect(mockLoaderService.showModal).not.toHaveBeenCalled();
             expect(location.path()).toBe('/direct-delivery/new/1/single');
-
         })
     });
 
@@ -135,6 +143,7 @@ describe('DirectDeliveryController', function () {
         it('should perform filtering while fromDate and toDate are empty', function () {
             scope.searchTerm = {};
             scope.$apply();
+
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
         });
 
