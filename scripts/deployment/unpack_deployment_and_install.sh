@@ -11,9 +11,9 @@ vision_password=$6
 vision_business_area_code=$7
 time_zone=$8
 django_secret_key=$9
-latitude=$10
-longitude=$11
-level=$12
+latitude=${10}
+longitude=${11}
+level=${12}
 
 echo "Unpacking deployment directory..."
 tar --force-local -xzvf deploy_latest.tar.gz
