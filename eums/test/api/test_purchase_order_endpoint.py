@@ -53,12 +53,10 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data[0]['id'], po_two.id)
 
     def test_should_get_purchase_orders_by_date_range(self):
-        date = datetime.date(2014, 07, 9)
-        PurchaseOrderFactory()
-        po_two = PurchaseOrderFactory(last_shipment_date=date)
+        po_one, po_two, programme, consignee = self.create_purchase_orders()
         response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?'
-                                                  'fromDate=2014-07-6&'
-                                                  'toDate=2016-07-16')
+                                                  'fromDate=2014-07-08&'
+                                                  'toDate=2016-07-10')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)

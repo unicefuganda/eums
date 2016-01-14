@@ -56,13 +56,12 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data[0]['id'], ro_tow.id)
 
     def test_should_return_release_orders_filtered_by_date_range(self):
-        ReleaseOrderFactory()
-        order = ReleaseOrderFactory(delivery_date=datetime.date(2014, 10, 5))
+        ro_one, ro_tow, programme, consignee = self.create_release_orders()
         response = self.client.get('%s?%s' % (ENDPOINT_URL, 'fromDate=2014-10-04&'
                                                             'toDate=2014-10-06'))
 
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], order.id)
+        self.assertEqual(response.data[0]['id'], ro_tow.id)
 
     def test_should_return_release_orders_filtered_by_waybill_number(self):
         ro_one, ro_tow, programme, consignee = self.create_release_orders()
