@@ -71,7 +71,7 @@ describe('DirectDeliveryController', function () {
                     ngToast: mockToast,
                     $timeout: timeout,
                     SortService: mockSortService,
-                    SortArrowService: mockSortArrowService,
+                    SortArrowService: mockSortArrowService
                 });
         });
     });
@@ -191,7 +191,7 @@ describe('DirectDeliveryController', function () {
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 purchaseOrder: 'wakiso',
-                fromDate: '2014-05-07',
+                fromDate: '2014-05-07'
             }))
         });
     });
@@ -202,7 +202,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                purchaseOrder: '00001',
+                purchaseOrder: '00001'
             }));
         });
 
@@ -211,7 +211,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                itemDescription: 'Leaflet 2013',
+                itemDescription: 'Leaflet 2013'
             }));
         });
 
@@ -220,7 +220,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                programmeId: '5',
+                programmeId: '5'
             }));
         });
 
@@ -229,7 +229,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                selectedLocation: 'Adjumani',
+                selectedLocation: 'Adjumani'
             }));
         });
 
@@ -238,7 +238,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                ipId: '3',
+                ipId: '3'
             }));
         });
 
@@ -259,7 +259,7 @@ describe('DirectDeliveryController', function () {
                 toDate: '2014-07-07',
                 programmeId: '5',
                 selectedLocation: 'Adjumani',
-                ipId: '3',
+                ipId: '3'
             }));
         });
 
@@ -274,7 +274,7 @@ describe('DirectDeliveryController', function () {
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(2);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 purchaseOrder: 'wakiso programme',
-                fromDate: '2014-07-07',
+                fromDate: '2014-07-07'
             }));
         });
     });

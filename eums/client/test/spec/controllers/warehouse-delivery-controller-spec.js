@@ -118,7 +118,7 @@ describe('Warehouse Delivery Controller', function () {
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                fromDate: '2014-07-07',
+                fromDate: '2014-07-07'
             }));
         });
 
@@ -128,7 +128,7 @@ describe('Warehouse Delivery Controller', function () {
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                toDate: '2014-07-07',
+                toDate: '2014-07-07'
             }));
         });
 
@@ -140,7 +140,7 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 fromDate: '2014-05-07',
-                toDate: '2014-07-07',
+                toDate: '2014-07-07'
             }));
         });
 
@@ -152,7 +152,7 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 fromDate: '2015-08-30',
-                toDate: '2015-09-10',
+                toDate: '2015-09-10'
             }));
         });
 
@@ -166,7 +166,7 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 waybill: 'wakiso programme',
                 fromDate: '2014-05-07',
-                toDate: '2014-07-07',
+                toDate: '2014-07-07'
             }));
         });
 
@@ -178,7 +178,7 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 waybill: 'wakiso programme',
-                toDate: '2014-07-07',
+                toDate: '2014-07-07'
             }));
         });
 
@@ -190,7 +190,7 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 waybill: 'wakiso programme',
-                fromDate: '2014-07-07',
+                fromDate: '2014-07-07'
             }));
         });
     });
@@ -201,7 +201,7 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                waybill: '00001',
+                waybill: '00001'
             }));
         });
 
@@ -210,7 +210,7 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                itemDescription: 'Leaflet 2013',
+                itemDescription: 'Leaflet 2013'
             }));
         });
 
@@ -219,7 +219,7 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                programmeId: '5',
+                programmeId: '5'
             }));
         });
 
@@ -228,7 +228,7 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                selectedLocation: 'Adjumani',
+                selectedLocation: 'Adjumani'
             }));
         });
 
@@ -237,7 +237,7 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
-                ipId: '3',
+                ipId: '3'
             }));
         });
 
@@ -258,7 +258,7 @@ describe('Warehouse Delivery Controller', function () {
                 toDate: '2014-07-07',
                 programmeId: '5',
                 selectedLocation: 'Adjumani',
-                ipId: '3',
+                ipId: '3'
             }));
         });
 
@@ -267,13 +267,13 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
             scope.searchTerm.waybill = 'wakiso programme';
             scope.searchTerm.fromDate = '2014-07-07';
-            scope.$apply()
+            scope.$apply();
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, jasmine.objectContaining({
                 waybill: 'wakiso programme',
-                fromDate: '2014-07-07',
+                fromDate: '2014-07-07'
             }));
         });
     })
