@@ -31,13 +31,13 @@ describe('Search Delivery by Date range', function () {
 
     it('Search warehouse delivery by district', function () {
         warehouseDeliverySearchPage.searchByDistrict("Wakiso");
-        warehouseDeliverySearchPage.verifyROExists('72082647');
+        warehouseDeliverySearchPage.verifyROExists('72077574');
         warehouseDeliverySearchPage.clearDistrict();
     });
 
     it('Search warehouse delivery by IP', function () {
         warehouseDeliverySearchPage.searchByIP("ARUA DHO DR. ANGUZU PATRICK");
-        warehouseDeliverySearchPage.verifyROExists('72082647');
+        warehouseDeliverySearchPage.verifyROExists('72077574');
         warehouseDeliverySearchPage.clearIP();
     });
 
