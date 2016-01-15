@@ -1,3 +1,5 @@
+var functionalTestUtils = require('./../functional-test-utils.js');
+
 var DirectDeliveryPage = function () {
 };
 
@@ -171,22 +173,22 @@ DirectDeliveryPage.prototype = Object.create({}, {
     },
     setConsignee: {
         value: function (input) {
-            fillSelect2Chosen('input-consignee', input);
+            functionalTestUtils.fillSelect2ChosenNoTop('input-consignee', input, true);
         }
     },
     setContact: {
         value: function (input) {
-            fillSelect2Chosen('input-contact', input);
+            functionalTestUtils.fillSelect2ChosenNoTop('input-contact', input, true);
         }
     },
     setContactForSingleIP: {
         value: function (input) {
-            fillSelect2Chosen('input-contact-single-ip', input);
+            functionalTestUtils.fillSelect2ChosenNoTop('input-contact-single-ip', input, true);
         }
     },
     setDistrict: {
         value: function (input) {
-            fillSelect2Chosen('input-location', input);
+            functionalTestUtils.fillSelect2ChosenNoTop('input-location', input, true);
         }
     },
     setTimeLimitationOnDistribution: {
@@ -201,7 +203,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
     },
     setDistrictForSingleIP: {
         value: function (input) {
-            fillSelect2Chosen('input-location-single-ip', input);
+            functionalTestUtils.fillSelect2ChosenNoTop('input-location-single-ip', input, true);
         }
     },
     saveDelivery: {
@@ -268,12 +270,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
 });
 
 module.exports = new DirectDeliveryPage;
-
-function fillSelect2Chosen(id, input) {
-    element(by.id(id)).click();
-    element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
-    element(by.css('.select2-results li')).click();
-}
 
 function fillInput(css, input) {
     element.all(by.css(css)).get(0).clear().sendKeys(input);

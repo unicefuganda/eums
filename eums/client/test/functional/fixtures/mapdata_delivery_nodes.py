@@ -1,6 +1,6 @@
 from eums.client.test.functional.fixtures.mapdata_deliveries import *
 from eums.client.test.functional.fixtures.mapdata_purchase_order_items import *
-from eums.client.test.functional.fixtures.mapdata_release_order_items import ro_item_430
+from eums.client.test.functional.fixtures.mapdata_release_order_items import ro_item_436
 from eums.models import DistributionPlanNode
 from eums.test.helpers.fake_datetime import FakeDate
 
@@ -57,5 +57,5 @@ node_49 = DistributionPlanNode.objects.create(distribution_plan=delivery_45, qua
 node_50 = DistributionPlanNode.objects.create(distribution_plan=delivery_45, quantity=220, tree_position="IMPLEMENTING_PARTNER", item=po_item_6, location="Amuru", consignee=consignee_33, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="hh")
 node_51 = DistributionPlanNode.objects.create(distribution_plan=delivery_46, quantity=30, tree_position="IMPLEMENTING_PARTNER", item=po_item_4, location="Wakiso", consignee=consignee_1, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="Mother and Child")
 
-node_52 = DistributionPlanNode.objects.create(distribution_plan=delivery_46, quantity=30, tree_position="IMPLEMENTING_PARTNER", item=ro_item_430, location="Wakiso", consignee=consignee_4, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="Mother and Child")
+node_52 = DistributionPlanNode.objects.create(distribution_plan=delivery_47, quantity=30, tree_position="IMPLEMENTING_PARTNER", item=ro_item_436, location="Wakiso", consignee=consignee_4, contact_person_id="54213ccc797221e84ac993fe", track=False, delivery_date=FakeDate.build(2015, 07, 11), remark="Mother and Child")
 

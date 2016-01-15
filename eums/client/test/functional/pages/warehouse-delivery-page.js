@@ -1,3 +1,5 @@
+var functionalTestUtils = require('./../functional-test-utils.js');
+
 var WarehouseDeliveryPage = function () {};
 
 WarehouseDeliveryPage.prototype = Object.create({}, {
@@ -27,14 +29,14 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
     }},
 
     selectContact: { value: function (contact) {
-        element(by.id('select2-chosen-4')).click();
-        element(by.id('s2id_autogen4_search')).clear().sendKeys(contact);
+        element(by.id('select2-chosen-7')).click();
+        element(by.id('s2id_autogen7_search')).clear().sendKeys(contact);
         element(by.css('.select2-results li')).click();
     }},
 
     selectLocation: { value: function (location) {
-        element(by.id('select2-chosen-6')).click();
-        element(by.id('s2id_autogen6_search')).clear().sendKeys(location);
+        element(by.id('select2-chosen-9')).click();
+        element(by.id('s2id_autogen9_search')).clear().sendKeys(location);
         element(by.css('.select2-results li')).click();
     }},
 

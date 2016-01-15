@@ -49,7 +49,6 @@ IpShipmentsPage.prototype = Object.create({}, {
         waitForPageToLoad();
     }},
 
-
     specifyItemReceived: { value: function (rowIndex, value) {
         element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$(".itemReceived option[label='"+ value +"']").click();
     }},
