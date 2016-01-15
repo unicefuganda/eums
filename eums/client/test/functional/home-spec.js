@@ -88,7 +88,7 @@ describe('Home Page', function () {
                 expect(homePage.numberNonResponse).toEqual('3 non-responses');
                 expect(homePage.valueSent).toEqual('$1.9k');
                 expect(homePage.valueDelivered).toEqual('643');
-                expect(homePage.valueNotDelivered).toEqual('5.6k');
+                expect(homePage.valueNotDelivered).toEqual('230');
                 expect(homePage.valueNonResponse).toEqual('262');
             });
 
@@ -137,7 +137,6 @@ describe('Home Page', function () {
                 expect(itemFeedbackPage.consignees).toContain('RAKAI DHO');
                 expect(itemFeedbackPage.consignees).toContain('KAABONG DHO');
             });
-
         });
     });
 
