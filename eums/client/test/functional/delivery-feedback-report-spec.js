@@ -18,7 +18,7 @@ describe('Delivery Feedback Report', function () {
         expect(report.dateReceived).toContain('02-Dec-2015');
         expect(report.consignees).toContain('WAKISO DHO');
         expect(report.outcome).toContain('sample programme');
-        expect(report.value).toContain('$30.00');
+        expect(report.value).toContain('$151.00');
     });
 
     it('should sort by shipment date', function () {
@@ -29,7 +29,7 @@ describe('Delivery Feedback Report', function () {
         expect(report.shipmentDate).toContain('11-Jul-2015');
         expect(report.consignees).toContain('WAKISO DHO');
         expect(report.outcome).toContain('sample programme');
-        expect(report.value).toContain('$30.00');
+        expect(report.value).toContain('$151.00');
     });
 
     it('should search report by received', function () {

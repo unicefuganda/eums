@@ -86,9 +86,9 @@ describe('Home Page', function () {
                 expect(homePage.numberDelivered).toEqual('5 responses');
                 expect(homePage.numberNotDelivered).toEqual('2 responses');
                 expect(homePage.numberNonResponse).toEqual('3 non-responses');
-                expect(homePage.valueSent).toEqual('$1.9k');
+                expect(homePage.valueSent).toEqual('$7.3k');
                 expect(homePage.valueDelivered).toEqual('643');
-                expect(homePage.valueNotDelivered).toEqual('230');
+                expect(homePage.valueNotDelivered).toEqual('5.6k');
                 expect(homePage.valueNonResponse).toEqual('262');
             });
 
@@ -139,8 +139,6 @@ describe('Home Page', function () {
             });
 
         });
-
-
     });
 
     describe('IP User', function () {
@@ -160,6 +158,5 @@ describe('Home Page', function () {
             expect(homePage.valueNotDelivered).toEqual('0');
             expect(homePage.valueNonResponse).toEqual('50');
         });
-
     });
 });

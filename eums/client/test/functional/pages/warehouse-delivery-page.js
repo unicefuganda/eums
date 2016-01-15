@@ -20,7 +20,7 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
     waybillQuantities: { get: function () { return element.all(by.repeater('(itemIndex, releaseOrderItem) in releaseOrderItems').column('releaseOrderItem.quantity')).getText(); }},
     waybillValues: { get: function () { return element.all(by.repeater('(itemIndex, releaseOrderItem) in releaseOrderItems').column('releaseOrderItem.value')).getText(); }},
 
-    searchBar: { get:  function () { return element(by.id('filter')); }},
+    searchBar: { get:  function () { return element(by.model('searchTerm.waybill')); }},
 
     searchForThisWaybill: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);

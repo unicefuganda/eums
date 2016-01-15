@@ -8,7 +8,7 @@ var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
 var consigneesPage = require('./pages/consignees-page.js');
 var homePage = require('./pages/home-page.js');
 
-describe('Vision Data Imports', function () {
+xdescribe('Vision Data Imports', function () {
 
     beforeEach(function(){
         loginPage.visit();

@@ -129,7 +129,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
     },
     searchBar: {
         get: function () {
-            return element(by.id('filter'));
+            return element(by.model('searchTerm.purchaseOrder'));
         }
     },
     searchForThisPurchaseOrder: {
