@@ -1,10 +1,8 @@
 from rest_framework import serializers
-from rest_framework.decorators import detail_route
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeSerialiser
 from eums.api.standard_pagination import StandardResultsSetPagination
-from eums.models import ConsigneeItem, UserProfile, DistributionPlanNode
+from eums.models import ConsigneeItem, UserProfile
 
 
 class ConsigneeItemSerialiser(serializers.ModelSerializer):

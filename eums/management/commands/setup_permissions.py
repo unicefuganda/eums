@@ -64,6 +64,9 @@ GROUP_PERMISSIONS = {
         'can_view_self_contacts',
         'can_create_contacts',
         'can_edit_contacts',
+        'change_upload',
+        'delete_upload',
+        'add_upload',
     ],
     'Implementing Partner_viewer': [
         'can_view_dashboard',
