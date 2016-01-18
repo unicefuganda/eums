@@ -1,8 +1,8 @@
 import logging
 from datetime import date
 
-from eums.models import Question, DistributionPlan, Runnable, Programme, Consignee, DistributionPlanNode, Flow
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.models import Question, Programme, Consignee, DistributionPlanNode, Flow
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory

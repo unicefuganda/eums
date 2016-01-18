@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django.test import override_settings
 from mock import patch
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 
 ENDPOINT_URL = '/exports/items-feedback-report/'
 

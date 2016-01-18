@@ -1,20 +1,24 @@
 import datetime
-from eums.models import ReleaseOrder, SalesOrder, PurchaseOrder, Consignee
+from httplib import FORBIDDEN
+from httplib import OK
+
+from mock import patch
+
+from eums.models import ReleaseOrder
 from eums.test.api.api_test_helpers import create_release_order
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
-from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
-from mock import patch
 
-ENDPOINT_URL = BACKEND_URL + 'release-order/'
+ENDPOINT_URL = '%srelease-order/' % BACKEND_URL
 
 
 class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
@@ -118,6 +122,26 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?%s' % (ENDPOINT_URL, 'toDate=2014-10-04'))
 
         self.assertEqual(len(response.data), 0)
+
+    def test_unicef_admin_should_have_permission_to_view_release_orders(self):
+        self.log_and_assert_permission(self.log_unicef_admin_in, OK)
+
+    def test_unicef_editor_should_have_permission_to_view_release_orders(self):
+        self.log_and_assert_permission(self.log_unicef_editor_in, OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_release_orders(self):
+        self.log_and_assert_permission(self.log_unicef_viewer_in, OK)
+
+    def test_ip_editor_should_not_have_permission_to_view_release_orders(self):
+        self.log_and_assert_permission(self.log_ip_editor_in, FORBIDDEN)
+
+    def test_ip_viewer_should_not_have_permission_to_view_release_orders(self):
+        self.log_and_assert_permission(self.log_ip_viewer_in, FORBIDDEN)
+
+    def log_and_assert_permission(self, log_func, status_code):
+        self.logout()
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)
 
     def create_release_orders(self):
         programme = ProgrammeFactory(name='YP104 MANAGEMENT RESULTS')

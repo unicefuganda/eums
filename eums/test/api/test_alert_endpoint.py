@@ -1,6 +1,6 @@
-from eums.models import ReleaseOrderItem, Flow, Runnable, Question
+from eums.models import ReleaseOrderItem, Flow, Question
 from eums.models.alert import Alert
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.answer_factory import TextAnswerFactory

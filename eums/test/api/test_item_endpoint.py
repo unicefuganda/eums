@@ -1,8 +1,5 @@
-from django.contrib.auth.models import User
-
-from eums.models import Item, Consignee
 from eums.test.api.api_test_helpers import create_item_unit, create_item
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.item_factory import ItemFactory
 

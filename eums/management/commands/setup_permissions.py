@@ -26,6 +26,7 @@ GROUP_PERMISSIONS = {
         'can_track_deliveries',
         'can_view_unicef_menu',
         'can_view_purchase_order',
+        'can_view_release_order',
     ],
     GROUP_UNICEF_EDITOR: [
         'can_view_dashboard',
@@ -43,6 +44,7 @@ GROUP_PERMISSIONS = {
         'can_create_contacts',
         'can_edit_contacts',
         'can_view_purchase_order',
+        'can_view_release_order',
     ],
     GROUP_UNICEF_VIEWER: [
         'can_view_dashboard',
@@ -53,6 +55,7 @@ GROUP_PERMISSIONS = {
         'can_create_contacts',
         'can_edit_contacts',
         'can_view_purchase_order',
+        'can_view_release_order',
     ],
     GROUP_IP_EDITOR: [
         'can_view_delivery_reports',

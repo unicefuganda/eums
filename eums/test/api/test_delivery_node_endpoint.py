@@ -1,8 +1,9 @@
 import json
 from datetime import datetime
+
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeViewSet
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory

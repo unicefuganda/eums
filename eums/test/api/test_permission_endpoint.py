@@ -1,12 +1,12 @@
-from mock import patch
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
-from eums.test.config import BACKEND_URL
-from eums.models import Consignee
-from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from mock import patch
 
+from eums.models import Consignee
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.config import BACKEND_URL
 
 ENDPOINT_URL = BACKEND_URL + 'permission/'
 

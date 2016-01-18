@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import ReleaseOrder
+from eums.permissions.view_release_order_permission import ViewReleaseOrderPermission
 
 
 class ReleaseOrderSerializer(serializers.ModelSerializer):
@@ -19,6 +20,7 @@ class ReleaseOrderSerializer(serializers.ModelSerializer):
 
 
 class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
+    permission_classes = (ViewReleaseOrderPermission,)
     queryset = ReleaseOrder.objects.all().order_by('order_number')
     serializer_class = ReleaseOrderSerializer
     pagination_class = StandardResultsSetPagination

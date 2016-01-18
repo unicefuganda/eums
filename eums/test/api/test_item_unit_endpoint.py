@@ -1,5 +1,5 @@
 from eums.test.api.api_test_helpers import create_item_unit
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 
 

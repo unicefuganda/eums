@@ -1,12 +1,11 @@
 import datetime
+from httplib import OK, FORBIDDEN
 
-from django.contrib.auth.models import User
 from mock import patch
 
-from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, \
-    SalesOrderItem, Consignee, Item
+from eums.models import PurchaseOrder
 from eums.test.api.api_test_helpers import create_release_order
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -18,6 +17,7 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 ENDPOINT_URL = BACKEND_URL + 'purchase-order/'
+FOR_DIRECT_DELIVERY_URL = ENDPOINT_URL + 'for_direct_delivery/'
 
 
 class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
@@ -142,20 +142,32 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         PurchaseOrderItemFactory(purchase_order=order, value=100)
         total_value_route = '%s%d/total_value/' % (ENDPOINT_URL, order.id)
         response = self.client.get(total_value_route)
+
         self.assertEqual(response.data, 100)
 
         PurchaseOrderItemFactory(purchase_order=order, value=200)
         response = self.client.get(total_value_route)
         self.assertEqual(response.data, 300)
 
+    def test_unicef_admin_should_have_permission_to_view_purchase_orders(self):
+        self.log_and_assert_permission(self.log_unicef_admin_in, OK)
+
+    def test_unicef_editor_should_have_permission_to_view_purchase_orders(self):
+        self.log_and_assert_permission(self.log_unicef_editor_in, OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_purchase_orders(self):
+        self.log_and_assert_permission(self.log_unicef_viewer_in, OK)
 
     def test_ip_editor_should_not_have_permission_to_view_purchase_orders(self):
-        self.login_and_assert_view_permission(AuthenticatedAPITestCase.IP_EDITOR, ENDPOINT_URL + 'for_direct_delivery/',
-                                              403)
+        self.log_and_assert_permission(self.log_ip_editor_in, FORBIDDEN)
 
     def test_ip_viewer_should_not_have_permission_to_view_purchase_orders(self):
-        self.login_and_assert_view_permission(AuthenticatedAPITestCase.IP_VIEWER, ENDPOINT_URL + 'for_direct_delivery/',
-                                              403)
+        self.log_and_assert_permission(self.log_ip_viewer_in, FORBIDDEN)
+
+    def log_and_assert_permission(self, log_func, status_code):
+        self.logout()
+        log_func()
+        self.assertEqual(self.client.get(FOR_DIRECT_DELIVERY_URL).status_code, status_code)
 
     def create_purchase_orders(self):
         programme = ProgrammeFactory(name='YP104 MANAGEMENT RESULTS')

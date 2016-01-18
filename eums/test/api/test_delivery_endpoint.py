@@ -1,17 +1,19 @@
 import datetime
 import logging
+from httplib import FORBIDDEN, OK
+
 from mock import patch
-from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
-    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Flow, SystemSettings, ReleaseOrder, ReleaseOrderItem, \
-    OrderItem, Item, Run, Runnable, RunQueue
+
+from eums.models import DistributionPlan as Delivery, DistributionPlan, \
+    Flow, SystemSettings
 from eums.services.release_order_to_delivery_service import execute_sync_release_order_to_delivery
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -29,11 +31,7 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 logger = logging.getLogger(__name__)
 
 
-class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
-    @classmethod
-    def setUpClass(cls):
-        PermissionsTestCase.setUpClass()
-
+class DeliveryEndPointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(DeliveryEndPointTest, self).setUp()
         SystemSettingsFactory()
@@ -485,3 +483,4 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         response = self.client.patch('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'retrigger_delivery'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(DistributionPlan.objects.get(id=delivery.id).is_retriggered)
+

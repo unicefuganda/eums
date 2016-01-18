@@ -1,8 +1,5 @@
-from eums.models import MultipleChoiceQuestion, TextQuestion, NumericAnswer, Flow, Runnable, NumericQuestion, \
-    TextAnswer, \
-    MultipleChoiceAnswer, Option, Run, DistributionPlan, DistributionPlanNode, Consignee, Programme, PurchaseOrderItem, \
-    ReleaseOrderItem, PurchaseOrder, SalesOrder, Item
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.models import Flow, Consignee
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory

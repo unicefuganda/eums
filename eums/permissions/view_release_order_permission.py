@@ -7,9 +7,9 @@ from rest_framework import permissions
 logger = logging.getLogger(__name__)
 
 
-class ViewPurchaseOrderPermission(permissions.BasePermission):
+class ViewReleaseOrderPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'GET':
-            if not request.user.has_perm('auth.%s' % CustomerPermissionCode.CAN_VIEW_PURCHASE_ORDER):
+            if not request.user.has_perm('auth.%s' % CustomerPermissionCode.CAN_VIEW_RELEASE_ORDER):
                 raise ForbiddenException('Unauthorised!')
         return True

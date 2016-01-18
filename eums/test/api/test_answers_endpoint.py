@@ -1,14 +1,13 @@
 from eums.models import DistributionPlanNode
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.run_factory import RunFactory
-
 from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'responses/'
