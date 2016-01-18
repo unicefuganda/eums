@@ -17,6 +17,10 @@
 
                 <div class="pad-top-20">
                     <table>
+                        <colgroup>
+                            <col class="col-question">
+                            <col class="col-answer">
+                        </colgroup>
                         <tr>
                             <td class="pad-left-5 pad-top-5">Contact Person</td>
                             <td class="pad-left-5 pad-top-5">
@@ -31,9 +35,9 @@
                         </tr>
                         <tr>
                             <td class="pad-left-5 pad-bottom-5">
-                                <h6 class="text-warning">
+                                <h6 class="text-warning normal">
                                     If the contact person is not listed, you should add the person from the <a
-                                        href="javascript:void(0)" ng-click="toContactPage()">ContactPage</a>
+                                        href="javascript:void(0)" ng-click="toContactPage()">Contact Page</a>
                                 </h6>
                             </td>
                             <td></td>
@@ -56,6 +60,10 @@
 
                 <div ng-show=" hasReceivedDelivery">
                     <table>
+                        <colgroup>
+                            <col class="col-question">
+                            <col class="col-answer">
+                        </colgroup>
                         <tr ng-repeat="answer in answers" id="answer-{{ answer.position }}">
                             <td class="pad-5">{{ answer.text }}</td>
                             <td class="pad-5">
@@ -105,10 +113,11 @@
                         <tr ng-show="imageUploader.isHTML5">
                             <td class="pad-5">
                                 Pictures for delivery
-                                <h6 class="text-warning">You can upload up to 3 pictures and each picture should NOT be
+                                <h6 class="text-warning normal">You can upload up to 3 pictures and each picture should
+                                    NOT be
                                     greater than 1MB</h6>
                             </td>
-                            <td>
+                            <td class="pad-5">
                                 <input type="file" nv-file-select="" id="file" name="file"
                                        accept="image/jpg,image/jpeg,image/gif,image/png"
                                        uploader="imageUploader" multiple/>
@@ -120,7 +129,8 @@
                                         </a>
                                     </li>
                                 </ol>
-                                <strong class="eums-block" ng-show="imageUploader.queue.length>0">Ready to Upload:</strong>
+                                <strong class="eums-block" ng-show="imageUploader.queue.length>0">Ready to
+                                    Upload:</strong>
                                 <ol>
                                     <li ng-repeat="image in imageUploader.queue">
                                         <ul class="list-unstyled">
@@ -150,6 +160,10 @@
 
                 <div ng-hide="hasReceivedDelivery">
                     <table>
+                        <colgroup>
+                            <col class="col-question">
+                            <col class="col-answer">
+                        </colgroup>
                         <tr>
                             <td class="pad-5">{{ answers[0].text}}</td>
                             <td class="pad-5">
