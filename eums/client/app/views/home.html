@@ -1,3 +1,4 @@
+<ng-toast></ng-toast>
 <div class="content full-page">
     <a default-view class="view-thumbnail"><img type="image/svg+xml" src="/static/app/media/map_zoom_out.svg"/></a>
 
@@ -8,13 +9,14 @@
                 <div class="map-summary-header centered">
                     <span class="sub-header title">Delivery Status</span>
                     <span ng-click="deliveryStatusCollapsed=!deliveryStatusCollapsed" class="marker-summary-arrow"
-                            ng-class="{ 'expanded': !deliveryStatusCollapsed, 'collapsed': deliveryStatusCollapsed }"></span>
+                          ng-class="{ 'expanded': !deliveryStatusCollapsed, 'collapsed': deliveryStatusCollapsed }"></span>
                 </div>
 
-                <div  ng-hide="deliveryStatusCollapsed" id='map-legend-content'>
+                <div ng-hide="deliveryStatusCollapsed" id='map-legend-content'>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" checked ng-model="deliveryStatus.mapNotReceived"/> Mostly not received
+                            <input type="checkbox" checked ng-model="deliveryStatus.mapNotReceived"/> Mostly not
+                            received
                         </label>
                         <span>
                             <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
@@ -25,13 +27,15 @@
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" checked ng-change="updateReceivedDeliveryStatus()" ng-model="tmp.mapReceivedAll"/> Mostly
+                            <input type="checkbox" checked ng-change="updateReceivedDeliveryStatus()"
+                                   ng-model="tmp.mapReceivedAll"/> Mostly
                             received
                         </label>
                     </div>
                     <div class="checkbox map-legend-item-child">
                         <label>
-                            <input type="checkbox" checked ng-change="updateAllReceived()" ng-model="deliveryStatus.mapReceived"/> without issues
+                            <input type="checkbox" checked ng-change="updateAllReceived()"
+                                   ng-model="deliveryStatus.mapReceived"/> without issues
                         </label>
                         <span>
                             <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
@@ -42,12 +46,14 @@
                     </div>
                     <div class="checkbox map-legend-item-child">
                         <label>
-                            <input type="checkbox" checked  ng-change="updateAllReceived()" ng-model="deliveryStatus.mapReceivedWithIssues"/> with issues
+                            <input type="checkbox" checked ng-change="updateAllReceived()"
+                                   ng-model="deliveryStatus.mapReceivedWithIssues"/> with issues
                         </label>
                         <span>
                             <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
                                  version="1.1">
-                                <rect height="15" width="15" class="leaflet-clickable show-svg-border" fill="map-received-with-issues"/>
+                                <rect height="15" width="15" class="leaflet-clickable show-svg-border"
+                                      fill="map-received-with-issues"/>
                             </svg>
                         </span>
                     </div>
@@ -58,7 +64,8 @@
                         <span>
                             <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
                                  version="1.1">
-                                <rect height="15" width="15" class="leaflet-clickable show-svg-border" fill="map-non-response"/>
+                                <rect height="15" width="15" class="leaflet-clickable show-svg-border"
+                                      fill="map-non-response"/>
                             </svg>
                         </span>
                     </div>
@@ -84,8 +91,14 @@
                                 {{ data.totalStats.totalValueOfDeliveries | compactCurrency }}
                             </li>
                             <li class="stats-subheader-blue">Total supplies sent</li>
-                            <li class="stats-text-grey" ng-show="data.totalStats.totalNumberOfDeliveries!=1">{{ data.totalStats.totalNumberOfDeliveries }} deliveries</li>
-                            <li class="stats-text-grey" ng-show="data.totalStats.totalNumberOfDeliveries==1">{{ data.totalStats.totalNumberOfDeliveries }} delivery</li>
+                            <li class="stats-text-grey"
+                                ng-show="data.totalStats.totalNumberOfDeliveries!=1">{{ data.totalStats.totalNumberOfDeliveries }}
+                                deliveries
+                            </li>
+                            <li class="stats-text-grey"
+                                ng-show="data.totalStats.totalNumberOfDeliveries==1">{{ data.totalStats.totalNumberOfDeliveries }}
+                                delivery
+                            </li>
                         </ul>
                     </div>
 
@@ -109,7 +122,8 @@
                                     </span>
                                 </li>
                                 <li class="stats-text-grey">
-                                    {{ data.totalStats.numberOfSuccessfulProductDeliveries }} response<span ng-hide="data.totalStats.numberOfSuccessfulProductDeliveries==1">s</span>
+                                    {{ data.totalStats.numberOfSuccessfulProductDeliveries }} response<span
+                                        ng-hide="data.totalStats.numberOfSuccessfulProductDeliveries==1">s</span>
                                 </li>
                             </ul>
                         </div>
@@ -134,7 +148,8 @@
                                     </span>
                                 </li>
                                 <li class="stats-text-grey">
-                                    {{ data.totalStats.numberOfUnsuccessfulProductDeliveries }} response<span ng-hide="data.totalStats.numberOfUnsuccessfulProductDeliveries==1">s</span>
+                                    {{ data.totalStats.numberOfUnsuccessfulProductDeliveries }} response<span
+                                        ng-hide="data.totalStats.numberOfUnsuccessfulProductDeliveries==1">s</span>
                                 </li>
                             </ul>
                         </div>
@@ -159,12 +174,14 @@
                                     </span>
                                 </li>
                                 <li class="stats-text-grey">
-                                    {{ data.totalStats.numberOfNonResponseToProductReceived }} non-response<span ng-hide="data.totalStats.numberOfNonResponseToProductReceived==1">s</span>
+                                    {{ data.totalStats.numberOfNonResponseToProductReceived }} non-response<span
+                                        ng-hide="data.totalStats.numberOfNonResponseToProductReceived==1">s</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div class="district-stats-left-section" ng-show="data.totalStats.numberOfAwaitingResponseToProductReceived">
+                    <div class="district-stats-left-section"
+                         ng-show="data.totalStats.numberOfAwaitingResponseToProductReceived">
                         <div class="pull-left">Awaiting response</div>
                         <div class="pull-left">
                             <div>
@@ -184,7 +201,9 @@
                                     </span>
                                 </li>
                                 <li class="stats-text-grey">
-                                    {{ data.totalStats.numberOfAwaitingResponseToProductReceived }} awaiting response<span ng-hide="data.totalStats.numberOfAwaitingResponseToProductReceived==1">s</span>
+                                    {{ data.totalStats.numberOfAwaitingResponseToProductReceived }} awaiting
+                                    response<span
+                                        ng-hide="data.totalStats.numberOfAwaitingResponseToProductReceived==1">s</span>
                                 </li>
                             </ul>
                         </div>
@@ -201,10 +220,12 @@
                                 {{ data.totalStats.totalValueOfSuccessfulDeliveries | compactCurrency }}
                             </li>
                             <li class="stats-subheader-blue">Total supplies received</li>
-                            <li class="stats-text-grey" ng-show="data.totalStats.numberOfSuccessfulProductDeliveries!=1">
+                            <li class="stats-text-grey"
+                                ng-show="data.totalStats.numberOfSuccessfulProductDeliveries!=1">
                                 {{ data.totalStats.numberOfSuccessfulProductDeliveries }} deliveries
                             </li>
-                            <li class="stats-text-grey" ng-show="data.totalStats.numberOfSuccessfulProductDeliveries==1">
+                            <li class="stats-text-grey"
+                                ng-show="data.totalStats.numberOfSuccessfulProductDeliveries==1">
                                 {{ data.totalStats.numberOfSuccessfulProductDeliveries }} delivery
                             </li>
                         </ul>

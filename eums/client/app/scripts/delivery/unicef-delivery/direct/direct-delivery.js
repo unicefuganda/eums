@@ -15,7 +15,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         var initializing = true;
 
         $scope.searchFields = ['orderNumber', 'lastShipmentDate'];
-        $scope.errorMessage = '';
+        $scope.errorMesdge = '';
         $scope.planId = '';
 
         $scope.purchaseOrders = [];
@@ -115,8 +115,10 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
                 updateProgrammes(response.programmeIds);
-            }).catch(function () {
-                ngToast.create({content: 'Failed to load purchase orders', class: 'danger'});
+            }, function (error) {
+                if (error.status === 500) {
+                    ngToast.create({content: 'Failed to load purchase orders', class: 'danger'});
+                }
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;

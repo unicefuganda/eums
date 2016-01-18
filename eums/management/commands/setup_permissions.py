@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
-from eums.auth import create_groups, create_permissions
+from eums.auth import create_groups, create_permissions, GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR, GROUP_UNICEF_VIEWER, \
+    GROUP_IP_EDITOR, GROUP_IP_VIEWER
 
 GROUP_PERMISSIONS = {
-    'UNICEF_admin': [
+    GROUP_UNICEF_ADMIN: [
         'can_view_users',
         'can_view_dashboard',
         'can_view_distribution_plans',
@@ -24,8 +25,9 @@ GROUP_PERMISSIONS = {
         'change_distributionplan',
         'can_track_deliveries',
         'can_view_unicef_menu',
+        'can_view_purchase_order',
     ],
-    'UNICEF_editor': [
+    GROUP_UNICEF_EDITOR: [
         'can_view_dashboard',
         'can_view_consignees',
         'add_consignee',
@@ -40,8 +42,9 @@ GROUP_PERMISSIONS = {
         'can_view_self_contacts',
         'can_create_contacts',
         'can_edit_contacts',
+        'can_view_purchase_order',
     ],
-    'UNICEF_viewer': [
+    GROUP_UNICEF_VIEWER: [
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_distribution_plans',
@@ -49,8 +52,9 @@ GROUP_PERMISSIONS = {
         'can_view_self_contacts',
         'can_create_contacts',
         'can_edit_contacts',
+        'can_view_purchase_order',
     ],
-    'Implementing Partner_editor': [
+    GROUP_IP_EDITOR: [
         'can_view_delivery_reports',
         'can_view_dashboard',
         'can_view_consignees',
@@ -68,7 +72,7 @@ GROUP_PERMISSIONS = {
         'delete_upload',
         'add_upload',
     ],
-    'Implementing Partner_viewer': [
+    GROUP_IP_VIEWER: [
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_reports',
@@ -87,10 +91,10 @@ class Command(BaseCommand):
         create_groups()
         create_permissions()
 
-        for group_name, codenames in GROUP_PERMISSIONS.iteritems():
+        for group_name, code_names in GROUP_PERMISSIONS.iteritems():
             group = Group.objects.get(name=group_name)
             group_permissions = []
-            for codename in codenames:
+            for codename in code_names:
                 group_permissions.append(Permission.objects.get(codename=codename))
 
             group.permissions = group_permissions

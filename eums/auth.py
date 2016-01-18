@@ -1,21 +1,11 @@
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-
-def teardown_groups():
-    Group.objects.get(name='UNICEF_admin').delete()
-    Group.objects.get(name='UNICEF_editor').delete()
-    Group.objects.get(name='UNICEF_viewer').delete()
-    Group.objects.get(name='Implementing Partner_editor').delete()
-    Group.objects.get(name='Implementing Partner_viewer').delete()
-
-
-def create_groups():
-    Group.objects.get_or_create(name='UNICEF_admin')
-    Group.objects.get_or_create(name='UNICEF_editor')
-    Group.objects.get_or_create(name='UNICEF_viewer')
-    Group.objects.get_or_create(name='Implementing Partner_editor')
-    Group.objects.get_or_create(name='Implementing Partner_viewer')
+GROUP_UNICEF_ADMIN = 'UNICEF_admin'
+GROUP_UNICEF_EDITOR = 'UNICEF_editor'
+GROUP_UNICEF_VIEWER = 'UNICEF_viewer'
+GROUP_IP_EDITOR = 'Implementing Partner_editor'
+GROUP_IP_VIEWER = 'Implementing Partner_viewer'
 
 perm_code_names = [
     {'name': 'Can view users', 'codename': 'can_view_users'},
@@ -47,15 +37,33 @@ perm_code_names = [
     {'name': 'Can create contacts', 'codename': 'can_create_contacts'},
     {'name': 'Can edit contacts', 'codename': 'can_edit_contacts'},
     {'name': 'Can push contacts to RapidPro', 'codename': 'can_push_contacts_to_rapid_pro'},
+
+    {'name': 'Can view purchase orders', 'codename': 'can_view_purchase_order'},
 ]
+
+
+def teardown_groups():
+    Group.objects.get(name=GROUP_UNICEF_ADMIN).delete()
+    Group.objects.get(name=GROUP_UNICEF_EDITOR).delete()
+    Group.objects.get(name=GROUP_UNICEF_VIEWER).delete()
+    Group.objects.get(name=GROUP_IP_EDITOR).delete()
+    Group.objects.get(name=GROUP_IP_VIEWER).delete()
+
+
+def create_groups():
+    Group.objects.get_or_create(name=GROUP_UNICEF_ADMIN)
+    Group.objects.get_or_create(name=GROUP_UNICEF_EDITOR)
+    Group.objects.get_or_create(name=GROUP_UNICEF_VIEWER)
+    Group.objects.get_or_create(name=GROUP_IP_EDITOR)
+    Group.objects.get_or_create(name=GROUP_IP_VIEWER)
 
 
 def create_permissions():
     auth_content = ContentType.objects.get_for_model(Permission)
     if auth_content:
         for perm in perm_code_names:
-            created_perm, out = Permission.objects.get_or_create(name=perm['name'], codename=perm['codename'],
-                                                                 content_type=auth_content)
+            Permission.objects.get_or_create(name=perm['name'], codename=perm['codename'],
+                                             content_type=auth_content)
 
 
 def teardown_permissions():

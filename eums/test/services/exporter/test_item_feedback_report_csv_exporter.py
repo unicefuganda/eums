@@ -46,6 +46,7 @@ class ItemFeedbackReportExporterTest(TestCase):
         last_name = 'Yuan'
         phone = '18192235667'
         contact_name = '%s %s' % (first_name, last_name)
+        additional_remarks = 'additional remarks'
         items_feedback = [{'tree_position': tree_position,
                            'additionalDeliveryComments': additional_delivery_comments,
                            'qualityOfProduct': quality_of_product,
@@ -60,7 +61,9 @@ class ItemFeedbackReportExporterTest(TestCase):
                            'contactName': contact_name,
                            'contactPhone': phone,
                            'item_description': item_description,
-                           'quantity_shipped': quantity_shipped}, ]
+                           'quantity_shipped': quantity_shipped,
+                           'additional_remarks': additional_remarks
+                           }, ]
 
         row_value = [
             item_description,
@@ -79,6 +82,7 @@ class ItemFeedbackReportExporterTest(TestCase):
             quality_of_product,
             satisfied_with_product,
             additional_delivery_comments,
+            additional_remarks
 
         ]
         csv_exporter = ItemFeedbackReportExporter(self.HOSTNAME)

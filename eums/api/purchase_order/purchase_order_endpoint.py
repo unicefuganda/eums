@@ -1,6 +1,7 @@
 from django.db.models import Count
 from rest_framework import serializers
 from rest_framework.decorators import list_route, detail_route
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
@@ -9,6 +10,7 @@ from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPl
 from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import PurchaseOrder
+from eums.permissions.view_purchase_order_permission import ViewPurchaseOrderPermission
 
 
 class PurchaseOrderSerialiser(serializers.ModelSerializer):
@@ -23,6 +25,7 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
 
 
 class PurchaseOrderViewSet(ModelViewSet, RequestFilterMixin):
+    permission_classes = (ViewPurchaseOrderPermission,)
     queryset = PurchaseOrder.objects.all().order_by('order_number')
     serializer_class = PurchaseOrderSerialiser
     pagination_class = StandardResultsSetPagination

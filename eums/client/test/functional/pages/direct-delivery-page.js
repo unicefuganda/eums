@@ -263,10 +263,10 @@ DirectDeliveryPage.prototype = Object.create({}, {
         }
     },
     timeLimitationOnDistribution: {
-        get: function() {
+        get: function () {
             return element(by.css('#input-time-limitation-on-distribution input')).getAttribute('value');
         }
-    }
+    },
 });
 
 module.exports = new DirectDeliveryPage;

@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import User
 from mock import patch
 
 from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, \
@@ -146,6 +147,15 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         PurchaseOrderItemFactory(purchase_order=order, value=200)
         response = self.client.get(total_value_route)
         self.assertEqual(response.data, 300)
+
+
+    def test_ip_editor_should_not_have_permission_to_view_purchase_orders(self):
+        self.login_and_assert_view_permission(AuthenticatedAPITestCase.IP_EDITOR, ENDPOINT_URL + 'for_direct_delivery/',
+                                              403)
+
+    def test_ip_viewer_should_not_have_permission_to_view_purchase_orders(self):
+        self.login_and_assert_view_permission(AuthenticatedAPITestCase.IP_VIEWER, ENDPOINT_URL + 'for_direct_delivery/',
+                                              403)
 
     def create_purchase_orders(self):
         programme = ProgrammeFactory(name='YP104 MANAGEMENT RESULTS')

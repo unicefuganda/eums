@@ -4,7 +4,7 @@ var homePage = function () {
 homePage.prototype = Object.create({}, {
     url: {
         get: function () {
-            return '';
+            return '/';
         }
     },
 
@@ -198,7 +198,19 @@ homePage.prototype = Object.create({}, {
         get: function () {
             return element.all(by.repeater('response in data.latestDeliveries'));
         }
-    }
+    },
+
+    toast: {
+        get: function () {
+            return element(by.repeater('message in messages'));
+        }
+    },
+
+    toastMessage: {
+        get: function () {
+            return element(by.repeater('message in messages')).getText();
+        }
+    },
 });
 
 module.exports = new homePage();

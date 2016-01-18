@@ -1,13 +1,19 @@
 'use strict';
 
 
-var interceptor = ['ngToast', '$q', function (ngToast, $q) {
+var interceptor = ["ngToast", "$q", "$location", function (ngToast, $q, location) {
     return {
         responseError: function (response) {
             if (response.status === 403 || response.status === 401) {
-                ngToast.create({content: 'Unauthorized', class: 'danger'})
+                ngToast.create({
+                    content: 'Permission Denied!',
+                    dismissOnTimeout: true,
+                    timeout: 3000,
+                    class: 'danger'
+                });
+                location.path("/");
             }
-            return $q.reject(response.data);
+            return $q.reject(response);
         }
     }
 }];

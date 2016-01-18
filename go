@@ -55,9 +55,6 @@ function main {
     "rs" )
       runserver;;
 
-    "rdf" )
-      redepolyfrontend;;
-
     "prepush" )
        testbackend
        testjsunit;;
@@ -171,12 +168,6 @@ function killtestdbconnections {
   echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums_test' AND pid <> pg_backend_pid();" | psql -U postgres &> /dev/null
 }
 
-
-function redepolyfrontend {
-  cd eums/client
-  grunt build
-
-}
 
 function runserver {
   cd eums/client

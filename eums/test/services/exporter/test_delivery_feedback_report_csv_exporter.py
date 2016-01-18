@@ -54,7 +54,7 @@ class DeliveryFeedbackReportExporterTest(TestCase):
                                 'programme': programme,
                                 'contactName': contact_name,
                                 'contactPhone': phone,
-                                'contactPersonId': contact_person_id
+                                'contactPersonId': contact_person_id,
                                 }, ]
 
         row_value = [delivery_received,
@@ -68,7 +68,7 @@ class DeliveryFeedbackReportExporterTest(TestCase):
                      value,
                      is_delivery_in_good_order,
                      satisfied_with_delivery,
-                     additional_delivery_comments,
+                     additional_delivery_comments
                      ]
 
         csv_exporter = DeliveryFeedbackReportExporter(self.HOSTNAME)
