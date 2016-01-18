@@ -79,7 +79,7 @@ angular.module('Directives', ['eums.ip'])
     })
     .directive('searchContacts', function (ContactService, $timeout) {
         function formatContact(contact) {
-            return {id: contact._id, text: contact.firstName + ' ' + contact.lastName};
+            return {id: contact._id, fullName: contact.fullName, phone: contact.phone};
         }
 
         function formatResponse(data) {
@@ -88,13 +88,27 @@ angular.module('Directives', ['eums.ip'])
             });
         }
 
+        function contactFormatResult(contact) {
+            var markup =
+                '<div class="row-fluid">' +
+                '<div class="span3">' + contact.fullName + '</div>' +
+                '<div class="span3 text-warning"><small><i>' + contact.phone + '</i></small></div>' +
+                '</div>';
+            return markup;
+        }
+
+        function contactFormatSelection(contact) {
+            return contact.fullName;
+        }
+
         return {
             restrict: 'A',
             scope: true,
             require: 'ngModel',
             link: function (scope, element, _, ngModel) {
                 element.select2({
-                    minimumInputLength: 1,
+                    placeholder: 'All Contacts',
+                    allowClear: true,
                     width: '150px',
                     query: function (query) {
                         var data = {results: []};
@@ -104,21 +118,27 @@ angular.module('Directives', ['eums.ip'])
                         });
                     },
                     initSelection: function (element, callback) {
-                        $timeout(function () {
-                            var modelValue = ngModel.$modelValue;
-                            if (modelValue) {
-                                ContactService.get(modelValue).then(function (contact) {
-                                    if (contact._id) {
-                                        callback(formatContact(contact));
-                                    }
-                                });
-                            }
-                        });
+                        var modelValue = ngModel.$modelValue;
+                        if (modelValue) {
+                            ContactService.get(modelValue).then(function (contact) {
+                                if (contact._id) {
+                                    callback(formatContact(contact));
+                                }
+                            });
+                        }
+                    },
+                    formatResult: contactFormatResult,
+                    formatSelection: contactFormatSelection,
+                    dropdownCssClass: "bigdrop",
+                    escapeMarkup: function (m) {
+                        return m;
                     }
                 });
 
                 element.change(function () {
-                    ngModel.$setViewValue(element.select2('data').id);
+                    var contact = $(element).select2('data');
+                    ngModel.$setViewValue(contact && contact.id);
+                    $(element).siblings("div").attr('title', contact && contact.phone);
                     scope.$apply();
                 });
 
@@ -133,7 +153,7 @@ angular.module('Directives', ['eums.ip'])
                     if (Number(nodeId) === Number(myNodeId)) {
                         var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                         var formattedContact = formatContact(contact);
-                        contactSelect2Input.text(formattedContact.text);
+                        contactSelect2Input.text(formattedContact.fullName);
                         $(element).val(formattedContact.id);
                     }
                 });
@@ -141,7 +161,7 @@ angular.module('Directives', ['eums.ip'])
                 scope.$on('set-contact-for-single-ip', function (_, contact) {
                     var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     var formattedContact = formatContact(contact);
-                    contactSelect2Input.text(formattedContact.text);
+                    contactSelect2Input.text(formattedContact.fullName);
                     $(element).val(formattedContact.id);
                 });
             }
