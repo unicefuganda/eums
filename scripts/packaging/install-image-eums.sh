@@ -38,11 +38,13 @@ DJANGO_SECRET_KEY=$8
 LATITUDE=$9
 LONGITUDE=${10}
 ZOOM_LEVEL=${11}
+ADMIN_PASSWORD=${12}
 
 USER_DIR=`eval echo ~/`
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -e "LC_ALL=C" \
+-e "ADMIN_PASSWORD=${ADMIN_PASSWORD}" \
 -d --name=eums \
 -v ${USER_DIR}/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
