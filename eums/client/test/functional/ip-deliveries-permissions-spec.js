@@ -9,7 +9,7 @@ var ftUtils = require('./functional-test-utils.js');
 
 describe('Deliveries permission', function () {
 
-    fit('Ip should not have the permission to view direct deliveries', function () {
+    it('Ip should not have the permission to view direct deliveries', function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         directDeliveryPage.visit();
