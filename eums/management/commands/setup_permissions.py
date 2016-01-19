@@ -1,13 +1,19 @@
+import logging
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from eums.auth import create_groups, create_permissions, GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR, GROUP_UNICEF_VIEWER, \
-    GROUP_IP_EDITOR, GROUP_IP_VIEWER
+    GROUP_IP_EDITOR, GROUP_IP_VIEWER, PermissionCode
 
+logger = logging.getLogger(__name__)
 GROUP_PERMISSIONS = {
     GROUP_UNICEF_ADMIN: [
-        'can_view_users',
+        PermissionCode.CAN_VIEW_USER,
+        PermissionCode.CAN_ADD_USER,
         'can_view_dashboard',
         'can_view_distribution_plans',
+        PermissionCode.CAN_ADD_DISTRIBUTION_PLAN,
+        'change_distributionplan',
         'can_view_delivery_reports',
         'can_view_reports',
         'can_view_self_contacts',
@@ -21,8 +27,6 @@ GROUP_PERMISSIONS = {
         'can_import_data',
         'add_user',
         'change_user',
-        'add_distributionplan',
-        'change_distributionplan',
         'can_track_deliveries',
         'can_view_unicef_menu',
         'can_view_purchase_order',
@@ -34,7 +38,7 @@ GROUP_PERMISSIONS = {
         'add_consignee',
         'change_consignee',
         'delete_consignee',
-        'add_distributionplan',
+        PermissionCode.CAN_ADD_DISTRIBUTION_PLAN,
         'change_distributionplan',
         'can_view_distribution_plans',
         'can_track_deliveries',
@@ -67,7 +71,6 @@ GROUP_PERMISSIONS = {
         'delete_consignee',
         'can_view_distribution_plans',
         'change_distributionplan',
-        'add_distributionplan',
         'can_view_self_contacts',
         'can_create_contacts',
         'can_edit_contacts',

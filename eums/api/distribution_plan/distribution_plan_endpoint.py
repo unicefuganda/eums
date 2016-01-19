@@ -10,7 +10,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 
 from eums.api.filter.filter_mixin import RequestFilterMixin
-from eums.permissions.view_delivery_permission import ViewDeliveryPermission
+from eums.permissions.distribution_plan_permission import DistributionPlanPermission
 from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem, DistributionPlanNode, Runnable
 from eums.services.flow_scheduler import schedule_run_directly_for
 
@@ -29,7 +29,7 @@ class DistributionPlanSerializer(serializers.ModelSerializer):
 
 
 class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
-    permission_classes = (DjangoModelPermissions, ViewDeliveryPermission)
+    permission_classes = (DjangoModelPermissions, DistributionPlanPermission)
 
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerializer

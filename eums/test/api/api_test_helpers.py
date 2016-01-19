@@ -1,4 +1,6 @@
 import datetime
+import logging
+
 from django.contrib.auth.models import User, Group
 
 from eums.models import Programme, ItemUnit, Item
@@ -24,6 +26,8 @@ RELEASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'release-order-item/'
 PROGRAMME_ENDPOINT_URL = BACKEND_URL + 'programme/'
 OPTION_ENDPOINT_URL = BACKEND_URL + 'option/'
 RUN_ENDPOINT_URL = BACKEND_URL + 'run/'
+
+logger = logging.getLogger(__name__)
 
 
 def create_programme():

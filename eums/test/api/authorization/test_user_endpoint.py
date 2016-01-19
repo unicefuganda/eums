@@ -1,38 +1,13 @@
-from eums.auth import create_groups, create_permissions, teardown_groups, teardown_permissions
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.factories.user_factory import UserFactory
-from rest_framework.test import APITestCase
-from django.core.management import call_command
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
-from eums.models import Consignee, DistributionPlan, UserProfile
 from eums.test.config import BACKEND_URL
-
 
 ENDPOINT_URL = BACKEND_URL + 'user/'
 
 
-class UserEndpointTest(APITestCase):
-    @classmethod
-    def setUpClass(cls):
-        create_groups()
-        create_permissions()
-        call_command('setup_permissions')
-
-    @classmethod
-    def tearDownClass(cls):
-        teardown_groups()
-        teardown_permissions()
-
-    def tearDown(self):
-        UserProfile.objects.all().delete()
-        User.objects.all().delete()
-        Consignee.objects.all().delete()
-        DistributionPlan.objects.all().delete()
-
-    # UNICEF Admin
-
+class UserEndpointTest(AuthenticatedAPITestCase):
     def test_should_allow_unicef_admin_to_create_users(self):
-        self._login_as('UNICEF_admin')
+        self.log_unicef_admin_in()
         response = self.client.post(ENDPOINT_URL,
                                     {'username': 'name', 'password': 'password',
                                      'email': 'email@email.email',
@@ -44,7 +19,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_allow_unicef_admin_to_view_users(self):
         user = UserFactory()
-        self._login_as('UNICEF_admin')
+        self.log_unicef_admin_in()
 
         response = self.client.get(ENDPOINT_URL + str(user.id) + '/')
 
@@ -52,7 +27,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_allow_unicef_admin_to_edit_users(self):
         user = UserFactory()
-        self._login_as('UNICEF_admin')
+        self.log_unicef_admin_in()
 
         response = self.client.put(ENDPOINT_URL + str(user.id) + '/', {
             'id': str(user.id),
@@ -64,10 +39,8 @@ class UserEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    # UNICEF editor
-
     def test_should_not_allow_unicef_editors_to_create_users(self):
-        self._login_as('UNICEF_editor')
+        self.log_unicef_editor_in()
         response = self.client.post(ENDPOINT_URL,
                                     {'username': 'name', 'password': 'password',
                                      'email': 'email@email.email',
@@ -79,7 +52,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_unicef_editors_to_view_users(self):
         user = UserFactory()
-        self._login_as('UNICEF_editor')
+        self.log_unicef_editor_in()
 
         response = self.client.get(ENDPOINT_URL + str(user.id) + '/')
 
@@ -87,7 +60,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_unicef_editors_to_edit_users(self):
         user = UserFactory()
-        self._login_as('UNICEF_editor')
+        self.log_unicef_editor_in()
 
         response = self.client.put(ENDPOINT_URL + str(user.id) + '/', {
             'id': str(user.id),
@@ -102,7 +75,7 @@ class UserEndpointTest(APITestCase):
     # UNICEF viewer
 
     def test_should_not_allow_unicef_viewers_to_create_users(self):
-        self._login_as('UNICEF_viewer')
+        self.log_unicef_viewer_in()
         response = self.client.post(ENDPOINT_URL,
                                     {'username': 'name', 'password': 'password',
                                      'email': 'email@email.email',
@@ -114,7 +87,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_unicef_viewers_to_view_users(self):
         user = UserFactory()
-        self._login_as('UNICEF_viewer')
+        self.log_unicef_viewer_in()
 
         response = self.client.get(ENDPOINT_URL + str(user.id) + '/')
 
@@ -122,7 +95,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_unicef_viewers_to_edit_users(self):
         user = UserFactory()
-        self._login_as('UNICEF_viewer')
+        self.log_unicef_viewer_in()
 
         response = self.client.put(ENDPOINT_URL + str(user.id) + '/', {
             'id': str(user.id),
@@ -137,7 +110,7 @@ class UserEndpointTest(APITestCase):
     # Implementing partner editor
 
     def test_should_not_allow_implementing_partner_editors_to_create_users(self):
-        self._login_as('Implementing Partner_editor')
+        self.log_ip_editor_in()
         response = self.client.post(ENDPOINT_URL,
                                     {'username': 'name', 'password': 'password',
                                      'email': 'email@email.email',
@@ -149,7 +122,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_implementing_partner_editors_to_view_users(self):
         user = UserFactory()
-        self._login_as('Implementing Partner_editor')
+        self.log_ip_editor_in()
 
         response = self.client.get(ENDPOINT_URL + str(user.id) + '/')
 
@@ -157,7 +130,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_implementing_partner_editors_to_edit_users(self):
         user = UserFactory()
-        self._login_as('Implementing Partner_editor')
+        self.log_ip_editor_in()
 
         response = self.client.put(ENDPOINT_URL + str(user.id) + '/', {
             'id': str(user.id),
@@ -172,7 +145,7 @@ class UserEndpointTest(APITestCase):
     # Implementing partner viewer
 
     def test_should_not_allow_implementing_partner_viewers_to_create_users(self):
-        self._login_as('Implementing Partner_viewer')
+        self.log_ip_viewer_in()
         response = self.client.post(ENDPOINT_URL,
                                     {'username': 'name', 'password': 'password',
                                      'email': 'email@email.email',
@@ -184,7 +157,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_implementing_partner_viewers_to_view_users(self):
         user = UserFactory()
-        self._login_as('Implementing Partner_viewer')
+        self.log_ip_viewer_in()
 
         response = self.client.get(ENDPOINT_URL + str(user.id) + '/')
 
@@ -192,7 +165,7 @@ class UserEndpointTest(APITestCase):
 
     def test_should_not_allow_implementing_partner_viewers_to_edit_users(self):
         user = UserFactory()
-        self._login_as('Implementing Partner_viewer')
+        self.log_ip_viewer_in()
 
         response = self.client.put(ENDPOINT_URL + str(user.id) + '/', {
             'id': str(user.id),
@@ -203,15 +176,3 @@ class UserEndpointTest(APITestCase):
         })
 
         self.assertEqual(response.status_code, 403)
-
-    # Helper methods
-
-    def _login_as(self, group_name):
-        self._associate_group_with_user(group_name, 'some_user_name', 'pass')
-        self.client.login(username='some_user_name', password='pass')
-
-    def _associate_group_with_user(self, group_name, username, password):
-        user = User.objects.create_user(username=username, email='user@email.com', password=password)
-        user.groups = [Group.objects.get(name=group_name)]
-        user.save()
-

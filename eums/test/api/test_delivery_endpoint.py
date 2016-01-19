@@ -1,6 +1,6 @@
 import datetime
 import logging
-from httplib import FORBIDDEN, OK
+from httplib import FORBIDDEN, OK, CREATED
 
 from mock import patch
 
@@ -8,7 +8,6 @@ from eums.models import DistributionPlan as Delivery, DistributionPlan, \
     Flow, SystemSettings
 from eums.services.release_order_to_delivery_service import execute_sync_release_order_to_delivery
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
-from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -432,14 +431,14 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         NumericAnswerFactory(question=question_2, run=run_one, value=5)
         MultipleChoiceAnswerFactory(question=question_3, run=run_one, value=option_3)
         MultipleChoiceAnswerFactory(question=question_4, run=run_one, value=option_4)
-        TextAnswerFactory(question=question_5, run=run_one, value="Answer1")
+        TextAnswerFactory(question=question_5, run=run_one, value='Answer1')
 
         run_two = RunFactory(runnable=node_two)
         MultipleChoiceAnswerFactory(question=question_1, run=run_two, value=option_1)
         NumericAnswerFactory(question=question_2, run=run_two, value=3)
         MultipleChoiceAnswerFactory(question=question_3, run=run_two, value=option_3)
         MultipleChoiceAnswerFactory(question=question_4, run=run_two, value=option_4)
-        TextAnswerFactory(question=question_5, run=run_two, value="Answer2")
+        TextAnswerFactory(question=question_5, run=run_two, value='Answer2')
 
         response = self.client.get('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'node_answers'))
 
@@ -477,10 +476,67 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         self.assertNotIn(first_delivery.id, ids)
         self.assertIn(second_delivery.id, ids)
 
-    @patch("eums.services.flow_scheduler.schedule_run_directly_for")
+    @patch('eums.services.flow_scheduler.schedule_run_directly_for')
     def test_should_set_retriggered_flag_on_retrigger_delivery(self, _):
         delivery = DeliveryFactory(is_retriggered=False)
         response = self.client.patch('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'retrigger_delivery'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(DistributionPlan.objects.get(id=delivery.id).is_retriggered)
 
+    def test_should_return_deliveries_filtered_by_date(self):
+        SystemSettingsFactory()
+        consignee = ConsigneeFactory()
+        delivery = DeliveryFactory(delivery_date=datetime.date(2014, 10, 5), consignee=consignee, track=True)
+
+        self.log_consignee_in(consignee)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-04&to=2014-10-10'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+
+    def test_should_return_deliveries_filtered_by_from_or_to_date_separately(self):
+        SystemSettingsFactory()
+        consignee = ConsigneeFactory();
+        delivery = DeliveryFactory(delivery_date=datetime.date(2014, 10, 5), consignee=consignee, track=True)
+
+        self.log_consignee_in(consignee)
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-04'))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-10'))
+        self.assertEqual(len(response.data), 0)
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-10'))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-04'))
+        self.assertEqual(len(response.data), 0)
+
+    def test_unicef_admin_should_have_permission_to_create_delivery(self):
+        self.log_and_assert_create_delivery_permission(self.log_unicef_admin_in, CREATED)
+
+    def test_unicef_editor_should_have_permission_to_create_delivery(self):
+        self.log_and_assert_create_delivery_permission(self.log_unicef_editor_in, CREATED)
+
+    def test_unicef_viewer_should_not_have_permission_to_create_delivery(self):
+        self.log_and_assert_create_delivery_permission(self.log_unicef_viewer_in, FORBIDDEN)
+
+    def test_ip_editor_should_not_have_permission_to_create_delivery(self):
+        self.log_and_assert_create_delivery_permission(self.log_ip_editor_in, FORBIDDEN)
+
+    def test_ip_viewer_should_not_have_permission_to_create_delivery(self):
+        self.log_and_assert_create_delivery_permission(self.log_ip_viewer_in, FORBIDDEN)
+
+    def log_and_assert_create_delivery_permission(self, log_func, expected_status_code):
+        log_func()
+        programme = ProgrammeFactory()
+        consignee = ConsigneeFactory()
+        request_body = {
+            'programme': str(programme.id),
+            'consignee': str(consignee.id),
+            'location': 'Kampala',
+            'delivery_date': '2015-12-12',
+            'contact_person_id': 'some_id'
+        }
+        response = self.client.post(ENDPOINT_URL, data=request_body)
+        self.assertEqual(response.status_code, expected_status_code)

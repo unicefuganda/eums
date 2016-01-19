@@ -88,7 +88,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         node = DeliveryNode.objects.get(pk=response.data['id'])
 
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(node.quantity_in(), 100)\
+        self.assertTrue(node.quantity_in(), 100)
 
     def test_should_create_delivery_node_with_parents(self):
         node_one = DeliveryNodeFactory()
@@ -283,12 +283,11 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertNotIn(root.id, node_ids)
         self.assertNotIn(great_grand_child.id, node_ids)
 
+    def test_returned_nodes_should_have_order_type_field(self):
+        po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
+        ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))
 
-def test_returned_nodes_should_have_order_type_field(self):
-    po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
-    ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))
+        response = self.client.get(ENDPOINT_URL)
+        node_order_types = [node['order_type'] for node in response.data]
 
-    response = self.client.get(ENDPOINT_URL)
-    node_order_types = [node['order_type'] for node in response.data]
-
-    self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)
+        self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)

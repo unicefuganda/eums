@@ -1,7 +1,6 @@
 import logging
 
 from django.contrib.auth.models import User
-from rest_framework.test import APITestCase
 
 from eums.auth import *
 from eums.models import UserProfile
@@ -11,10 +10,10 @@ from eums.test.api.authorization.permissions_test_case import PermissionsTestCas
 logger = logging.getLogger(__name__)
 
 UNICEF_ADMIN = {'username': 'admin', 'password': 'admin'}
-UNICEF_EDITOR = {'username': 'unicef_editor', 'password': 'wakiso'}
-UNICEF_VIEWER = {'username': 'unicef_viewer', 'password': 'wakiso'}
-IP_EDITOR = {'username': 'ip_editor', 'password': 'wakiso'}
-IP_VIEWER = {'username': 'ip_viewer', 'password': 'wakiso'}
+UNICEF_EDITOR = {'username': 'unicef_editor', 'password': 'unicef_editor'}
+UNICEF_VIEWER = {'username': 'unicef_viewer', 'password': 'unicef_viewer'}
+IP_EDITOR = {'username': 'ip_editor', 'password': 'wakiip_editorso'}
+IP_VIEWER = {'username': 'ip_viewer', 'password': 'ip_viewer'}
 
 
 class AuthenticatedAPITestCase(PermissionsTestCase):
@@ -23,6 +22,7 @@ class AuthenticatedAPITestCase(PermissionsTestCase):
 
     def log_consignee_in(self, consignee):
         user = User.objects.create_user(username='test_consignee', email='someconignee@email.com', password='test')
+        user.groups = [Group.objects.get(name=GROUP_IP_EDITOR)]
         user.save()
         UserProfile.objects.create(user=user, consignee=consignee)
         self.client.login(username='test_consignee', password='test')

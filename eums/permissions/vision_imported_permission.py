@@ -12,5 +12,4 @@ class VisionImportedPermission(permissions.BasePermission):
         elif request.method == 'DELETE':
             if obj.imported_from_vision:
                 raise ForbiddenException(forbidden_message)
-
         return True
