@@ -24,7 +24,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap_pagination',
     'eums',
     'rest_framework',
     'password_reset',
@@ -39,8 +38,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'bootstrap_pagination.middleware.PaginationMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 )
 
 DATABASES = {

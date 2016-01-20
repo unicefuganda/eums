@@ -1,7 +1,6 @@
 {% extends 'base/layout.html' %}
 
 {% block content %}
-    {% load pagination_tags %}
     {% load generic_tags %}
 
     <h4 class="page-header">
@@ -45,5 +44,4 @@
         {% endfor %}
         </tbody>
     </table>
-    {% paginate %}
 {% endblock %}
