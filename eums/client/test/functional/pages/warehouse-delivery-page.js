@@ -29,14 +29,14 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
     }},
 
     selectContact: { value: function (contact) {
-        element(by.id('select2-chosen-7')).click();
-        element(by.id('s2id_autogen7_search')).clear().sendKeys(contact);
+        element(by.id('select2-chosen-5')).click();
+        element(by.id('s2id_autogen5_search')).clear().sendKeys(contact);
         element(by.css('.select2-results li')).click();
     }},
 
     selectLocation: { value: function (location) {
-        element(by.id('select2-chosen-9')).click();
-        element(by.id('s2id_autogen9_search')).clear().sendKeys(location);
+        element(by.id('select2-chosen-7')).click();
+        element(by.id('s2id_autogen7_search')).clear().sendKeys(location);
         element(by.css('.select2-results li')).click();
     }},
 
