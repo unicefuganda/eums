@@ -127,12 +127,12 @@
             </tr>
             </tfoot>
 
-                    <span class="information message"
-                          ng-show="documents.length > 0 && (documents | orderFilter: query:dateQuery:searchFields).length == 0">
+            <span class="information message"
+                  ng-show="documents.length > 0 && (documents | orderFilter: query:dateQuery:searchFields).length == 0">
                 There are no matches to your search criteria.
-                </span>
-                    <span class="information message"
-                          ng-show="documents.length == 0">There are no records right now.</span>
+            </span>
+            <span class="information message"
+                  ng-show="documents.length == 0">There are no records right now.</span>
         </table>
     </div>
 </div>

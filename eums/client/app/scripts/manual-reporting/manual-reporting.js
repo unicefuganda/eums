@@ -29,7 +29,9 @@ angular.module('ManualReporting', ['ngTable', 'ngToast', 'siTable', 'eums.ip', '
                 }
 
                 if (oldSearchTerm.query != newSearchTerm.query) {
-                    startTimer();
+                    timer = $timeout(function () {
+                        $scope.goToPage(1);
+                    }, 2000);
                 } else {
                     $scope.goToPage(1);
                 }
@@ -43,7 +45,13 @@ angular.module('ManualReporting', ['ngTable', 'ngToast', 'siTable', 'eums.ip', '
             if ($scope.currentDocumentType === 'RO') {
                 $scope.placeHolderText = 'Search by waybill number';
             }
-            $scope.goToPage(1);
+
+            initializing = true;
+            if (_.isEmpty($scope.searchTerm)) {
+                $scope.searchTerm = {some_property: ''};
+            } else {
+                $scope.searchTerm = {};
+            }
         });
 
         $scope.goToPage = function (page) {
@@ -73,12 +81,6 @@ angular.module('ManualReporting', ['ngTable', 'ngToast', 'siTable', 'eums.ip', '
                 $location.path('/field-verification-details/waybill/' + document.id);
             }
         };
-
-        function startTimer() {
-            timer = $timeout(function () {
-                $scope.currentDocumentType === 'PO' ? loadPurchaseOrders() : loadReleaseOrder();
-            }, 2000);
-        }
 
         function loadPurchaseOrders() {
             LoaderService.showLoader();
