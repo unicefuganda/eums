@@ -540,3 +540,37 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         }
         response = self.client.post(ENDPOINT_URL, data=request_body)
         self.assertEqual(response.status_code, expected_status_code)
+
+    def test_unicef_admin_should_have_permission_to_track_delivery(self):
+        self.log_and_assert_track_delivery_permission(self.log_unicef_admin_in, FORBIDDEN)
+
+    def test_unicef_editor_should_have_permission_to_track_delivery(self):
+        self.log_and_assert_track_delivery_permission(self.log_unicef_editor_in, FORBIDDEN)
+
+    def test_unicef_viewer_should_not_have_permission_to_track_delivery(self):
+        self.log_and_assert_track_delivery_permission(self.log_unicef_viewer_in, FORBIDDEN)
+
+    def test_ip_editors_should_not_have_permission_to_track_delivery(self):
+        self.log_and_assert_track_delivery_permission(self.log_ip_viewer_in, FORBIDDEN)
+
+    def test_ip_viewers_should_not_have_permission_to_track_delivery(self):
+        self.log_and_assert_track_delivery_permission(self.log_ip_editor_in, FORBIDDEN)
+
+    def log_and_assert_track_delivery_permission(self, log_func, expected_status_code):
+        programme = ProgrammeFactory()
+        consignee = ConsigneeFactory()
+        delivery = DeliveryFactory(programme=programme, consignee=consignee, location='Kampala',
+                                   delivery_date='2015-12-12')
+
+        log_func()
+
+        response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {
+            'programme': str(programme.id),
+            'consignee': str(consignee.id),
+            'location': 'Kampala',
+            'delivery_date': '2015-12-12',
+            'contact_person_id': 'some_id',
+            'track': 'true'
+        })
+
+        self.assertEqual(response.status_code, expected_status_code)

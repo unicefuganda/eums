@@ -6,4 +6,4 @@ logger = logging.getLogger(__name__)
 
 
 class DistributionPlanPermission(BaseBusinessPermission):
-    supported_permissions = build_request_permissions('distribution_plan')
+    request_permissions = build_request_permissions('distribution_plan')

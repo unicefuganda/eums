@@ -6,4 +6,4 @@ logger = logging.getLogger(__name__)
 
 
 class ViewUserPermission(BaseBusinessPermission):
-    supported_permissions = build_request_permissions('user')
+    request_permissions = build_request_permissions('user')

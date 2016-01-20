@@ -1,10 +1,12 @@
 from rest_framework.decorators import detail_route
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
 from eums.api.standard_pagination import StandardResultsSetPagination
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.models import DistributionPlanNode as DeliveryNode, UserProfile
+from eums.permissions.distribution_plan_node_permission import DistributionPlanNodePermission
 
 
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
@@ -24,6 +26,7 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):
+    permission_classes = (DjangoModelPermissions, DistributionPlanNodePermission)
     queryset = DeliveryNode.objects.all()
     serializer_class = DistributionPlanNodeSerialiser
     pagination_class = StandardResultsSetPagination

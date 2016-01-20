@@ -22,7 +22,7 @@ class AuthenticatedAPITestCase(PermissionsTestCase):
 
     def log_consignee_in(self, consignee):
         user = User.objects.create_user(username='test_consignee', email='someconignee@email.com', password='test')
-        user.groups = [Group.objects.get(name=GROUP_IP_EDITOR)]
+        user.groups = [Group.objects.get(name=GROUP_UNICEF_ADMIN)]
         user.save()
         UserProfile.objects.create(user=user, consignee=consignee)
         self.client.login(username='test_consignee', password='test')

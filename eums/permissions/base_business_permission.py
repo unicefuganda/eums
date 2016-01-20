@@ -17,12 +17,17 @@ def build_request_permissions(model):
     return request_permissions
 
 
+def is_user_has_permission(user, permission):
+    return user.has_perm('eums.%s' % permission) or user.has_perm(
+            'auth.%s' % permission)
+
+
 class BaseBusinessPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        user_permission = self.supported_permissions.get(request.method) if hasattr(self,
-                                                                                    'supported_permissions') else None
+        user_permission = None
+        if hasattr(self, 'request_permissions'):
+            user_permission = self.request_permissions.get(request.method)
 
-        if not request.user.has_perm('eums.%s' % user_permission) and not request.user.has_perm(
-                        'auth.%s' % user_permission):
+        if not is_user_has_permission(request.user, user_permission):
             raise ForbiddenException('Unauthorised!')
         return True

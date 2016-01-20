@@ -5,5 +5,5 @@ from eums.permissions.base_business_permission import BaseBusinessPermission, bu
 logger = logging.getLogger(__name__)
 
 
-class ViewPurchaseOrderPermission(BaseBusinessPermission):
-    request_permissions = build_request_permissions('purchase_order')
+class DistributionPlanNodePermission(BaseBusinessPermission):
+    request_permissions = build_request_permissions('distribution_plan_node')

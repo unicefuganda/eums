@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from httplib import OK, FORBIDDEN
 
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeViewSet
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan
@@ -291,3 +292,23 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         node_order_types = [node['order_type'] for node in response.data]
 
         self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)
+
+    def test_unicef_admin_should_have_permission_to_view_delivery_nodes(self):
+        self.log_and_assert_permission(self.log_unicef_admin_in, OK)
+
+    def test_unicef_editor_should_have_permission_to_view_delivery_nodes(self):
+        self.log_and_assert_permission(self.log_unicef_editor_in, OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_delivery_nodes(self):
+        self.log_and_assert_permission(self.log_unicef_viewer_in, OK)
+
+    def test_ip_editor_should_not_have_permission_to_view_delivery_nodes(self):
+        self.log_and_assert_permission(self.log_ip_editor_in, FORBIDDEN)
+
+    def test_ip_viewer_should_not_have_permission_to_view_delivery_nodes(self):
+        self.log_and_assert_permission(self.log_ip_viewer_in, FORBIDDEN)
+
+    def log_and_assert_permission(self, log_func, status_code):
+        self.logout()
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)

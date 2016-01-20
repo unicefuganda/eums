@@ -13,6 +13,7 @@ GROUP_PERMISSIONS = {
         'can_view_dashboard',
         'can_view_distribution_plans',
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN,
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
         'change_distributionplan',
         'can_view_delivery_reports',
         'can_view_reports',
@@ -39,6 +40,7 @@ GROUP_PERMISSIONS = {
         'change_consignee',
         'delete_consignee',
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN,
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
         'change_distributionplan',
         'can_view_distribution_plans',
         'can_track_deliveries',
@@ -51,6 +53,7 @@ GROUP_PERMISSIONS = {
         'can_view_release_order',
     ],
     GROUP_UNICEF_VIEWER: [
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_distribution_plans',

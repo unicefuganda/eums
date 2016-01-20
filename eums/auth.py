@@ -18,6 +18,8 @@ class PermissionCode(object):
     CAN_VIEW_DISTRIBUTION_PLAN = 'can_view_distribution_plans'
     CAN_ADD_DISTRIBUTION_PLAN = 'add_distributionplan'
 
+    CAN_VIEW_DISTRIBUTION_PLAN_NODE = 'view_distribution_plan_node'
+
     CAN_VIEW_REPORTS = 'can_view_reports'
     CAN_TRACK_DISTRIBUTION_PLAN = 'can_track_deliveries'
     CAN_VIEW_UNICEF_MENU = 'can_view_unicef_menu'
@@ -46,6 +48,7 @@ perm_code_names = [
     {'name': 'Can view users', 'codename': PermissionCode.CAN_VIEW_USER},
     {'name': 'Can view dashboard', 'codename': PermissionCode.CAN_VIEW_DASHBOARD},
     {'name': 'Can view distribution plans', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
+    {'name': 'Can view distribution plan nodes', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE},
     {'name': 'Can view reports', 'codename': PermissionCode.CAN_VIEW_REPORTS},
     {'name': 'Can track deliveries', 'codename': PermissionCode.CAN_TRACK_DISTRIBUTION_PLAN},
     {'name': 'Can view unicef menu', 'codename': PermissionCode.CAN_VIEW_UNICEF_MENU},
