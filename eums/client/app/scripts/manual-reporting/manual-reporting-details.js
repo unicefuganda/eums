@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
-        'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
-        'Delivery', 'DeliveryNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
+    'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
+    'Delivery', 'DeliveryNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
     .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService,
                                                               OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
                                                               ReleaseOrderItemService, ngToast, ContactService, DeliveryService,
@@ -559,6 +559,56 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         var formatDateForSave = function (date) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        };
+    })
+    .directive('searchContacts', function (ContactService, $timeout) {
+        function formatResponse(data) {
+            return data.map(function (contact) {
+                return {
+                    id: contact._id,
+                    text: contact.firstName + ' ' + contact.lastName
+                };
+            });
+        }
+
+        return {
+            restrict: 'A',
+            scope: true,
+            require: 'ngModel',
+            link: function (scope, element, _, ngModel) {
+
+                element.select2({
+                    minimumInputLength: 1,
+                    width: '150px',
+                    query: function (query) {
+                        var data = {results: []};
+                        ContactService.search(query.term).then(function (foundContacts) {
+                            data.results = formatResponse(foundContacts);
+                            query.callback(data);
+                        });
+                    },
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
+                            var modelValue = ngModel.$modelValue;
+                            if (modelValue) {
+                                ContactService.get(modelValue).then(function (contact) {
+                                    if (contact._id) {
+                                        callback({
+                                            id: contact._id,
+                                            text: contact.firstName + ' ' + contact.lastName
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                element.change(function () {
+                    ngModel.$setViewValue(element.select2('data').id);
+                    scope.$apply();
+                });
+            }
         };
     })
     .directive('onlyDigits', function () {

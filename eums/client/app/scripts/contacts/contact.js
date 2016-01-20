@@ -8,6 +8,20 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         $scope.contact = {};
         $scope.currentUser = {};
 
+        function loadContacts() {
+            UserService.hasPermission('auth.can_view_contacts').then(function (isPermissionGranted) {
+                if (isPermissionGranted) {
+                    ContactService.all().then(function (resultContacts) {
+                        $scope.contacts = resultContacts.sort();
+                    });
+                } else {
+                    ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
+                        $scope.contacts = resultContacts.sort();
+                    });
+                }
+            });
+        };
+
         $scope.initialize = function () {
             this.sortBy('firstName');
             this.sort.descending = false;
@@ -38,6 +52,11 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             $scope.$broadcast('add-contact');
         };
 
+        $scope.$on('contact-saved', function (contact) {
+            loadContacts();
+            $scope.contact.id = contact._id;
+        });
+
         $scope.showDeleteContact = function (contact) {
             $scope.currentContact = contact;
             angular.element('#delete-contact-modal').modal();
@@ -49,6 +68,10 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             }
             $scope.$broadcast('edit-contact', contact);
         };
+
+        $scope.$on('dialog-closed', function () {
+            loadContacts();
+        });
 
         $scope.deleteSelectedContact = function () {
             ContactService.del($scope.currentContact).then(function () {
@@ -70,29 +93,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 $scope.currentContact = {};
             });
         };
-
-        $scope.$on('contact-saved', function (contact) {
-            loadContacts();
-            $scope.contact.id = contact._id;
-        });
-
-        $scope.$on('dialog-closed', function () {
-            loadContacts();
-        });
-
-        function loadContacts() {
-            UserService.hasPermission('auth.can_view_contacts').then(function (isPermissionGranted) {
-                if (isPermissionGranted) {
-                    ContactService.all().then(function (resultContacts) {
-                        $scope.contacts = resultContacts.sort();
-                    });
-                } else {
-                    ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
-                        $scope.contacts = resultContacts.sort();
-                    });
-                }
-            });
-        }
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {
         return ServiceFactory.create({
@@ -115,7 +115,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     });
                 },
                 search: function (searchString) {
-                    return this.filter(searchString ? {searchfield: searchString} : {});
+                    return this.filter({searchfield: searchString});
                 },
                 update: function (contact) {
                     return $http.put(EumsConfig.CONTACT_SERVICE_URL, contact).then(function (response) {
