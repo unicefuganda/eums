@@ -35,7 +35,6 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
     }
 
     def list(self, request, *args, **kwargs):
-
         if request.GET.get('paginate', None) != 'true':
             self.paginator.page_size = 0
 

@@ -39,6 +39,7 @@ class PurchaseOrderViewSet(ModelViewSet, RequestFilterMixin):
         'ipId': 'purchaseorderitem__distributionplannode__ip_id',
     }
 
+    # todo: below list should be removed, or merged to for_direct_delivery
     def list(self, request, *args, **kwargs):
         consignee_id = request.GET.get('consignee', None)
         if consignee_id:

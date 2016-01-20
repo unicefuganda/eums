@@ -2,86 +2,130 @@
     <div class="content">
         <h4 class="eums page-header">Field Verification</h4>
         <ul class="nav nav-pills row-padding">
-            <li class="pad-small" ng-class="{active: currentDocumentType === 'PO'}" ng-click="toggleDocumentType('PO')">
+            <li class="pad-small" ng-class="{active: currentDocumentType == 'PO'}" ng-click="toggleDocumentType('PO')">
                 <a href="" class="btn blue-border-button">Purchase Orders</a>
             </li>
-            <li class="pad-small" ng-class="{active: currentDocumentType === 'WB'}" ng-click="toggleDocumentType('WB')">
+            <li class="pad-small" ng-class="{active: currentDocumentType == 'RO'}" ng-click="toggleDocumentType('RO')">
                 <a href="" class="btn blue-border-button">Waybills</a>
             </li>
         </ul>
-        <div class="panel panel-default line-order-panel">
-
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
             <div class="row">
-                <div class="col-xs-2 pull-right">
-                    <div class="inner-addon left-addon">
-                        <i class="glyphicon glyphicon-search"></i>
-                        <input type="text"
-                               id="dateFilter"
-                               class="form-control"
-                               name="dateFilter"
-                               ng-model="dateQuery"
-                               placeholder="Date (dd-MM-yyyy)"/>
-                    </div>
-                </div>
-                <div class="col-xs-3 pull-right">
-                    <div class="inner-addon left-addon">
-                        <i class="glyphicon glyphicon-search"></i>
+                <div class="col-md-6">
+                    <div class="inner-addon right-addon">
+                        <i class="glyphicon blue-unicef"
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                         <input type="text"
                                id="filter"
                                class="form-control"
                                name="filter"
-                               ng-model="query"
+                               ng-model="searchTerm.query"
                                placeholder="{{ placeHolderText }}"/>
                     </div>
                 </div>
+                <div class="col-md-3 pad-right-5">
+                    <span class="input-group" eums-date-picker>
+                        <input type="text"
+                               class="form-control white-bg"
+                               datepicker-popup="dd-MMM-yyyy"
+                               ng-model="searchTerm.fromDate"
+                               is-open="datepicker[0]"
+                               datepicker-options="dateOptions"
+                               show-button-bar="false"
+                               ng-required="true"
+                               ng-disabled="false"
+                               placeholder="From"
+                               required="required"
+                               value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="open($event, 0)">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                    </span>
+                </div>
+                <div class="col-md-3 pad-left-5">
+                    <span class="input-group" eums-date-picker>
+                        <input type="text"
+                               class="form-control white-bg"
+                               datepicker-popup="dd-MMM-yyyy"
+                               ng-model="searchTerm.toDate"
+                               is-open="datepicker[1]"
+                               datepicker-options="dateOptions"
+                               show-button-bar="false"
+                               ng-required="true"
+                               ng-disabled="false"
+                               placeholder="To"
+                               required="required"
+                               value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
+                        <span class="input-group-btn">
+                          <button type="button"
+                                  class="btn btn-default"
+                                  ng-click="open($event, 1)">
+                              <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                    </span>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <span class="well-sm"></span>
+    <span class="well-sm"></span>
 
-            <div class="table-wrapper">
-                <table si-table class="table table-bordered table-hover table-striped">
-                    <thead ng-init="initialize()">
-                    <tr>
-                        <th class="centered" style="width: 20%">
-                            <a ng-if="currentDocumentType === 'PO'" ng-click="sortedBy('orderNumber')">Purchase Order
-                                <i ng-class="sortArrowClass('orderNumber')"></i></a>
-                            <a ng-if="currentDocumentType === 'WB'" ng-click="sortedBy('orderNumber')">Waybill
-                                <i ng-class="sortArrowClass('orderNumber')"></i></a>
-                        </th>
-                        <th class="centered" style="width: 30%">
-                            <a ng-click="sortedBy('date')">Date Created
-                                <i ng-class="sortArrowClass('date');"></i>
-                            </a>
-                        </th>
-                        <th class="col-xs-6">
-                            <a ng-click="sortedBy('programme')">Outcome
-                                <i ng-class="sortArrowClass('programme')"></i>
-                            </a>
-                        </th>
-                    </tr>
-                    </thead>
+    <div class="table-wrapper">
+        <table si-table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th class="centered" style="width: 20%">
+                    <a ng-if="currentDocumentType === 'PO'" ng-click="sortedBy('orderNumber')">Purchase Order
+                        <i ng-class="sortArrowClass('orderNumber')"></i></a>
+                    <a ng-if="currentDocumentType === 'RO'" ng-click="sortedBy('orderNumber')">Waybill
+                        <i ng-class="sortArrowClass('orderNumber')"></i></a>
+                </th>
+                <th class="centered" style="width: 30%">
+                    <a ng-click="sortedBy('date')">Date Created
+                        <i ng-class="sortArrowClass('date');"></i>
+                    </a>
+                </th>
+                <th class="col-xs-6">
+                    <a ng-click="sortedBy('programme')">Outcome
+                        <i ng-class="sortArrowClass('programme')"></i>
+                    </a>
+                </th>
+            </tr>
+            </thead>
 
-                    <tbody>
-                    <tr si-sortable="single"
-                        ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
-                        <td data-header="Document Number">
-                            <a ng-click="selectDocument(document)">{{ document.orderNumber }}</a>
-                        </td>
-                        <td data-header="Date Created">
-                            {{ document.date | date: 'dd-MMM-yyyy' }}
-                        </td>
-                        <td data-header="Programme" class="text-left">
-                            {{ document.programme }}
-                        </td>
-                    </tr>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="3">
-                            <si-table-pagination limit="15" indices="5"/>
-                        </td>
-                    </tr>
-                    </tfoot>
+            <tbody>
+            <tr si-sortable="single"
+                ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
+                <td data-header="Document Number">
+                    <a ng-click="selectDocument(document)">{{ document.orderNumber }}</a>
+                </td>
+                <td data-header="Date Created">
+                    {{ document.date | date: 'dd-MMM-yyyy' }}
+                </td>
+                <td data-header="Programme" class="text-left">
+                    {{ document.programme }}
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3">
+                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
+                    </pagination>
+                </td>
+            </tr>
+            </tfoot>
 
                     <span class="information message"
                           ng-show="documents.length > 0 && (documents | orderFilter: query:dateQuery:searchFields).length == 0">
@@ -89,9 +133,7 @@
                 </span>
                     <span class="information message"
                           ng-show="documents.length == 0">There are no records right now.</span>
-                </table>
-            </div>
-        </div>
+        </table>
     </div>
 </div>
 

@@ -11,7 +11,7 @@ angular.module('SortBy', [])
         return {
             sortedBy: function (sortTerm, sortField) {
                 field = sortField;
-                if(sortTerm.field === sortField) {
+                if (sortTerm.field === sortField) {
                     sortTerm.orderIndex = (sortTerm.orderIndex + 1) % SORT_STATUS;
                 } else {
                     sortTerm.orderIndex = INITIAL_ORDER;

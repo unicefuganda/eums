@@ -44,7 +44,8 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         function loadReceivedResponsesList() {
             $scope.receivedResponsesList = [];
-            OptionService.receivedOptions().then(function (response) {
+            var itemReceivedOptionsService = OptionService.getService('item', 'received');
+            itemReceivedOptionsService().then(function (response) {
                 response.forEach(function (response) {
                     if (response.text === 'No') {
                         $scope.receivedNoId = response.id;
@@ -56,7 +57,8 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         function loadQualityResponsesList() {
             $scope.qualityResponsesList = [];
-            OptionService.qualityOptions().then(function (response) {
+            var itemQualityOptionsService = OptionService.getService('item', 'quality');
+            itemQualityOptionsService().then(function (response) {
                 response.forEach(function (response) {
                     $scope.qualityResponsesList.push({id: response.id, name: response.text});
                 });
@@ -65,7 +67,8 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         function loadSatisfiedResponsesList() {
             $scope.satisfiedResponsesList = [];
-            OptionService.satisfiedOptions().then(function (response) {
+            var itemSatisfiedOptionsService = OptionService.getService('item', 'satisfied');
+            itemSatisfiedOptionsService().then(function (response) {
                 response.forEach(function (response) {
                     $scope.satisfiedResponsesList.push({id: response.id, name: response.text});
                 });

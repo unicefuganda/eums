@@ -3,50 +3,50 @@
         <ng-toast></ng-toast>
 
         <h4 class="page-header">{{ reportingDetailsTitle }}
-            <span class="text-primary">{{ orderNumber  }}</span>
+            <span class="text-primary">{{ orderNumber }}</span>
             <span class="pull-right">OUTCOME: <span class="text-primary">{{ orderProgramme }}</span></span>
         </h4>
 
         <div class="row">
-            <div class="form-horizontal">
-                <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="col-lg-4 control-label description-label">Short
-                        Description:</label>
-
-                    <div class="col-lg-8">
-                        <select id="select-sales-order" ng-model="selectedDocumentItem" required="required"
-                                class="form-control" ng-change="selectDocumentItem()"
-                                ng-options="documentItem.description for documentItem in documentItems">
-                            <option value="" selected="selected">Select Item</option>
-                        </select>
-                    </div>
+            <div class="col-md-5 form-horizontal">
+                <div class="col-md-4 form-group">
+                    <label class="control-label description-label pull-right"
+                           for="select-sales-order">Short Description:</label>
+                </div>
+                <div class="col-md-8">
+                    <select id="select-sales-order" ng-model="selectedDocumentItem" required="required"
+                            class="form-control" ng-change="selectDocumentItem()"
+                            ng-options="documentItem.description for documentItem in documentItems">
+                        <option value="" selected="selected">Select Item</option>
+                    </select>
                 </div>
             </div>
-
-            <div ng-show="selectedDocumentItem" class="material-items well col-lg-7 pull-right">
-                <div class="col-lg-6 no-side-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedDocumentItem.materialCode }}</span>
-                            Material Code
-                        </li>
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedDocumentItem.description }}</span>
-                            Short Description
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-6 no-side-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedDocumentItem.quantity  | number }}</span>
-                            Total Quantity
-                        </li>
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedDocumentItem.unit }}</span>
-                            Unit
-                        </li>
-                    </ul>
+            <div class="col-md-7">
+                <div class="row material-items well" ng-show="selectedDocumentItem">
+                    <div class="col-lg-6 no-side-padding">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span class="badge alert-info">{{ selectedDocumentItem.materialCode }}</span>
+                                Material Code
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge alert-info">{{ selectedDocumentItem.description }}</span>
+                                Short Description
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 no-side-padding">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span class="badge alert-info">{{ selectedDocumentItem.quantity  | number }}</span>
+                                Total Quantity
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge alert-info">{{ selectedDocumentItem.unit }}</span>
+                                Unit
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -99,13 +99,14 @@
                         </td>
                         <td id="input-delivery-reporting-received">
                             <input type="hidden" search-from-list
-                                   list=" {{receivedResponsesList}} "
+                                   list=" {{ receivedResponsesList }} "
                                    ng-model="response.received"
                                    value="{{ response.received }}">
                         </td>
                         <td id="input-delivery-reporting-quantity">
                             <input type="text" id="input-quantity" class="form-control"
-                                   ng-disabled="response.received === receivedNoId" ng-model="response.quantity" only-digits>
+                                   ng-disabled="response.received === receivedNoId" ng-model="response.quantity"
+                                   only-digits>
                         </td>
 
                         <td>
