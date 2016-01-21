@@ -15,6 +15,125 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         $scope.documentItems = [];
         $scope.responses = [];
 
+        $scope.initialize = function () {
+            showLoadingModal(true);
+            loadLists();
+            if ($routeParams.purchaseOrderId) {
+                loadPurchaseOrderItems();
+            }
+            else {
+                loadReleaseOrderItems();
+            }
+        };
+
+        $scope.$watch('responses', function (responseItems) {
+            if (isNaN($scope.invalidResponses) && responseItems.length) {
+                $scope.invalidResponses = true;
+                return;
+            }
+
+            if (responseItems.length) {
+                $scope.invalidResponses = anyInvalidResponses(responseItems);
+            }
+        }, true);
+
+        $scope.addContact = function (responseIndex, responseDetails) {
+            $scope.$parent.responseIndex = responseIndex;
+            $scope.$parent.response = responseDetails;
+            $('#add-contact-modal').modal();
+        };
+
+        $scope.saveContact = function () {
+            ContactService
+                .create($scope.contact)
+                .then(function (contactResponse) {
+                    $('#add-contact-modal').modal('hide');
+
+                    var contact = contactResponse.data;
+                    var contactInput = $('#contact-select-' + $scope.responseIndex);
+                    var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+                    contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+                    contactInput.val(contact._id);
+                    $scope.response.endUser = contact._id;
+
+                    $scope.contact = {};
+                }, function (response) {
+                    createToast(response.data.error, 'danger');
+                });
+        };
+
+        $scope.invalidContact = function (contact) {
+            return !(contact.firstName && contact.lastName && contact.phone);
+        };
+
+        $scope.addRemark = function (responseIndex, responseDetails) {
+            $scope.responseIndex = responseIndex;
+            $scope.response = responseDetails;
+            $('#add-remark-modal').modal();
+        };
+
+        $scope.selectDocumentItem = function () {
+            if (!$scope.selectedDocumentItem) {
+                return;
+            }
+
+            showLoadingModal(true);
+            var responses = [];
+            var distributionPlanNodes = $scope.selectedDocumentItem.distributionplannodes;
+            var responsePromises = [];
+            distributionPlanNodes.forEach(function (node) {
+                responsePromises.push(
+                    DeliveryNodeService.getNodeResponse(node.id).then(function (response) {
+                        if (!_.isEmpty(response)) {
+                            responses.push(response);
+                        }
+                    })
+                );
+            });
+
+            $q.all(responsePromises).then(function () {
+                setResponseNodes($scope.selectedDocumentItem, responses);
+                showLoadingModal(false);
+            });
+        };
+
+        $scope.addResponse = function () {
+            var newResponseItem = {
+                runId: '',
+                consignee: '',
+                endUser: '',
+                location: '',
+                received: '',
+                received_answer: undefined,
+                quantity: 0,
+                quantity_answer: undefined,
+                dateReceived: '',
+                dateReceived_answer: undefined,
+                quality: '',
+                quality_answer: undefined,
+                satisfied: '',
+                satisfied_answer: undefined,
+                remark: '',
+                remark_answer: undefined
+            };
+
+            $scope.responses.push(newResponseItem);
+            setDatePickers();
+        };
+
+        $scope.saveResponses = function () {
+            if ($scope.distributionPlanId) {
+                saveWithToast();
+            }
+            else {
+                createDistributionPlan().then(function (createdPlan) {
+                    $scope.distributionPlanId = createdPlan.id;
+                    saveWithToast();
+                });
+            }
+        };
+
         function createToast(message, klass) {
             ngToast.create({
                 content: message,
@@ -74,7 +193,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 });
             });
         }
-
 
         function loadLists() {
             loadDistricts();
@@ -147,79 +265,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
         }
 
-        $scope.initialize = function () {
-            showLoadingModal(true);
-            loadLists();
-            if ($routeParams.purchaseOrderId) {
-                loadPurchaseOrderItems();
-            }
-            else {
-                loadReleaseOrderItems();
-            }
-        };
-
-        $scope.addContact = function (responseIndex, responseDetails) {
-            $scope.$parent.responseIndex = responseIndex;
-            $scope.$parent.response = responseDetails;
-            $('#add-contact-modal').modal();
-        };
-
-        $scope.saveContact = function () {
-            ContactService
-                .create($scope.contact)
-                .then(function (contactResponse) {
-                    $('#add-contact-modal').modal('hide');
-
-                    var contact = contactResponse.data;
-                    var contactInput = $('#contact-select-' + $scope.responseIndex);
-                    var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-                    contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
-                    contactInput.val(contact._id);
-                    $scope.response.endUser = contact._id;
-
-                    $scope.contact = {};
-                }, function (response) {
-                    createToast(response.data.error, 'danger');
-                });
-        };
-
-        $scope.invalidContact = function (contact) {
-            return !(contact.firstName && contact.lastName && contact.phone);
-        };
-
-        $scope.addRemark = function (responseIndex, responseDetails) {
-            $scope.responseIndex = responseIndex;
-            $scope.response = responseDetails;
-            $('#add-remark-modal').modal();
-        };
-
-
-        $scope.selectDocumentItem = function () {
-            if (!$scope.selectedDocumentItem) {
-                return;
-            }
-
-            showLoadingModal(true);
-            var responses = [];
-            var distributionPlanNodes = $scope.selectedDocumentItem.distributionplannodes;
-            var responsePromises = [];
-            distributionPlanNodes.forEach(function (node) {
-                responsePromises.push(
-                    DeliveryNodeService.getNodeResponse(node.id).then(function (response) {
-                        if (!_.isEmpty(response)) {
-                            responses.push(response);
-                        }
-                    })
-                );
-            });
-
-            $q.all(responsePromises).then(function () {
-                setResponseNodes($scope.selectedDocumentItem, responses);
-                showLoadingModal(false);
-            });
-        };
-
         function setDistributionPlan(responseNode) {
             if (_.isEmpty($scope.distributionPlanId)) {
                 $scope.distributionPlanId = responseNode.plan_id;
@@ -260,30 +305,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
         }
 
-        $scope.addResponse = function () {
-            var newResponseItem = {
-                runId: '',
-                consignee: '',
-                endUser: '',
-                location: '',
-                received: '',
-                received_answer: undefined,
-                quantity: 0,
-                quantity_answer: undefined,
-                dateReceived: '',
-                dateReceived_answer: undefined,
-                quality: '',
-                quality_answer: undefined,
-                satisfied: '',
-                satisfied_answer: undefined,
-                remark: '',
-                remark_answer: undefined
-            };
-
-            $scope.responses.push(newResponseItem);
-            setDatePickers();
-        };
-
         function invalidResponseFields(response) {
             return !response.consignee || !response.endUser || !response.location || !response.received || response.quantity < 0;
         }
@@ -294,18 +315,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
             return responsesWithInvalidFields.length > 0;
         }
-
-        $scope.$watch('responses', function (responseItems) {
-            if (isNaN($scope.invalidResponses) && responseItems.length) {
-                $scope.invalidResponses = true;
-                return;
-            }
-
-            if (responseItems.length) {
-                $scope.invalidResponses = anyInvalidResponses(responseItems);
-            }
-        }, true);
-
 
         function saveRun(response, nodeId) {
             var run = {
@@ -460,7 +469,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }
 
-
         function saveResponseSatisfied(runId, response) {
             var satisfied = response.satisfied;
             var satisfiedDetails = response.satisfied_answer;
@@ -484,7 +492,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 }
             }
         }
-
 
         function saveResponseRemark(runId, response) {
             var remark = response.remark;
@@ -551,18 +558,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     return createdPlan;
                 });
         }
-
-        $scope.saveResponses = function () {
-            if ($scope.distributionPlanId) {
-                saveWithToast();
-            }
-            else {
-                createDistributionPlan().then(function (createdPlan) {
-                    $scope.distributionPlanId = createdPlan.id;
-                    saveWithToast();
-                });
-            }
-        };
 
         var formatDateForSave = function (date) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
