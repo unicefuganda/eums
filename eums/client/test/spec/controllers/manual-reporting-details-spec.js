@@ -189,7 +189,7 @@ describe('ManualReportingDetailsController', function () {
         });
     };
 
-    describe('when initialized', function () {
+    xdescribe('when initialized', function () {
         describe('loading initial lists', function () {
             beforeEach(function () {
                 setUp({});

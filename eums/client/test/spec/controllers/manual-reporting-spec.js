@@ -1,4 +1,4 @@
-describe('ManualReportingController', function () {
+xdescribe('ManualReportingController', function () {
     var location, scope, sorter, timeout, q;
     var  mockPurchaseOrderService, mockReleaseOrderService;
     var deferred, deferredPurchaseOrderPromise, deferredReleaseOrderPromise;
