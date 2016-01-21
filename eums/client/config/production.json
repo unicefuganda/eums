@@ -74,10 +74,7 @@
     "fillOpacity": 0.8
   },
   "MAP_OPTIONS": {
-    "CENTER": [
-      1.28,
-      33.35
-    ],
+    "CENTER": [1.28, 33.35],
     "ZOOM_LEVEL": 7.25
   },
   "DISTRICT_NAME_LOCATOR": "DNAME_2010"
