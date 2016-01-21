@@ -66,7 +66,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         )
         NumericAnswerFactory(
             run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
-            question=questions['EU_AMOUNT_RECEIVED'], value=4
+            question=questions['AMOUNT_RECEIVED'], value=4
         )
 
         self.ip = ConsigneeFactory()
