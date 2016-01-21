@@ -23,11 +23,3 @@ sleep 15s
 #setup the database
 createuser -U postgres -s -r -w root
 createdb -U postgres -O postgres eums
-
-python manage.py migrate
-python manage.py setup_permissions
-python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-python manage.py shell_plus < eums/fixtures/init_basic_data.py
-python manage.py shell_plus < eums/elasticsearch/run_sync.py
-
-./init_admin_password.sh
