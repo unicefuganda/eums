@@ -1,4 +1,7 @@
 from decimal import Decimal
+from httplib import FORBIDDEN, OK
+
+from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 
 from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, Flow
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -17,6 +20,8 @@ from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 from eums.test.helpers.fake_datetime import FakeDate
+
+ENDPOINT_URL = BACKEND_URL + 'stock-report'
 
 
 class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
@@ -76,7 +81,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         }
                        ]}]
 
-        endpoint_url = BACKEND_URL + 'stock-report?consignee=%s' % self.ip.id
+        endpoint_url = ENDPOINT_URL + '?consignee=%s' % self.ip.id
         response = self.client.get(endpoint_url)
         self.assert_api_response(response, expected_data)
 
@@ -145,8 +150,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                            }]
             }]
 
-        endpoint_url = BACKEND_URL + 'stock-report'
-        response = self.client.get(endpoint_url)
+        response = self.client.get(ENDPOINT_URL)
 
         self.assertEqual(len(response.data['results']), 3)
 
@@ -189,7 +193,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         }
                        ]}]
 
-        endpoint_url = BACKEND_URL + 'stock-report?location=luweero'
+        endpoint_url = ENDPOINT_URL + '?location=luweero'
         response = self.client.get(endpoint_url)
         self.assertEqual(len(response.data['results']), 1)
         self.assert_api_response(response, expected_data)
@@ -223,7 +227,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
              }
         ]
 
-        endpoint_url = BACKEND_URL + 'stock-report?consignee=%d&location=koboko' % self.ip_node_three.consignee.id
+        endpoint_url = ENDPOINT_URL + '?consignee=%d&location=koboko' % self.ip_node_three.consignee.id
         response = self.client.get(endpoint_url)
         self.assertEqual(len(response.data['results']), 1)
         self.assert_api_response(response, expected_data)
@@ -294,8 +298,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         }]
              }]
 
-        endpoint_url = BACKEND_URL + 'stock-report/'
-        response = self.client.get(endpoint_url)
+        response = self.client.get(ENDPOINT_URL)
 
         self.assertEqual(len(response.data['results']), 2)
         self.assert_api_response_with_programme_ip_location(response, expected_data)
@@ -354,15 +357,14 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         }]
              }]
 
-        endpoint_url = BACKEND_URL + 'stock-report/'
-        response = self.client.get(endpoint_url)
+        response = self.client.get(ENDPOINT_URL)
 
         self.assert_api_response_with_correct_last_shipment_date(response, expected_data)
 
     def test_should_return_paginated_response(self):
         self.add_a_node_with_response(5)
 
-        endpoint_url = BACKEND_URL + 'stock-report?location=amuda'
+        endpoint_url = ENDPOINT_URL + '?location=amuda'
 
         response = self.client.get(endpoint_url)
         self.assertEqual(len(response.data['results']), 5)
@@ -374,7 +376,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def test_should_return_correct_paginated_response(self):
         self.add_a_node_with_response(17)
 
-        endpoint_url = BACKEND_URL + 'stock-report?location=amuda'
+        endpoint_url = ENDPOINT_URL + '?location=amuda'
 
         response = self.client.get(endpoint_url)
         self.assertEqual(len(response.data['results']), 10)
@@ -520,6 +522,25 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         ]
 
         self.assert_api_response(response, expected_data)
+
+    # def test_unicef_admin_should_not_have_permission_to_view_stock(self):
+    #     self.log_and_assert_view_stock_permission(self.log_unicef_admin_in, HTTP_403_FORBIDDEN)
+    #
+    # def test_unicef_editor_should_not_have_permission_to_view_stock(self):
+    #     self.log_and_assert_view_stock_permission(self.log_unicef_editor_in, HTTP_403_FORBIDDEN)
+    #
+    # def test_unicef_viewer_should_not_have_permission_to_view_stock(self):
+    #     self.log_and_assert_view_stock_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_editors_should_have_permission_to_view_stock(self):
+        self.log_and_assert_view_stock_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewers_should_have_permission_to_view_stock(self):
+        self.log_and_assert_view_stock_permission(self.log_ip_viewer_in, HTTP_200_OK)
+
+    def log_and_assert_view_stock_permission(self, log_func, status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)
 
     def setup_responses(self):
         self.setup_runs()

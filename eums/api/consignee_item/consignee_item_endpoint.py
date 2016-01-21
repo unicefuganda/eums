@@ -1,8 +1,10 @@
 from rest_framework import serializers
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import ConsigneeItem, UserProfile
+from eums.permissions.consignee_item_permissions import ConsigneeItemPermissions
 
 
 class ConsigneeItemSerialiser(serializers.ModelSerializer):
@@ -14,6 +16,7 @@ class ConsigneeItemSerialiser(serializers.ModelSerializer):
 
 
 class ConsigneeItemViewSet(ModelViewSet):
+    permission_classes = (DjangoModelPermissions, ConsigneeItemPermissions)
     queryset = ConsigneeItem.objects.all()
     serializer_class = ConsigneeItemSerialiser
     pagination_class = StandardResultsSetPagination

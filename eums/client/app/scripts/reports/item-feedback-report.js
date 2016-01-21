@@ -7,7 +7,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
                                                           ReportService, LoaderService, ErrorMessageService, SortService,
                                                           ContactService, SortArrowService, SysUtilsService, ngToast) {
-        
+
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
         var initializing = true;
@@ -72,6 +72,11 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
                 ngToast.create({content: errorMessage, class: 'danger'})
             });
+        };
+
+        $scope.showAdditionalRemarks = function (msg) {
+            $scope.additional_remarks = msg;
+            LoaderService.showModal("additional-remarks-modal-dialog");
         };
 
         function startTimer() {

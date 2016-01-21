@@ -36,7 +36,7 @@ describe('New IP Delivery Controller', function () {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['get', 'create']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
-            mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
+            mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
             mockItemService = jasmine.createSpyObj('ItemService', ['get']);
             mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
             mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
@@ -384,7 +384,6 @@ describe('New IP Delivery Controller', function () {
             }
         }
     };
-
 
     function setupNewDelivery(unset) {
         scope.newDelivery = {};

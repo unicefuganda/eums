@@ -5,7 +5,7 @@ describe('ItemFeedbackReportController', function () {
         module('ItemFeedbackReport');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
-        mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
+        mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -31,7 +31,7 @@ describe('ItemFeedbackReportController', function () {
 
     describe('on load', function () {
         it('should show the loader and hide it after the loading data', function () {
-            deferredResult.resolve({results:[{},{}]});
+            deferredResult.resolve({results: [{}, {}]});
             scope.$apply();
 
             expect(mockLoader.showLoader).toHaveBeenCalled();
@@ -69,6 +69,15 @@ describe('ItemFeedbackReportController', function () {
         });
     });
 
+    describe('on click ip note remark icon', function () {
+        it('should show modal ', function () {
+            scope.$apply();
+            scope.showAdditionalRemarks()
+            expect(mockLoader.showModal).toHaveBeenCalledWith('additional-remarks-modal-dialog');
+        });
+    });
+
+
     describe('on filtering', function () {
         it('should call endpoint with search term after ', function () {
             scope.$apply();
@@ -88,7 +97,7 @@ describe('ItemFeedbackReportController', function () {
 
     describe('on paginate', function () {
         it('should call the service with page number', function () {
-            deferredResult.resolve({results:[{},{}]});
+            deferredResult.resolve({results: [{}, {}]});
             scope.searchTerm = {};
             scope.$apply();
 

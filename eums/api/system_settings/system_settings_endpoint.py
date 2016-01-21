@@ -12,6 +12,7 @@ class SystemSettingsSerialiser(serializers.ModelSerializer):
 
 
 class SystemSettingsViewSet(ModelViewSet):
+
     queryset = SystemSettings.objects.all()
     serializer_class = SystemSettingsSerialiser
 

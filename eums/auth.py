@@ -9,7 +9,7 @@ GROUP_IP_VIEWER = 'Implementing Partner_viewer'
 
 
 class PermissionCode(object):
-    CAN_VIEW_DASHBOARD = 'can_view_dashboard'
+    CAN_VIEW_DASH_BOARD = 'can_view_dashboard'
 
     CAN_VIEW_USER = 'can_view_users'
     CAN_ADD_USER = 'add_user'
@@ -17,11 +17,15 @@ class PermissionCode(object):
 
     CAN_VIEW_DISTRIBUTION_PLAN = 'can_view_distribution_plans'
     CAN_ADD_DISTRIBUTION_PLAN = 'add_distributionplan'
+    CAN_CHANGE_DISTRIBUTION_PLAN = 'change_distributionplan'
 
-    CAN_VIEW_DISTRIBUTION_PLAN_NODE = 'view_distribution_plan_node'
+    CAN_VIEW_DISTRIBUTION_PLAN_NODE = 'can_view_distribution_plan_node'
+    CAN_ADD_DISTRIBUTION_PLAN_NODE = 'add_distributionplannode'
+    CAN_CHANGE_DISTRIBUTION_PLAN_NODE = 'change_distributionplannode'
+
+    CAN_VIEW_CONSIGNEE_ITEM = 'view_consignee_item'
 
     CAN_VIEW_REPORTS = 'can_view_reports'
-    CAN_TRACK_DISTRIBUTION_PLAN = 'can_track_deliveries'
     CAN_VIEW_UNICEF_MENU = 'can_view_unicef_menu'
     CAN_VIEW_DELIVERY_REPORTS = 'can_view_delivery_reports'
     CAN_CREATE_DELIVERY_REPORTS = 'can_create_delivery_reports'
@@ -32,7 +36,7 @@ class PermissionCode(object):
     CAN_VIEW_END_USER_FEEDBACK_REPORTS = 'can_view_end_user_feedback_reports'
     CAN_VIEW_CUB_CONSIGNEE_FEEDBACK_REPORTS = 'can_view_cub_consignee_feedback_reports'
     CAN_VIEW_IP_FEEDBACK_REPORTS = 'can_view_ip_feedback_reports'
-    CAN_VIEW_CONSIGNEES = 'can_view_consignees'
+
     CAN_IMPORT_DATA = 'can_import_data'
     CAN_VIEW_SELF_CONTACTS = 'can_view_self_contacts'
     CAN_VIEW_CONTACTS = 'can_view_contacts'
@@ -40,17 +44,26 @@ class PermissionCode(object):
     CAN_EDIT_CONTACTS = 'can_edit_contacts'
     CAN_PUSH_CONTACTS_TO_RAPID_PRO = 'can_push_contacts_to_rapid_pro'
 
+    CAN_ADD_CONSIGNEE = 'add_consignee'
+    CAN_DELETE_CONSIGNEE = 'delete_consignee'
+    CAN_CHANGE_CONSIGNEE = 'change_consignee'
+    CAN_VIEW_CONSIGNEE = 'can_view_consignees'
+
     CAN_VIEW_PURCHASE_ORDER = 'can_view_purchase_order'
     CAN_VIEW_RELEASE_ORDER = 'can_view_release_order'
+
+    CAN_VIEW_ALERT = 'view_alert'
+    CAN_CHANGE_ALERT = 'change_alert'
+    CAN_ADD_ALERT = 'add_alert'
+    CAN_PATCH_ALERT = 'change_alert'
 
 
 perm_code_names = [
     {'name': 'Can view users', 'codename': PermissionCode.CAN_VIEW_USER},
-    {'name': 'Can view dashboard', 'codename': PermissionCode.CAN_VIEW_DASHBOARD},
+    {'name': 'Can view dashboard', 'codename': PermissionCode.CAN_VIEW_DASH_BOARD},
     {'name': 'Can view distribution plans', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
     {'name': 'Can view distribution plan nodes', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE},
     {'name': 'Can view reports', 'codename': PermissionCode.CAN_VIEW_REPORTS},
-    {'name': 'Can track deliveries', 'codename': PermissionCode.CAN_TRACK_DISTRIBUTION_PLAN},
     {'name': 'Can view unicef menu', 'codename': PermissionCode.CAN_VIEW_UNICEF_MENU},
 
     {'name': 'Can view delivery reports', 'codename': PermissionCode.CAN_VIEW_DELIVERY_REPORTS},
@@ -69,7 +82,7 @@ perm_code_names = [
      'codename': PermissionCode.CAN_VIEW_CUB_CONSIGNEE_FEEDBACK_REPORTS},
     {'name': 'Can view IP feedback reports', 'codename': PermissionCode.CAN_VIEW_IP_FEEDBACK_REPORTS},
 
-    {'name': 'Can view consignees', 'codename': PermissionCode.CAN_VIEW_CONSIGNEES},
+    {'name': 'Can view consignees', 'codename': PermissionCode.CAN_VIEW_CONSIGNEE},
     {'name': 'Can import data', 'codename': PermissionCode.CAN_IMPORT_DATA},
 
     {'name': 'Can view self contacts', 'codename': PermissionCode.CAN_VIEW_SELF_CONTACTS},
@@ -80,6 +93,10 @@ perm_code_names = [
 
     {'name': 'Can view purchase orders', 'codename': PermissionCode.CAN_VIEW_PURCHASE_ORDER},
     {'name': 'Can view release orders', 'codename': PermissionCode.CAN_VIEW_RELEASE_ORDER},
+
+    {'name': 'Can view consignee item', 'codename': PermissionCode.CAN_VIEW_CONSIGNEE_ITEM},
+
+    {'name': 'Can view alert', 'codename': PermissionCode.CAN_VIEW_ALERT},
 ]
 
 

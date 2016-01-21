@@ -27,7 +27,7 @@ class BaseBusinessPermission(permissions.BasePermission):
         user_permission = None
         if hasattr(self, 'request_permissions'):
             user_permission = self.request_permissions.get(request.method)
-
+        logger.info('user=%s, permission=%s' % (request.user, user_permission))
         if not is_user_has_permission(request.user, user_permission):
             raise ForbiddenException('Unauthorised!')
         return True

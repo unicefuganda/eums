@@ -2,6 +2,7 @@ import datetime
 from httplib import OK, FORBIDDEN
 
 from mock import patch
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
 from eums.models import PurchaseOrder
 from eums.test.api.api_test_helpers import create_release_order
@@ -150,22 +151,21 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data, 300)
 
     def test_unicef_admin_should_have_permission_to_view_purchase_orders(self):
-        self.log_and_assert_permission(self.log_unicef_admin_in, OK)
+        self.log_and_assert_permission(self.log_unicef_admin_in, HTTP_200_OK)
 
     def test_unicef_editor_should_have_permission_to_view_purchase_orders(self):
-        self.log_and_assert_permission(self.log_unicef_editor_in, OK)
+        self.log_and_assert_permission(self.log_unicef_editor_in, HTTP_200_OK)
 
     def test_unicef_viewer_should_have_permission_to_view_purchase_orders(self):
-        self.log_and_assert_permission(self.log_unicef_viewer_in, OK)
+        self.log_and_assert_permission(self.log_unicef_viewer_in, HTTP_200_OK)
 
     def test_ip_editor_should_not_have_permission_to_view_purchase_orders(self):
-        self.log_and_assert_permission(self.log_ip_editor_in, FORBIDDEN)
+        self.log_and_assert_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
 
     def test_ip_viewer_should_not_have_permission_to_view_purchase_orders(self):
-        self.log_and_assert_permission(self.log_ip_viewer_in, FORBIDDEN)
+        self.log_and_assert_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
 
     def log_and_assert_permission(self, log_func, status_code):
-        self.logout()
         log_func()
         self.assertEqual(self.client.get(FOR_DIRECT_DELIVERY_URL).status_code, status_code)
 

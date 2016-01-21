@@ -116,7 +116,6 @@ urlpatterns = patterns(
         url(r'^api/', include(consignee_items_router.urls)),
         url(r'^api/alert/count/$', AlertCount.as_view()),
         url(r'^api/', include(alert_router.urls)),
-        url(r'^api/', include(alert_router.urls)),
         url(r'^api/', include(system_settings_routers.urls)),
         url(r'^api/upload-image/', 'eums.api.import_data.upload_image_endpoint.upload_image',
             name='upload_image'),

@@ -3,6 +3,7 @@ import logging
 from httplib import FORBIDDEN, OK, CREATED
 
 from mock import patch
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_403_FORBIDDEN
 
 from eums.models import DistributionPlan as Delivery, DistributionPlan, \
     Flow, SystemSettings
@@ -512,20 +513,39 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-04'))
         self.assertEqual(len(response.data), 0)
 
+    def test_unicef_admin_should_have_permission_to_view_delivery(self):
+        self.log_and_assert_view_delivery_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_view_delivery(self):
+        self.log_and_assert_view_delivery_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_not_have_permission_to_view_delivery(self):
+        self.log_and_assert_view_delivery_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+
+    def test_ip_editor_should_not_have_permission_to_view_delivery(self):
+        self.log_and_assert_view_delivery_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewer_should_not_have_permission_to_view_delivery(self):
+        self.log_and_assert_view_delivery_permission(self.log_ip_viewer_in, HTTP_200_OK)
+
+    def log_and_assert_view_delivery_permission(self, log_func, expected_status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, expected_status_code)
+
     def test_unicef_admin_should_have_permission_to_create_delivery(self):
-        self.log_and_assert_create_delivery_permission(self.log_unicef_admin_in, CREATED)
+        self.log_and_assert_create_delivery_permission(self.log_unicef_admin_in, HTTP_201_CREATED)
 
     def test_unicef_editor_should_have_permission_to_create_delivery(self):
-        self.log_and_assert_create_delivery_permission(self.log_unicef_editor_in, CREATED)
+        self.log_and_assert_create_delivery_permission(self.log_unicef_editor_in, HTTP_201_CREATED)
 
     def test_unicef_viewer_should_not_have_permission_to_create_delivery(self):
-        self.log_and_assert_create_delivery_permission(self.log_unicef_viewer_in, FORBIDDEN)
+        self.log_and_assert_create_delivery_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
 
     def test_ip_editor_should_not_have_permission_to_create_delivery(self):
-        self.log_and_assert_create_delivery_permission(self.log_ip_editor_in, FORBIDDEN)
+        self.log_and_assert_create_delivery_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
 
     def test_ip_viewer_should_not_have_permission_to_create_delivery(self):
-        self.log_and_assert_create_delivery_permission(self.log_ip_viewer_in, FORBIDDEN)
+        self.log_and_assert_create_delivery_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
 
     def log_and_assert_create_delivery_permission(self, log_func, expected_status_code):
         log_func()
@@ -542,19 +562,19 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, expected_status_code)
 
     def test_unicef_admin_should_have_permission_to_track_delivery(self):
-        self.log_and_assert_track_delivery_permission(self.log_unicef_admin_in, FORBIDDEN)
+        self.log_and_assert_track_delivery_permission(self.log_unicef_admin_in, HTTP_200_OK)
 
     def test_unicef_editor_should_have_permission_to_track_delivery(self):
-        self.log_and_assert_track_delivery_permission(self.log_unicef_editor_in, FORBIDDEN)
+        self.log_and_assert_track_delivery_permission(self.log_unicef_editor_in, HTTP_200_OK)
 
     def test_unicef_viewer_should_not_have_permission_to_track_delivery(self):
-        self.log_and_assert_track_delivery_permission(self.log_unicef_viewer_in, FORBIDDEN)
+        self.log_and_assert_track_delivery_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
 
     def test_ip_editors_should_not_have_permission_to_track_delivery(self):
-        self.log_and_assert_track_delivery_permission(self.log_ip_viewer_in, FORBIDDEN)
+        self.log_and_assert_track_delivery_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
 
     def test_ip_viewers_should_not_have_permission_to_track_delivery(self):
-        self.log_and_assert_track_delivery_permission(self.log_ip_editor_in, FORBIDDEN)
+        self.log_and_assert_track_delivery_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
 
     def log_and_assert_track_delivery_permission(self, log_func, expected_status_code):
         programme = ProgrammeFactory()

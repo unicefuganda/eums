@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,6 +9,8 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Alert, UserProfile, DistributionPlanNode, DistributionPlan
 from django.db.models import Q
+
+from eums.permissions.alert_permissions import AlertPermissions
 
 
 class AlertSerializer(serializers.ModelSerializer):
@@ -36,6 +39,7 @@ class AlertSerializer(serializers.ModelSerializer):
 
 
 class AlertViewSet(ReadOnlyModelViewSet):
+    permission_classes = (DjangoModelPermissions, AlertPermissions)
     pagination_class = StandardResultsSetPagination
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
@@ -61,7 +65,7 @@ class AlertViewSet(ReadOnlyModelViewSet):
         is_unicef_viewer = AlertViewSet._is_unicef_viewer(logged_in_user)
 
         if UserProfile.objects.filter(user=logged_in_user).exists() or is_unicef_viewer:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_403_FORBIDDEN)
         try:
             data = request.data
             alert = Alert.objects.get(pk=kwargs['pk'])
@@ -85,7 +89,7 @@ class AlertViewSet(ReadOnlyModelViewSet):
         logged_in_user = request.user
 
         if UserProfile.objects.filter(user=logged_in_user).exists():
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':

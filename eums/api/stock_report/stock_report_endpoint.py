@@ -11,9 +11,10 @@ from eums.api.filter.filter_mixin import RequestFilterMixin
 
 PAGE_SIZE = 10
 sort = StandardDicSort('last_shipment_date', 'last_received_date',
-                       'total_value_received', 'total_value_dispensed','balance')
+                       'total_value_received', 'total_value_dispensed', 'balance')
 
 mixin = RequestFilterMixin()
+
 
 class StockReport(APIView):
 
@@ -68,8 +69,8 @@ def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
         "to_date": "delivery_date__lte"
     }
     filters = mixin.build_filters(
-        {'consignee_id': consignee_id, 'location': location,
-         'outcome_id': outcome_id, 'from_date': from_date, 'to_date': to_date})
+            {'consignee_id': consignee_id, 'location': location,
+             'outcome_id': outcome_id, 'from_date': from_date, 'to_date': to_date})
 
     ip_nodes = ip_nodes.filter(**filters)
 
