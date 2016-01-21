@@ -28,6 +28,7 @@ def seed_questions():
     global END_USER_FLOW
 
     END_USER_FLOW, _ = Flow.objects.get_or_create(label=Flow.Label.END_USER)
+    END_USER_FLOW.end_nodes = []
 
     WAS_PRODUCT_RECEIVED, _ = MultipleChoiceQuestion.objects.get_or_create(
             text='Was product received?', label='productReceived', flow=END_USER_FLOW, position=1)
@@ -61,13 +62,11 @@ def seed_questions():
     EU_OPT_EXPIRED, _ = Option.objects.get_or_create(text='Expired', question=EU_QUALITY_OF_PRODUCT)
     EU_OPT_INCOMPLETE, _ = Option.objects.get_or_create(text='Incomplete', question=EU_QUALITY_OF_PRODUCT)
     EU_OPT_OTHER, _ = Option.objects.get_or_create(text='Other', question=EU_QUALITY_OF_PRODUCT)
-    END_USER_FLOW.end_nodes = [
-        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_DAMAGED.id],
-        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_SUBSTANDARD.id],
-        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_EXPIRED.id],
-        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_INCOMPLETE.id],
-        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_OTHER.id]
-    ]
+    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_DAMAGED.id])
+    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_SUBSTANDARD.id])
+    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_EXPIRED.id])
+    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_INCOMPLETE.id])
+    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_OTHER.id])
     END_USER_FLOW.save()
 
     EU_SATISFACTION, _ = MultipleChoiceQuestion.objects.get_or_create(
