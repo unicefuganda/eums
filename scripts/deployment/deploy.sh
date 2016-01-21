@@ -8,14 +8,14 @@ sudo build/deployment/pack_deployment.sh $today
 
 if [ -d ./map ]; then
     echo "Copying the map file to server ..."
-    scp -q -o StrictHostKeyChecking=no -r map ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
+    rsync -q -e "ssh -q -o StrictHostKeyChecking=no" -r map ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 fi
 
 echo "Copying deployment directory to server ..."
-scp -q -o StrictHostKeyChecking=no deploy_latest.tar.gz ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
+rsync -q -e "ssh -q -o StrictHostKeyChecking=no" deploy_latest.tar.gz ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 
 echo "Copying unpack script to server ..."
-scp -q -o StrictHostKeyChecking=no build/deployment/unpack_deployment_and_install.sh ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
+rsync -q -e "ssh -q -o StrictHostKeyChecking=no" build/deployment/unpack_deployment_and_install.sh ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 
 echo "Removing all docker images on CI server except for the latest one..."
 sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=2 {print$3}' | xargs -I {} sudo docker rmi {} || true
