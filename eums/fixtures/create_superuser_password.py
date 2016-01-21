@@ -25,12 +25,8 @@ def run(*args):
 
 
 def update_password(username, password):
-    try:
-        user = User.objects.get(username=username)
-        user.set_password(password)
-        user.save()
-        logger.info("User '%s' password updated." % username)
-    except User.DoesNotExist:
+    if not User.objects.filter(username=username).exists():
         user = User.objects.create_superuser(username=username, email='admin@uniceflabs.org', password=password)
         logger.info("User '%s' created with email '%s'" % (user.username, user.email))
-
+    else:
+        logger.info("User '%s' already exist." % username)
