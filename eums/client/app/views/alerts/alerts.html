@@ -54,34 +54,34 @@
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.createdOn | date: 'dd-MMM-yyyy' }}</span>
+                    <span class="">{{ alert.createdOn | date: 'dd-MMM-yyyy' }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.orderNumber }}</span>
+                    <span class="">{{ alert.orderNumber }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.dateShipped | date: 'dd-MMM-yyyy' }}</span>
+                    <span class="">{{ alert.dateShipped | date: 'dd-MMM-yyyy' }}</span>
                 </td>
                 <td ng-if="isActiveAlertType(constant_type_distribution)">
-                    <span class="alerts-bolder">{{ alert.dateReceived | date: 'dd-MMM-yyyy' }}</span>
+                    <span class="">{{ alert.dateReceived | date: 'dd-MMM-yyyy' }}</span>
                 </td>
                 <td class="text-left pad-10" ng-if="isActiveAlertType(constant_type_item)">
-                    <span class="alerts-bolder">{{ alert.quantityDelivered }}</span>
+                    <span class="">{{ alert.quantityDelivered }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.totalValue | currency }}</span>
+                    <span class="">{{ alert.totalValue | currency }}</span>
                 </td>
                 <td class="text-left pad-10" ng-if="isActiveAlertType(constant_type_item)">
-                    <span class="alerts-bolder">{{ alert.itemDescription }}</span>
+                    <span class="">{{ alert.itemDescription }}</span>
                 </td>
                 <td class="text-left pad-10" ng-hide="isActiveAlertType(constant_type_distribution)">
-                    <span class="alerts-bolder">{{ alert.contactName }}</span>
+                    <span class="">{{ alert.contactName }}</span>
                 </td>
                 <td class="text-left pad-10">
-                    <span class="alerts-bolder">{{ alert.consigneeName }}</span>
+                    <span class="">{{ alert.consigneeName }}</span>
                 </td>
                 <td class="text-left pad-10">
-                    <span class="alerts-bolder">{{ alert.location }}</span>
+                    <span class="">{{ alert.location }}</span>
                 </td>
                 <td>
                     <span class="glyphicon glyphicon-comment glyphicon-comment-color
