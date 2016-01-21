@@ -1,4 +1,4 @@
-from eums.models import MultipleChoiceQuestion, Option, TextQuestion, NumericQuestion, Flow, Runnable
+from eums.models import MultipleChoiceQuestion, Option, TextQuestion, NumericQuestion, Flow
 
 middle_man_flow, _ = Flow.objects.get_or_create(label=Flow.Label.MIDDLE_MAN)
 
@@ -26,6 +26,9 @@ middle_man_flow.end_nodes.append([mm_question_4.id, mm_q4_option_2.id])
 
 mm_question_5, _ = TextQuestion.objects.get_or_create(
     text='When to expect delay?', label='revisedDeliveryDate', flow=middle_man_flow, position=3)
-
 middle_man_flow.end_nodes.append([mm_question_5.id, Flow.NO_OPTION])
+
+mm_question_6, _ = TextQuestion.objects.get_or_create(
+        text='Additional Remarks', label='additionalComments', flow=middle_man_flow, position=4)
+
 middle_man_flow.save()

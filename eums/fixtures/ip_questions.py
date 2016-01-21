@@ -5,7 +5,7 @@ def seed_ip_questions():
     ip_flow, _ = Flow.objects.get_or_create(label=Flow.Label.IMPLEMENTING_PARTNER)
 
     ip_question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
-        text='Was delivery received?', label=Question.LABEL.deliveryReceived, flow=ip_flow, position=1)
+            text='Was delivery received?', label=Question.LABEL.deliveryReceived, flow=ip_flow, position=1)
     ip_yes, _ = Option.objects.get_or_create(text='Yes', question=ip_question_1)
     ip_no, _ = Option.objects.get_or_create(text='No', question=ip_question_1)
     ip_flow.end_nodes = []
@@ -13,25 +13,26 @@ def seed_ip_questions():
     ip_flow.save()
 
     ip_question_2, _ = TextQuestion.objects.get_or_create(
-        text='When was delivery received?', label='dateOfReceipt', flow=ip_flow, position=2)
+            text='When was delivery received?', label=Question.LABEL.dateOfReceipt, flow=ip_flow, position=2)
 
     ip_question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
-        text='Was delivery in good condition?', label=Question.LABEL.isDeliveryInGoodOrder,
-        flow=ip_flow, position=3)
+            text='Was delivery in good condition?', label=Question.LABEL.isDeliveryInGoodOrder,
+            flow=ip_flow, position=3)
     in_good_condition_yes, _ = Option.objects.get_or_create(text='Yes', question=ip_question_3)
     in_good_condition_no, _ = Option.objects.get_or_create(text='No', question=ip_question_3)
 
     ip_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
-        text="Are you satisfied with the delivery?",
-        label="satisfiedWithDelivery",
-        flow=ip_flow, position=4)
+            text="Are you satisfied with the delivery?",
+            label=Question.LABEL.satisfiedWithDelivery,
+            flow=ip_flow, position=4)
     satisfied, _ = Option.objects.get_or_create(text="Yes", question=ip_question_4)
     not_satisfied, _ = Option.objects.get_or_create(text="No", question=ip_question_4)
+    ip_flow.end_nodes.append([ip_question_4.id, satisfied.id])
+    ip_flow.end_nodes.append([ip_question_4.id, not_satisfied.id])
+    ip_flow.save()
 
     ip_question_5, _ = TextQuestion.objects.get_or_create(
-        text='Additional Remarks', label='additionalDeliveryComments', flow=ip_flow, position=5)
-    ip_flow.end_nodes.append([ip_question_5.id, Flow.NO_OPTION])
-    ip_flow.save()
+            text='Additional Remarks', label=Question.LABEL.additionalDeliveryComments, flow=ip_flow, position=5)
 
     questions = {
         'WAS_DELIVERY_RECEIVED': ip_question_1,

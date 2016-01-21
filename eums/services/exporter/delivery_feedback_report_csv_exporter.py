@@ -11,9 +11,9 @@ class DeliveryFeedbackReportExporter(ReportExporter):
     def config_headers(self):
         return ['RECEIVED', 'SHIPMENT_DATE', 'DATE_RECEIVED', 'PO/WAYBILL', 'OUTCOME', 'IMPLEMENTING_PARTNER',
                 'CONTACT_NAME', 'CONTACT_PHONE', 'VALUE',
-                'CONDITION', 'SATISFIED', 'IP REMARKS']
+                'CONDITION', 'SATISFIED', 'REMARKS', 'PICTURES']
 
     def config_dic_date_keys(self):
         return ['deliveryReceived', 'shipmentDate', 'dateOfReceipt', 'orderNumber', 'programme.name', 'consignee.name',
                 'contactName', 'contactPhone', 'value', 'isDeliveryInGoodOrder', 'satisfiedWithDelivery',
-                'additionalDeliveryComments']
+                'additionalDeliveryComments', 'urls']
