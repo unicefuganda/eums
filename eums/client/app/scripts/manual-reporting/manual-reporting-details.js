@@ -196,6 +196,10 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
 
         $scope.selectDocumentItem = function () {
+            if (!$scope.selectedDocumentItem) {
+                return;
+            }
+
             showLoadingModal(true);
             var responses = [];
             var distributionPlanNodes = $scope.selectedDocumentItem.distributionplannodes;
