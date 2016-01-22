@@ -1,10 +1,12 @@
 'use strict';
 
-angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader', 'frapontillo.bootstrap-switch', 'ngToast'])
+angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader',
+                                    'frapontillo.bootstrap-switch', 'ngToast', 'SysUtils'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService, LoaderService, ngToast) {
+    .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService,
+                                                      LoaderService, ngToast, SysUtilsService) {
 
             var isCancelledOrInitUpdated = false;
 
@@ -91,8 +93,8 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
 
             $scope.confirmSync = function () {
                 LoaderService.hideModal('sync-start-date-confirm-modal');
-                $scope.currectStartDate = $scope.settings.syncStartDate;
-                SystemSettingsService.updateSettings({sync_start_date: $scope.settings.syncStartDate});
+                $scope.currectStartDate = SysUtilsService.formatDateToYMD($scope.settings.syncStartDate);
+                SystemSettingsService.updateSettings({sync_start_date: $scope.currectStartDate});
             };
 
             function isNewDate() {

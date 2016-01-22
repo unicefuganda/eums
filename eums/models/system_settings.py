@@ -3,7 +3,7 @@ from django.db import models
 
 class SystemSettings(models.Model):
     auto_track = models.BooleanField(default=False)
-    sync_start_date = models.DateTimeField(null=True)
+    sync_start_date = models.DateField(null=True)
     notification_message = models.TextField(max_length=300, blank=True, default='')
 
     class Meta:

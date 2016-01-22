@@ -61,18 +61,18 @@ describe('SystemSettingsController', function () {
     });
 
     it('should get sync start date', function () {
-        deferGetSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
+        deferGetSettings.resolve({sync_start_date: new Date('2015-12-06')});
         scope.$apply();
 
         expect(mockSystemSettingsService.getSettings).toHaveBeenCalled();
-        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06'));
     });
 
     it('should set an earlier sync start date', function () {
-        deferGetSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
+        deferGetSettings.resolve({sync_start_date: '2015-12-06'});
         scope.$apply();
 
-        scope.settings.syncStartDate = new Date('2015-12-05T00:00:00');
+        scope.settings.syncStartDate = new Date('2015-12-05');
         spyOn(scope, 'clickSyncBtn').and.callThrough();
         scope.clickSyncBtn();
         scope.$apply();
@@ -86,15 +86,15 @@ describe('SystemSettingsController', function () {
 
         expect(mockLoaderService.hideModal).toHaveBeenCalled();
         expect(scope.confirmSync).toHaveBeenCalled();
-        expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({sync_start_date: new Date('2015-12-05T00:00:00')});
-        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-05T00:00:00'));
+        expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({sync_start_date: '2015-12-05'});
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-05'));
     });
 
     it('should cancel an earlier sync start date', function () {
-        deferGetSettings.resolve({sync_start_date: new Date('2015-12-06T00:00:00')});
+        deferGetSettings.resolve({sync_start_date: '2015-12-06'});
         scope.$apply();
 
-        scope.settings.syncStartDate = new Date('2015-12-05T00:00:00');
+        scope.settings.syncStartDate = new Date('2015-12-05');
         spyOn(scope, 'clickSyncBtn').and.callThrough();
         scope.clickSyncBtn();
         scope.$apply();
@@ -109,14 +109,14 @@ describe('SystemSettingsController', function () {
         expect(mockLoaderService.hideModal).toHaveBeenCalled();
         expect(scope.cancelSync).toHaveBeenCalled();
         expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
-        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06'));
     });
 
     it('should not set and later sync start date', function () {
-        deferGetSettings.resolve({sync_start_date: '2015-12-06T00:00:00'});
+        deferGetSettings.resolve({sync_start_date: '2015-12-06'});
         scope.$apply();
 
-        scope.settings.syncStartDate = new Date('2015-12-07T00:00:00');
+        scope.settings.syncStartDate = new Date('2015-12-07');
         spyOn(scope, 'clickSyncBtn').and.callThrough();
         scope.clickSyncBtn();
         scope.$apply();
@@ -128,7 +128,7 @@ describe('SystemSettingsController', function () {
 
         expect(mockLoaderService.hideModal).toHaveBeenCalled();
         expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
-        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06T00:00:00'));
+        expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06'));
     });
 
     it('should cancel notification message setting', function () {

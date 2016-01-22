@@ -34,7 +34,7 @@ def on_pre_save_system_settings(sender, **kwargs):
     new_sync_date = kwargs['instance'].sync_start_date
 
     if new_sync_date \
-            and new_sync_date < datetime.datetime.now() \
+            and new_sync_date < datetime.date.today() \
             and (not current_sync_date or new_sync_date < current_sync_date):
         start_date = new_sync_date.strftime('%d%m%Y')
         end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''

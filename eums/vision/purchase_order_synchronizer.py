@@ -10,7 +10,7 @@ from eums.vision.vision_data_synchronizer import VisionException
 class PurchaseOrderSynchronizer(OrderSynchronizer):
     PURCHASE_ORDER_URL = VISION_URL + 'GetPurchaseOrderInfo_JSON/'
     REQUIRED_KEYS = ('PO_NUMBER', 'PO_ITEM', 'PO_TYPE', 'MATERIAL_CODE', 'MATERIAL_DESC', 'AMOUNT_USD',
-                     'PO_ITEM_QTY', 'SO_NUMBER', 'PREQ_ITEM', 'PURCHASING_GROUP_CODE', 'UPDATE_DATE')
+                     'PO_ITEM_QTY', 'SO_NUMBER', 'PREQ_ITEM', 'UPDATE_DATE')
     ORDER_INFO = ('PO_NUMBER', 'SO_NUMBER', 'PO_TYPE', 'UPDATE_DATE')
     SUPPORTED_PO_TYPE = ['NB', 'ZLC', 'ZUB', 'ZOC']
 
@@ -24,8 +24,7 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
             for key in PurchaseOrderSynchronizer.REQUIRED_KEYS:
                 if not record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record):
                     return False
-            if not record['PO_TYPE'] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE\
-                    or record['PURCHASING_GROUP_CODE'] != int(settings.VISION_PURCHASE_GROUP_CODE):
+            if not record['PO_TYPE'] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE:
                 return False
             return True
 
