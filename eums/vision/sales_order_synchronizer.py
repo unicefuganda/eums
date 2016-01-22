@@ -29,13 +29,16 @@ class SalesOrderSynchronizer(OrderSynchronizer):
         return filter(is_valid_record, records)
 
     def _get_or_create_order(self, record):
+        if not Programme.objects.filter(wbs_element_ex=record['WBS_REFERENCE']).exists():
+            return None
+
         order_number = record['SALES_ORDER_NO']
+        programme = Programme.objects.get(wbs_element_ex=record['WBS_REFERENCE'])
         try:
             sales_order = SalesOrder.objects.get(order_number=order_number)
             return self._update_order(sales_order, record['UPDATE_DATE']) \
                 if self._is_newer_order(sales_order.date, record['UPDATE_DATE']) else None
         except ObjectDoesNotExist:
-            programme, _ = Programme.objects.get_or_create(wbs_element_ex=record['WBS_REFERENCE'])
             return SalesOrder.objects.create(order_number=order_number,
                                              programme=programme,
                                              date=record['UPDATE_DATE'])

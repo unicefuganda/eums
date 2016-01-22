@@ -29,15 +29,16 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
         return filter(is_valid_record, records)
 
     def _get_or_create_order(self, record):
+        if not Consignee.objects.filter(customer_id=record['CONSIGNEE']).exists():
+            return None
+
+        consignee = Consignee.objects.get(customer_id=record['CONSIGNEE'])
         try:
             release_order = ReleaseOrder.objects.get(order_number=record['RELEASE_ORDER_NUMBER'])
-            return self._update_order(release_order,
-                                      record['RELEASE_ORDER_UPDATE_DATE'],
-                                      self._update_or_create_consignee(record)) \
+            return self._update_order(release_order, record['RELEASE_ORDER_UPDATE_DATE'], consignee) \
                 if self._is_newer_order(release_order.date, record['RELEASE_ORDER_UPDATE_DATE']) else None
         except ObjectDoesNotExist:
             try:
-                consignee = self._update_or_create_consignee(record)
                 sales_order = SalesOrder.objects.get(order_number=record['SO_NUMBER'])
                 purchase_order = PurchaseOrder.objects.get(order_number=record['PO_NUMBER'])
                 return ReleaseOrder.objects.create(order_number=record['RELEASE_ORDER_NUMBER'],
@@ -73,13 +74,6 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
             pass
         except Exception, e:
             raise VisionException(message='Update or create release order item error: ' + e.message)
-
-    @staticmethod
-    def _update_or_create_consignee(order):
-        consignee, _ = Consignee.objects.get_or_create(customer_id=order['CONSIGNEE'])
-        consignee.imported_from_vision = True
-        consignee.save()
-        return consignee
 
     @staticmethod
     def _update_order(order, date, consignee):
