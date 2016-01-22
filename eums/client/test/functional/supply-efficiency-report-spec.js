@@ -4,7 +4,7 @@ var supplyEfficiencyReportPage = require('./pages/supply-efficiency-report-page.
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-fdescribe('Supply Efficiency Report', function () {
+describe('Supply Efficiency Report', function () {
 
     var setFilterTimeRangeForTest = function () {
         supplyEfficiencyReportPage.filterByStartDate('01-Jan-2015');
