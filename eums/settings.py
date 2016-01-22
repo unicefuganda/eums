@@ -112,7 +112,6 @@ VISION_PASSWORD = os.getenv('VISION_PASSWORD', 'invalid_vision_password')
 VISION_URL = 'https://devapis.unicef.org/BIService/BIWebService.svc/'
 VISION_BUSINESS_AREA_CODE = os.getenv('VISION_BUSINESS_AREA_CODE', 'invalid_code')
 VISION_COUNTRY_CODE = os.getenv('VISION_COUNTRY_CODE', 'invalid_code')
-VISION_PURCHASE_GROUP_CODE = os.getenv('VISION_PURCHASE_GROUP_CODE', '100')
 
 NON_RESPONSE_GRACE_PERIOD = DELIVERY_STATUS_CHECK_DELAY  # in days
 
