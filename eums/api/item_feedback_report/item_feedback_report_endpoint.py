@@ -3,13 +3,14 @@ import logging
 from django.core.paginator import Paginator
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
+from rest_framework.views import APIView
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
     ReleaseOrderItem, Option, MultipleChoiceAnswer, Question
+from eums.permissions.item_feedback_report_permissions import ItemFeedbackReportPermissions
 from eums.utils import get_lists_intersection
 
 PAGE_SIZE = 10
@@ -21,7 +22,13 @@ sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountRece
 logger = logging.getLogger(__name__)
 
 
-@api_view(['GET', ])
+class ItemFeedbackReportEndpoint(APIView):
+    permission_classes = (ItemFeedbackReportPermissions,)
+
+    def get(self, request):
+        return item_feedback_report(request)
+
+
 def item_feedback_report(request):
     response = filter_item_feedback_report(request)
     response = sort.sort_by(request, response)

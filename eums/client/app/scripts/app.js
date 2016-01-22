@@ -50,7 +50,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'DirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                        return UserService.checkUserPermission('auth.can_view_purchase_order');
                     }
                 }
             })
@@ -86,7 +86,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'WarehouseDeliveryController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                        return UserService.checkUserPermission('auth.can_view_release_order');
                     }
                 }
             })
@@ -104,7 +104,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ItemFeedbackReportController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_item_feedback_report');
                     }
                 }
             })
@@ -113,7 +113,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ItemFeedbackReportController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_item_feedback_report');
                     }
                 }
             })
@@ -122,7 +122,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'IpFeedbackReportByDeliveryController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_delivery_feedback_report');
                     }
                 }
             })
@@ -131,7 +131,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'IpFeedbackReportByDeliveryController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_delivery_feedback_report');
                     }
                 }
             })
@@ -140,7 +140,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'IPResponsesController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -149,7 +149,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ManualReportingController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -158,7 +158,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ManualReportingDetailsController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -167,7 +167,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ManualReportingDetailsController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -176,7 +176,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'StockReportController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -185,7 +185,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ImportDataController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -221,7 +221,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'ResponseController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_stock_report');
                     }
                 }
             })
@@ -279,8 +279,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'SupplyEfficiencyReportController',
                 resolve: {
                     permission: function (UserService) {
-                        return true;
-                        //return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_view_supply_efficiency_report');
                     }
                 }
             })
@@ -289,7 +288,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'SystemSettingsController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_settings');
+                        return UserService.checkUserPermission('auth.can_view_system_settings');
                     }
                 }
             })

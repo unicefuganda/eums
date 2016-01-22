@@ -1,3 +1,5 @@
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+
 from eums.models import Flow, Consignee
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -21,17 +23,6 @@ ENDPOINT_URL = BACKEND_URL + 'item-feedback-report/'
 
 
 class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
-    def test_ips_see_only_his_deliveries(self):
-        consignee = ConsigneeFactory()
-        self.logout()
-        self.log_consignee_in(consignee)
-
-        response = self.client.get(ENDPOINT_URL)
-
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(len(response.data['results']), 0)
-
     def test_returns_200_when_admin(self):
         self.setup_nodes_with_answers()
 
@@ -341,3 +332,22 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
             nodes.append(node)
 
         return nodes
+
+    def test_unicef_admin_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+
+    def test_ip_editor_should_not_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_viewer_should_not_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_view_item_feedback_report_permission(self, log_func, status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)

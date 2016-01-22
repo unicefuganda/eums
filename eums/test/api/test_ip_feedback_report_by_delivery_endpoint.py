@@ -1,6 +1,8 @@
 import logging
 from datetime import date
 
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+
 from eums.models import Question, Programme, Consignee, DistributionPlanNode, Flow
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -26,17 +28,6 @@ CONTACT_PERSON_ID = '56494e2e1486bd312e4b2f31'
 
 
 class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
-    def test_consignee_see_only_his_deliveries(self):
-        consignee = ConsigneeFactory()
-        self.logout()
-        self.log_consignee_in(consignee)
-
-        response = self.client.get(ENDPOINT_URL)
-
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(len(response.data['results']), 0)
-
     def test_should_return_delivery_answers(self):
         self._create_questions()
         programme_name = 'YP104 MANAGEMENT RESULTS'
@@ -488,3 +479,22 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         MultipleChoiceAnswerFactory(run=run_three, question=self.delivery_received_qtn, value=self.yes_one)
         MultipleChoiceAnswerFactory(run=run_three, question=self.delivery_in_good_order, value=self.no_two)
         MultipleChoiceAnswerFactory(run=run_three, question=self.satisfied_with_delivery, value=self.yes_three)
+
+    def test_unicef_admin_should_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+
+    def test_ip_editor_should_not_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_viewer_should_not_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_view_delivery_feedback_report_permission(self, log_func, status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)

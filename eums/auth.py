@@ -18,6 +18,7 @@ class PermissionCode(object):
     CAN_VIEW_DISTRIBUTION_PLAN = 'can_view_distribution_plans'
     CAN_ADD_DISTRIBUTION_PLAN = 'add_distributionplan'
     CAN_CHANGE_DISTRIBUTION_PLAN = 'change_distributionplan'
+    CAN_PATCH_DISTRIBUTION_PLAN = 'change_distributionplan'
 
     CAN_VIEW_DISTRIBUTION_PLAN_NODE = 'can_view_distribution_plan_node'
     CAN_ADD_DISTRIBUTION_PLAN_NODE = 'add_distributionplannode'
@@ -25,17 +26,17 @@ class PermissionCode(object):
 
     CAN_VIEW_CONSIGNEE_ITEM = 'view_consignee_item'
 
-    CAN_VIEW_REPORTS = 'can_view_reports'
     CAN_VIEW_UNICEF_MENU = 'can_view_unicef_menu'
-    CAN_VIEW_DELIVERY_REPORTS = 'can_view_delivery_reports'
-    CAN_CREATE_DELIVERY_REPORTS = 'can_create_delivery_reports'
-    CAN_ACKNOWLEDGE_DELIVERIES = 'can_acknowledge_deliveries'
-    CAN_VIEW_FIELD_VERIFICATION_REPORTS = 'can_view_field_verification_reports'
-    CAN_CREATE_FIELD_VERIFICATION_REPORTS = 'can_create_field_verification_reports'
+
     CAN_VIEW_IP_STOCK_REPORTS = 'can_view_ip_stock_reports'
     CAN_VIEW_END_USER_FEEDBACK_REPORTS = 'can_view_end_user_feedback_reports'
     CAN_VIEW_CUB_CONSIGNEE_FEEDBACK_REPORTS = 'can_view_cub_consignee_feedback_reports'
     CAN_VIEW_IP_FEEDBACK_REPORTS = 'can_view_ip_feedback_reports'
+
+    CAN_VIEW_STOCK_REPORT = 'can_view_stock_report'
+    CAN_VIEW_ITEM_FEEDBACK_REPORT = 'can_view_item_feedback_report'
+    CAN_VIEW_DELIVERY_FEEDBACK_REPORT = 'can_view_delivery_feedback_report'
+    CAN_VIEW_SUPPLY_EFFICIENCY_REPORT = 'can_view_supply_efficiency_report'
 
     CAN_IMPORT_DATA = 'can_import_data'
     CAN_VIEW_SELF_CONTACTS = 'can_view_self_contacts'
@@ -50,30 +51,33 @@ class PermissionCode(object):
     CAN_VIEW_CONSIGNEE = 'can_view_consignees'
 
     CAN_VIEW_PURCHASE_ORDER = 'can_view_purchase_order'
+    CAN_PATCH_PURCHASE_ORDER = 'change_purchaseorder'
+
     CAN_VIEW_RELEASE_ORDER = 'can_view_release_order'
 
-    CAN_VIEW_ALERT = 'view_alert'
+    CAN_VIEW_ALERT = 'can_view_alert'
     CAN_CHANGE_ALERT = 'change_alert'
     CAN_ADD_ALERT = 'add_alert'
     CAN_PATCH_ALERT = 'change_alert'
 
+    CAN_VIEW_SYSTEM_SETTINGS = 'can_view_system_settings'
+    CAN_CHANGE_SYSTEM_SETTINGS = 'change_systemsettings'
+
 
 perm_code_names = [
-    {'name': 'Can view users', 'codename': PermissionCode.CAN_VIEW_USER},
+
     {'name': 'Can view dashboard', 'codename': PermissionCode.CAN_VIEW_DASH_BOARD},
-    {'name': 'Can view distribution plans', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
-    {'name': 'Can view distribution plan nodes', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE},
-    {'name': 'Can view reports', 'codename': PermissionCode.CAN_VIEW_REPORTS},
     {'name': 'Can view unicef menu', 'codename': PermissionCode.CAN_VIEW_UNICEF_MENU},
 
-    {'name': 'Can view delivery reports', 'codename': PermissionCode.CAN_VIEW_DELIVERY_REPORTS},
-    {'name': 'Can create delivery reports', 'codename': PermissionCode.CAN_CREATE_DELIVERY_REPORTS},
-    {'name': 'Can acknowledge deliveries', 'codename': PermissionCode.CAN_ACKNOWLEDGE_DELIVERIES},
+    {'name': 'Can view users', 'codename': PermissionCode.CAN_VIEW_USER},
 
-    {'name': 'Can view field verification reports',
-     'codename': PermissionCode.CAN_VIEW_FIELD_VERIFICATION_REPORTS},
-    {'name': 'Can create field verification reports',
-     'codename': PermissionCode.CAN_CREATE_FIELD_VERIFICATION_REPORTS},
+    {'name': 'Can view distribution plans', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
+    {'name': 'Can view distribution plan nodes', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE},
+
+    {'name': 'Can view stock reports', 'codename': PermissionCode.CAN_VIEW_STOCK_REPORT},
+    {'name': 'Can view item feedback reports', 'codename': PermissionCode.CAN_VIEW_ITEM_FEEDBACK_REPORT},
+    {'name': 'Can view delivery feedback reports', 'codename': PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT},
+    {'name': 'Can view supply efficiency reports', 'codename': PermissionCode.CAN_VIEW_SUPPLY_EFFICIENCY_REPORT},
 
     {'name': 'Can view IP stock reports', 'codename': PermissionCode.CAN_VIEW_IP_STOCK_REPORTS},
     {'name': 'Can view End User feedback reports',
@@ -97,6 +101,8 @@ perm_code_names = [
     {'name': 'Can view consignee item', 'codename': PermissionCode.CAN_VIEW_CONSIGNEE_ITEM},
 
     {'name': 'Can view alert', 'codename': PermissionCode.CAN_VIEW_ALERT},
+    {'name': 'Can view system settings', 'codename': PermissionCode.CAN_VIEW_SYSTEM_SETTINGS},
+
 ]
 
 

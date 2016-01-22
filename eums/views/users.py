@@ -4,13 +4,14 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
 
+from eums.auth import PermissionCode
 from eums.forms.filter import UserFilterForm
 from eums.forms.user_profile import UserProfileForm, EditUserProfileForm
 from eums.models import Consignee
 
 
 class UsersList(PermissionRequiredMixin, ListView):
-    permission_required = 'auth.can_view_users'
+    permission_required = 'auth.%s' % PermissionCode.CAN_VIEW_USER
 
     def __init__(self, **kwargs):
         super(UsersList, self).__init__(**kwargs)
@@ -36,7 +37,7 @@ class UsersList(PermissionRequiredMixin, ListView):
 
 
 class CreateUser(PermissionRequiredMixin, CreateView):
-    permission_required = 'auth.can_view_users'
+    permission_required = 'auth.%s' % PermissionCode.CAN_VIEW_USER
 
     def __init__(self, **kwargs):
         super(CreateUser, self).__init__(**kwargs)
@@ -64,7 +65,7 @@ class CreateUser(PermissionRequiredMixin, CreateView):
 
 
 class EditUser(PermissionRequiredMixin, UpdateView):
-    permission_required = 'auth.can_view_users'
+    permission_required = 'auth.%s' % PermissionCode.CAN_VIEW_USER
 
     def __init__(self, **kwargs):
         super(EditUser, self).__init__(**kwargs)

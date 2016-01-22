@@ -20,7 +20,9 @@ from eums.api.delivery_stats.delivery_stats_map_endpoint import DeliveryStatsMap
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
+from eums.api.ip_feedback_report.ip_feedback_report_by_delivery_endpoint import IpFeedbackReportEndpoint
 from eums.api.item.item_endpoint import itemRouter
+from eums.api.item_feedback_report.item_feedback_report_endpoint import ItemFeedbackReportEndpoint
 from eums.api.item_unit.item_unit_endpoint import itemUnitRouter
 from eums.api.option.option_endpoint import optionRouter
 from eums.api.programme.programme_endpoint import programmeRouter
@@ -48,11 +50,9 @@ urlpatterns = patterns(
         url(r'^api/hook', 'eums.api.rapid_pro_hooks.hook.hook', name='hook'),
         url(r'^api/import-sales-orders/', 'eums.api.import_data.import_orders_endpoint.import_sales_orders',
             name='import_sales_orders'),
-        url(r'^api/ip-feedback-report-by-delivery',
-            'eums.api.ip_feedback_report.ip_feedback_report_by_delivery_endpoint.ip_feedback_by_delivery_endpoint',
+        url(r'^api/ip-feedback-report-by-delivery', IpFeedbackReportEndpoint.as_view(),
             name='ip_feedback_report_by_delivery'),
-        url(r'^api/item-feedback-report',
-            'eums.api.item_feedback_report.item_feedback_report_endpoint.item_feedback_report',
+        url(r'^api/item-feedback-report', ItemFeedbackReportEndpoint.as_view(),
             name='item_feedback_report'),
         url(r'^api/import-release-orders/', 'eums.api.import_data.import_orders_endpoint.import_release_orders',
             name='import_release_orders'),

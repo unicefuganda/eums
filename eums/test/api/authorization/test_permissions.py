@@ -47,7 +47,6 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test not in self.ip_editor_permissions)
         self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
 
-
     def test_grant_correct_view_distribution_plan_node_permission(self):
         permission_to_test = PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE
 
@@ -75,3 +74,83 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test not in self.ip_editor_permissions)
         self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
 
+    def test_grant_correct_view_system_settings_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_SYSTEM_SETTINGS
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
+
+    def test_grant_correct_change_system_settings_permission(self):
+        permission_to_test = PermissionCode.CAN_CHANGE_SYSTEM_SETTINGS
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_user_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_USER
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_change_user_permission(self):
+        permission_to_test = PermissionCode.CAN_CHANGE_USER
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_consignee_item_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_CONSIGNEE_ITEM
+
+        self.assertTrue(permission_to_test not in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_stock_report_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_STOCK_REPORT
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_delivery_feedback_report_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_item_feedback_report_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_ITEM_FEEDBACK_REPORT
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_supply_efficiency_report_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_SUPPLY_EFFICIENCY_REPORT
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)

@@ -1,13 +1,14 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from eums.models import DistributionPlanNode, Runnable, DistributionPlan, Flow
+from eums.models import DistributionPlanNode, DistributionPlan, Flow
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.api.filter.filter_mixin import RequestFilterMixin
+from eums.permissions.stock_report_permissions import StockReportPermissions
 
 PAGE_SIZE = 10
 sort = StandardDicSort('last_shipment_date', 'last_received_date',
@@ -17,6 +18,7 @@ mixin = RequestFilterMixin()
 
 
 class StockReport(APIView):
+    permission_classes = (StockReportPermissions,)
 
     def get(self, request):
         reduced_stock_report = filter_stock_report(request)

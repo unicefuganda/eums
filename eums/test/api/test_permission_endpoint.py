@@ -3,6 +3,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from mock import patch
+from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 
 from eums.models import Consignee
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -32,7 +33,7 @@ class CheckPermissionEndpointTest(AuthenticatedAPITestCase):
     def test_should_200_if_user_has_permission(self):
         response = self.client.get(ENDPOINT_URL + '?permission=eums.%s'%self.permission_one.codename, format='json')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTP_200_OK)
 
     def test_should_401_if_user_does_not_have_permission(self):
         self.permission_two = Permission.objects.create(
@@ -42,13 +43,13 @@ class CheckPermissionEndpointTest(AuthenticatedAPITestCase):
 
         response = self.client.get(ENDPOINT_URL + '?permission=eums.%s'%self.permission_two.codename, format='json')
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     @patch('django.contrib.auth.models.User.has_perm')
     def test_should_401_if_any_non_sense_exception(self, mock_has_perm):
         mock_has_perm.side_effect = StandardError
         response = self.client.get(ENDPOINT_URL + '?permission=this.does_not_exist', format='json')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
 
 class PermissionEndpointTest(AuthenticatedAPITestCase):
@@ -74,7 +75,7 @@ class PermissionEndpointTest(AuthenticatedAPITestCase):
         self.client.login(username='some_name', password='test')
         response = self.client.get(ENDPOINT_URL + 'all', format='json')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
         self.assertIn('eums.' + permission_one.codename, response.data)
         self.assertIn('eums.' + permission_two.codename, response.data)
@@ -107,5 +108,5 @@ class PermissionEndpointTest(AuthenticatedAPITestCase):
         self.client.login(username='name_two', password='test')
         response = self.client.get(ENDPOINT_URL + 'all', format='json')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data, ['eums.' + permission_two.codename])

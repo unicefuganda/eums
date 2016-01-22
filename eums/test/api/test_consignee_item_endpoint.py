@@ -50,19 +50,19 @@ class ConsigneeItemEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(consignee_items), 1)
         self.assertIn(consignee_item.id, consignee_item_ids)
 
-    def test_unicef_admin_should_not_have_permission_to_view_consignee(self):
+    def test_unicef_admin_should_not_have_permission_to_view_consignee_item(self):
         self.log_and_assert_view_consignee_item_permission(self.log_unicef_admin_in, HTTP_403_FORBIDDEN)
 
-    def test_unicef_editor_should_not_have_permission_to_view_consignee(self):
+    def test_unicef_editor_should_not_have_permission_to_view_consignee_item(self):
         self.log_and_assert_view_consignee_item_permission(self.log_unicef_editor_in, HTTP_403_FORBIDDEN)
 
-    def test_unicef_viewer_should_not_have_permission_to_view_consignee(self):
+    def test_unicef_viewer_should_not_have_permission_to_view_consignee_item(self):
         self.log_and_assert_view_consignee_item_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
 
-    def test_ip_editors_should_have_permission_to_view_consignee(self):
+    def test_ip_editors_should_have_permission_to_view_consignee_item(self):
         self.log_and_assert_view_consignee_item_permission(self.log_ip_editor_in, HTTP_200_OK)
 
-    def test_ip_viewers_should_have_permission_to_view_consignee(self):
+    def test_ip_viewers_should_have_permission_to_view_consignee_item(self):
         self.log_and_assert_view_consignee_item_permission(self.log_ip_viewer_in, HTTP_200_OK)
 
     def log_and_assert_view_consignee_item_permission(self, log_func, status_code):

@@ -25,7 +25,7 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
 
 
 class PurchaseOrderViewSet(ModelViewSet, RequestFilterMixin):
-    permission_classes = (ViewPurchaseOrderPermission,)
+    permission_classes = (DjangoModelPermissions, ViewPurchaseOrderPermission)
     queryset = PurchaseOrder.objects.all().order_by('order_number')
     serializer_class = PurchaseOrderSerialiser
     pagination_class = StandardResultsSetPagination

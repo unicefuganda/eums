@@ -523,25 +523,6 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         self.assert_api_response(response, expected_data)
 
-    # def test_unicef_admin_should_not_have_permission_to_view_stock(self):
-    #     self.log_and_assert_view_stock_permission(self.log_unicef_admin_in, HTTP_403_FORBIDDEN)
-    #
-    # def test_unicef_editor_should_not_have_permission_to_view_stock(self):
-    #     self.log_and_assert_view_stock_permission(self.log_unicef_editor_in, HTTP_403_FORBIDDEN)
-    #
-    # def test_unicef_viewer_should_not_have_permission_to_view_stock(self):
-    #     self.log_and_assert_view_stock_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
-
-    def test_ip_editors_should_have_permission_to_view_stock(self):
-        self.log_and_assert_view_stock_permission(self.log_ip_editor_in, HTTP_200_OK)
-
-    def test_ip_viewers_should_have_permission_to_view_stock(self):
-        self.log_and_assert_view_stock_permission(self.log_ip_viewer_in, HTTP_200_OK)
-
-    def log_and_assert_view_stock_permission(self, log_func, status_code):
-        log_func()
-        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)
-
     def setup_responses(self):
         self.setup_runs()
         self.setup_answers()
@@ -650,3 +631,22 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
     def setup_flow(self):
         self.ip_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
+
+    def test_unicef_admin_should_have_permission_to_view_stock_report(self):
+        self.log_and_assert_view_stock_report_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_view_stock_report(self):
+        self.log_and_assert_view_stock_report_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_stock_report(self):
+        self.log_and_assert_view_stock_report_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+
+    def test_ip_editor_should_have_permission_to_view_stock_report(self):
+        self.log_and_assert_view_stock_report_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewer_should_have_permission_to_view_stock_report(self):
+        self.log_and_assert_view_stock_report_permission(self.log_ip_viewer_in, HTTP_200_OK)
+
+    def log_and_assert_view_stock_report_permission(self, log_func, status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)

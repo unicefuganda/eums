@@ -82,7 +82,7 @@ angular.module('StockReport', [
                 $scope.reportData = response.data.results;
                 $scope.totals = response.data.totals;
                 $scope.openDocument = undefined;
-            }, function () {
+            }, function (error) {
                 ErrorMessageService.showError('An error occurred. Please refresh and try again.');
             }).finally(function () {
                 LoaderService.hideLoader();

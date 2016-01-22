@@ -6,22 +6,23 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import Client
+from rest_framework.status import HTTP_200_OK
 
 from eums.forms.filter import UserFilterForm
 
 from eums.forms.user_profile import UserProfileForm, EditUserProfileForm
 from eums.models import UserProfile, Consignee
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.factories.consignee_factory import ConsigneeFactory
 
 
-class UsersViewTest(TestCase):
+class UsersViewTest(AuthenticatedAPITestCase):
     GLOBAL_ADMIN = 'GLOBAL_ADMIN'
 
     def setUp(self):
         self.client = Client()
         self.user = self.create_user()
-        self.assign('can_view_users', self.user)
-        self.login_user()
+        self.log_unicef_admin_in()
         self.global_admin = Group.objects.create(name='Global Admin')
         auth_content = ContentType.objects.get_for_model(Permission)
         permission, out = Permission.objects.get_or_create(codename='is_global_admin', content_type=auth_content)
@@ -36,11 +37,6 @@ class UsersViewTest(TestCase):
             'groups': self.global_admin.id,
         }
 
-        Consignee.objects.all().delete()
-
-    def tearDown(self):
-        Consignee.objects.all().delete()
-
     def create_user(self, username=None):
         username = username if username else "user"
         user = User.objects.create(username=username, email="user@mail.com")
@@ -48,17 +44,6 @@ class UsersViewTest(TestCase):
         user.set_password("pass")
         user.save()
         return user
-
-    def assign(self, permissions, user):
-        auth_content = ContentType.objects.get_for_model(Permission)
-        group = Group.objects.get_or_create(name="Group with %s permissions" % permissions)[0]
-        permission, out = Permission.objects.get_or_create(codename=permissions, content_type=auth_content)
-        group.permissions.add(permission)
-        group.user_set.add(user)
-        return user
-
-    def login_user(self):
-        self.client.login(username='user', password='pass')
 
     def assert_login_required(self, url):
         self.client.logout()
@@ -75,7 +60,7 @@ class UsersViewTest(TestCase):
 
     def test_get_login(self):
         response = self.client.get('/login/')
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, HTTP_200_OK)
         templates = [template.name for template in response.templates]
         self.assertIn('registration/login.html', templates)
 
@@ -92,7 +77,7 @@ class UsersViewTest(TestCase):
 
     def test_get_new(self):
         response = self.client.get('/users/new/')
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, HTTP_200_OK)
         templates = [template.name for template in response.templates]
         self.assertIn('users/new.html', templates)
         self.assertIsInstance(response.context['form'], UserProfileForm)
@@ -115,7 +100,7 @@ class UsersViewTest(TestCase):
 
     def test_get_edit_user(self):
         response = self.client.get('/users/%d/edit/' % self.user.pk)
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, HTTP_200_OK)
         templates = [template.name for template in response.templates]
         self.assertIn('users/new.html', templates)
         self.assertIsInstance(response.context['form'], EditUserProfileForm)
@@ -129,7 +114,7 @@ class UsersViewTest(TestCase):
         self.global_admin.user_set.add(saved_user)
         form_data = {
             'username': 'user1tom',
-            'email': 'raj@ni.kant', }
+            'email': 'raj@ni.kant',}
         response = self.client.post('/users/%d/edit/' % saved_user.pk, data=form_data)
         self.assertRedirects(response, expected_url='/users/')
 
@@ -149,7 +134,7 @@ class UsersViewTest(TestCase):
         self.global_admin.user_set.add(saved_user)
         form_data = {
             'username': 'user1tom hjdhdh',
-            'email': 'raj@ni.kant', }
+            'email': 'raj@ni.kant',}
         response = self.client.post('/users/%d/edit/' % saved_user.pk, data=form_data)
         self.assertEqual(200, response.status_code)
         self.failUnless(User.objects.filter(username='user1', email='emily@gmail.com'))

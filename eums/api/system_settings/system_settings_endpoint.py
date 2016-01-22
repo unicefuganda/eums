@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from rest_framework.response import Response
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.models.system_settings import SystemSettings
+from eums.permissions.system_settings_permissions import SystemSettingsPermissions
 
 
 class SystemSettingsSerialiser(serializers.ModelSerializer):
@@ -12,7 +13,7 @@ class SystemSettingsSerialiser(serializers.ModelSerializer):
 
 
 class SystemSettingsViewSet(ModelViewSet):
-
+    permission_classes = (DjangoModelPermissions, SystemSettingsPermissions)
     queryset = SystemSettings.objects.all()
     serializer_class = SystemSettingsSerialiser
 

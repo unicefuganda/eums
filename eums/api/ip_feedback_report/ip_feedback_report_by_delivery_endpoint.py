@@ -3,13 +3,14 @@ import logging
 from django.core.paginator import Paginator
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
+from rest_framework.views import APIView
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode, Runnable, Flow, SystemSettings, Upload
+    DistributionPlanNode, Flow, Upload
+from eums.permissions.delivery_feedback_report_permissions import DeliveryFeedbackReportPermissions
 
 PAGE_SIZE = 10
 DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,
@@ -20,7 +21,13 @@ sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
 logger = logging.getLogger(__name__)
 
 
-@api_view(['GET'])
+class IpFeedbackReportEndpoint(APIView):
+    permission_classes = (DeliveryFeedbackReportPermissions,)
+
+    def get(self, request):
+        return ip_feedback_by_delivery_endpoint(request)
+
+
 def ip_feedback_by_delivery_endpoint(request):
     deliveries = filter_delivery_feedback_report(request)
 
