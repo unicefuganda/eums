@@ -89,7 +89,6 @@ angular.module('ManualReporting', ['ngTable', 'ngToast', 'siTable', 'eums.ip', '
                 'page': $scope.pagination.page
             }, getSearchTerms(), $scope.sortTerm);
 
-            console.log(allFilters);
             PurchaseOrderService.forDirectDelivery(undefined, allFilters).then(function (response) {
                 $scope.purchaseOrders = response.results;
                 $scope.count = response.count;
@@ -117,7 +116,6 @@ angular.module('ManualReporting', ['ngTable', 'ngToast', 'siTable', 'eums.ip', '
                 'page': $scope.pagination.page
             }, getSearchTerms(), $scope.sortTerm);
 
-            console.log(allFilters);
             ReleaseOrderService.all(undefined, allFilters).then(function (response) {
                 $scope.releaseOrders = response.results;
                 $scope.count = response.count;
