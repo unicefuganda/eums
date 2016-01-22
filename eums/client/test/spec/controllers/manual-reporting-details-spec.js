@@ -1,21 +1,27 @@
 describe('ManualReportingDetailsController', function () {
     beforeEach(module('ManualReportingDetails'));
 
-    var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
+    var mockIPService, mockConsigneeService, mockPurchaseOrderService, mockPurchaseOrderItemService,
         mockReleaseOrderService, mockReleaseOrderItemService, mockSalesOrderService,
-        mockDeliveryService, mockDeliveryNodeService, mockSalesOrderItemService;
+        mockDeliveryService, mockDeliveryNodeService, mockSalesOrderItemService,
+        mockSortArrowService, mockBackend;
+    var receivedOptionsEndpointUrl, qualityOptionsEndpointUrl, satisfiedOptionsEndpointUrl;
     var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
         deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
         deferredLineItemPromise, deferredDistributionPlanPromise, deferredDeliveryNodePromise, deferredNodeResponsePromise,
-        deferredSalesOrderItemPromise, deferredSalesOrderPromise;
+        deferredSalesOrderItemPromise, deferredSalesOrderPromise,
+        deferredSortArrowResult;
     var scope, q, mockToastProvider, location;
-    var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
+    var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem,
+        stubReceivedOptions, stubQualityOption, stubSatisfiedOption;
     var orderId = 1,
         salesOrderId = 1,
         programmeName = 'Test Programme';
     var nodeResponse;
 
     beforeEach(function () {
+        module('Option');
+
         stubSalesOrder = {
             id: salesOrderId,
             'programme': {
@@ -26,7 +32,6 @@ describe('ManualReportingDetailsController', function () {
             'date': '2014-10-05',
             'salesorderitemSet': [1]
         };
-
         stubPurchaseOrder = {
             id: 1,
             orderNumber: orderId,
@@ -35,7 +40,6 @@ describe('ManualReportingDetailsController', function () {
             purchaseorderitemSet: [1],
             programmeName: programmeName
         };
-
         stubReleaseOrder = {
             id: 1,
             orderNumber: orderId,
@@ -48,7 +52,6 @@ describe('ManualReportingDetailsController', function () {
             items: [1],
             programme: programmeName
         };
-
         stubSalesOrderItem = {
             id: 1,
             salesOrder: '1',
@@ -80,7 +83,6 @@ describe('ManualReportingDetailsController', function () {
             deliveryDate: '2014-10-02',
             distributionplannodeSet: [{id: 1}]
         };
-
         stubPurchaseOrderItem = {
             id: 1,
             purchaseOrder: stubPurchaseOrder.id,
@@ -89,7 +91,6 @@ describe('ManualReportingDetailsController', function () {
             value: '3436.82',
             salesOrderItem: stubSalesOrderItem
         };
-
         stubReleaseOrderItem = {
             id: 1,
             release_order: stubReleaseOrder.id,
@@ -106,12 +107,26 @@ describe('ManualReportingDetailsController', function () {
             value: '3436.82',
             purchaseOrderItem: stubPurchaseOrderItem
         };
+        stubReceivedOptions = [{
+            id: 1,
+            text: 'Received Option 1'
+        }, {
+            id: 35,
+            text: 'No'
+        }];
+        stubQualityOption = {
+            id: 1,
+            text: 'Quality Option 1'
+        };
+        stubSatisfiedOption = {
+            id: 1,
+            text: 'Satisfied Option 1'
+        };
     });
 
     var setUp = function (routeParams) {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
-        mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'qualityOptions', 'satisfiedOptions']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
@@ -121,9 +136,12 @@ describe('ManualReportingDetailsController', function () {
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
+        mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass', 'setSortArrow']);
 
-        inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
+        inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q, $httpBackend, EumsConfig, OptionService) {
             q = $q;
+            location = $location;
+            scope = $rootScope.$new();
             deferredDistrictPromise = $q.defer();
             deferredConsigneePromise = $q.defer();
             deferredOptionPromise = $q.defer();
@@ -137,11 +155,9 @@ describe('ManualReportingDetailsController', function () {
             deferredNodeResponsePromise = $q.defer();
             deferredSalesOrderItemPromise = $q.defer();
             deferredSalesOrderPromise = $q.defer();
+            deferredSortArrowResult = $q.defer();
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockConsigneeService.all.and.returnValue(deferredConsigneePromise.promise);
-            mockOptionService.receivedOptions.and.returnValue(deferredOptionPromise.promise);
-            mockOptionService.qualityOptions.and.returnValue(deferredOptionPromise.promise);
-            mockOptionService.satisfiedOptions.and.returnValue(deferredOptionPromise.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
             mockReleaseOrderService.get.and.returnValue(deferredReleaseOrderPromise.promise);
@@ -150,8 +166,17 @@ describe('ManualReportingDetailsController', function () {
             mockDeliveryNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemPromise.promise);
-            location = $location;
-            scope = $rootScope.$new();
+            mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
+            mockSortArrowService.setSortArrow.and.returnValue(deferredSortArrowResult.promise);
+
+            receivedOptionsEndpointUrl = EumsConfig.BACKEND_URLS.RECEIVED_OPTIONS;
+            qualityOptionsEndpointUrl = EumsConfig.BACKEND_URLS.QUALITY_OPTIONS;
+            satisfiedOptionsEndpointUrl = EumsConfig.BACKEND_URLS.SATISFIED_OPTIONS;
+
+            mockBackend = $httpBackend;
+            mockBackend.whenGET(receivedOptionsEndpointUrl).respond(stubReceivedOptions);
+            mockBackend.whenGET(qualityOptionsEndpointUrl).respond([stubQualityOption]);
+            mockBackend.whenGET(satisfiedOptionsEndpointUrl).respond([stubSatisfiedOption]);
 
             spyOn(angular, 'element').and.callFake(function () {
                 return {
@@ -175,7 +200,6 @@ describe('ManualReportingDetailsController', function () {
                     $routeParams: routeParams,
                     IPService: mockIPService,
                     ConsigneeService: mockConsigneeService,
-                    OptionService: mockOptionService,
                     PurchaseOrderService: mockPurchaseOrderService,
                     PurchaseOrderItemService: mockPurchaseOrderItemService,
                     ReleaseOrderService: mockReleaseOrderService,
@@ -184,12 +208,14 @@ describe('ManualReportingDetailsController', function () {
                     DeliveryService: mockDeliveryService,
                     DeliveryNodeService: mockDeliveryNodeService,
                     SalesOrderItemService: mockSalesOrderItemService,
-                    SalesOrderService: mockSalesOrderService
+                    SalesOrderService: mockSalesOrderService,
+                    OptionService: OptionService,
+                    SortArrowService: mockSortArrowService
                 });
         });
     };
 
-    xdescribe('when initialized', function () {
+    describe('when initialized', function () {
         describe('loading initial lists', function () {
             beforeEach(function () {
                 setUp({});
@@ -206,39 +232,35 @@ describe('ManualReportingDetailsController', function () {
             });
 
             it('should load received responses option list on the scope', function () {
-                var stubOptions = [{id: 1, text: 'Test Received Option'}, {id: 35, text: 'No'}];
-                var expectedReceivedOptions = [{id: 1, name: 'Test Received Option'}, {id: 35, name: 'No'}];
-                deferredOptionPromise.resolve(stubOptions);
+                var expectedReceivedOptions = [{id: 1, name: 'Received Option 1'}, {id: 35, name: 'No'}];
                 scope.initialize();
                 scope.$apply();
+                mockBackend.flush();
 
                 expect(scope.receivedResponsesList).toEqual(expectedReceivedOptions);
                 expect(scope.receivedNoId).toEqual(35);
             });
 
             it('should load quality responses option list on the scope', function () {
-                var stubOptions = [{id: 1, text: 'Test Quality Option'}];
-                var expectedQualityOptions = [{id: 1, name: 'Test Quality Option'}];
-                deferredOptionPromise.resolve(stubOptions);
+                var expectedQualityOptions = [{id: 1, name: 'Quality Option 1'}];
                 scope.initialize();
                 scope.$apply();
+                mockBackend.flush();
 
                 expect(scope.qualityResponsesList).toEqual(expectedQualityOptions);
             });
 
             it('should load satisfied responses option list on the scope', function () {
-                var stubOptions = [{id: 1, text: 'Test Satisfied Option'}];
-                var expectedSatisfiedOptions = [{id: 1, name: 'Test Satisfied Option'}];
-                deferredOptionPromise.resolve(stubOptions);
+                var expectedSatisfiedOptions = [{id: 1, name: 'Satisfied Option 1'}];
                 scope.initialize();
                 scope.$apply();
+                mockBackend.flush();
 
-                expect(scope.receivedResponsesList).toEqual(expectedSatisfiedOptions);
+                expect(scope.satisfiedResponsesList).toEqual(expectedSatisfiedOptions);
             });
         });
 
         describe('with purchase order', function () {
-
             var stubPO = {
                 id: 1,
                 orderNumber: orderId,
@@ -247,7 +269,6 @@ describe('ManualReportingDetailsController', function () {
                 purchaseorderitemSet: [{id: 1, salesOrderItem: 1}],
                 programmeName: programmeName
             };
-
             var stubSOItem = {
                 id: 1,
                 salesOrder: 1,
@@ -272,7 +293,6 @@ describe('ManualReportingDetailsController', function () {
             });
 
             it('should set purchase order details on the scope', function () {
-
                 deferredPurchaseOrderPromise.resolve(stubPO);
                 deferredSalesOrderPromise.resolve(stubSalesOrder);
                 deferredSalesOrderItemPromise.resolve(stubSOItem);

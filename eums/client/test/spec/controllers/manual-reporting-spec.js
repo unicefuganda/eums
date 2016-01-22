@@ -1,15 +1,17 @@
-xdescribe('ManualReportingController', function () {
-    var location, scope, sorter, timeout, q;
-    var  mockPurchaseOrderService, mockReleaseOrderService;
-    var deferred, deferredPurchaseOrderPromise, deferredReleaseOrderPromise;
+describe('ManualReportingController', function () {
+    var scope, location, sorter, filter, timeout, q;
+    var mockPurchaseOrderService, mockReleaseOrderService,
+        mockLoaderService, mockSortService, mockSortArrowService;
+    var deferred, deferredPurchaseOrder, deferredReleaseOrder,
+        deferredSortResult, deferredSortArrowResult;
     var stubPurchaseOrders, stubReleaseOrders;
     var orderId = 1,
         salesOrderOneId = 1,
         programmeName = 'Test Programme';
 
-    beforeEach(module('ManualReporting'));
-
     beforeEach(function () {
+        module('ManualReporting');
+        module('SysUtils');
         stubPurchaseOrders = [{
             id: 1,
             order_number: orderId,
@@ -18,7 +20,6 @@ xdescribe('ManualReportingController', function () {
             purchaseorderitem_set: [1, 2],
             programme: programmeName
         }];
-
         stubReleaseOrders = [{
             id: 1,
             order_number: orderId,
@@ -30,25 +31,35 @@ xdescribe('ManualReportingController', function () {
             items: [1, 2],
             programme: programmeName
         }];
-
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
+        mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
+        mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass', 'setSortArrow']);
 
-        inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
+        inject(function ($controller, $rootScope, $location, $q, $sorter, $filter, $httpBackend, $timeout, SysUtilsService) {
             q = $q;
             deferred = $q.defer();
-            deferredPurchaseOrderPromise = $q.defer();
-            deferredReleaseOrderPromise = $q.defer();
-            mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrderPromise.promise);
-            mockReleaseOrderService.all.and.returnValue(deferredReleaseOrderPromise.promise);
+            deferredPurchaseOrder = $q.defer();
+            deferredReleaseOrder = $q.defer();
+            deferredSortResult = $q.defer();
+            deferredSortArrowResult = $q.defer();
+            mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrder.promise);
+            mockPurchaseOrderService.forDirectDelivery.and.returnValue(deferredPurchaseOrder.promise);
+            mockReleaseOrderService.all.and.returnValue(deferredReleaseOrder.promise);
+            mockSortService.sortBy.and.returnValue(deferredSortResult.promise);
+            mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
+            mockSortArrowService.setSortArrow.and.returnValue(deferredSortArrowResult.promise);
+
+            timeout = $timeout;
             location = $location;
             scope = $rootScope.$new();
             sorter = $sorter;
-            timeout = $timeout;
+            filter = $filter;
 
             spyOn(angular, 'element').and.callFake(function () {
                 return {
-                    modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                    modal: jasmine.createSpy('modal').and.callFake(function (status) {
                         return status;
                     })
                 };
@@ -60,103 +71,50 @@ xdescribe('ManualReportingController', function () {
                     $location: location,
                     $timeout: timeout,
                     $sorter: sorter,
+                    $filter: filter,
                     PurchaseOrderService: mockPurchaseOrderService,
-                    ReleaseOrderService: mockReleaseOrderService
+                    ReleaseOrderService: mockReleaseOrderService,
+                    LoaderService: mockLoaderService,
+                    SortService: mockSortService,
+                    SortArrowService: mockSortArrowService
                 });
-        });
-    });
-
-    describe('when sorted', function () {
-        it('should set the sort criteria', function () {
-            scope.sortBy('field');
-            expect(scope.sort.criteria).toBe('field');
-        });
-        it('should set the sort order as descending by default', function () {
-            scope.sortBy('field');
-            expect(scope.sort.descending).toBe(true);
-        });
-        it('should toggle the sort order', function () {
-            scope.sortBy('field');
-            scope.sortBy('field');
-            expect(scope.sort.descending).toBe(false);
         });
     });
 
     describe('when initialized', function () {
         beforeEach(function () {
-            deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
-            deferredReleaseOrderPromise.resolve(stubReleaseOrders);
+            deferredPurchaseOrder.resolve({results: stubPurchaseOrders, count: 1, pageSize: 10});
+            deferredReleaseOrder.resolve({results: stubReleaseOrders, count: 1, pageSize: 10});
         });
 
         it('should set document on the scope', function () {
-              scope.initialize();
-              scope.$apply();
-              expect(scope.documents).toEqual(stubPurchaseOrders);
+            scope.searchTerm = {};
+            scope.$apply();
+            expect(scope.documents).toEqual(stubPurchaseOrders);
         });
 
         it('should set document type on the scope', function () {
             var expectedDocumentType = 'PO';
-            scope.initialize();
             scope.$apply();
             expect(scope.currentDocumentType).toEqual(expectedDocumentType);
-        });
-
-        it('should set the sorter', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sortBy).toBe(sorter);
-        });
-
-        it('should sort by document number', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sort.criteria).toBe('order_number');
-        });
-
-        it('should sort in descending order', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sort.descending).toBe(false);
-        });
-
-        it('should have the sort arrow icon on the order number column by default', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sortArrowClass('')).toEqual('');
-        });
-
-        it('should set the clicked column as active', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-down');
-        });
-
-        it('should set the clicked column as active and have the up arrow when ascending', function () {
-            scope.initialize();
-            scope.sort.descending = true;
-            scope.$apply();
-            expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-up');
         });
     });
 
     describe('when document type is toggled', function () {
-        it('should know to use the purchase orders if the document type selected is purchase orders', function () {
-            deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
-            deferredReleaseOrderPromise.resolve(stubReleaseOrders);
+        beforeEach(function () {
+            deferredPurchaseOrder.resolve({results: stubPurchaseOrders, count: 1, pageSize: 10});
+            deferredReleaseOrder.resolve({results: stubReleaseOrders, count: 1, pageSize: 10});
+        });
 
-            scope.initialize();
-            scope.$apply();
+        it('should know to use the purchase orders if the document type selected is purchase orders', function () {
             scope.toggleDocumentType('PO');
+            scope.$apply();
             expect(scope.documents).toEqual(stubPurchaseOrders);
         });
 
         it('should know to use the waybills if the document type selected is waybills', function () {
-            deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
-            deferredReleaseOrderPromise.resolve(stubReleaseOrders);
-
-            scope.initialize();
+            scope.toggleDocumentType('RO');
             scope.$apply();
-            scope.toggleDocumentType('WB');
             expect(scope.documents).toEqual(stubReleaseOrders);
         });
     });
@@ -164,31 +122,32 @@ xdescribe('ManualReportingController', function () {
     describe('when select document', function () {
         it('should change the location to for purchase order document', function () {
             var document = {id: 1, doc_number: 1234, date: '2014-10-09', programme: 'Safe Water'};
-            scope.currentDocumentType = 'PO';
+            scope.toggleDocumentType('PO');
             scope.selectDocument(document);
             scope.$apply();
-            expect(location.path()).toEqual('/field-verification-details/purchase-order/'+document.id);
+            expect(location.path()).toEqual('/field-verification-details/purchase-order/' + document.id);
         });
 
         it('should change the location to for waybill document', function () {
             var document = {id: 1, doc_number: 1234, date: '2014-10-09', programme: 'Safe Water'};
+            scope.toggleDocumentType('RO');
             scope.selectDocument(document);
             scope.$apply();
-            expect(location.path()).toEqual('/field-verification-details/waybill/'+document.id);
+            expect(location.path()).toEqual('/field-verification-details/waybill/' + document.id);
         });
     });
 
     describe('when document type changes', function () {
         it('should change the placeholder to have purchase order text', function () {
             var expectedPlaceHolderMessage = 'Search by purchase order number';
-            scope.currentDocumentType = 'PO';
+            scope.toggleDocumentType('PO');
             scope.$apply();
             expect(scope.placeHolderText).toEqual(expectedPlaceHolderMessage);
         });
 
         it('should change the placeholder to have waybill text', function () {
             var expectedPlaceHolderMessage = 'Search by waybill number';
-            scope.currentDocumentType = 'WB';
+            scope.toggleDocumentType('RO');
             scope.$apply();
             expect(scope.placeHolderText).toEqual(expectedPlaceHolderMessage);
         });
