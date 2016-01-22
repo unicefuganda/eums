@@ -12,7 +12,7 @@ from eums.vision.purchase_order_synchronizer import PurchaseOrderSynchronizer
 class TestSyncPurchaseOrder(TestCase):
     def setUp(self):
         self.downloaded_purchase_orders = [{"PURCHASING_ORG_CODE": "1000",
-                                            "PURCHASING_GROUP_CODE": "104",
+                                            "PURCHASING_GROUP_CODE": u"100",
                                             "PURCHASING_GROUP_NAME": "IMMUNIZATION",
                                             "PLANT_CODE": "1000",
                                             "VENDOR_CODE": "1900000501",
@@ -39,7 +39,7 @@ class TestSyncPurchaseOrder(TestCase):
                                             "MATERIAL_DESC": "Scale,electronic,mother/child,150kgx100g"},
 
                                            {"PURCHASING_ORG_CODE": "1000",
-                                            "PURCHASING_GROUP_CODE": "104",
+                                            "PURCHASING_GROUP_CODE": u"100",
                                             "PURCHASING_GROUP_NAME": "IMMUNIZATION",
                                             "PLANT_CODE": "1000",
                                             "VENDOR_CODE": "1900000501",
@@ -66,7 +66,7 @@ class TestSyncPurchaseOrder(TestCase):
                                             "MATERIAL_DESC": "Laundry soap, Carton, 25 bars, 800 grams"}]
 
         self.converted_purchase_orders = [
-            {'AMOUNT_CURR': 51322.65, 'PURCHASING_GROUP_CODE': '104', 'PURCHASING_ORG_CODE': '1000',
+            {'AMOUNT_CURR': 51322.65, 'PURCHASING_GROUP_CODE': 100, 'PURCHASING_ORG_CODE': '1000',
              'PREQ_NO': '0030344125',
              'PLANT_CODE': '1000', 'MATERIAL_DESC': 'Scale,electronic,mother/child,150kgx100g',
              'EXPIRY_DATE': datetime.datetime(2016, 12, 31, 8, 0), 'PO_ITEM_QTY': 100, 'PREQ_ITEM': 80,
@@ -76,7 +76,7 @@ class TestSyncPurchaseOrder(TestCase):
              'CURRENCY_CODE': 'USD', 'SO_NUMBER': 20173918, 'VENDOR_CODE': '1900000501', 'AMOUNT_USD': 51322.65,
              'GRANT_REF': 'XP154478', 'PO_NUMBER': 45143984, 'MATERIAL_CODE': 'S0141021', 'PO_TYPE': 'NB',
              'VENDOR_NAME': 'P.T. BIO FARMA (PERSERO)'},
-            {'AMOUNT_CURR': 2673, 'PURCHASING_GROUP_CODE': '104', 'PURCHASING_ORG_CODE': '1000',
+            {'AMOUNT_CURR': 2673, 'PURCHASING_GROUP_CODE': 100, 'PURCHASING_ORG_CODE': '1000',
              'PREQ_NO': '0030344125',
              'PLANT_CODE': '1000', 'MATERIAL_DESC': 'Laundry soap, Carton, 25 bars, 800 grams',
              'EXPIRY_DATE': datetime.datetime(2015, 12, 14, 8, 0), 'PO_ITEM_QTY': 80, 'PREQ_ITEM': 10,
@@ -89,6 +89,7 @@ class TestSyncPurchaseOrder(TestCase):
 
         self.purchase_order_which_do_not_have_reference_to_sales_order = \
             [{'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
+              'PURCHASING_GROUP_CODE': 100,
               # This so number don't exists in Eums when import this po
               'SO_NUMBER': 20170001,
               'PO_NUMBER': 45143984,
@@ -101,6 +102,7 @@ class TestSyncPurchaseOrder(TestCase):
               'PO_ITEM_QTY': 100}]
         self.purchase_order_item_which_do_not_have_reference_to_sales_order_item = \
             [{'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
+              'PURCHASING_GROUP_CODE': 100,
               'SO_NUMBER': 20173918,
               'PO_NUMBER': 45143984,
               'PO_TYPE': 'NB',
@@ -113,6 +115,7 @@ class TestSyncPurchaseOrder(TestCase):
               'PO_ITEM_QTY': 100}]
         self.purchase_order_item_with_invalid_po_type = \
             [{'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
+              'PURCHASING_GROUP_CODE': 100,
               'SO_NUMBER': 20173918,
               'PO_NUMBER': 45143984,
               # For now only NB, ZLC, ZUB, ZOC are supported by Eums
@@ -234,7 +237,7 @@ class TestSyncPurchaseOrder(TestCase):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_purchase_orders)
         self.synchronizer.sync()
         older_purchase_order = [{"PURCHASING_ORG_CODE": "1000",
-                                 "PURCHASING_GROUP_CODE": "104",
+                                 "PURCHASING_GROUP_CODE": "100",
                                  "PURCHASING_GROUP_NAME": "IMMUNIZATION",
                                  "PLANT_CODE": "1000",
                                  "VENDOR_CODE": "1900000501",
@@ -263,6 +266,8 @@ class TestSyncPurchaseOrder(TestCase):
         self.synchronizer._load_records = MagicMock(return_value=older_purchase_order)
         self.synchronizer.sync()
 
+        print PurchaseOrder.objects.count()
+
         purchase_order = PurchaseOrder.objects.get(order_number=45143984)
         self.assertEqual(purchase_order.date, datetime.datetime(2015, 11, 30, 13, 0).date())
 
@@ -273,7 +278,7 @@ class TestSyncPurchaseOrder(TestCase):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_purchase_orders)
         self.synchronizer.sync()
         older_purchase_order = [{"PURCHASING_ORG_CODE": "1000",
-                                 "PURCHASING_GROUP_CODE": "104",
+                                 "PURCHASING_GROUP_CODE": u"100",
                                  "PURCHASING_GROUP_NAME": "IMMUNIZATION",
                                  "PLANT_CODE": "1000",
                                  "VENDOR_CODE": "1900000501",

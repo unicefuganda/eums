@@ -146,6 +146,9 @@ class TestSyncSalesOrder(TestCase):
                                         "SO_ITEM_DESC": "Laundry soap, Carton, 25 bars, 800 grams",
                                         "NET_VALUE": 2673}]
 
+        Programme.objects.create(wbs_element_ex='0060/A0/07/883')
+        Programme.objects.create(wbs_element_ex='4380/A0/04/105')
+
         self.expected_programme_1 = Programme(wbs_element_ex='0060/A0/07/883')
         self.expected_programme_2 = Programme(wbs_element_ex='4380/A0/04/105')
         self.expected_sales_order_1 = SalesOrder(programme=self.expected_programme_1,

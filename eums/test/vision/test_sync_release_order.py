@@ -110,6 +110,7 @@ class TestSyncReleaseOrder(TestCase):
         self.expected_url = base_url + start_date + '/' + end_date
 
     def tearDown(self):
+        Consignee.objects.all().delete()
         SalesOrder.objects.all().delete()
         Item.objects.all().delete()
         OrderItem.objects.all().delete()
@@ -181,7 +182,7 @@ class TestSyncReleaseOrder(TestCase):
                                 "RELEASE_ORDER_TYPE": "ZLO",
                                 "SALES_UNIT": "EA",
                                 "PLANT": "5631",
-                                "SHIP_TO_PARTY": "L62601000",
+                                "SHIP_TO_PARTY": "L626010000",
                                 "WAREHOUSE_NUMBER": "492",
                                 "CONSIGNEE": "L626010384",
                                 "DOCUMENT_DATE": u"/Date(1447390800000)/",
@@ -220,7 +221,7 @@ class TestSyncReleaseOrder(TestCase):
                                 "PLANT": "5631",
                                 "SHIP_TO_PARTY": "L626010384",
                                 "WAREHOUSE_NUMBER": "492",
-                                "CONSIGNEE": "L62601000",
+                                "CONSIGNEE": "L626010000",
                                 "DOCUMENT_DATE": u"/Date(1447390800000)/",
                                 "GOODS_ISSUE_DATE": u"/Date(1448254800000)/",
                                 "MATERIAL_NUMBER": "S0141021",
@@ -242,12 +243,14 @@ class TestSyncReleaseOrder(TestCase):
         self.synchronizer.sync()
 
         release_order = ReleaseOrder.objects.get(order_number=54155912)
-        self.assertEqual(Consignee.objects.get(pk=release_order.consignee.id).customer_id, 'L62601000')
+        self.assertEqual(Consignee.objects.get(pk=release_order.consignee.id).customer_id, 'L626010000')
 
         release_order_item = ReleaseOrderItem.objects.get(release_order=release_order)
         self.assertEqual(release_order_item.quantity, 100)
 
     def _prepare_sales_and_purchase_order(self):
+        Consignee.objects.create(customer_id='L626010000')
+        Consignee.objects.create(customer_id='L626010384')
         self.programme_1 = Programme(wbs_element_ex='0060/A0/07/883')
         self.programme_1.save()
         self.programme_2 = Programme(wbs_element_ex='4380/A0/04/105')
