@@ -12,8 +12,9 @@ EMAIL_PASSWORD=$3
 VISION_USER=$4
 VISION_PASSWORD=$5
 VISION_BUSINESS_AREA_CODE=$6
-TIME_ZONE=$7
-DJANGO_SECRET_KEY=$8
+VISION_PURCHASE_GROUP_CODE=$7
+TIME_ZONE=$8
+DJANGO_SECRET_KEY=$9
 
 cd /opt/app/contacts
 sed -i "s/stg.eum.unicefuganda.org/${EUMS_HOST}/" config/config.json
@@ -25,6 +26,7 @@ sed -i -e "s/os.getenv('VISION_USER', 'invalid_vision_user')/r'${VISION_USER}'/g
 sed -i -e "s/os.getenv('VISION_PASSWORD', 'invalid_vision_password')/r'${VISION_PASSWORD}'/g" settings.py
 sed -i -e "s/os.getenv('VISION_BUSINESS_AREA_CODE', 'invalid_code')/'${VISION_BUSINESS_AREA_CODE}'/g" settings.py
 sed -i -e "s/os.getenv('VISION_COUNTRY_CODE', 'invalid_code')/'${VISION_BUSINESS_AREA_CODE:0:3}'/g" settings.py
+sed -i -e "s/os.getenv('VISION_PURCHASE_GROUP_CODE', 'invalid_code')/'${VISION_PURCHASE_GROUP_CODE}'/g" settings.py
 sed -i -e "s|os.getenv('TIME_ZONE', 'Africa/Kampala')|'${TIME_ZONE}'|g" settings.py
 sed -i -e "s/os.getenv('SECRET_KEY', 'invalid_secret_key')/'`echo ${DJANGO_SECRET_KEY} | sed 's#\&#\\\&#g'`'/g" settings.py
 sed -i -e "s/os.getenv('DJANGO_ALLOWED_HOST', 'invalid_allowed_host')/'${EUMS_HOST}'/g" settings.py

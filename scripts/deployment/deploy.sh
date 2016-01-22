@@ -24,5 +24,5 @@ echo "running the unpack script via ssh on the server ..."
 ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST} "cd /home/${DEPLOY_USER}/ \
 && sudo ./unpack_deployment_and_install.sh \
 $today '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' \
-'${VISION_USER}' '${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${TIME_ZONE}' '${DJANGO_SECRET_KEY}' \
-'${MAP_LATITUDE}' '${MAP_LONGITUDE}' '${MAP_LEVEL}' '${ADMIN_PASSWORD}'"
+'${VISION_USER}' '${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${VISION_PURCHASE_GROUP_CODE}' \
+'${TIME_ZONE}' '${DJANGO_SECRET_KEY}' '${MAP_LATITUDE}' '${MAP_LONGITUDE}' '${MAP_LEVEL}' '${ADMIN_PASSWORD}'"
