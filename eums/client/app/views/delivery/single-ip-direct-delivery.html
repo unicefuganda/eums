@@ -148,22 +148,28 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 pull-right eums-border-height-175 eums-auto-scroll">
+            <div class="col-md-4">
                 <label class="section-sub-header blue-unicef">PREVIOUS DELIVERIES</label>
-                <table id="trackedDeliveriesTable" class="table table-curved light-blue-table-header"
+                <table id="trackedDeliveriesTable"
+                       class="table table-curved table-fixed light-blue-table-header table-previous-deliveries-header margin-bottom-none"
                        ng-show="trackedDeliveries">
+                    <thead>
                     <tr>
-                        <th class="item-list-col-header">#</th>
-                        <th class="item-list-col-header">Date</th>
-                        <th class="item-list-col-header">Approximate Total Value</th>
+                        <th class="col-md-1 item-list-col-header">#</th>
+                        <th class="col-md-3 item-list-col-header">Date</th>
+                        <th class="col-md-8 item-list-col-header">Approximate Total Value</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr ng-repeat="(index, delivery) in trackedDeliveries">
-                        <td>{{ index + 1 }}</td>
-                        <td ng-click="viewDelivery(delivery)"
-                            class="btn-link">{{ delivery.delivery_date | date : 'dd-MMM-yyyy' }}
+                        <td class="col-md-1">{{ index + 1 }}</td>
+                        <td class="col-md-3">
+                            <div class="btn-link"
+                                 ng-click="viewDelivery(delivery)">{{ delivery.delivery_date | date : 'dd-MMM-yyyy' }}</div>
                         </td>
-                        <td>{{ delivery.total_value | currency }}</td>
+                        <td class="col-md-8">{{ delivery.total_value | currency }}</td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

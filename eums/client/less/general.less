@@ -1079,3 +1079,30 @@ tr.table-sub-header {
 .eums-block {
   display: block;
 }
+
+.table-fixed thead {
+  width: 100%;
+}
+
+.table-fixed tbody {
+  max-height: 142px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+
+.table-fixed tbody td, .table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+
+.table-previous-deliveries-header thead,.table-previous-deliveries-header thead > tr {
+  padding: 0px 0px 0px 0px;
+}
+
+.table-previous-deliveries-header tbody {
+  height: auto;
+}
