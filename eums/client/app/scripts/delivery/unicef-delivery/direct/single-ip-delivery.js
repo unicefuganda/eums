@@ -1,6 +1,6 @@
 angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
-                                                              ngToast, DeliveryService, DeliveryNode, $q,
+                                                              ngToast, DeliveryService, DeliveryNode, $q, $timeout,
                                                               DeliveryNodeService) {
         $scope.consignee = {};
         $scope.district = {};
@@ -8,13 +8,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         $scope.valid_time_limitation = true;
 
         loadOrderData();
-
-        IPService.loadAllDistricts().then(function (response) {
-            $scope.districts = response.data.map(function (district) {
-                return {id: district, name: district};
-            });
-            $scope.districtsLoaded = true;
-        });
 
         $scope.save = function (tracked) {
             $scope.tracked = tracked || false;
@@ -125,9 +118,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             return $q.when(items);
         }
 
-
         function scopeDataIsValid() {
-
             var someInputsAreEmpty = !(
                 $scope.delivery.contact_person_id
                 && $scope.delivery.consignee
@@ -143,7 +134,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         }
 
         function isTimeLimitationValid() {
-
             $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution === 0 ? false : true;
             return $scope.valid_time_limitation;
         }
@@ -205,8 +195,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             if (trackedDeliveries.length) {
                 var firstDelivery = trackedDeliveries.first();
                 $scope.delivery.consignee = firstDelivery.consignee;
-                $scope.delivery.contact_person_id = firstDelivery.contact_person_id;
-                $scope.delivery.location = firstDelivery.location;
+                //$scope.delivery.contact_person_id = firstDelivery.contact_person_id;
+                //$scope.delivery.location = firstDelivery.location;
             }
         }
 

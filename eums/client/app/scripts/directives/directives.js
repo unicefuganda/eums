@@ -25,13 +25,14 @@ angular.module('Directives', ['eums.ip'])
                             return {id: district, name: district};
                         });
                     });
+                } else {
+                    list = JSON.parse(attrs.list);
                 }
-                else list = JSON.parse(attrs.list);
 
                 element.select2({
                     width: '100%',
                     allowClear: true,
-                    placeholder: attrs.placeholder || '',
+                    placeholder: attrs.placeholder || 'All Districts',
                     query: function (query) {
                         var data = {results: []};
                         var matches = list.filter(function (item) {
@@ -52,6 +53,8 @@ angular.module('Directives', ['eums.ip'])
                             })[0];
                             if (matchingItem) {
                                 callback({id: matchingItem.id, text: matchingItem.name});
+                            } else {
+                                callback({});
                             }
                         });
                     }
@@ -61,6 +64,13 @@ angular.module('Directives', ['eums.ip'])
                     var data = element.select2('data');
                     ngModel.$setViewValue(data && data.id);
                     scope.$apply()
+                });
+
+                scope.$watch(function () {
+                    return scope.$parent.$eval(attrs.ngModel);
+                }, function (newValue, oldValue) {
+                    // console.log("=List=> " + newValue + ', ' + oldValue);
+                    $(element).select2('val', newValue ? newValue : '');
                 });
 
                 scope.$on('clear-list', function () {
@@ -79,7 +89,7 @@ angular.module('Directives', ['eums.ip'])
     })
     .directive('searchContacts', function (ContactService, $timeout) {
         function formatContact(contact) {
-            return {id: contact._id, fullName: contact.fullName, phone: contact.phone};
+            return {id: contact._id, fullName: contact.firstName + ' ' + contact.lastName, phone: contact.phone};
         }
 
         function formatResponse(data) {
@@ -88,26 +98,26 @@ angular.module('Directives', ['eums.ip'])
             });
         }
 
-        function contactFormatResult(contact) {
+        function contactFormatResult(item) {
             var markup =
                 '<div class="row-fluid">' +
-                '<div class="span3">' + contact.fullName + '</div>' +
-                '<div class="span3 text-warning"><small><i>' + contact.phone + '</i></small></div>' +
+                '<div class="span3">' + item.fullName + '</div>' +
+                '<div class="span3 text-warning"><small><i>' + item.phone + '</i></small></div>' +
                 '</div>';
             return markup;
         }
 
-        function contactFormatSelection(contact) {
-            return contact.fullName;
+        function contactFormatSelection(item) {
+            return item.fullName;
         }
 
         return {
             restrict: 'A',
             scope: true,
             require: 'ngModel',
-            link: function (scope, element, _, ngModel) {
+            link: function (scope, element, attrs, ngModel) {
                 element.select2({
-                    placeholder: 'All Contacts',
+                    placeholder: attrs.placeholder || 'All Contacts',
                     allowClear: true,
                     width: '150px',
                     query: function (query) {
@@ -118,14 +128,18 @@ angular.module('Directives', ['eums.ip'])
                         });
                     },
                     initSelection: function (element, callback) {
-                        var modelValue = ngModel.$modelValue;
-                        if (modelValue) {
-                            ContactService.get(modelValue).then(function (contact) {
-                                if (contact._id) {
-                                    callback(formatContact(contact));
-                                }
-                            });
-                        }
+                        $timeout(function () {
+                            var modelValue = ngModel.$modelValue;
+                            if (modelValue) {
+                                ContactService.get(modelValue).then(function (contact) {
+                                    if (contact._id) {
+                                        callback(formatContact(contact));
+                                    }
+                                });
+                            } else {
+                                callback({});
+                            }
+                        });
                     },
                     formatResult: contactFormatResult,
                     formatSelection: contactFormatSelection,
@@ -142,10 +156,15 @@ angular.module('Directives', ['eums.ip'])
                     scope.$apply();
                 });
 
+                scope.$watch(function () {
+                    return scope.$parent.$eval(attrs.ngModel);
+                }, function (newValue, oldValue) {
+                    // console.log("=Contacts=> " + newValue + ', ' + oldValue);
+                    $(element).select2('val', newValue ? newValue : '');
+                });
+
                 scope.$on('clear-contact', function () {
-                    var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    contactSelect2Input.text('');
-                    $(element).val(undefined);
+                    $(element).select2('val', '');
                 });
 
                 scope.$on('set-contact-for-node', function (_, contact, nodeId) {
@@ -163,6 +182,10 @@ angular.module('Directives', ['eums.ip'])
                     var formattedContact = formatContact(contact);
                     contactSelect2Input.text(formattedContact.fullName);
                     $(element).val(formattedContact.id);
+                });
+
+                scope.$on('set-contact', function (_, contactId) {
+                    $(element).select2('val', [contactId]);
                 });
             }
         };
@@ -190,7 +213,7 @@ angular.module('Directives', ['eums.ip'])
                     minimumInputLength: 1,
                     width: '240px',
                     allowClear: true,
-                    placeholder: attrs.placeholder || '',
+                    placeholder: attrs.placeholder || 'All Consignees',
                     query: function (query) {
                         var data = {results: []};
                         ConsigneeService.search(query.term, [], queryParams).then(function (consignees) {
@@ -201,9 +224,13 @@ angular.module('Directives', ['eums.ip'])
                     initSelection: function (element, callback) {
                         $timeout(function () {
                             var modelValue = ngModel.$modelValue;
-                            modelValue && ConsigneeService.get(modelValue).then(function (consignee) {
-                                callback(formatConsignee(consignee));
-                            });
+                            if (modelValue) {
+                                ConsigneeService.get(modelValue).then(function (consignee) {
+                                    callback(formatConsignee(consignee));
+                                });
+                            } else {
+                                callback({});
+                            }
                         });
                     }
                 });

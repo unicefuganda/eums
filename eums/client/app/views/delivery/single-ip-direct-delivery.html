@@ -110,21 +110,20 @@
                             </div>
                         </div>
                         <div class="form-group col-md-3 pad-left-0"
-                             ng-class="{'has-error': !delivery.location && errors}" ng-if="districtsLoaded">
+                             ng-class="{'has-error': !delivery.location && errors}">
                             <div class="row">
                                 <div class=" col-md-12">
-                                    <label for="input-location" class="control-label">Choose
-                                        District</label>
+                                    <label for="input-location" class="control-label">Choose District</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12" id="input-location" ng-if="districtsLoaded && contentLoaded">
+                                <div class="col-md-12" id="input-location" ng-if="contentLoaded">
                                     <input type="hidden"
                                            search-from-list
-                                           list="{{ districts }}"
+                                           list="$districts"
+                                           value="{{ delivery.location }}"
                                            ng-model="delivery.location"
-                                           ng-attr-id="{{ 'location-select' }}"
-                                           value="{{ delivery.location }}">
+                                           ng-attr-id="{{ 'location-select' }}">
                                 </div>
                             </div>
                         </div>

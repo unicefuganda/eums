@@ -139,14 +139,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.delivery).toEqual({});
         });
 
-        it('should load all districts and put them on scope and notify directive', function () {
-            expect(scope.districtsLoaded).toBeFalsy();
-            scope.$apply();
-            expect(mockIpService.loadAllDistricts).toHaveBeenCalled();
-            expect(scope.districts).toEqual(districts);
-            expect(scope.districtsLoaded).toBe(true);
-        });
-
         it('should fetch purchase order with id specified in route and put it on scope', function () {
             scope.$apply();
             expect(mockPurchaseOrderService.get).toHaveBeenCalledWith(purchaseOrder.id, jasmine.any(Array));
