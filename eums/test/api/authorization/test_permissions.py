@@ -172,3 +172,30 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
         self.assertTrue(permission_to_test not in self.ip_editor_permissions)
         self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_add_distribution_node_permission(self):
+        permission_to_test = PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_item_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_ITEM
+
+        self.assertTrue(permission_to_test not in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_add_web_answer_permission(self):
+        permission_to_test = PermissionCode.CAN_ADD_WEB_ANSWER
+
+        self.assertTrue(permission_to_test not in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)

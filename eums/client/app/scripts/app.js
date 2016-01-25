@@ -4,14 +4,11 @@
 var interceptor = ["ngToast", "$q", "$location", function (ngToast, $q, location) {
     return {
         responseError: function (response) {
-            if (response.status === 403 || response.status === 401) {
-                ngToast.create({
-                    content: 'Permission Denied!',
-                    dismissOnTimeout: true,
-                    timeout: 3000,
-                    class: 'danger'
-                });
+            if (response.status === 403) {
+                ngToast.create({content: 'Permission Denied!', class: 'danger'});
                 location.path("/");
+            } else if (response.status === 401) {
+                ngToast.create({content: 'Permission Denied!', class: 'danger'});
             }
             return $q.reject(response);
         }
@@ -271,7 +268,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'NewDeliveryByIpController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                        return UserService.checkUserPermission('auth.can_view_item');
                     }
                 }
             })
@@ -298,7 +295,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'SystemSettingsController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_system_settings');
+                        return UserService.checkUserPermission('auth.change_system_settings');
                     }
                 }
             })

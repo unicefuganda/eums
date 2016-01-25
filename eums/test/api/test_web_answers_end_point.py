@@ -3,6 +3,7 @@ import json
 
 from django.db.models import Q
 from mock import MagicMock, patch
+from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_201_CREATED
 
 from eums.models import MultipleChoiceAnswer, TextAnswer, Flow, Run, \
     NumericAnswer, Alert, RunQueue
@@ -279,3 +280,34 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
     def __get_current_date(self):
         return datetime.datetime.strftime(datetime.datetime.now().date(), '%Y-%m-%d')
+
+    def test_unicef_admin_should_not_have_permission_to_create_web_answer(self):
+        self.log_and_assert_create_web_answer_permission(self.log_unicef_admin_in, HTTP_403_FORBIDDEN)
+
+    def test_unicef_editor_should_not_have_permission_to_create_web_answer(self):
+        self.log_and_assert_create_web_answer_permission(self.log_unicef_editor_in, HTTP_403_FORBIDDEN)
+
+    def test_unicef_viewer_should_not_have_permission_to_create_web_answer(self):
+        self.log_and_assert_create_web_answer_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_editor_should_have_permission_to_create_web_answer(self):
+        self.log_and_assert_create_web_answer_permission(self.log_ip_editor_in, HTTP_201_CREATED)
+
+    def test_ip_viewer_should_not_have_permission_to_create_web_answer(self):
+        self.log_and_assert_create_web_answer_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_create_web_answer_permission(self, log_func, expected_status_code):
+        log_func()
+        self.setup_flow_with_questions(Flow.Label.WEB)
+        web_flow = Flow.objects.filter(label=Flow.Label.WEB).first()
+        NumericQuestionFactory(label='quantityDelivered', flow=web_flow)
+
+        node = DeliveryNodeFactory()
+        request_body = {
+            'runnable': node.id, 'answers': [
+                {'question_label': 'deliveryReceived', 'value': 'Yes'},
+                {'question_label': 'quantityDelivered', 'value': 2}
+            ]}
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(request_body), content_type='application/json')
+        self.assertEqual(response.status_code, expected_status_code)

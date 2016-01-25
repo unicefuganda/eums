@@ -20,6 +20,7 @@ def build_request_permissions(*models):
 
 
 def is_user_has_permission(user, permission):
+    # TODO need to refactor using label in table django_content_type
     return user.has_perm('eums.%s' % permission) or user.has_perm(
             'auth.%s' % permission)
 

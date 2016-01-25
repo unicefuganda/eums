@@ -1,3 +1,5 @@
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+
 from eums.test.api.api_test_helpers import create_item_unit, create_item
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -43,3 +45,22 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(get_response.status_code, 200)
         self.assertDictContainsSubset(item_two_details, get_response.data[0])
         self.assertDictContainsSubset(item_one_details, get_response.data[1])
+
+    def test_unicef_admin_should_not_have_permission_to_view_item(self):
+        self.log_and_assert_view_item_permission(self.log_unicef_admin_in, HTTP_403_FORBIDDEN)
+
+    def test_unicef_editor_should_not_have_permission_to_view_item(self):
+        self.log_and_assert_view_item_permission(self.log_unicef_editor_in, HTTP_403_FORBIDDEN)
+
+    def test_unicef_viewer_should_not_have_permission_to_view_item(self):
+        self.log_and_assert_view_item_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_editor_should_have_permission_to_view_item(self):
+        self.log_and_assert_view_item_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewer_should_not_have_permission_to_view_item(self):
+        self.log_and_assert_view_item_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_view_item_permission(self, log_func, status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)

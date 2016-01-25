@@ -8,6 +8,7 @@ from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswe
 from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.answer.text_answers_endpoint import textAnswerRouter
+from eums.api.answer.web_answers_endpoint import WebAnswerEndpoint
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
 from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet
@@ -70,7 +71,7 @@ urlpatterns = patterns(
             name='current-user'),
         url(r'^api/programme/with-ips/', 'eums.api.programme.programmes_with_ips_endpoint.programmes_with_ips',
             name='programmes_ips'),
-        url(r'^api/web-answers', 'eums.api.answer.web_answers_endpoint.save_answers', name='save_answers'),
+        url(r'^api/web-answers', WebAnswerEndpoint.as_view(), name='save_answers'),
         url(r'^api/so-item-po-item/(?P<sales_order_item_id>\d+)/$',
             soItemPOItem.as_view(), name='so_item_po_item'),
         url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),

@@ -132,9 +132,12 @@ GROUP_PERMISSIONS = {
         'add_upload',
 
         PermissionCode.CAN_VIEW_CONSIGNEE_ITEM,
+        PermissionCode.CAN_VIEW_ITEM,
+
         PermissionCode.CAN_VIEW_SYSTEM_SETTINGS,
 
         PermissionCode.CAN_VIEW_STOCK_REPORT,
+        PermissionCode.CAN_ADD_WEB_ANSWER
     ],
     GROUP_IP_VIEWER: [
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
