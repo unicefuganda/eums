@@ -20,10 +20,7 @@ class ConsigneeSerialiser(serializers.ModelSerializer):
 class ConsigneeViewSet(ModelViewSet):
     permission_classes = (
         DjangoModelPermissions,
-        ConsigneePermissions,
-        VisionImportedPermission,
-        DeliveryAttachedPermission,
-        CreatedByPermission
+        ConsigneePermissions
     )
 
     queryset = Consignee.objects.all().order_by('name')
