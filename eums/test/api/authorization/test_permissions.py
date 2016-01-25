@@ -199,3 +199,39 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
         self.assertTrue(permission_to_test in self.ip_editor_permissions)
         self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_view_consignee_permission(self):
+        permission_to_test = PermissionCode.CAN_VIEW_CONSIGNEE
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
+
+    def test_grant_correct_add_consignee_permission(self):
+        permission_to_test = PermissionCode.CAN_ADD_CONSIGNEE
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_change_consignee_permission(self):
+        permission_to_test = PermissionCode.CAN_ADD_CONSIGNEE
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+
+    def test_grant_correct_delete_consignee_permission(self):
+        permission_to_test = PermissionCode.CAN_ADD_CONSIGNEE
+
+        self.assertTrue(permission_to_test in self.unicef_admin_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)

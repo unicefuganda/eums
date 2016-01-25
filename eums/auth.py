@@ -75,7 +75,7 @@ perm_code_names = [
     {'name': 'Can view users', 'codename': PermissionCode.CAN_VIEW_USER},
 
     {'name': 'Can view single distribution plan', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
-    {'name': 'Can view distribution plan', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS},
+    {'name': 'Can view distribution plans', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS},
 
     {'name': 'Can view distribution plan nodes', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE},
 
@@ -132,5 +132,4 @@ def create_permissions():
     auth_content = ContentType.objects.get_for_model(Permission)
     if auth_content:
         for perm in perm_code_names:
-            Permission.objects.get_or_create(name=perm['name'], codename=perm['codename'],
-                                             content_type=auth_content)
+            Permission.objects.get_or_create(name=perm['name'], codename=perm['codename'], content_type=auth_content)

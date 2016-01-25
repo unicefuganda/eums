@@ -9,7 +9,7 @@ from eums.test.api.authorization.permissions_test_case import PermissionsTestCas
 
 logger = logging.getLogger(__name__)
 
-UNICEF_ADMIN = {'username': 'admin', 'password': 'admin'}
+UNICEF_ADMIN = {'username': 'unicef_admin', 'password': 'unicef_admin'}
 UNICEF_EDITOR = {'username': 'unicef_editor', 'password': 'unicef_editor'}
 UNICEF_VIEWER = {'username': 'unicef_viewer', 'password': 'unicef_viewer'}
 IP_EDITOR = {'username': 'ip_editor', 'password': 'wakiip_editorso'}

@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.routers import DefaultRouter
+from rest_framework.status import HTTP_403_FORBIDDEN
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Consignee, DistributionPlanNode, UserProfile
 from eums.permissions import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission
+from eums.permissions.consignee_permissions import ConsigneePermissions
 
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
@@ -18,9 +20,11 @@ class ConsigneeSerialiser(serializers.ModelSerializer):
 class ConsigneeViewSet(ModelViewSet):
     permission_classes = (
         DjangoModelPermissions,
+        ConsigneePermissions,
         VisionImportedPermission,
         DeliveryAttachedPermission,
-        CreatedByPermission)
+        CreatedByPermission
+    )
 
     queryset = Consignee.objects.all().order_by('name')
     serializer_class = ConsigneeSerialiser
@@ -59,16 +63,16 @@ class ConsigneeViewSet(ModelViewSet):
     def vision_import_edit_permissions(request):
         if request.user.groups.first().name in ['UNICEF_admin', 'UNICEF_editor']:
             return Response(status=200, data={'permission': 'can_edit_partially'})
-        return Response(status=401)
+        return Response(status=HTTP_403_FORBIDDEN, data={'permission': 'consignee_forbidden'})
 
     @staticmethod
     def ip_edit_permissions(consignee, request):
         request_ip = UserProfile.objects.get(user=request.user).consignee
         created_by_user = UserProfile.objects.filter(user=consignee.created_by_user).first()
         if created_by_user is None or created_by_user.consignee != request_ip:
-            return Response(status=403)
+            return Response(status=HTTP_403_FORBIDDEN, data={'permission': 'consignee_forbidden'})
 
-        return Response(status=200,data={'permission': 'can_edit_fully'})
+        return Response(status=200, data={'permission': 'can_edit_fully'})
 
 
 consigneeRouter = DefaultRouter()

@@ -1,11 +1,19 @@
+import logging
+
+from django.contrib.auth.models import User
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN, HTTP_201_CREATED, HTTP_301_MOVED_PERMANENTLY, \
+    HTTP_204_NO_CONTENT
+
+from eums.auth import GROUP_IP_EDITOR
 from eums.models import Consignee, DistributionPlan
-from eums.test.api.api_test_helpers import create_consignee
-from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.api_test_helpers import create_consignee, create_user_with_group
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase, IP_EDITOR
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as DeliveryNodeFactory
 
 ENDPOINT_URL = BACKEND_URL + 'consignee/'
+logger = logging.getLogger(__name__)
 
 
 class ConsigneeEndpointTest(AuthenticatedAPITestCase):
@@ -110,3 +118,92 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('results', response.data)
         self.assertEqual(response.data, [])
+
+    def test_unicef_admin_should_have_permission_to_view_consignee(self):
+        self.log_and_assert_view_consignee_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_view_consignee(self):
+        self.log_and_assert_view_consignee_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_consignee(self):
+        self.log_and_assert_view_consignee_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+
+    def test_ip_editor_should_have_permission_to_view_consignee(self):
+        self.log_and_assert_view_consignee_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewer_should_have_permission_to_view_consignee(self):
+        self.log_and_assert_view_consignee_permission(self.log_ip_viewer_in, HTTP_200_OK)
+
+    def log_and_assert_view_consignee_permission(self, log_func, status_code):
+        log_func()
+        self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)
+
+    def test_unicef_admin_should_have_permission_to_add_consignee(self):
+        self.log_and_assert_add_consignee_permission(self.log_unicef_admin_in, HTTP_201_CREATED)
+
+    def test_unicef_editor_should_have_permission_to_add_consignee(self):
+        self.log_and_assert_add_consignee_permission(self.log_unicef_editor_in, HTTP_201_CREATED)
+
+    def test_unicef_viewer_should_not_have_permission_to_add_consignee(self):
+        self.log_and_assert_add_consignee_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_editor_should_have_permission_to_add_consignee(self):
+        self.log_and_assert_add_consignee_permission(self.log_ip_editor_in, HTTP_201_CREATED)
+
+    def test_ip_viewer_should_not_have_permission_to_add_consignee(self):
+        self.log_and_assert_add_consignee_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_add_consignee_permission(self, log_func, status_code):
+        log_func()
+        consignee_one_details = {'name': "Other Children NGO"}
+        self.assertEqual(self.client.post(ENDPOINT_URL, data=consignee_one_details).status_code, status_code)
+
+    def test_unicef_admin_should_have_permission_to_change_consignee(self):
+        self.log_and_assert_change_consignee_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_change_consignee(self):
+        self.log_and_assert_change_consignee_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_not_have_permission_to_change_consignee(self):
+        self.log_and_assert_change_consignee_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_editor_should_have_permission_to_change_consignee(self):
+        self.log_and_assert_change_consignee_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewer_should_not_have_permission_to_change_consignee(self):
+        self.log_and_assert_change_consignee_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_change_consignee_permission(self, log_func, status_code):
+        log_func()
+        consignee = ConsigneeFactory(location='Some Village',
+                                     created_by_user=User.objects.filter(id=1).first())
+        request_body = {
+            'name': 'Other Children NGO',
+            'remarks': 'modified remarks'
+        }
+        logger.info(ENDPOINT_URL + str(consignee.id))
+        self.assertEqual(self.client.put(ENDPOINT_URL + str(consignee.id) + '/', request_body).status_code,
+                         status_code)
+
+    def test_unicef_admin_should_have_permission_to_delete_consignee(self):
+        self.log_and_assert_delete_consignee_permission(self.log_unicef_admin_in, HTTP_204_NO_CONTENT)
+
+    def test_unicef_editor_should_have_permission_to_delete_consignee(self):
+        self.log_and_assert_delete_consignee_permission(self.log_unicef_editor_in, HTTP_204_NO_CONTENT)
+
+    def test_unicef_viewer_should_not_have_permission_to_delete_consignee(self):
+        self.log_and_assert_delete_consignee_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
+
+    def test_ip_editor_should_have_permission_to_delete_consignee(self):
+        self.log_and_assert_delete_consignee_permission(self.log_ip_editor_in, HTTP_204_NO_CONTENT)
+
+    def test_ip_viewer_should_not_have_permission_to_delete_consignee(self):
+        self.log_and_assert_delete_consignee_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+
+    def log_and_assert_delete_consignee_permission(self, log_func, status_code):
+        log_func()
+        consignee = ConsigneeFactory(location='Some Village',
+                                     created_by_user=User.objects.filter(id=1).first())
+        logger.info(ENDPOINT_URL + str(consignee.id))
+        self.assertEqual(self.client.delete(ENDPOINT_URL + str(consignee.id) + '/').status_code,
+                         status_code)

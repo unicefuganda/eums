@@ -6,9 +6,9 @@ var interceptor = ["ngToast", "$q", "$location", function (ngToast, $q, location
         responseError: function (response) {
             if (response.status === 403) {
                 ngToast.create({content: 'Permission Denied!', class: 'danger'});
-                location.path("/");
-            } else if (response.status === 401) {
-                ngToast.create({content: 'Permission Denied!', class: 'danger'});
+                if (!response.data) {
+                    location.path("/");
+                }
             }
             return $q.reject(response);
         }
@@ -295,7 +295,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'SystemSettingsController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.change_system_settings');
+                        return UserService.checkUserPermission('eums.change_systemsettings');
                     }
                 }
             })
