@@ -39,6 +39,7 @@ class Question(TimeStampedModel):
         question = question_type.objects.filter(label=label, flow=flow)
         if question.exists():
             question.update(text=text, position=position)
+            question = question[0]
         else:
             if when_answered is None:
                 question = question_type.objects.create(

@@ -22,4 +22,6 @@ class Option(TimeStampedModel):
         option = Option.objects.filter(text=text, question=question)
         if option.count() < 1:
             option = Option.objects.create(text=text, question=question)
+        else:
+            option = option[0]
         return option
