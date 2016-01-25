@@ -4,6 +4,8 @@ set -e
 
 today='eums_latest'
 
+chmod +x build/deployment/*.sh
+
 sudo build/deployment/pack_deployment.sh $today
 
 if [ -d ./map ]; then

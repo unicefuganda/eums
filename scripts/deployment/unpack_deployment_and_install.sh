@@ -19,9 +19,6 @@ admin_password=${13}
 echo "Unpacking deployment directory..."
 tar --force-local -xzvf deploy_latest.tar.gz
 
-echo "Deleting zip file..."
-rm deploy_latest.tar.gz
-
 cd deploy_$today
 
 chmod a+x scripts/*.sh
