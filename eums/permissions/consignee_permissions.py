@@ -10,9 +10,7 @@ logger = logging.getLogger(__name__)
 
 def is_consignee_belong_to_request_user(obj, request):
     if request.method in ['DELETE', 'PUT']:
-        if obj.created_by_user is None:
-            return True
-        if obj.has_only_dirty_remarks(request.data) and request.method == 'PUT':
+        if obj.created_by_user is None or obj.has_only_dirty_remarks(request.data) and request.method == 'PUT':
             return True
 
         request_user_group = request.user.groups.first()
@@ -28,13 +26,14 @@ def is_consignee_belong_to_request_user(obj, request):
     return True
 
 
-def is_import_or_in_use_with_message(obj):
-    if obj.imported_from_vision:
-        return True, 'Permission Denied: Consignee was imported from Vision'
-    if DistributionPlanNode.objects.filter(consignee=obj.id).exists():
-        return True, 'Permission Denied: Consignee has an attached delivery'
+def has_permission_to_update_or_delete_with_error_msg(obj, request):
+    if request.method == 'PUT' and not obj.has_only_dirty_remarks(request.data) or request.method == 'DELETE':
+        if obj.imported_from_vision:
+            return False, 'Permission Denied: Consignee was imported from Vision'
+        if DistributionPlanNode.objects.filter(consignee=obj.id).exists():
+            return False, 'Permission Denied: Consignee has an attached delivery'
 
-    return False, None
+    return True, None
 
 
 class ConsigneePermissions(BaseBusinessPermission):
@@ -44,13 +43,11 @@ class ConsigneePermissions(BaseBusinessPermission):
         if request.user.is_superuser:
             return True
 
-        if request.method == 'PUT' and not obj.has_only_dirty_remarks(request.data) or request.method == 'DELETE':
-            is_import_or_in_use, error_message = is_import_or_in_use_with_message(obj)
-            if is_import_or_in_use:
-                raise ForbiddenException(error_message)
+        has_permission, error_msg = has_permission_to_update_or_delete_with_error_msg(obj, request)
+        if not has_permission:
+            raise ForbiddenException(error_msg)
 
         forbidden_not_owner_message = 'Permission Denied: Consignee was not created by your organization'
-
         if not is_consignee_belong_to_request_user(obj, request):
             raise ForbiddenException(forbidden_not_owner_message)
 
