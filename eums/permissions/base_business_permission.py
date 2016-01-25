@@ -1,5 +1,7 @@
 import logging
 
+from django.contrib.contenttypes.models import ContentType
+
 from eums.auth import PermissionCode
 from eums.exceptions import ForbiddenException
 from rest_framework import permissions
@@ -20,9 +22,10 @@ def build_request_permissions(*models):
 
 
 def is_user_has_permission(user, permission):
-    # TODO need to refactor using label in table django_content_type
-    return user.has_perm('eums.%s' % permission) or user.has_perm(
-            'auth.%s' % permission)
+    if user.is_superuser:
+        return True
+    app_label = ContentType.objects.filter(permission__codename=permission).first().app_label
+    return user.has_perm('%s.%s' % (app_label, permission))
 
 
 class BaseBusinessPermission(permissions.BasePermission):
