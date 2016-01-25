@@ -112,7 +112,7 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
     ],
     GROUP_IP_EDITOR: [
-        PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN,
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
@@ -138,7 +138,7 @@ GROUP_PERMISSIONS = {
     ],
     GROUP_IP_VIEWER: [
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
-        PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN,
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,
         PermissionCode.CAN_VIEW_DASH_BOARD,
         PermissionCode.CAN_VIEW_CONSIGNEE,
 

@@ -15,7 +15,8 @@ class PermissionCode(object):
     CAN_ADD_USER = 'add_user'
     CAN_CHANGE_USER = 'change_user'
 
-    CAN_VIEW_DISTRIBUTION_PLAN = 'can_view_distribution_plans'
+    CAN_VIEW_DISTRIBUTION_PLANS = 'can_view_distribution_plans'
+    CAN_VIEW_DISTRIBUTION_PLAN = 'can_view_distribution_plan'
     CAN_ADD_DISTRIBUTION_PLAN = 'add_distributionplan'
     CAN_CHANGE_DISTRIBUTION_PLAN = 'change_distributionplan'
     CAN_PATCH_DISTRIBUTION_PLAN = 'change_distributionplan'
@@ -24,7 +25,7 @@ class PermissionCode(object):
     CAN_ADD_DISTRIBUTION_PLAN_NODE = 'add_distributionplannode'
     CAN_CHANGE_DISTRIBUTION_PLAN_NODE = 'change_distributionplannode'
 
-    CAN_VIEW_CONSIGNEE_ITEM = 'view_consignee_item'
+    CAN_VIEW_CONSIGNEE_ITEM = 'can_view_consignee_item'
 
     CAN_VIEW_UNICEF_MENU = 'can_view_unicef_menu'
 
@@ -71,7 +72,9 @@ perm_code_names = [
 
     {'name': 'Can view users', 'codename': PermissionCode.CAN_VIEW_USER},
 
-    {'name': 'Can view distribution plans', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
+    {'name': 'Can view single distribution plan', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN},
+    {'name': 'Can view distribution plan', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS},
+
     {'name': 'Can view distribution plan nodes', 'codename': PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE},
 
     {'name': 'Can view stock reports', 'codename': PermissionCode.CAN_VIEW_STOCK_REPORT},

@@ -43,7 +43,12 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             })
             .when('/alerts', {
                 templateUrl: '/static/app/views/alerts/alerts.html',
-                controller: 'AlertsController'
+                controller: 'AlertsController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_alert');
+                    }
+                }
             })
             .when('/direct-delivery', {
                 templateUrl: '/static/app/views/delivery/direct-delivery.html',
@@ -59,7 +64,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'SingleIpDirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                        return UserService.checkUserPermission('auth.can_view_purchase_order');
                     }
                 }
             })
@@ -245,7 +250,12 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             })
             .when('/ip-items', {
                 templateUrl: '/static/app/views/delivery/ip-items.html',
-                controller: 'IpItemsController'
+                controller: 'IpItemsController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_consignee_item');
+                    }
+                }
             })
             .when('/deliveries-by-ip/:itemId', {
                 templateUrl: '/static/app/views/delivery/ip-delivery/deliveries-by-ip.html',
