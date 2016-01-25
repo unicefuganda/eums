@@ -14,3 +14,12 @@ class Option(TimeStampedModel):
 
     def __unicode__(self):
         return self.text
+
+    @staticmethod
+    def build_option(**kwargs):
+        text = kwargs.get("text")
+        question = kwargs.get("question")
+        option = Option.objects.filter(text=text, question=question)
+        if option.count() < 1:
+            option = Option.objects.create(text=text, question=question)
+        return option

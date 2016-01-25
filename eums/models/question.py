@@ -3,7 +3,6 @@ import datetime as datetime
 import re
 
 from django.db import models
-from djorm_pgarray.fields import TextArrayField
 from model_utils import Choices
 from eums.models.time_stamped_model import TimeStampedModel
 
@@ -26,7 +25,28 @@ class Question(TimeStampedModel):
         unique_together = ('flow', 'label')
 
     def get_subclass_instance(self):
-        return getattr(self, 'numericquestion', None) or getattr(self, 'textquestion', None) or getattr(self, 'multiplechoicequestion', None)
+        return getattr(self, 'numericquestion', None) or \
+               getattr(self, 'textquestion', None) or \
+               getattr(self, 'multiplechoicequestion', None)
+
+    @staticmethod
+    def build_question(question_type, **kwargs):
+        label = kwargs.get("label")
+        flow = kwargs.get("flow")
+        text = kwargs.get("text")
+        position = kwargs.get("position")
+        when_answered = kwargs.get("when_answered")
+        question = question_type.objects.filter(label=label, flow=flow)
+        if question.exists():
+            question.update(text=text, position=position)
+        else:
+            if when_answered is None:
+                question = question_type.objects.create(
+                        text=text, label=label, flow=flow, position=position)
+            else:
+                question = question_type.objects.create(
+                        text=text, label=label, flow=flow, when_answered=when_answered, position=position)
+        return question
 
 
 class NumericQuestion(Question):
@@ -57,7 +77,7 @@ class TextQuestion(Question):
         else:
             date_part_matcher = re.search('^\d+[^\d]+\d+[^\d]+\d+', val)
             if date_part_matcher:
-                raw_date = re.sub(r'[^\d]+', '-',date_part_matcher.group(0))
+                raw_date = re.sub(r'[^\d]+', '-', date_part_matcher.group(0))
 
                 date_patterns = ['%d-%m-%Y', '%m-%d-%Y', '%Y-%m-%d']
                 for pattern in date_patterns:
