@@ -3,6 +3,7 @@ from django.forms import model_to_dict
 from model_utils import Choices
 from model_utils.fields import StatusField
 from django.contrib.auth.models import User
+
 from eums.models.time_stamped_model import TimeStampedModel
 
 
@@ -26,3 +27,11 @@ class Consignee(TimeStampedModel):
 
     def __unicode__(self):
         return '%s' % self.name
+
+    def editable(self, current_user):
+        from eums.models import UserProfile
+        current_user_consignee = UserProfile.objects.get(user=current_user).consignee
+        consignee_creator = UserProfile.objects.filter(user=self.created_by_user).first()
+        if consignee_creator is None:
+            return False
+        return consignee_creator.consignee == current_user_consignee
