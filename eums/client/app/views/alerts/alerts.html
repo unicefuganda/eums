@@ -32,7 +32,7 @@
             <thead ng-init="initialize()">
             <tr ng-show="alerts">
                 <th class="centered" ng-hide="isActiveAlertType(constant_type_distribution)">STATUS</th>
-                <th class="centered">DISTRIBUTION DEADLINE</th>
+                <th class="centered">{{ isActiveAlertType(constant_type_distribution) ? "DISTRIBUTION DEADLINE" : "ALERT DATE" }}</th>
                 <th class="centered">PO/WAYBILL</th>
                 <th class="centered">DATE SHIPPED</th>
                 <th class="centered" ng-if="isActiveAlertType(constant_type_distribution)">DATE RECEIVED</th>
