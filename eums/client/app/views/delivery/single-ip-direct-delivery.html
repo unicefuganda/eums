@@ -156,18 +156,18 @@
                     <thead>
                     <tr>
                         <th class="col-md-1 item-list-col-header">#</th>
-                        <th class="col-md-3 item-list-col-header">Date</th>
-                        <th class="col-md-8 item-list-col-header">Approximate Total Value</th>
+                        <th class="col-md-4 item-list-col-header">Date</th>
+                        <th class="col-md-7 item-list-col-header">Approximate Total Value</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="(index, delivery) in trackedDeliveries">
                         <td class="col-md-1">{{ index + 1 }}</td>
-                        <td class="col-md-3">
-                            <div class="btn-link"
+                        <td class="col-md-4">
+                            <div class="btn-link text-nowrap"
                                  ng-click="viewDelivery(delivery)">{{ delivery.delivery_date | date : 'dd-MMM-yyyy' }}</div>
                         </td>
-                        <td class="col-md-8">{{ delivery.total_value | currency }}</td>
+                        <td class="col-md-7">{{ delivery.total_value | currency }}</td>
                     </tr>
                     </tbody>
                 </table>
