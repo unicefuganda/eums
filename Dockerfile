@@ -125,9 +125,6 @@ RUN sed -i '/^ES_GROUP=el/ s/^#*/true\nES_GROUP=root\n#/' /etc/init.d/elasticsea
 # Enable Elasticsearch service to start on boot
 RUN sudo update-rc.d elasticsearch defaults 95 10
 
-RUN service elasticsearch start
-
-
 ##############################################################################
 # Install UWSGI and config
 ##############################################################################
