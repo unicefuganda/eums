@@ -58,6 +58,13 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
         }
     },
 
+    searchByDistrict: {
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-district-container', searchTerm);
+        }
+    },
+
     districtHeader: {
         get: function () {
             return element(by.id('feedback-district-header'));

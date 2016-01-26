@@ -61,12 +61,6 @@ describe('ItemFeedbackReportController', function () {
             }, 1);
             expect(scope.report).toEqual(response.results);
         });
-
-        it('should set district', function () {
-            expect(scope.district).toEqual('All Districts');
-            initController({district: 'Fort Portal'});
-            expect(scope.district).toEqual('Fort Portal');
-        });
     });
 
     describe('on click ip note remark icon', function () {
@@ -91,6 +85,17 @@ describe('ItemFeedbackReportController', function () {
                 field: 'dateOfReceipt',
                 order: 'desc',
                 ip: 2
+            }, 1);
+        });
+
+        it('should call endpoint when searchTerm district changes', function () {
+            scope.searchTerm.selectedLocation = 'Adjumani';
+            scope.$apply();
+
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
+                field: 'dateOfReceipt',
+                order: 'desc',
+                selectedLocation: 'Adjumani'
             }, 1);
         });
     });

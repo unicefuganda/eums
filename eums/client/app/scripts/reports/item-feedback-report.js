@@ -16,7 +16,6 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.sortTerm = {field: 'dateOfReceipt', order: 'desc'};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
-        $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
@@ -65,7 +64,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         };
 
         $scope.exportToCSV = function () {
-            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm());
+            var allFilters = angular.extend({}, getSearchTerm());
             ReportService.exportItemFeedbackReport(allFilters).then(function (response) {
                 ngToast.create({content: response.message, class: 'info'});
             }, function () {
@@ -87,7 +86,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
 
         function loadItemFeedbackReport() {
             LoaderService.showLoader();
-            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm(), getSortTerm());
+            var allFilters = angular.extend({}, getSearchTerm(), getSortTerm());
             ReportService.itemFeedbackReport(allFilters, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
@@ -131,13 +130,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             }
         }
 
-        function getLocationTerm() {
-            var location = $routeParams.district;
-            return location ? {'location': location} : {};
-        }
-
         function getSearchTerm() {
-            return $scope.searchTerm;
+            var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
+            return filters;
         }
 
         function getSortTerm() {

@@ -97,11 +97,15 @@
                                value="{{ item.text }}">
                     </div>
                 </div>
-            </div>
-            <div class="row margin-right-20">
-                <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">Feedback Report from
-                    Deliveries to
-                    <span class="blue-unicef bold">{{ district }}</span></div>
+                <div class="row"> 
+                    <div class="col-xs-2 filter-label"> 
+                        <label class="control-label description-label" for="select-district">District:</label> 
+                    </div>
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-district-container">
+                        <input id="select-district" class="form-control" type="hidden" placeholder="All Districts"
+                               search-from-list list="$districts" ng-model="searchTerm.selectedLocation">
+                    </div>
+                </div>
             </div>
         </div>
 

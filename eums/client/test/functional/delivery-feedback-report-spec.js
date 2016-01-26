@@ -60,4 +60,9 @@ describe('Delivery Feedback Report', function () {
         expect(report.goodCondition).toContain('BAD');
         expect(report.goodCondition).not.toContain('GOOD');
     });
+
+    it('should search report by district', function () {
+        report.searchByDistrict('Wakiso');
+        expect(report.resultsCount).toEqual(1);
+    });
 });

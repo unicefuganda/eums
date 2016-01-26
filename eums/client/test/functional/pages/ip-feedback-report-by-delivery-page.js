@@ -104,6 +104,12 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
             functionalTestUtils.wait(1000);
             functionalTestUtils.fillSelect2Chosen('filter-condition-container', searchTerm);
         }
+    },
+    searchByDistrict: {
+        value: function (searchTerm) {
+            functionalTestUtils.wait(1000);
+            functionalTestUtils.fillSelect2Chosen('filter-district-container', searchTerm);
+        }
     }
 });
 
