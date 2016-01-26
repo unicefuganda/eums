@@ -66,12 +66,6 @@ describe('IpFeedbackReportController', function () {
             }, 1);
             expect(scope.report).toEqual(response.results)
         });
-
-        it('should set district', function () {
-            expect(scope.district).toEqual('All Districts');
-            initController({district: 'Fort Portal'});
-            expect(scope.district).toEqual('Fort Portal');
-        });
     });
 
     describe('on paginate', function () {
@@ -123,6 +117,16 @@ describe('IpFeedbackReportController', function () {
             }, 1);
         });
 
+        it('should call endpoint when searchTerm district changes', function () {
+            scope.searchTerm.selectedLocation = 'Adjumani'; 
+            scope.$apply();
+
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({
+                field: 'shipmentDate',
+                order: 'desc',
+                selectedLocation: 'Adjumani'
+            }, 1);
+        });
     });
 
     describe('on show remark', function () {
@@ -153,7 +157,6 @@ describe('IpFeedbackReportController', function () {
             scope.sortBy("shipmentDate");
 
             expect(scope.sortTerm).toEqual({field: 'shipmentDate', order: 'asc'});
-
         });
 
         it('should sort by shipment date', function () {
@@ -173,7 +176,6 @@ describe('IpFeedbackReportController', function () {
         it('should sort as default when field is not supported', function () {
             scope.sortBy("notSupported");
             expect(scope.sortTerm).toEqual({field: 'shipmentDate', order: 'desc'});
-        })
-
+        });
     });
 });

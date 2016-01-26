@@ -25,7 +25,6 @@ describe('Delivery Feedback Report', function () {
         ftUtils.waitForPageToLoad();
 
         report.sortBy('shipment-date', 'desc');
-
         expect(report.shipmentDate).toContain('11-Jul-2015');
         expect(report.consignees).toContain('WAKISO DHO');
         expect(report.outcome).toContain('sample programme');

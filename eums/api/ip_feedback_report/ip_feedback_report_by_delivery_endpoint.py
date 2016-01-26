@@ -162,7 +162,8 @@ def _filter_track_and_confirmed_auto_track_nodes(request):
 
 
 def _filter_fields(params):
-    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id',
+    query_fields = {'programme_id': 'programme_id', 
+                    'consignee_id': 'distribution_plan__consignee_id',
                     'location': 'location__iexact'}
     search_params = {}
     for key, value in params.iteritems():

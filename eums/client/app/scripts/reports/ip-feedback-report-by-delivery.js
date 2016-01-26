@@ -8,14 +8,12 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
                                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
         var timer;
+        var initializing = true;
 
         $scope.searchTerm = {};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
         $scope.sortTerm = {field: 'shipmentDate', order: 'desc'};
-        $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
-
-        var initializing = true;
 
         $scope.$watchCollection('searchTerm', function () {
             $scope.pagination.page = 1;
@@ -62,7 +60,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
         };
 
         $scope.exportToCSV = function () {
-            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm());
+            var allFilters = angular.extend({}, getSearchTerm());
             ReportService.exportDeliveriesFeedbackReport(allFilters).then(function (response) {
                 ngToast.create({content: response.message, class: 'info'});
             }, function () {
@@ -79,7 +77,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
 
         function loadIpFeedbackReportByDelivery() {
             LoaderService.showLoader();
-            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm(), getSortTerm());
+            var allFilters = angular.extend({}, getSearchTerm(), getSortTerm());
             ReportService.ipFeedbackReportByDelivery(allFilters, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
@@ -123,13 +121,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
             }
         }
 
-        function getLocationTerm() {
-            var location = $routeParams.district;
-            return location ? {'location': location} : {};
-        }
-
         function getSearchTerm() {
-            return $scope.searchTerm;
+            var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
+            return filters;
         }
 
         function getSortTerm() {
