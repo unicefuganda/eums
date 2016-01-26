@@ -112,12 +112,6 @@ class DistributionPlanNode(Runnable):
     def has_children(self):
         return bool(self.children().count())
 
-    def time_limitation_on_distribution(self):
-        return self.distribution_plan.time_limitation_on_distribution
-
-    def tracked_date(self):
-        return self.distribution_plan.tracked_date
-
     def _set_delivery(self):
         parents = self.get_parents()
         if parents and parents.count() == 1:
