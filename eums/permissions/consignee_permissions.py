@@ -50,5 +50,4 @@ class ConsigneePermissions(BaseBusinessPermission):
         has_permission, error_msg = has_permission_to_update_or_delete_with_error_msg(obj, request)
         if not has_permission:
             raise ForbiddenException(error_msg)
-
         return True

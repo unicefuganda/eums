@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'Loader'])
+angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'Loader', 'SortBy', 'Sort'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1});
     }])
@@ -9,13 +9,29 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             uri: EumsConfig.BACKEND_URLS.ALERTS
         });
     })
-    .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast, DeliveryService) {
+    .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast, DeliveryService, SortService, SortArrowService) {
+
+        var SUPPORTED_FIELD = ['status', 'alertDate', 'dateShipped', 'dateReceived', 'value'];
 
         $scope.constant_type_delivery = 'delivery';
         $scope.constant_type_item = 'item';
         $scope.constant_type_distribution = 'distribution';
         $scope.remarks = '';
         $scope.type = $scope.constant_type_delivery;
+
+        $scope.sortTerm = {field: 'alertDate', order: 'desc'};
+
+        $scope.sortArrowClass = function (criteria) {
+            return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
+        };
+
+        $scope.sortBy = function (sortField) {
+            if (_.include(SUPPORTED_FIELD, sortField)) {
+                console.log($scope.sortTerm);
+                $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
+                $scope.goToPage(1);
+            }
+        };
 
         $scope.changeAlertType = function (type) {
             $scope.type = type;
@@ -93,6 +109,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         function loadInitialAlerts(urlArgs) {
             $scope.currentPage = urlArgs.page;
+            console.log($scope.currentPage);
             LoaderService.showLoader();
             AlertsService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
@@ -115,7 +132,10 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         function changedFilters() {
             var urlArgs = {};
+            urlArgs.field = $scope.sortTerm.field;
+            urlArgs.order = $scope.sortTerm.order;
             urlArgs.paginate = 'true';
+
             if ($scope.type) {
                 urlArgs.type = $scope.type;
             }

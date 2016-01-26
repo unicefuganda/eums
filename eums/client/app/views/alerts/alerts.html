@@ -31,13 +31,26 @@
         <table class="table table-bordered table-hover table-striped">
             <thead ng-init="initialize()">
             <tr ng-show="alerts">
-                <th class="centered" ng-hide="isActiveAlertType(constant_type_distribution)">STATUS</th>
-                <th class="centered">{{ isActiveAlertType(constant_type_distribution) ? "DISTRIBUTION DEADLINE" : "ALERT DATE" }}</th>
+                <th class="centered"
+                    ng-hide="isActiveAlertType(constant_type_distribution)">
+                    <a ng-click="sortBy('status')">STATUS<i
+                            ng-class="sortArrowClass('status');"></i></a>
+                </th>
+                <th class="centered">
+                    <a ng-click="sortBy('alertDate')">
+                        {{ isActiveAlertType(constant_type_distribution) ? "DISTRIBUTION DEADLINE" : "ALERT DATE" }}<i
+                            ng-class="sortArrowClass('alertDate');"></i></a>
+                </th>
                 <th class="centered">PO/WAYBILL</th>
-                <th class="centered">DATE SHIPPED</th>
-                <th class="centered" ng-if="isActiveAlertType(constant_type_distribution)">DATE RECEIVED</th>
+                <th class="centered"><a ng-click="sortBy('dateShipped')">DATE
+                    SHIPPED<i ng-class="sortArrowClass('dateShipped');"></i></a></th>
+                <th class="centered" ng-if="isActiveAlertType(constant_type_distribution)">
+                    <a ng-click="sortBy('dateReceived')">DATE RECEIVED<i ng-class="sortArrowClass('dateReceived');"></i></a>
+                </th>
                 <th class="centered" ng-if="isActiveAlertType(constant_type_item)">QTY</th>
-                <th class="centered">VALUE</th>
+                <th class="centered">
+                    <a ng-click="sortBy('value')">VALUE<i ng-class="sortArrowClass('value');"></i></a>
+                </th>
                 <th ng-if="isActiveAlertType(constant_type_item)">ITEM</th>
                 <th ng-hide="isActiveAlertType(constant_type_distribution)">REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
