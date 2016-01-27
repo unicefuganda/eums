@@ -36,3 +36,4 @@ xlwt==0.7.5
 flower
 elasticsearch==1.7.0
 python-dateutil==2.4.2
+raven==5.10.1

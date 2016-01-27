@@ -1,6 +1,8 @@
 import logging.config
 import os
 from collections import namedtuple
+
+import raven
 from os.path import join, exists
 
 from datetime import datetime
@@ -28,10 +30,12 @@ INSTALLED_APPS = (
     'rest_framework',
     'password_reset',
     'django_extensions',
-    'test_without_migrations'
+    'test_without_migrations',
+    'raven.contrib.django.raven_compat'
 )
 
 MIDDLEWARE_CLASSES = (
+    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -49,6 +53,11 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432'
     }
+}
+
+RAVEN_CONFIG = {
+    'dsn': 'https://5f6d928162ad466a8305b3304bc17f78:ba61b0ca644340d8abb123608cdcd071@app.getsentry.com/65022',
+    'release': '1.0.0'
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'eums/uploads')
@@ -204,10 +213,15 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'standard'
         },
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {'EUMS': 'EUMS'},
+        }
     },
     'loggers': {
         '': {  # root logger
-            'handlers': ['console', 'debug'],
+            'handlers': ['console', 'debug', 'sentry'],
             'level': 'DEBUG'
         },
         'django.request': {
