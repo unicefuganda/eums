@@ -45,11 +45,10 @@ class Alert(models.Model):
     def date_shipped(self):
         return self.runnable.delivery_date
 
+    @property
     def date_received(self):
-        distribution_plans = DistributionPlan.objects.filter(id=self.runnable.id)
-        if len(distribution_plans) > 0:
-            return distribution_plans[0].received_date()
-        return ''
+        distribution_plan = DistributionPlan.objects.filter(id=self.runnable.id).first()
+        return distribution_plan.received_date if distribution_plan else ''
 
     def runnable_id(self):
         return self.runnable.id

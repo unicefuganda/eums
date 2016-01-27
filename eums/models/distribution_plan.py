@@ -155,6 +155,7 @@ class DistributionPlan(Runnable):
         answers = text_answers + multiple_choice_answers + numeric_answers
         return sorted(answers, key=lambda field: field['position'])
 
+    @property
     def received_date(self):
         answers = filter(lambda answer: answer['question_label'] == Question.LABEL.dateOfReceipt, self.answers())
         if len(answers) > 0:

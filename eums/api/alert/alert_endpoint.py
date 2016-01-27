@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Alert, UserProfile, DistributionPlanNode, DistributionPlan
-from django.db.models import Q
+from django.db.models import Q, Count, Max
 
 from eums.permissions.alert_permissions import AlertPermissions
 
@@ -94,7 +94,55 @@ class AlertViewSet(ReadOnlyModelViewSet):
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':
             self.paginator.page_size = 0
-        return super(AlertViewSet, self).list(request, args, kwargs)
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if request.GET.get('field'):
+            sort_order = request.GET.get('order')
+            field_handlers = {
+                'alertDate': CommonFieldSorter('created_on', sort_order),
+                'status': CommonFieldSorter('issue', sort_order),
+                'dateShipped': RelatedFieldSorter('date_shipped', sort_order, 'runnable__delivery_date'),
+                'value': RelatedFieldSorter('total_value', sort_order, 'runnable__total_value'),
+                'dateReceived': PropertySorter('date_received', sort_order)
+            }
+            queryset = field_handlers.get(request.GET.get('field')).query(queryset)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+
+class CommonFieldSorter(object):
+    def __init__(self, field_name, order):
+        self.field_name = field_name
+        self.order = order
+
+    @property
+    def _sort_field(self):
+        return ('-' + self.field_name) if self.order == 'desc' else self.field_name
+
+    def query(self, queryset):
+        return queryset.order_by(self._sort_field)
+
+
+class RelatedFieldSorter(CommonFieldSorter):
+    def __init__(self, field_name, order, related_field):
+        super(RelatedFieldSorter, self).__init__(field_name, order)
+        self.related_field = related_field
+
+    def query(self, queryset):
+        return queryset.annotate(**{self.field_name: Max(self.related_field)}).order_by(self._sort_field)
+
+
+class PropertySorter(CommonFieldSorter):
+    def query(self, queryset):
+        return queryset
 
 
 alert_router = DefaultRouter()

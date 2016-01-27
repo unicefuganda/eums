@@ -132,10 +132,12 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         function changedFilters() {
             var urlArgs = {};
-            urlArgs.field = $scope.sortTerm.field;
-            urlArgs.order = $scope.sortTerm.order;
-            urlArgs.paginate = 'true';
+            if($scope.sortTerm.field){
+                urlArgs.field = $scope.sortTerm.field;
+                urlArgs.order = $scope.sortTerm.order;
+            }
 
+            urlArgs.paginate = 'true';
             if ($scope.type) {
                 urlArgs.type = $scope.type;
             }
