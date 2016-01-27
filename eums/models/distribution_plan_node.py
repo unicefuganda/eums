@@ -60,6 +60,12 @@ class DistributionPlanNode(Runnable):
             alert.is_resolved = True
             alert.save()
 
+    def time_limitation_on_distribution(self):
+        return self.distribution_plan.time_limitation_on_distribution if self.distribution_plan else None
+
+    def tracked_date(self):
+        return self.distribution_plan.tracked_date if self.distribution_plan else None
+
     def _update_distribution_plan(self):
         if self.is_root() and self.distribution_plan:
             self.distribution_plan.update_total_value_and_ip(self.ip)
