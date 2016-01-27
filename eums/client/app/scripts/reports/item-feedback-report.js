@@ -17,6 +17,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
 
+        // todo: use '_.throttle' instead of the timer
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
             if (initializing) {
@@ -121,7 +122,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         }
 
         function updateProgrammes(programmeIds) {
-            $timeout(function () {
+            SysUtilsService.whenAvailable(function () {
+                return $scope.directiveValues.allProgrammes;
+            }, function () {
                 $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
                     return _.contains(programmeIds, programme.id);
                 }) : [];
@@ -129,7 +132,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 if (!_.isEmpty($scope.displayProgrammes)) {
                     $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
                 }
-            }, 500);
+            });
         }
 
         function getSearchTerm() {

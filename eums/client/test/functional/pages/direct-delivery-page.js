@@ -266,7 +266,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
         get: function () {
             return element(by.css('#input-time-limitation-on-distribution input')).getAttribute('value');
         }
-    },
+    }
 });
 
 module.exports = new DirectDeliveryPage;

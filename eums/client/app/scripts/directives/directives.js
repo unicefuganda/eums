@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Directives', ['eums.ip'])
+angular.module('Directives', ['eums.ip', 'SysUtils'])
     .directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',
@@ -12,7 +12,7 @@ angular.module('Directives', ['eums.ip'])
             templateUrl: '/static/app/views/delivery/partials/view-sales-orders.html'
         };
     }])
-    .directive('searchFromList', function (IPService, $timeout) {
+    .directive('searchFromList', function (IPService, $timeout, SysUtilsService) {
         return {
             restrict: 'A',
             scope: false,
@@ -47,7 +47,9 @@ angular.module('Directives', ['eums.ip'])
                         query.callback(data);
                     },
                     initSelection: function (element, callback) {
-                        $timeout(function () {
+                        SysUtilsService.whenAvailable(function () {
+                            return list;
+                        }, function () {
                             var matchingItem = list.filter(function (item) {
                                 return item.id === ngModel.$modelValue;
                             })[0];
@@ -56,7 +58,7 @@ angular.module('Directives', ['eums.ip'])
                             } else {
                                 callback({});
                             }
-                        }, 500);
+                        });
                     }
                 });
 

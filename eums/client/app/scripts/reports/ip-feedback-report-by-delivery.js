@@ -112,7 +112,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
         }
 
         function updateProgrammes(programmeIds) {
-            $timeout(function () {
+            SysUtilsService.whenAvailable(function () {
+                return $scope.directiveValues.allProgrammes;
+            }, function () {
                 $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
                     return _.contains(programmeIds, programme.id);
                 }) : [];
@@ -120,7 +122,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
                 if (!_.isEmpty($scope.displayProgrammes)) {
                     $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
                 }
-            }, 500);
+            });
         }
 
         function getSearchTerm() {
