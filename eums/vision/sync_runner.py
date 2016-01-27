@@ -43,7 +43,7 @@ def _sync_orders(sync_record, start_date='', end_date=''):
             synchronizer(start_date, end_date).sync()
             sync_record.set_sync_status_success(key)
             logger.info("%s sync successfully" % key)
-        except VisionSyncInfo, e:
+        except VisionException, e:
             sync_record.set_sync_status_failure(key)
             logger.error("%s sync failed, Reason:%s" % (key, e.message))
 
