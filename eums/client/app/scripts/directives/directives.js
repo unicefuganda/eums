@@ -56,7 +56,7 @@ angular.module('Directives', ['eums.ip'])
                             } else {
                                 callback({});
                             }
-                        });
+                        }, 500);
                     }
                 });
 

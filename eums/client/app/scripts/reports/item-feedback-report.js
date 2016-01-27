@@ -12,7 +12,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         var timer;
         var initializing = true;
 
-        $scope.searchTerm = {};
+        $scope.searchTerm = $routeParams.district ? {selectedLocation: SysUtilsService.capitalize($routeParams.district)} : {};
         $scope.sortTerm = {field: 'dateOfReceipt', order: 'desc'};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
@@ -121,13 +121,15 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         }
 
         function updateProgrammes(programmeIds) {
-            $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
-                return _.contains(programmeIds, programme.id);
-            }) : [];
+            $timeout(function () {
+                $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
+                    return _.contains(programmeIds, programme.id);
+                }) : [];
 
-            if (!_.isEmpty($scope.displayProgrammes)) {
-                $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
-            }
+                if (!_.isEmpty($scope.displayProgrammes)) {
+                    $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
+                }
+            }, 500);
         }
 
         function getSearchTerm() {

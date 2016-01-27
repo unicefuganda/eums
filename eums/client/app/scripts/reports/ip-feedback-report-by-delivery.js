@@ -10,7 +10,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
         var timer;
         var initializing = true;
 
-        $scope.searchTerm = {};
+        $scope.searchTerm = $routeParams.district ? {selectedLocation: SysUtilsService.capitalize($routeParams.district)} : {};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
         $scope.sortTerm = {field: 'shipmentDate', order: 'desc'};
@@ -112,13 +112,15 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
         }
 
         function updateProgrammes(programmeIds) {
-            $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
-                return _.contains(programmeIds, programme.id);
-            }) : [];
+            $timeout(function () {
+                $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
+                    return _.contains(programmeIds, programme.id);
+                }) : [];
 
-            if (!_.isEmpty($scope.displayProgrammes)) {
-                $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
-            }
+                if (!_.isEmpty($scope.displayProgrammes)) {
+                    $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
+                }
+            }, 500);
         }
 
         function getSearchTerm() {

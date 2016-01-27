@@ -24,7 +24,12 @@ angular.module('SysUtils', [])
             formatDateToYMD: function (date) {
                 // this function is extracted from the controllers
                 //return moment(date).format('YYYY-MM-DD')
-                return date && moment(date).format('YYYY-MM-DD')
+                return date && moment(date).format('YYYY-MM-DD');
+            },
+            capitalize: function (data) {
+                if (data) {
+                    return data.substring(0,1).toUpperCase() + data.substring(1).toLowerCase();
+                }
             }
         }
     });

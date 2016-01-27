@@ -64,11 +64,11 @@ describe('Home Page', function () {
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
 
-            it('should navigate to detail responses page when page link is clicked', function () {
+            fit('should navigate to detail responses page when page link is clicked', function () {
                 homePage.clickMapLayer('amuru');
                 homePage.goToResponseDetailsPage();
 
-                expect(itemFeedbackPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
+                expect(itemFeedbackPage.districtSelect2.getAttribute('value')).toEqual('Amuru');
                 expect(itemFeedbackPage.resultsCount).toEqual(10);
                 expect(itemFeedbackPage.consignees).toContain('WAKISO DHO');
             });
@@ -128,11 +128,11 @@ describe('Home Page', function () {
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
 
-            it('should navigate to detail responses page when page link is clicked', function () {
+            fit('should navigate to detail responses page when page link is clicked', function () {
                 homePage.clickMapLayer('amuru');
                 homePage.goToResponseDetailsPage();
 
-                expect(ipFeedbackReportByDeliveryPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
+                expect(ipFeedbackReportByDeliveryPage.districtSelect2.getAttribute('value')).toEqual('Amuru');
                 expect(itemFeedbackPage.resultsCount).toEqual(2);
                 expect(itemFeedbackPage.consignees).toContain('RAKAI DHO');
                 expect(itemFeedbackPage.consignees).toContain('KAABONG DHO');

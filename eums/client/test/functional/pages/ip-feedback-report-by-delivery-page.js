@@ -28,9 +28,9 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
         }
     },
 
-    districtHeader: {
+    districtSelect2: {
         get: function () {
-            return element(by.id('feedback-district-header'));
+            return element(by.id('select-district'));
         }
     },
     consignees: {
