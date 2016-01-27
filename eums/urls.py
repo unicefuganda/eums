@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from eums.api.alert.alert_endpoint import alert_router, AlertCount
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
@@ -127,8 +128,5 @@ urlpatterns = patterns(
         url(r'^exports/items-feedback-report/', ExportItemFeedbackReportViewSet.as_view(),
             name='items_feedback_report_csv'),
         url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
-            name='stocks_feedback_report_csv'),
-
-        (r'%s(?P<path>.*)' % settings.MEDIA_URL[1:], 'django.views.static.serve',
-         {'document_root': settings.MEDIA_ROOT}),
-)
+            name='stocks_feedback_report_csv')
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
