@@ -254,9 +254,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                             uiPlanNode.trackSubmitted = node.track;
                             deferred.resolve(uiPlanNode);
                         });
-                    }).catch(function () {
-                        createToast('Save failed', 'danger');
-                    });
+                    })
                 }
 
                 return deferred.promise;

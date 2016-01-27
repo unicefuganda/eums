@@ -15,15 +15,6 @@ describe('Deliveries permission', function () {
         directDeliveryPage.visit();
 
         expect(commonPage.currentUrl).toEqual(homePage.url);
-
-        // TODO:assert the toast message
-        //element(by.repeater('message in messages')).then(function (toast) {
-        //    console.log('expect(toast.getText()).toEqual("Permission Denied!");');
-        //    expect(toast.getText()).toEqual("Permission Denied!");
-        //});
-
-        //expect(homePage.toast.isDisplayed()).toBeTruthy();
-        //expect(homePage.toastMessage).toEqual("Permission Denied!");
     });
 });
 

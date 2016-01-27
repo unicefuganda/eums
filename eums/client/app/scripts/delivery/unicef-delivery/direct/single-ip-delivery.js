@@ -70,7 +70,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                     .then(updatePurchaseOrderDeliveryMode)
                     .then(loadOrderData)
                     .then(notifyOnSuccess)
-                    .catch(alertOnSaveFailure)
                     .finally(hideLoader)
             }
             else if ($scope.delivery.id && totalQuantityShipped) {
@@ -81,7 +80,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                     .then(function () {
                         notifyOnSuccess('Delivery updated');
                     })
-                    .catch(alertOnSaveFailure)
                     .finally(hideLoader);
             }
             else if (!totalQuantityShipped) {
@@ -280,10 +278,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             angular.element('#loading').modal('hide');
             angular.element('#loading.modal').removeClass('in');
             angular.element('.modal-backdrop').remove();
-        }
-
-        function alertOnSaveFailure() {
-            createToast('Save failed', 'danger');
         }
 
         function updatePurchaseOrderDeliveryMode() {

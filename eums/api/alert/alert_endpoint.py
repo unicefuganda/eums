@@ -61,11 +61,6 @@ class AlertViewSet(ReadOnlyModelViewSet):
             return self.queryset._clone()
 
     def patch(self, request, *args, **kwargs):
-        logged_in_user = request.user
-        is_unicef_viewer = AlertViewSet._is_unicef_viewer(logged_in_user)
-
-        if UserProfile.objects.filter(user=logged_in_user).exists() or is_unicef_viewer:
-            return Response(status=status.HTTP_403_FORBIDDEN)
         try:
             data = request.data
             alert = Alert.objects.get(pk=kwargs['pk'])
@@ -73,7 +68,6 @@ class AlertViewSet(ReadOnlyModelViewSet):
             alert.is_resolved = data['is_resolved']
             alert.save()
             return Response()
-
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -87,9 +81,6 @@ class AlertViewSet(ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
-
-        if UserProfile.objects.filter(user=logged_in_user).exists():
-            return Response(status=status.HTTP_403_FORBIDDEN)
 
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':

@@ -229,18 +229,6 @@ describe('AlertsController', function () {
             expect(mockAlertsService.all.calls.count()).toEqual(2);
         });
 
-        it('should not load alerts upon failure to update an alert and create toast', function () {
-            mockAlertsService.update.and.returnValue(q.reject());
-            scope.$apply();
-
-            scope.remarks = 'some remarks about an alert';
-            scope.resolveAlert();
-            scope.$apply();
-
-            expect(mockAlertsService.all.calls.count()).toEqual(1);
-            expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to resolve alert', class: 'danger'});
-        });
-
         it('should set modal flag to true when add remark button is clicked', function () {
             scope.remark(0);
             scope.$apply();
@@ -265,15 +253,6 @@ describe('AlertsController', function () {
                 content: 'The confirmation to IP has been retriggered.',
                 class: 'success'
             });
-        });
-
-        it('should create fail toast upon failure to update the retrigger state', function () {
-            mockDeliveryService.retriggerDelivery.and.returnValue(q.reject());
-            scope.retriggerDelivery(11);
-            scope.$apply();
-
-            expect(mockDeliveryService.retriggerDelivery).toHaveBeenCalledWith(11);
-            expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to retrigger alert', class: 'danger'});
         });
 
         it('should show retrigger column when retrigger button exists', function () {

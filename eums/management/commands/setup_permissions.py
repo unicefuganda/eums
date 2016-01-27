@@ -162,6 +162,7 @@ GROUP_PERMISSIONS = {
 
         PermissionCode.CAN_VIEW_STOCK_REPORT,
         PermissionCode.CAN_VIEW_ITEM_FEEDBACK_REPORT,
+        PermissionCode.CAN_VIEW_ITEM,
     ]
 }
 

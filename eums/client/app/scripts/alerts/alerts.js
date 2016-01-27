@@ -65,9 +65,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                     });
                     initializeCurrentTypeView();
                 })
-                .catch(function () {
-                    createToast('Failed to resolve alert', 'danger')
-                })
         };
 
         $scope.isActiveAlertType = function (type) {
@@ -96,9 +93,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                     });
                     initializeCurrentTypeView();
                 })
-                .catch(function () {
-                    createToast('Failed to retrigger alert', 'danger');
-                })
         };
 
         initializeCurrentTypeView();
@@ -109,7 +103,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         function loadInitialAlerts(urlArgs) {
             $scope.currentPage = urlArgs.page;
-            console.log($scope.currentPage);
             LoaderService.showLoader();
             AlertsService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
@@ -132,7 +125,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         function changedFilters() {
             var urlArgs = {};
-            if($scope.sortTerm.field){
+            if ($scope.sortTerm.field) {
                 urlArgs.field = $scope.sortTerm.field;
                 urlArgs.order = $scope.sortTerm.order;
             }

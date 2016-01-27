@@ -31,13 +31,13 @@ def is_user_has_permission(user, permission):
 class BaseBusinessPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if not hasattr(self, 'request_permissions'):
-            raise ForbiddenException('Unauthorised!')
+            raise ForbiddenException('Permission denied!')
 
         user_permissions = self.request_permissions.get(request.method)
-
+        logger.info('user=%s' % request.user)
         for user_permission in user_permissions:
             logger.info('user=%s, permission=%s' % (request.user, user_permission))
             if is_user_has_permission(request.user, user_permission):
                 return True
 
-        raise ForbiddenException('Unauthorised!')
+        raise ForbiddenException('Permission denied!')

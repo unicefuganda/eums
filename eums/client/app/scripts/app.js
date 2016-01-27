@@ -6,9 +6,11 @@ var interceptor = ["ngToast", "$q", "$location", function (ngToast, $q, location
         responseError: function (response) {
             if (response.status === 403) {
                 ngToast.create({content: 'Permission Denied!', class: 'danger'});
-                if (!response.data) {
+                if (!response.data || response.data.detail === 'Permission denied!') {
                     location.path("/");
                 }
+            } else if (response.status === 500) {
+                ngToast.create({content: 'Error occurs!', class: 'danger'});
             }
             return $q.reject(response);
         }

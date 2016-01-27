@@ -161,8 +161,8 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test in self.unicef_admin_permissions)
         self.assertTrue(permission_to_test in self.unicef_editor_permissions)
         self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
-        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
-        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
 
     def test_grant_correct_view_supply_efficiency_report_permission(self):
         permission_to_test = PermissionCode.CAN_VIEW_SUPPLY_EFFICIENCY_REPORT
@@ -189,7 +189,7 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test in self.unicef_editor_permissions)
         self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
         self.assertTrue(permission_to_test in self.ip_editor_permissions)
-        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
 
     def test_grant_correct_add_web_answer_permission(self):
         permission_to_test = PermissionCode.CAN_ADD_WEB_ANSWER

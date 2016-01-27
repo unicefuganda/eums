@@ -380,21 +380,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(createNodeArgs.first().first().quantity).toEqual(10);
         });
 
-        it('should alert user when creation of delivery fails', function () {
-            mockDeliveryService.create.and.returnValue(q.reject());
-            scope.save(true);
-            scope.$apply();
-
-            expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
-        });
-
-        it('should alert user when creation of delivery nodes fails', function () {
-            mockDeliveryNodeService.create.and.returnValue(q.reject());
-            scope.save(true);
-            scope.$apply();
-
-            expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
-        });
 
         it('should mark purchase order as singleIP and save it', function () {
             scope.save(true);
