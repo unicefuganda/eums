@@ -64,7 +64,7 @@ describe('Home Page', function () {
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
 
-            fit('should navigate to detail responses page when page link is clicked', function () {
+            it('should navigate to detail responses page when page link is clicked', function () {
                 homePage.clickMapLayer('amuru');
                 homePage.goToResponseDetailsPage();
 
@@ -128,7 +128,7 @@ describe('Home Page', function () {
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
 
-            fit('should navigate to detail responses page when page link is clicked', function () {
+            it('should navigate to detail responses page when page link is clicked', function () {
                 homePage.clickMapLayer('amuru');
                 homePage.goToResponseDetailsPage();
 
