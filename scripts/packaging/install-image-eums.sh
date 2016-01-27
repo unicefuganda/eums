@@ -49,6 +49,7 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -v ${USER_DIR}/map:/opt/map \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
+-v /opt/app/uploads:/opt/app/eums/eums/uploads \
 %IMAGENAME%:latest \
 /bin/bash -c "opt/scripts/setupmap/setup-map.sh '${LATITUDE}' '${LONGITUDE}' '${ZOOM_LEVEL}' \
 && opt/scripts/buildConfigs.sh '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' \
