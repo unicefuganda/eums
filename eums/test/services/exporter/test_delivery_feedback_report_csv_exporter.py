@@ -41,6 +41,8 @@ class DeliveryFeedbackReportExporterTest(TestCase):
         last_name = 'Yuan'
         phone = '18192235667'
         contact_name = '%s %s' % (first_name, last_name)
+        absolute_urls = ['http://testserver/media/photo/2016/01/27/major.jpg',
+                         'http://testserver/media/photo/2016/01/27/cold.jpg']
 
         deliveries_feedback = [{'deliveryReceived': delivery_received,
                                 'shipmentDate': shipment_date,
@@ -55,6 +57,7 @@ class DeliveryFeedbackReportExporterTest(TestCase):
                                 'contactName': contact_name,
                                 'contactPhone': phone,
                                 'contactPersonId': contact_person_id,
+                                'absoluteUrls': absolute_urls
                                 }, ]
 
         row_value = [delivery_received,
@@ -68,7 +71,8 @@ class DeliveryFeedbackReportExporterTest(TestCase):
                      value,
                      is_delivery_in_good_order,
                      satisfied_with_delivery,
-                     additional_delivery_comments
+                     additional_delivery_comments,
+                     absolute_urls
                      ]
 
         csv_exporter = DeliveryFeedbackReportExporter(self.HOSTNAME)

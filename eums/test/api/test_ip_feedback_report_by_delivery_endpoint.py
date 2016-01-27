@@ -10,6 +10,7 @@ from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, Text
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.file_upload_factory import FileUploadFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -46,7 +47,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'urls': [],
+                              'urls': ['photo/2016/02/14/world.jpg', 'photo/2016/02/14/peace.jpg'],
+                              'absoluteUrls': ['http://testserver/media/photo/2016/02/14/world.jpg',
+                                               'http://testserver/media/photo/2016/02/14/peace.jpg'],
                               'additionalDeliveryComments': comment, 'contactPersonId': CONTACT_PERSON_ID, 'value': 100,
                               'location': 'Madagascar'}]
 
@@ -102,6 +105,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: empty, 'satisfiedWithDelivery': no,
                               'urls': [],
+                              'absoluteUrls': [],
                               'additionalDeliveryComments': empty, 'contactPersonId': CONTACT_PERSON_ID,
                               'value': 100, 'location': 'Kampala'}]
 
@@ -134,7 +138,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'urls': [],
+                              'urls': ['photo/2016/02/14/world.jpg', 'photo/2016/02/14/peace.jpg'],
+                              'absoluteUrls': ['http://testserver/media/photo/2016/02/14/world.jpg',
+                                               'http://testserver/media/photo/2016/02/14/peace.jpg'],
                               'additionalDeliveryComments': comment,
                               'contactPersonId': CONTACT_PERSON_ID,
                               'value': 100, 'location': 'Madagascar'}]
@@ -168,7 +174,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'urls': [],
+                              'urls': ['photo/2016/02/14/world.jpg', 'photo/2016/02/14/peace.jpg'],
+                              'absoluteUrls': ['http://testserver/media/photo/2016/02/14/world.jpg',
+                                               'http://testserver/media/photo/2016/02/14/peace.jpg'],
                               'additionalDeliveryComments': comment, 'contactPersonId': CONTACT_PERSON_ID,
                               'value': 100, 'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
@@ -201,7 +209,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                               'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
                               'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'urls': [],
+                              'urls': ['photo/2016/02/14/world.jpg', 'photo/2016/02/14/peace.jpg'],
+                              'absoluteUrls': ['http://testserver/media/photo/2016/02/14/world.jpg',
+                                               'http://testserver/media/photo/2016/02/14/peace.jpg'],
                               'additionalDeliveryComments': comment, 'contactPersonId': CONTACT_PERSON_ID, 'value': 100,
                               'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
@@ -440,6 +450,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
             MultipleChoiceAnswerFactory(run=run, question=self.delivery_in_good_order, value=self.yes_two)
             MultipleChoiceAnswerFactory(run=run, question=self.satisfied_with_delivery, value=self.no_three)
             TextAnswerFactory(run=run, question=self.additional_comments, value=comment)
+            FileUploadFactory(plan=delivery, file='photo/2016/02/14/world.jpg')
+            FileUploadFactory(plan=delivery, file='photo/2016/02/14/peace.jpg')
             number_of_deliveries -= 1
             order_number += 1
 

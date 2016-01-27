@@ -5,7 +5,7 @@ web_flow, _ = Flow.objects.get_or_create(label=Flow.Label.WEB)
 web_question_1 = Question.build_question(MultipleChoiceQuestion, text='Was the item received?', label='itemReceived',
                                          flow=web_flow, when_answered='update_consignee_inventory', position=1)
 yes_1 = Option.build_option(text='Yes', question=web_question_1)
-yes_2 = Option.build_option(text='No', question=web_question_1)
+no_1 = Option.build_option(text='No', question=web_question_1)
 
 web_question_2 = Question.build_question(NumericQuestion, text='How much was received?', label='amountReceived',
                                          flow=web_flow, when_answered='update_consignee_stock_level', position=2)

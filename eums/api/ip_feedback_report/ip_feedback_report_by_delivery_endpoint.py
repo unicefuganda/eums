@@ -6,7 +6,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
+from django.core.urlresolvers import reverse
 
+from eums import settings
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
     DistributionPlanNode, Flow, Upload
@@ -53,7 +55,7 @@ def filter_delivery_feedback_report(request):
     deliveries = _filter_ip(request, deliveries)
     deliveries = _filter_answers(request, deliveries)
 
-    return _build_delivery_result(deliveries)
+    return _build_delivery_result(deliveries, request)
 
 
 def _get_ip_ids(results):
@@ -72,12 +74,13 @@ def _get_programme_ids(results):
     return programme_ids
 
 
-def _build_delivery_result(deliveries, isExport=False):
+def _build_delivery_result(deliveries, request, isExport=False):
     delivery_answers = []
+    host_name = request.build_absolute_uri(reverse('home'))
 
     for delivery in deliveries:
         answers = delivery.answers()
-        uploads = _get_uploads(delivery)
+        uploads, ab_uploads = _get_uploads(delivery, host_name)
         delivery_answers.append(
                 {Question.LABEL.deliveryReceived: _get_answer(Question.LABEL.deliveryReceived, answers),
                  'shipmentDate': delivery.delivery_date,
@@ -94,6 +97,7 @@ def _build_delivery_result(deliveries, isExport=False):
                  'value': int(delivery.total_value),
                  'location': delivery.location,
                  'urls': uploads,
+                 'absoluteUrls': ab_uploads,
                  'contactPersonId': delivery.contact_person_id
                  })
 
@@ -187,9 +191,13 @@ def _get_answer(question_label, answers):
     return filter(lambda answer: answer['question_label'] == question_label, answers)[0]['value']
 
 
-def _get_uploads(delivery):
+def _get_uploads(delivery, host_name):
     data = []
+    ab_data = []
+    media_url = settings.MEDIA_URL
+
     uploads = Upload.objects.filter(plan=delivery)
     for upload in uploads.iterator():
         data.append(str(upload.file))
-    return data
+        ab_data.append(host_name + media_url[1:] + str(upload.file))
+    return data, ab_data
