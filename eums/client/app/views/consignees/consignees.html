@@ -6,8 +6,8 @@
         <div class="row-padding">
             <button id="add-consignee" ng-show="hasPermission('eums.add_consignee')" class="btn btn-primary"
                     ng-click="addConsignee()">
-            Add Consignee
-        </button>
+                Add Consignee
+            </button>
         </div>
 
         <div class="row filter-bar">
@@ -44,59 +44,59 @@
                 <tbody>
                 <tr ng-repeat="consignee in consignees">
                     <td class="consigneeType">
-                            <span ng-show="consignee.importedFromVision"
-                                  class="glyphicon glyphicon-ok text-success"></span>
+                        <span ng-show="consignee.importedFromVision"
+                              class="glyphicon glyphicon-ok text-success"></span>
                     </td>
                     <td class="text-left">
-                            <span ng-show="!consignee.inEditMode || consignee.importedFromVision">
-                                {{ consignee.name }}
-                            </span>
-                            <span ng-show="consignee.inEditMode && !consignee.importedFromVision">
-                                <input class="table-input form-control" ng-model="consignee.name">
-                            </span>
+                        <span ng-show="!consignee.inEditMode || consignee.importedFromVision">
+                            {{ consignee.name }}
+                        </span>
+                        <span ng-show="consignee.inEditMode && !consignee.importedFromVision">
+                            <input class="table-input form-control" ng-model="consignee.name">
+                        </span>
                     </td>
                     <td class="text-left">
-                            <span ng-show="!consignee.inEditMode || consignee.importedFromVision">
-                                {{ consignee.location }}
-                            </span>
-                            <span ng-show="consignee.inEditMode && !consignee.importedFromVision">
-                                <input class="table-input form-control" ng-model="consignee.location">
-                            </span>
+                        <span ng-show="!consignee.inEditMode || consignee.importedFromVision">
+                            {{ consignee.location }}
+                        </span>
+                        <span ng-show="consignee.inEditMode && !consignee.importedFromVision">
+                            <input class="table-input form-control" ng-model="consignee.location">
+                        </span>
                     </td>
                     <td>
-                            <span>
-                                {{ consignee.customerId !== 'None' ? consignee.customerId : ''}}
-                            </span>
+                        <span>
+                            {{ consignee.customerId !== 'None' ? consignee.customerId : ''}}
+                        </span>
                     </td>
                     <td class="text-left">
                         <span ng-show="!consignee.inEditRemarkMode">{{ consignee.remarks }}</span>
-                            <span ng-show="consignee.inEditRemarkMode">
-                                <input class="table-input form-control" ng-model="consignee.remarks">
-                            </span>
+                        <span ng-show="consignee.inEditRemarkMode">
+                            <input class="table-input form-control" ng-model="consignee.remarks">
+                        </span>
                     </td>
                     <td ng-show="hasPermission('eums.change_consignee')">
-                            <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
-                                <button ng-show="hasPermission('eums.change_consignee')"
-                                        class="btn btn-sm btn-default blue-border-button editBtn"
-                                        ng-click="edit(consignee)">
-                                    Edit
-                                </button>
-                                <button ng-show="hasPermission('eums.delete_consignee')"
-                                        class="btn btn-sm btn-default red-border-button deleteBtn"
-                                        ng-click="showDeleteDialog(consignee)"
-                                        ng-class="{'invisible': consignee.importedFromVision}">
-                                    Delete
-                                </button>
-                            </span>
-                            <span ng-show="consignee.inEditMode || consignee.inEditRemarkMode">
-                                <button class="btn btn-sm btn-default blue-border-button saveBtn"
-                                        ng-click="save(consignee)"
-                                        ng-disabled="!consignee.isValid">Save
-                                </button>
-                                <button class="btn btn-sm btn-default cancelBtn"
-                                        ng-click="cancelEditOrCreate(consignee)">Cancel
-                                </button>
-                            </span>
+                        <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
+                            <button ng-show="hasPermission('eums.change_consignee')"
+                                    class="btn btn-sm btn-default blue-border-button editBtn"
+                                    ng-click="edit(consignee)">
+                                Edit
+                            </button>
+                            <button ng-show="hasPermission('eums.delete_consignee')"
+                                    class="btn btn-sm btn-default red-border-button deleteBtn"
+                                    ng-click="showDeleteDialog(consignee)"
+                                    ng-class="{'invisible': consignee.importedFromVision}">
+                                Delete
+                            </button>
+                        </span>
+                        <span ng-show="consignee.inEditMode || consignee.inEditRemarkMode">
+                            <button class="btn btn-sm btn-default blue-border-button saveBtn"
+                                    ng-click="save(consignee)"
+                                    ng-disabled="!consignee.isValid">Save
+                            </button>
+                            <button class="btn btn-sm btn-default cancelBtn"
+                                    ng-click="cancelEditOrCreate(consignee)">Cancel
+                            </button>
+                        </span>
                     </td>
                 </tr>
                 </tbody>

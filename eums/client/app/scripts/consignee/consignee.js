@@ -69,45 +69,46 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         });
     })
     .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
-        function createToast(message, klass) {
-            ngToast.create({content: message, class: klass});
-        }
-
-        function setScopeDataFromResponse(response) {
-            $scope.consignees = response.results;
-            $scope.count = response.count;
-            $scope.pageSize = response.pageSize;
-        }
-
-        function fetchConsignees() {
-            return ConsigneeService.all([], {paginate: 'true'}).then(function (response) {
-                setScopeDataFromResponse(response);
-            });
-        }
-
-        function showLoader() {
-            if (!angular.element('#loading').hasClass('in')) {
-                angular.element('#loading').modal();
-            }
-        }
-
-        function hideLoader() {
-            angular.element('#loading').modal('hide');
-            angular.element('#loading.modal').removeClass('in');
-            angular.element('.modal-backdrop').remove();
-        }
-
         $scope.consignees = [];
         $scope.searching = false;
 
-        UserService.retrieveUserPermissions().then(function (permissions) {
-            $scope.userPermissions = permissions;
+        init();
+
+        $scope.$watch('searchTerm', function (term) {
+            if (term && term.length) {
+                $scope.searching = true;
+                ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
+                    setScopeDataFromResponse(response);
+                }).catch(function () {
+                    createToast('Search failed', 'danger');
+                }).finally(function () {
+                    $scope.searching = false;
+                });
+            }
+            else {
+                fetchConsignees();
+            }
         });
 
-        showLoader();
-        fetchConsignees().catch(function () {
-            createToast('Failed to fetch consignees', 'danger');
-        }).finally(hideLoader);
+        $scope.$on('consigneeDeleted', function (_, consignee) {
+            $scope.consignees.remove(function (scopeConsignee) {
+                return scopeConsignee.id === consignee.id;
+            });
+            createToast('Consignee deleted successfully', 'success');
+        });
+
+        $scope.goToPage = function (page) {
+            showLoader();
+            var urlArgs = {paginate: 'true', page: page};
+            if ($scope.searchTerm && $scope.searchTerm.length) {
+                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
+            }
+            ConsigneeService.all([], urlArgs).then(function (response) {
+                setScopeDataFromResponse(response);
+            }).catch(function () {
+                createToast('Failed to load consignees', 'danger');
+            }).finally(hideLoader);
+        };
 
         $scope.hasPermission = function (permissionToCheck) {
             if (permissionToCheck && $scope.userPermissions) {
@@ -149,17 +150,6 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             });
         };
 
-        $scope.$on('consigneeDeleted', function (_, consignee) {
-            $scope.consignees.remove(function (scopeConsignee) {
-                return scopeConsignee.id === consignee.id;
-            });
-            createToast('Consignee deleted successfully', 'success');
-        });
-
-        $scope.showDeleteDialog = function (consignee) {
-            $scope.$broadcast('deleteConsignee', consignee);
-        };
-
         $scope.cancelEditOrCreate = function (consignee) {
             if (consignee.id) {
                 consignee.switchToReadMode();
@@ -171,34 +161,48 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             }
         };
 
-        $scope.$watch('searchTerm', function (term) {
-            if (term && term.length) {
-                $scope.searching = true;
-                ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
-                    setScopeDataFromResponse(response);
-                }).catch(function () {
-                    createToast('Search failed', 'danger');
-                }).finally(function () {
-                    $scope.searching = false;
-                });
-            }
-            else {
-                fetchConsignees();
-            }
-        });
-
-        $scope.goToPage = function (page) {
-            showLoader();
-            var urlArgs = {paginate: 'true', page: page};
-            if ($scope.searchTerm && $scope.searchTerm.length) {
-                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
-            }
-            ConsigneeService.all([], urlArgs).then(function (response) {
-                setScopeDataFromResponse(response);
-            }).catch(function () {
-                createToast('Failed to load consignees', 'danger');
-            }).finally(hideLoader);
+        $scope.showDeleteDialog = function (consignee) {
+            $scope.$broadcast('deleteConsignee', consignee);
         };
+
+        function init() {
+            UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+            });
+
+            showLoader();
+            fetchConsignees().catch(function () {
+                createToast('Failed to fetch consignees', 'danger');
+            }).finally(hideLoader);
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass});
+        }
+
+        function setScopeDataFromResponse(response) {
+            $scope.consignees = response.results;
+            $scope.count = response.count;
+            $scope.pageSize = response.pageSize;
+        }
+
+        function fetchConsignees() {
+            return ConsigneeService.all([], {paginate: 'true'}).then(function (response) {
+                setScopeDataFromResponse(response);
+            });
+        }
+
+        function showLoader() {
+            if (!angular.element('#loading').hasClass('in')) {
+                angular.element('#loading').modal();
+            }
+        }
+
+        function hideLoader() {
+            angular.element('#loading').modal('hide');
+            angular.element('#loading.modal').removeClass('in');
+            angular.element('.modal-backdrop').remove();
+        }
     })
     .controller('DeleteConsigneeController', function ($scope, ConsigneeService, ngToast) {
         function createToast(message, klass) {
