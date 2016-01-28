@@ -1,8 +1,8 @@
+import requests
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from polymorphic import PolymorphicModel
-import requests
 from eums.models import Consignee
 from eums.models.time_stamped_model import TimeStampedModel
 from eums.services.contacts import ContactService

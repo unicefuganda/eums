@@ -196,8 +196,9 @@
                         </div>
                     </td>
                     <td>
-                        <div class="align-center" ng-show="itemReport.answers.feedbackAboutDissatisfaction">
-                            <a class="button" ng-click="showRemarks($index)">
+                        <div class="align-center">
+                            <a class="button" ng-click="showRemarks($index)"
+                               ng-show="itemReport.answers.additionalDeliveryComments">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
@@ -217,7 +218,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="eums-modal-content">
-                                            {{ itemReport.answers.feedbackAboutDissatisfaction }}
+                                            {{ itemReport.answers.additionalDeliveryComments }}
                                         </div>
                                     </div>
                                     <div class="modal-footer centered">
