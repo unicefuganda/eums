@@ -8,7 +8,7 @@ echo 'Process the map file'
 if [ -f /opt/map/districts.json ]; then
     #Clone extractor app and get region names
     echo 'Extract region names'
-    mv /opt/map/districts.json /opt/scripts/setupmap/geojson-feature-name-extractor/districts.json
+    cp /opt/map/districts.json /opt/scripts/setupmap/geojson-feature-name-extractor/districts.json
     cd /opt/scripts/setupmap/geojson-feature-name-extractor
     node ./extractor.js
 
