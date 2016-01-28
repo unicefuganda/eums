@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
-from eums.models import Alert, UserProfile, DistributionPlanNode, DistributionPlan
-from django.db.models import Q, Count, Max
+from eums.models import Alert, DistributionPlanNode, DistributionPlan
+from django.db.models import Q, Max
 
 from eums.permissions.alert_permissions import AlertPermissions
 
