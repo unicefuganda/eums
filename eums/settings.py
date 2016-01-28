@@ -228,9 +228,20 @@ LOGGING = {
             'handlers': ['request'],
             'level': 'ERROR',
             'propagate': True
+        },
+        'celery.task': {
+            'handlers': ['console', 'debug', 'sentry'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'celery.work': {
+            'handlers': ['console', 'debug', 'sentry'],
+            'level': 'DEBUG',
+            'propagate': False
         }
     }
 }
 
+CELERYD_HIJACK_ROOT_LOGGER = False
 LOGGING_CONFIG = None
 logging.config.dictConfig(LOGGING)
