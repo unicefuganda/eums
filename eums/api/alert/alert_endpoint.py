@@ -80,8 +80,6 @@ class AlertViewSet(ReadOnlyModelViewSet):
         return is_unicef_viewer
 
     def list(self, request, *args, **kwargs):
-        logged_in_user = request.user
-
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':
             self.paginator.page_size = 0

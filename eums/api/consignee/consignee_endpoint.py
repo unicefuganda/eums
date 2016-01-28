@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Consignee, DistributionPlanNode, UserProfile
-from eums.permissions import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission
 from eums.permissions.consignee_permissions import ConsigneePermissions
 
 

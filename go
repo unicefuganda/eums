@@ -21,6 +21,9 @@ function main {
       if [ "$2" = "--test" ]; then
         killtestdbconnections
         resetdb test
+      elif [ "$2" = "--prod" ]; then
+        killdbconnections
+        resetdb prod
       else
         killdbconnections
         resetdb
@@ -97,7 +100,7 @@ function prepfrontend {
 
 function resetdb {
   if [ "$1" = "test" ]; then
-    echo "+++ Resetting database eums_test..."
+    echo "+++ Resetting test database eums_test..."
     echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
     python manage.py migrate --settings=eums.test_settings
     python manage.py setup_permissions --settings=eums.test_settings
@@ -110,7 +113,13 @@ function resetdb {
     python manage.py setup_permissions
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
     python manage.py shell_plus < eums/fixtures/init_basic_data.py
-    python manage.py loaddata eums/client/test/functional/fixtures/user.json
+
+    if [ "$1" = "prod" ]; then
+        echo "+++ Reset production database..."
+        python manage.py runscript eums.fixtures.create_superuser_password --script-args="username=admin,password=${ADMIN_PASSWORD}"
+    else
+        python manage.py loaddata eums/client/test/functional/fixtures/user.json
+    fi
   fi
 }
 

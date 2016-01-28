@@ -26,7 +26,7 @@ class PermissionCode(object):
     CAN_CHANGE_DISTRIBUTION_PLAN_NODE = 'change_distributionplannode'
 
     CAN_VIEW_CONSIGNEE_ITEM = 'can_view_consignee_item'
-    CAN_VIEW_ITEM = 'can_view_item'
+    CAN_VIEW_ITEM = 'can_view_itexm'
 
     CAN_VIEW_UNICEF_MENU = 'can_view_unicef_menu'
 
@@ -65,7 +65,6 @@ class PermissionCode(object):
     CAN_VIEW_SYSTEM_SETTINGS = 'can_view_system_settings'
     CAN_CHANGE_SYSTEM_SETTINGS = 'change_systemsettings'
     CAN_ADD_WEB_ANSWER = 'add_web_answer'
-
 
 perm_code_names = [
 

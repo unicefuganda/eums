@@ -1,47 +1,52 @@
 {% extends 'base/header.html' %}
 
 {% block nav %}
-{% if perms.auth.can_view_unicef_menu %}
-<li id="distribution-plan-nav"
-    ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
-    <a href="/#/direct-delivery">Delivery</a>
-</li>
-<li id="reports-nav" class="dropdown"
-    ng-class="{ active: isActive('/ip-feedback-report-by-delivery,/item-feedback-report,/stock-report,/supply-efficiency-report')}">
-    <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
-    <ul class="dropdown-menu" role="menu">
-        <li id="ip-feedback-nav" ><a href="/#/ip-feedback-report-by-delivery">Delivery Feedback Report</a></li>
-        <li class="divider"></li>
-        <li id="item-feedback-nav" ><a href="/#/item-feedback-report">Item Feedback Report</a></li>
-        <li class="divider"></li>
-        <li id="ip-stock-nav" ><a href="/#/stock-report">Stock Report</a></li>
-        <li class="divider"></li>
-        <li id="ip-supply-efficiency-nav" ><a href="/#/supply-efficiency-report?by=delivery">Supply Efficiency Report</a></li>
-    </ul>
-</li>
-<li class="dropdown" ng-class="{ active: isActive('/consignees')}">
-    <a href="/#/consignees">Consignees</a>
-</li>
-<li class="dropdown" ng-class="{ active: isActive('/alerts')}">
-    <a href="/#/alerts">Alerts <span class="badge alert-info" ng-show="unresolvedAlertsCount" ng-bind="unresolvedAlertsCount"></span></a>
-</li>
+    {% if perms.auth.can_view_unicef_menu %}
+        <li id="distribution-plan-nav"
+            ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
+            <a href="/#/direct-delivery">Delivery</a>
+        </li>
+        <li id="reports-nav" class="dropdown"
+            ng-class="{ active: isActive('/ip-feedback-report-by-delivery,/item-feedback-report,/stock-report,/supply-efficiency-report')}">
+            <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li id="ip-feedback-nav"><a href="/#/ip-feedback-report-by-delivery">Delivery Feedback Report</a></li>
+                <li class="divider"></li>
+                <li id="item-feedback-nav"><a href="/#/item-feedback-report">Item Feedback Report</a></li>
+                <li class="divider"></li>
+                <li id="ip-stock-nav"><a href="/#/stock-report">Stock Report</a></li>
+                <li class="divider"></li>
+                <li id="ip-supply-efficiency-nav"><a href="/#/supply-efficiency-report?by=delivery">Supply Efficiency
+                    Report</a></li>
+            </ul>
+        </li>
+        <li class="dropdown" ng-class="{ active: isActive('/consignees')}">
+            <a href="/#/consignees">Consignees</a>
+        </li>
+        <li ng-class="{ active: isActive('/contacts')}">
+            <a href="/#/contacts">Contacts</a>
+        </li>
+        <li class="dropdown" ng-class="{ active: isActive('/alerts')}">
+            <a href="/#/alerts">Alerts <span class="badge alert-info" ng-show="unresolvedAlertsCount"
+                                             ng-bind="unresolvedAlertsCount"></span></a>
+        </li>
 
-{% else %}
-<li ng-class="{ active: isActive('/ip-items,/item-deliveries')}">
-    <a href="/#/ip-items">Delivery Reporting</a>
-</li>
-<li id="reports-nav" class="dropdown"
-    ng-class="{ active: isActive('/reports,/stock-report')}">
-    <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
-    <ul class="dropdown-menu" role="menu">
-        <li id="ip-stock-nav" ><a href="/#/stock-report">Stock Report</a></li>
-    </ul>
-</li>
-<li ng-class="{ active: isActive('/consignees')}">
-    <a href="/#/consignees">Consignees</a>
-</li>
-<li ng-class="{ active: isActive('/contacts')}">
-    <a href="/#/contacts">Contacts</a>
-</li>
-{% endif %}
+    {% else %}
+        <li ng-class="{ active: isActive('/ip-items,/item-deliveries')}">
+            <a href="/#/ip-items">Delivery Reporting</a>
+        </li>
+        <li id="reports-nav" class="dropdown"
+            ng-class="{ active: isActive('/reports,/stock-report')}">
+            <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li id="ip-stock-nav"><a href="/#/stock-report">Stock Report</a></li>
+            </ul>
+        </li>
+        <li ng-class="{ active: isActive('/consignees')}">
+            <a href="/#/consignees">Consignees</a>
+        </li>
+        <li ng-class="{ active: isActive('/contacts')}">
+            <a href="/#/contacts">Contacts</a>
+        </li>
+    {% endif %}
 {% endblock %}
