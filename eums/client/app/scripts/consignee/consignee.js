@@ -30,6 +30,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                     return this.name && this.name.length;
                 }.bind(this)
             });
+
             this.id = json.id || undefined;
             this.name = json.name || null;
             this.customerId = json.customerId || null;
@@ -152,6 +153,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
         $scope.cancelEditOrCreate = function (consignee) {
             if (consignee.id) {
+                consignee.remarks = "";
                 consignee.switchToReadMode();
             }
             else {
