@@ -111,7 +111,7 @@ describe('Consignees and subconsignees', function () {
             expect(consigneesPage.consigneeCount).toEqual(0);
         });
 
-        it('should give add, edit and delete consignees permissions to appropriate UNICEF roles', function() {
+        xit('should give add, edit and delete consignees permissions to appropriate UNICEF roles', function() {
             loginPage.visit();
             loginPage.loginAs('unicef_admin', 'wakiso');
             consigneesPage.visit();
