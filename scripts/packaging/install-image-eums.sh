@@ -44,6 +44,7 @@ SENTRY_DSN=${13}
 USER_DIR=`eval echo ~/`
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
+-h ${EUMS_HOST} \
 -e "LC_ALL=C" \
 -e "ADMIN_PASSWORD=${ADMIN_PASSWORD}" \
 -e "SENTRY_DSN=${SENTRY_DSN}" \
