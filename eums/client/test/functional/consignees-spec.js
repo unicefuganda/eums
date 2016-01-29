@@ -63,7 +63,7 @@ describe('Consignees and subconsignees', function () {
         });
     });
 
-    fdescribe('permission functionality', function () {
+    describe('permission functionality', function () {
 
         it('should give add, edit and delete consignees permissions to appropriate IP roles', function() {
             loginPage.visit();
