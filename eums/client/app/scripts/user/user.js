@@ -22,10 +22,21 @@ angular.module('User', ['eums.config', 'NavigationTabs'])
                     return false;
                 });
             },
-            hasPermission: function (permissionToCheck) {
-                return this.retrieveUserPermissions().then(function (permissions) {
-                    return _.contains(permissions, permissionToCheck);
-                });
+            hasPermission: function (permissionToCheck, userPermissions) {
+                var deferred = $q.defer();
+                if (!permissionToCheck) {
+                    deferred.resolve(false);
+                    return deferred.promise;
+                }
+
+                if (userPermissions) {
+                    deferred.resolve(_.contains(userPermissions, permissionToCheck));
+                    return deferred.promise;
+                } else {
+                    return this.retrieveUserPermissions().then(function (permissions) {
+                        return _.contains(permissions, permissionToCheck);
+                    });
+                }
             },
             retrieveUserPermissions: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.PERMISSION + '/all').then(function (result) {

@@ -1,38 +1,62 @@
 describe('Consignees Controller', function () {
-    var mockConsigneeService, mockUserService, scope, mockConsigneeModel, deferredCanFullyEdit,
-        toast, deferredSearchResults, deferredPermissionsResults, elementSpy;
+    var mockConsigneeService, mockUserService;
+    var scope, mockConsigneeModel, deferredCanFullyEdit, timeout, toast, deferredSearchResults, deferredPermissionsResults,
+        elementSpy, userHasPermissionToPromise, userGetCurrentUserPromise;
+
     var emptyFunction = function () {
     };
     var fakeElement = {modal: emptyFunction, hasClass: emptyFunction};
     var savedConsignee = {
         id: 1, name: 'Dwelling Places', switchToReadMode: emptyFunction, switchToEditMode: emptyFunction
     };
-    var emptyConsignee = {properties: null, switchToEditMode: emptyFunction, switchToEditRemarkMode: emptyFunction, switchToReadMode: emptyFunction};
-    var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
-    var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page', pageSize: 1};
-    var searchResults = consignees.first(2);
+    var emptyConsignee = {
+        properties: null,
+        switchToEditMode: emptyFunction,
+        switchToEditRemarkMode: emptyFunction,
+        switchToReadMode: emptyFunction
+    };
+    var consignees = [savedConsignee, {id: 2, name: 'Save the children'}, {id: 3, name: 'Amuru DHO'}];
+    var consigneesResponse = {
+        results: consignees,
+        count: consignees.length,
+        next: 'next-page',
+        previous: 'prev-page',
+        pageSize: 1
+    };
+    var searchResults = consignees.first(3);
+    var stubCurrentUser = {
+        username: "admin",
+        first_name: "",
+        last_name: "",
+        userid: 5,
+        consignee_id: null,
+        email: "admin@tw.org"
+    };
 
     beforeEach(function () {
         module('Consignee');
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'search', 'userCanFullyEdit']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['retrieveUserPermissions']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'userCanFullyEdit']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
         mockConsigneeModel = function () {
             this.properties = emptyConsignee.properties;
         };
 
-        inject(function ($controller, $rootScope, $q, ngToast) {
+        inject(function ($controller, $rootScope, $q, $timeout, ngToast) {
+            timeout = $timeout;
+            deferredSearchResults = $q.defer();
+            deferredCanFullyEdit = $q.defer();
             mockConsigneeService.all.and.returnValue($q.when(consigneesResponse));
             mockConsigneeService.create.and.returnValue($q.when(savedConsignee));
             mockConsigneeService.update.and.returnValue($q.when(savedConsignee));
             mockConsigneeService.del.and.returnValue($q.defer());
-
-            deferredSearchResults = $q.defer();
-            deferredCanFullyEdit = $q.defer();
-            mockConsigneeService.search.and.returnValue(deferredSearchResults.promise);
             mockConsigneeService.userCanFullyEdit.and.returnValue(deferredCanFullyEdit.promise);
 
             deferredPermissionsResults = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResults.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
 
             toast = ngToast;
             scope = $rootScope.$new();
@@ -52,134 +76,112 @@ describe('Consignees Controller', function () {
         elementSpy.and.callThrough();
     });
 
-    it('should fetch consignees and put them on the scope.', function () {
-        scope.$apply();
-        expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([[], {paginate: 'true'}]);
-        expect(scope.consignees).toEqual(consignees);
-    });
+    describe('loaded', function () {
+        beforeEach(function () {
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+            userHasPermissionToPromise.resolve(true);
+        });
 
-    it('should fetch consignees and put their count on scope', function () {
-        scope.$apply();
-        expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([[], {paginate: 'true'}]);
-        expect(scope.count).toEqual(consignees.length);
-        expect(scope.pageSize).toEqual(1);
-    });
+        it('should fetch consignees and put them on the scope.', function () {
+            scope.$apply();
+            expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([undefined, {paginate: 'true', page: 1}]);
+            expect(scope.consignees).toEqual(consignees);
+            expect(scope.originalConsignees).toEqual(consignees);
+        });
 
-    it('should add empty consignee at the top of the list when add method is called', function () {
-        var initialNumberOfConsignees = consignees.length + 1;
-        scope.$apply();
-        scope.addConsignee();
-        expect(JSON.stringify(scope.consignees.first())).toEqual(JSON.stringify(emptyConsignee));
-        expect(scope.consignees.length).toBe(initialNumberOfConsignees);
-    });
+        it('should fetch consignees and put their count on scope', function () {
+            scope.$apply();
+            expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([undefined, {paginate: 'true', page: 1}]);
+            expect(scope.count).toEqual(consignees.length);
+            expect(scope.pageSize).toEqual(1);
+        });
 
-    it('should save consignee and update their id on scope', function () {
-        scope.$apply();
-        scope.save(scope.consignees.first());
-        scope.$apply();
-        expect(scope.consignees.first().id).toBe(savedConsignee.id);
-    });
+        it('should add empty consignee at the top of the list when add method is called', function () {
+            var initialNumberOfConsignees = consignees.length + 1;
+            scope.$apply();
+            scope.addConsignee();
+            expect(JSON.stringify(scope.consignees.first())).toEqual(JSON.stringify(emptyConsignee));
+            expect(scope.consignees.length).toBe(initialNumberOfConsignees);
+        });
 
-    it('should update consignee when save is called with consignee that already has an id', function () {
-        scope.$apply();
-        scope.save(savedConsignee);
-        expect(mockConsigneeService.update).toHaveBeenCalledWith(savedConsignee);
-    });
+        it('should save consignee and update their id on scope', function () {
+            scope.$apply();
+            scope.save(scope.consignees.first());
+            scope.$apply();
+            expect(scope.consignees.first().id).toBe(savedConsignee.id);
+        });
 
-    it('should switch consignee back to read mode after an update', function () {
-        spyOn(savedConsignee, 'switchToReadMode');
-        scope.save(savedConsignee);
-        scope.$apply();
-        expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
-    });
+        it('should update consignee when save is called with consignee that already has an id', function () {
+            scope.$apply();
+            scope.save(savedConsignee);
+            expect(mockConsigneeService.update).toHaveBeenCalledWith(savedConsignee);
+        });
 
-    it('should switch consignee to edit mode on edit when user has permission to fully edit', function () {
-        deferredCanFullyEdit.resolve({permission:'can_edit_fully'});
-        spyOn(emptyConsignee, 'switchToEditMode');
-        scope.edit(emptyConsignee);
-        scope.$apply()
-        expect(emptyConsignee.switchToEditMode).toHaveBeenCalled();
-    });
+        it('should switch consignee back to read mode after an update', function () {
+            spyOn(savedConsignee, 'switchToReadMode');
+            scope.save(savedConsignee);
+            scope.$apply();
+            expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
+        });
 
-    it('should switch consignee to read mode on edit when user does has permission to edit partially', function () {
-        deferredCanFullyEdit.resolve({permission:'can_edit_partially'});
-        spyOn(emptyConsignee, 'switchToEditRemarkMode');
-        scope.edit(emptyConsignee);
-        scope.$apply()
-        expect(emptyConsignee.switchToEditRemarkMode).toHaveBeenCalled();
-    });
+        it('should switch consignee to edit mode on edit when user has permission to fully edit', function () {
+            deferredCanFullyEdit.resolve({permission: 'can_edit_fully'});
+            spyOn(emptyConsignee, 'switchToEditMode');
+            scope.edit(emptyConsignee);
+            scope.$apply();
+            expect(emptyConsignee.switchToEditMode).toHaveBeenCalled();
+        });
 
+        it('should switch consignee to edit-remark-mode on edit when user does has permission to edit partially', function () {
+            deferredCanFullyEdit.resolve({permission: 'can_edit_partially'});
+            spyOn(emptyConsignee, 'switchToEditRemarkMode');
+            scope.edit(emptyConsignee);
+            scope.$apply();
+            expect(emptyConsignee.switchToEditRemarkMode).toHaveBeenCalled();
+        });
 
-    it('should switch consignee to read mode on edit when user does not have permission to edit', function () {
-        deferredCanFullyEdit.reject(false);
-        spyOn(emptyConsignee, 'switchToReadMode');
-        scope.edit(emptyConsignee);
-        scope.$apply()
-        expect(emptyConsignee.switchToReadMode).toHaveBeenCalled();
-    });
+        it('should switch consignee to read mode on edit when user does not have permission to edit', function () {
+            deferredCanFullyEdit.resolve({permission: 'consignee_forbidden'});
+            spyOn(emptyConsignee, 'switchToReadMode');
+            scope.edit(emptyConsignee);
+            scope.$apply();
+            expect(emptyConsignee.switchToReadMode).toHaveBeenCalled();
+        });
 
-    it('should broadcast deleteConsignee event when showDeleteDialog is called', function () {
-        var consignee = {id: 1};
-        scope.$apply();
-        spyOn(scope, '$broadcast');
-        scope.showDeleteDialog(consignee);
-        scope.$apply();
-        expect(scope.$broadcast).toHaveBeenCalledWith('deleteConsignee', consignee);
-    });
+        it('should broadcast deleteConsignee event when showDeleteDialog is called', function () {
+            var consignee = {id: 1};
+            scope.$apply();
+            spyOn(scope, '$broadcast');
+            scope.showDeleteDialog(consignee);
+            scope.$apply();
+            expect(scope.$broadcast).toHaveBeenCalledWith('deleteConsignee', consignee);
+        });
 
-    it('should cancel edit of consignee by switching them to read mode if they have an id', function () {
-        spyOn(savedConsignee, 'switchToReadMode');
-        savedConsignee.switchToEditMode();
-        scope.cancelEditOrCreate(savedConsignee);
-        scope.$apply();
-        expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
-    });
+        it('should cancel edit of consignee by switching them to read mode if they have an id', function () {
+            deferredCanFullyEdit.resolve({permission: 'can_edit_fully'});
+            spyOn(savedConsignee, 'switchToReadMode');
+            scope.$apply();
+            savedConsignee.switchToEditMode();
+            scope.cancelEditOrCreate(savedConsignee);
+            scope.$apply();
+            expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
+        });
 
-    it('should cancel edit of consignee by removing them from scope if they do not have an id', function () {
-        scope.$apply();
-        var consignee = scope.consignees.first();
-        consignee.id = undefined;
-        scope.cancelEditOrCreate(consignee);
-        scope.$apply();
-        expect(scope.consignees).not.toContain(consignee);
+        it('should cancel edit of consignee by removing them from scope if they do not have an id', function () {
+            scope.$apply();
+            var consignee = scope.consignees.first();
+            consignee.id = undefined;
+            scope.cancelEditOrCreate(consignee);
+            scope.$apply();
+            expect(scope.consignees).not.toContain(consignee);
+        });
     });
 
     describe('permissions', function () {
-
         it('should set the list of permissions on the scope when controller executes', function () {
             deferredPermissionsResults.resolve(['permission_one', 'permission_two']);
             scope.$apply();
             expect(scope.userPermissions).toEqual(['permission_one', 'permission_two']);
-        });
-
-        it('should return back true when first permission in list exists for user', function () {
-            scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermission('permission_one')).toBeTruthy();
-        });
-
-        it('should return back true when second permission in list exists for user', function () {
-            scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermission('permission_two')).toBeTruthy();
-        });
-
-        it('should return back false when permissions do not exist for user', function () {
-            scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermission('permission_three')).toBeFalsy();
-        });
-
-        it('should return back false when scope permissions is empty', function () {
-            scope.userPermissions = [];
-            expect(scope.hasPermission('some_permission')).toBeFalsy();
-        });
-
-        it('should return back false when scope permissions is undefined', function () {
-            scope.userPermissions = undefined;
-            expect(scope.hasPermission('some_permission')).toBeFalsy();
-        });
-
-        it('should return back false when permission to check is undefined', function () {
-            scope.userPermissions = ['permission_one', 'permission_two'];
-            expect(scope.hasPermission(undefined)).toBeFalsy();
         });
     });
 
@@ -207,47 +209,51 @@ describe('Consignees Controller', function () {
         });
     });
 
-    it('should search for consignees with scope search term', function () {
-        scope.$apply();
-        expect(scope.consignees).toEqual(consignees);
-        deferredSearchResults.resolve({results: searchResults});
-        var searchTerm = 'some consignee name';
-        scope.searchTerm = searchTerm;
-        scope.$apply();
-        expect(mockConsigneeService.search).toHaveBeenCalledWith(searchTerm, [], {paginate: true});
-        expect(scope.consignees).toEqual(searchResults);
+    describe('when searching', function () {
+        it('should search for consignees with scope search term', function () {
+            scope.$apply();
+            expect(scope.consignees).toEqual(consignees);
 
-        scope.searchTerm = '';
-        scope.$apply();
-        expect(mockConsigneeService.all).toHaveBeenCalled();
-        expect(scope.consignees).toEqual(consignees);
-    });
+            deferredSearchResults.resolve({results: searchResults});
+            var searchText = 'some consignee name';
+            scope.searchTerm.search = searchText;
+            scope.$apply();
+            timeout.flush();
 
-    it('should fetch new page when pageChanged is called and put the consignees on that page on scope', function () {
-        scope.goToPage(10);
-        scope.$apply();
-        expect(mockConsigneeService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10});
-        expect(scope.consignees).toEqual(consignees);
-    });
+            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', page: 1, search : searchText});
+            expect(scope.consignees).toEqual(searchResults);
 
-    it('should maintain search term when moving through pages', function () {
-        var term = 'search term';
-        scope.searchTerm = term;
-        scope.$apply();
-        scope.goToPage(10);
-        scope.$apply();
-        expect(mockConsigneeService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10, search: term});
-    });
+            scope.searchTerm.search = '';
+            scope.$apply();
+            expect(mockConsigneeService.all).toHaveBeenCalled();
+            expect(scope.consignees).toEqual(consignees);
+        });
 
-    it('should toggle search mode during search', function () {
-        scope.$apply();
-        expect(scope.searching).toBe(false);
-        scope.searchTerm = 'something';
-        scope.$apply();
-        expect(mockConsigneeService.search).toHaveBeenCalled();
-        expect(scope.searching).toBe(true);
-        deferredSearchResults.resolve({results: searchResults});
-        scope.$apply();
-        expect(scope.searching).toBe(false);
+        it('should fetch new page when pageChanged is called and put the consignees on that page on scope', function () {
+            scope.goToPage(10);
+            scope.$apply();
+            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', page: 10});
+            expect(scope.consignees).toEqual(consignees);
+        });
+
+        it('should maintain search term when moving through pages', function () {
+            var searchText = 'search term';
+            scope.searchTerm.search = searchText;
+            scope.$apply();
+            scope.goToPage(10);
+            scope.$apply();
+            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', page: 10, search: searchText});
+        });
+
+        it('should toggle search mode during search', function () {
+            scope.$apply();
+            expect(scope.searching).toBe(false);
+
+            scope.searchTerm.search = 'something';
+            scope.$apply();
+            timeout.flush();
+            expect(mockConsigneeService.all).toHaveBeenCalled();
+            expect(scope.searching).toBe(true);
+        });
     });
 });

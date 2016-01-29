@@ -1,4 +1,4 @@
-from rest_framework.status import HTTP_403_FORBIDDEN
+from rest_framework.status import *
 
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -254,9 +254,10 @@ class ConsigneeEndpointTest(PermissionsTestCase):
         self.client.login(username='user_name_one', password='pass')
         response = self.client.get(ENDPOINT_URL + str(consignee_to_check.id) + '/permission_to_edit/')
 
-        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['permission'], 'consignee_forbidden')
+        self.assertEqual(response.status_code, HTTP_200_OK)
 
-    def test_should_give_ip_user_permission_to_fully_edit_consignee_created_by_same_ip(self):
+    def test_should_give_ip_user_permission_to_fully_edit_consignee_created_by_himself(self):
         profile_consignee_one = ConsigneeFactory(name='Consignee 1')
 
         user_one = User.objects.create_user(username='user_name_one', password='pass')
@@ -275,7 +276,7 @@ class ConsigneeEndpointTest(PermissionsTestCase):
             name='Original Name', 
             imported_from_vision=False,
             created_by_user=user_two)
-        self.client.login(username='user_name_one', password='pass')
+        self.client.login(username='user_name_two', password='pass')
         response = self.client.get(ENDPOINT_URL + str(consignee_to_check.id) + '/permission_to_edit/')
 
         self.assertEqual(response.data['permission'], 'can_edit_fully')

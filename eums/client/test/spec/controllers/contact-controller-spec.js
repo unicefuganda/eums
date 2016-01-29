@@ -72,7 +72,6 @@ describe('ContactController', function () {
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
 
             spyOn(angular, 'element').and.returnValue(mockElement);
-
             spyOn(scope, '$broadcast');
             spyOn(scope, '$on');
 

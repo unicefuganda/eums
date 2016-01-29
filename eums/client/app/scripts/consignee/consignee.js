@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'User'])
+angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'Loader', 'User'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1});
     }])
@@ -37,6 +37,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             this.location = json.location || null;
             this.importedFromVision = json.importedFromVision || false;
             this.remarks = json.remarks || null;
+            this.createdByUser = json.createdByUser || null;
+            this.itemPermission = null;
 
             this._inEditMode = false;
             this._inEditRemarkMode = false;
@@ -69,25 +71,36 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             }
         });
     })
-    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
+    .controller('ConsigneesController', function ($scope, $q, $timeout, ngToast, ConsigneeService, Consignee, LoaderService, UserService) {
+        var timer;
+        var initializing = true;
+
+        $scope.currentUser = {};
         $scope.consignees = [];
+
+        $scope.pagination = {page: 1};
+        $scope.searchTerm = {};
         $scope.searching = false;
 
         init();
 
-        $scope.$watch('searchTerm', function (term) {
-            if (term && term.length) {
+        $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
+            if (initializing) {
+                loadConsignees();
+                initializing = false;
+            } else {
                 $scope.searching = true;
-                ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
-                    setScopeDataFromResponse(response);
-                }).catch(function () {
-                    createToast('Search failed', 'danger');
-                }).finally(function () {
-                    $scope.searching = false;
-                });
-            }
-            else {
-                fetchConsignees();
+                if (timer) {
+                    $timeout.cancel(timer);
+                }
+
+                if (oldSearchTerm.search != newSearchTerm.search) {
+                    timer = $timeout(function () {
+                        loadConsignees()
+                    }, 2000);
+                } else {
+                    loadConsignees();
+                }
             }
         });
 
@@ -99,23 +112,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         });
 
         $scope.goToPage = function (page) {
-            showLoader();
-            var urlArgs = {paginate: 'true', page: page};
-            if ($scope.searchTerm && $scope.searchTerm.length) {
-                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
-            }
-            ConsigneeService.all([], urlArgs).then(function (response) {
-                setScopeDataFromResponse(response);
-            }).catch(function () {
-                createToast('Failed to load consignees', 'danger');
-            }).finally(hideLoader);
-        };
-
-        $scope.hasPermission = function (permissionToCheck) {
-            if (permissionToCheck && $scope.userPermissions) {
-                return ($scope.userPermissions.indexOf(permissionToCheck) > -1);
-            }
-            return false;
+            $scope.pagination.page = page;
+            loadConsignees();
         };
 
         $scope.addConsignee = function () {
@@ -123,29 +121,38 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         };
 
         $scope.save = function (consignee) {
-            showLoader();
+            LoaderService.showLoader();
+            var promise = {};
             if (consignee.id) {
-                ConsigneeService.update(consignee).then(function () {
+                promise = ConsigneeService.update(consignee).then(function () {
                     consignee.switchToReadMode();
                 }).catch(function () {
                     createToast('Failed to update consignee', 'danger');
-                }).finally(hideLoader);
+                });
             }
             else {
-                ConsigneeService.create(consignee).then(function (createdConsignee) {
+                promise = ConsigneeService.create(consignee).then(function (createdConsignee) {
                     consignee.id = createdConsignee.id;
                 }).catch(function () {
                     createToast('Failed to save consignee', 'danger');
-                }).finally(hideLoader);
+                });
             }
+
+            promise.finally(function () {
+                $scope.originalConsignees = angular.copy($scope.consignees);
+                LoaderService.hideLoader();
+                getConsigneeItemPermission(consignee);
+            })
         };
 
         $scope.edit = function (consignee) {
             ConsigneeService.userCanFullyEdit(consignee).then(function (responce) {
                 if (responce.permission == 'can_edit_fully')
                     consignee.switchToEditMode();
-                if (responce.permission == 'can_edit_partially')
+                else if (responce.permission == 'can_edit_partially')
                     consignee.switchToEditRemarkMode();
+                else
+                    consignee.switchToReadMode();
             }).catch(function (result) {
                 consignee.switchToReadMode();
             });
@@ -153,7 +160,13 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
         $scope.cancelEditOrCreate = function (consignee) {
             if (consignee.id) {
-                consignee.remarks = "";
+                var originalObject = angular.copy($scope.originalConsignees.filter(function (item) {
+                    return item.id == consignee.id;
+                }).first());
+                consignee.name = originalObject.name;
+                consignee.location = originalObject.location;
+                consignee.customerId = originalObject.customerId;
+                consignee.remarks = originalObject.remarks;
                 consignee.switchToReadMode();
             }
             else {
@@ -168,42 +181,75 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         };
 
         function init() {
-            UserService.retrieveUserPermissions().then(function (permissions) {
-                $scope.userPermissions = permissions;
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            $q.all(promises).then(function () {
+                LoaderService.showLoader();
+                loadConsignees();
             });
+        }
 
-            showLoader();
-            fetchConsignees().catch(function () {
-                createToast('Failed to fetch consignees', 'danger');
-            }).finally(hideLoader);
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                $scope.can_add = UserService.hasPermission("eums.add_consignee", $scope.userPermissions);
+                $scope.can_change = UserService.hasPermission("eums.change_consignee", $scope.userPermissions);
+                $scope.can_delete = UserService.hasPermission("eums.delete_consignee", $scope.userPermissions);
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
         }
 
         function createToast(message, klass) {
             ngToast.create({content: message, class: klass});
         }
 
-        function setScopeDataFromResponse(response) {
-            $scope.consignees = response.results;
-            $scope.count = response.count;
-            $scope.pageSize = response.pageSize;
+        function loadConsignees() {
+            LoaderService.showLoader();
+            var allFilters = angular.extend({
+                'paginate': 'true',
+                'page': $scope.pagination.page
+            }, getSearchTerms(), $scope.sortTerm);
+
+            ConsigneeService.all(undefined, allFilters)
+                .then(function (response) {
+                    $scope.consignees = response.results;
+                    $scope.originalConsignees = angular.copy(response.results);
+                    $scope.count = response.count;
+                    $scope.pageSize = response.pageSize;
+
+                    response.results.forEach(function (responseConsignee) {
+                        getConsigneeItemPermission(responseConsignee);
+                    });
+                })
+                .catch(function () {
+                    createToast('Failed to load consignees', 'danger');
+                })
+                .finally(function () {
+                    LoaderService.hideLoader();
+                    $scope.searching = false;
+                });
         }
 
-        function fetchConsignees() {
-            return ConsigneeService.all([], {paginate: 'true'}).then(function (response) {
-                setScopeDataFromResponse(response);
-            });
+        function getConsigneeItemPermission(consignee) {
+            ConsigneeService.userCanFullyEdit(consignee)
+                .then(function (permissionResponse) {
+                    var hasChangePermission = permissionResponse.permission == 'can_edit_fully' || permissionResponse.permission == 'can_edit_partially';
+                    consignee.itemPermission = hasChangePermission;
+                })
+                .catch(function (result) {
+                    throw new Error('Retrive item based permission info failed' + result);
+                });
         }
 
-        function showLoader() {
-            if (!angular.element('#loading').hasClass('in')) {
-                angular.element('#loading').modal();
-            }
-        }
-
-        function hideLoader() {
-            angular.element('#loading').modal('hide');
-            angular.element('#loading.modal').removeClass('in');
-            angular.element('.modal-backdrop').remove();
+        function getSearchTerms() {
+            var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
+            return filters;
         }
     })
     .controller('DeleteConsigneeController', function ($scope, ConsigneeService, ngToast) {

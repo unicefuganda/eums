@@ -4,7 +4,7 @@
         </div>
         <ng-toast></ng-toast>
         <div class="row-padding">
-            <button id="add-consignee" ng-show="hasPermission('eums.add_consignee')" class="btn btn-primary"
+            <button id="add-consignee" ng-show="can_add" class="btn btn-primary"
                     ng-click="addConsignee()">
                 Add Consignee
             </button>
@@ -21,9 +21,9 @@
 
             <div class="col-xs-4 pull-right">
                 <div class="inner-addon left-addon">
-                    <i class="glyphicon "
+                    <i class="glyphicon blue-unicef"
                        ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                    <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                    <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm.search"
                            placeholder="Search by name, location or vision ID"/>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <th><a>Location</a></th>
                     <th class="centered"><a>Vision ID</a></th>
                     <th><a>General Remarks</a></th>
-                    <th ng-show="hasPermission('eums.change_consignee')"></th>
+                    <th ng-show="can_change" class="width-160"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -74,18 +74,16 @@
                             <input class="table-input form-control" ng-model="consignee.remarks">
                         </span>
                     </td>
-                    <td ng-show="hasPermission('eums.change_consignee')">
+                    <td ng-show="can_change">
                         <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
-                            <button ng-show="hasPermission('eums.change_consignee')"
+                            <button ng-show="can_change && consignee.itemPermission"
                                     class="btn btn-sm btn-default blue-border-button editBtn"
-                                    ng-click="edit(consignee)">
-                                Edit
+                                    ng-click="edit(consignee)">Edit
                             </button>
-                            <button ng-show="hasPermission('eums.delete_consignee')"
+                            <button ng-show="can_delete && consignee.itemPermission"
                                     class="btn btn-sm btn-default red-border-button deleteBtn"
                                     ng-click="showDeleteDialog(consignee)"
-                                    ng-class="{'invisible': consignee.importedFromVision}">
-                                Delete
+                                    ng-class="{'invisible': consignee.importedFromVision}">Delete
                             </button>
                         </span>
                         <span ng-show="consignee.inEditMode || consignee.inEditRemarkMode">
