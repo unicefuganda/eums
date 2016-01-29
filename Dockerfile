@@ -162,6 +162,7 @@ COPY ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
 COPY ./eums/scripts/deployment/startPostgres.sh /opt/scripts/startPostgres.sh
 COPY ./eums/scripts/deployment/buildConfigs.sh /opt/scripts/buildConfigs.sh
 COPY ./eums/scripts/deployment/celery.sh /opt/scripts/celery.sh
+COPY ./eums/scripts/deployment/startProcessListener.sh /opt/scripts/startProcessListener.sh
 COPY ./eums/scripts/setupmap /opt/scripts/setupmap
 RUN chmod a+x -R /opt/scripts
 RUN chmod a+x -R /opt/app/eums/scripts
