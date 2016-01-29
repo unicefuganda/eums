@@ -57,7 +57,6 @@ DATABASES = {
     }
 }
 
-
 RAVEN_CONFIG = {
     'dsn': SENTRY_DSN,
     'release': raven.fetch_git_sha(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)))
@@ -219,7 +218,7 @@ LOGGING = {
         'sentry': {
             'level': 'ERROR',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'EUMS': 'EUMS'},
+            'tags': {'UNICEF': 'EUMS'},
         }
     },
     'loggers': {

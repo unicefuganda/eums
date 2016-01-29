@@ -171,8 +171,6 @@ COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/superviso
 COPY ./eums/scripts/supervisor/celeryd.conf /etc/supervisor/conf.d/celeryd.conf
 RUN mkdir /var/log/celery
 RUN touch /var/log/celery/workers.log
-RUN mkdir /var/log/contacts
-RUN touch /var/log/contacts/error.log
 
 VOLUME /var/lib/postgresql
 VOLUME /data
