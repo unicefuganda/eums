@@ -8,6 +8,7 @@ from rest_framework.permissions import DjangoModelPermissions
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Consignee, DistributionPlanNode, UserProfile
 from eums.permissions.consignee_permissions import ConsigneePermissions
+from eums.auth import *
 
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
@@ -46,19 +47,16 @@ class ConsigneeViewSet(ModelViewSet):
     def permission_to_edit(self, request, pk=None):
         if request.user.groups.first() is None:
             return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
-
         consignee = self.get_object()
         if consignee.imported_from_vision:
             return self.vision_import_edit_permissions(request)
-
-        if request.user.groups.first().name in ['UNICEF_admin', 'UNICEF_editor']:
+        if request.user.groups.first().name in [GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR]:
             return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
-
         return self.ip_edit_permissions(consignee, request)
 
     @staticmethod
     def vision_import_edit_permissions(request):
-        if request.user.groups.first().name in ['UNICEF_admin', 'UNICEF_editor']:
+        if request.user.groups.first().name in [GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR, GROUP_IP_EDITOR]:
             return Response(status=HTTP_200_OK, data={'permission': 'can_edit_partially'})
         return Response(status=HTTP_200_OK, data={'permission': 'consignee_forbidden'})
 

@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var consigneesPage = require('./pages/consignees-page.js');
 
-fdescribe('Consignees and subconsignees', function () {
+describe('Consignees and subconsignees', function () {
 
     describe('main functionality', function() {
 
@@ -63,13 +63,12 @@ fdescribe('Consignees and subconsignees', function () {
         });
     });
 
-    describe('permission functionality', function () {
+    fdescribe('permission functionality', function () {
 
         it('should give add, edit and delete consignees permissions to appropriate IP roles', function() {
             loginPage.visit();
             loginPage.loginAs('wakiso', 'wakiso');
             consigneesPage.visit();
-
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.addConsignee();
@@ -79,13 +78,11 @@ fdescribe('Consignees and subconsignees', function () {
             consigneesPage.saveConsignee();
 
             consigneesPage.searchFor('IP Editor Consignee');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
 
             // Search for consignee imported from Vision
             consigneesPage.searchFor('WAKISO');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
 
@@ -94,11 +91,9 @@ fdescribe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('wakiso_viewer', 'wakiso');
             consigneesPage.visit();
-
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeFalsy();
 
             consigneesPage.searchFor('IP Editor Consignee');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeFalsy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
 
@@ -109,7 +104,6 @@ fdescribe('Consignees and subconsignees', function () {
             consigneesPage.visit();
 
             consigneesPage.searchFor('IP Editor Consignee');
-
             consigneesPage.deleteConsignee();
             consigneesPage.confirmDeleteConsignee();
 
@@ -121,7 +115,6 @@ fdescribe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('unicef_admin', 'wakiso');
             consigneesPage.visit();
-
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.addConsignee();
@@ -131,13 +124,11 @@ fdescribe('Consignees and subconsignees', function () {
             consigneesPage.saveConsignee();
 
             consigneesPage.searchFor('UNICEF Admin Consignee');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
 
             // Search for consignee imported from Vision
             consigneesPage.searchFor('WAKISO');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
 
@@ -146,17 +137,14 @@ fdescribe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('unicef_editor', 'wakiso');
             consigneesPage.visit();
-
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.searchFor('UNICEF Admin Consignee');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
 
             // Search for consignee imported from Vision
             consigneesPage.searchFor('WAKISO');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();            
 
@@ -165,11 +153,9 @@ fdescribe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('unicef_viewer', 'wakiso');
             consigneesPage.visit();
-
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeFalsy();
 
             consigneesPage.searchFor('UNICEF Admin Consignee');
-
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeFalsy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();                        
         });

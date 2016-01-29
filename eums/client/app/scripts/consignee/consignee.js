@@ -193,9 +193,15 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         function loadUserPermissions() {
             return UserService.retrieveUserPermissions().then(function (permissions) {
                 $scope.userPermissions = permissions;
-                $scope.can_add = UserService.hasPermission("eums.add_consignee", $scope.userPermissions);
-                $scope.can_change = UserService.hasPermission("eums.change_consignee", $scope.userPermissions);
-                $scope.can_delete = UserService.hasPermission("eums.delete_consignee", $scope.userPermissions);
+                UserService.hasPermission("eums.add_consignee", $scope.userPermissions).then(function (result) {
+                    $scope.can_add = result;
+                });
+                UserService.hasPermission("eums.change_consignee", $scope.userPermissions).then(function (result) {
+                    $scope.can_change = result;
+                });
+                UserService.hasPermission("eums.delete_consignee", $scope.userPermissions).then(function (result) {
+                    $scope.can_delete = result;
+                });
             });
         }
 
