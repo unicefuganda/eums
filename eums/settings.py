@@ -7,6 +7,8 @@ from os.path import join, exists
 
 from datetime import datetime
 
+from eums.process_listener import RAVEN_DSN
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -55,8 +57,9 @@ DATABASES = {
     }
 }
 
+
 RAVEN_CONFIG = {
-    'dsn': 'https://5f6d928162ad466a8305b3304bc17f78:ba61b0ca644340d8abb123608cdcd071@app.getsentry.com/65022',
+    'dsn': RAVEN_DSN,
     'release': '1.0.0'
 }
 
