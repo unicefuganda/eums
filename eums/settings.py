@@ -59,6 +59,7 @@ DATABASES = {
 
 RAVEN_CONFIG = {
     'dsn': SENTRY_DSN,
+    'transport': 'raven.transport.http.HTTPTransport',
     'release': raven.fetch_git_sha(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)))
 }
 
