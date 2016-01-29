@@ -2,7 +2,7 @@ import sys
 
 from raven import Client, os
 
-SENTRY_DSN = os.getenv('SENTRY_DSN', 'invalid_dsn')
+SENTRY_DSN = os.getenv('SENTRY_DSN', 'https://000000:000000@app.getsentry.com/10000')
 client = Client(SENTRY_DSN)
 
 
