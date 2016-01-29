@@ -15,6 +15,7 @@ latitude=${10}
 longitude=${11}
 level=${12}
 admin_password=${13}
+sentry_dsn=${14}
 
 echo "Unpacking deployment directory..."
 tar --force-local -xzvf deploy_latest.tar.gz
@@ -26,4 +27,4 @@ chmod a+x scripts/*.sh
 echo "Running install script..."
 scripts/install-image-eums.sh "${eums_host}" "${rapidpro_token}" "${email_password}" "${vision_user}" \
 "${vision_password}" "${vision_business_area_code}" "${time_zone}" "${django_secret_key}" \
-"${latitude}" "${longitude}" "${level}" "${admin_password}"
+"${latitude}" "${longitude}" "${level}" "${admin_password}" "${sentry_dsn}"

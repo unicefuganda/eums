@@ -7,7 +7,7 @@ from os.path import join, exists
 
 from datetime import datetime
 
-from eums.process_listener import RAVEN_DSN
+from eums.process_listener import SENTRY_DSN
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -59,7 +59,7 @@ DATABASES = {
 
 
 RAVEN_CONFIG = {
-    'dsn': RAVEN_DSN,
+    'dsn': SENTRY_DSN,
     'release': '1.0.0'
 }
 

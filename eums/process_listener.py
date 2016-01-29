@@ -1,9 +1,9 @@
 import sys
 
-from raven import Client
+from raven import Client, os
 
-RAVEN_DSN = 'https://5f6d928162ad466a8305b3304bc17f78:ba61b0ca644340d8abb123608cdcd071@app.getsentry.com/65022'
-client = Client(RAVEN_DSN)
+SENTRY_DSN = os.getenv('SENTRY_DSN', 'invalid_dsn')
+client = Client(SENTRY_DSN)
 
 
 def write_stdout(s):
