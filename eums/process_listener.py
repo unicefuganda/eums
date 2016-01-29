@@ -1,9 +1,12 @@
 import sys
 
+import raven
 from raven import Client, os
 
 SENTRY_DSN = os.getenv('SENTRY_DSN', 'https://000000:000000@app.getsentry.com/10000')
-client = Client(SENTRY_DSN)
+client = Client(dsn=SENTRY_DSN,
+                release=raven.fetch_git_sha(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                                         os.pardir))))
 
 
 def write_stdout(s):

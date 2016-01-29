@@ -60,7 +60,7 @@ DATABASES = {
 
 RAVEN_CONFIG = {
     'dsn': SENTRY_DSN,
-    'release': '1.0.0'
+    'release': raven.fetch_git_sha(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)))
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'eums/uploads')

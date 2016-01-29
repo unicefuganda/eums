@@ -30,3 +30,6 @@
 */eums/client/.node-version
 */eums/client/functional/
 */eums/client/exports/*
+
+!*/.git/HEAD
+!*/.git/refs/heads
