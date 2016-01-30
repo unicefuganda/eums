@@ -14,6 +14,8 @@ VISION_PASSWORD=$5
 VISION_BUSINESS_AREA_CODE=$6
 TIME_ZONE=$7
 DJANGO_SECRET_KEY=$8
+GA_TRACKING_ID=$9
+
 
 cd /opt/app/contacts
 sed -i "s/stg.eum.unicefuganda.org/${EUMS_HOST}/" config/config.json
@@ -28,3 +30,6 @@ sed -i -e "s/os.getenv('VISION_COUNTRY_CODE', 'invalid_code')/'${VISION_BUSINESS
 sed -i -e "s|os.getenv('TIME_ZONE', 'Africa/Kampala')|'${TIME_ZONE}'|g" settings.py
 sed -i -e "s/os.getenv('SECRET_KEY', 'invalid_secret_key')/'`echo ${DJANGO_SECRET_KEY} | sed 's#\&#\\\&#g'`'/g" settings.py
 sed -i -e "s/os.getenv('DJANGO_ALLOWED_HOST', 'invalid_allowed_host')/'${EUMS_HOST}'/g" settings.py
+
+cd /opt/app/eums/eums/templates
+sed -i -e "s/'invalid_tracking_id'/'${GA_TRACKING_ID}'/g" index.html

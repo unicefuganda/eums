@@ -40,6 +40,7 @@ LONGITUDE=${10}
 ZOOM_LEVEL=${11}
 ADMIN_PASSWORD=${12}
 SENTRY_DSN=${13}
+GA_TRACKING_ID=${14}
 
 USER_DIR=`eval echo ~/`
 
@@ -55,8 +56,8 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 -v /opt/app/uploads:/opt/app/eums/eums/uploads \
 %IMAGENAME%:latest \
 /bin/bash -c "opt/scripts/setupmap/setup-map.sh '${LATITUDE}' '${LONGITUDE}' '${ZOOM_LEVEL}' \
-&& opt/scripts/buildConfigs.sh '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' \
-'${VISION_USER}' '${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${TIME_ZONE}' '${DJANGO_SECRET_KEY}' \
+&& opt/scripts/buildConfigs.sh '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' '${VISION_USER}' \
+'${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${TIME_ZONE}' '${DJANGO_SECRET_KEY}' '${GA_TRACKING_ID}' \
 && /usr/bin/supervisord"
 
 echo "Cleaning older eums docker images..."
