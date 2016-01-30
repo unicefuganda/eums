@@ -7,7 +7,7 @@ from os.path import join, exists
 
 from datetime import datetime
 
-from eums.process_listener import SENTRY_DSN
+from eums.process_listener import SENTRY_DSN, GIT_SHA
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -59,8 +59,8 @@ DATABASES = {
 
 RAVEN_CONFIG = {
     'dsn': SENTRY_DSN,
-    'transport': 'raven.transport.http.HTTPTransport',
-    'release': raven.fetch_git_sha(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)))
+    'release': GIT_SHA,
+    'transport': 'raven.transport.http.HTTPTransport'
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'eums/uploads')
