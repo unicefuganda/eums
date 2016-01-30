@@ -15,7 +15,6 @@ VISION_BUSINESS_AREA_CODE=$6
 TIME_ZONE=$7
 DJANGO_SECRET_KEY=$8
 GA_TRACKING_ID=$9
-SENTRY_DSN=${10}
 
 
 cd /opt/app/contacts
@@ -33,5 +32,4 @@ sed -i -e "s/os.getenv('SECRET_KEY', 'invalid_secret_key')/'`echo ${DJANGO_SECRE
 sed -i -e "s/os.getenv('DJANGO_ALLOWED_HOST', 'invalid_allowed_host')/'${EUMS_HOST}'/g" settings.py
 
 cd /opt/app/eums/eums/templates
-sed -i -e "s/'invalid_sentry_dsn'/'${SENTRY_DSN}'/g" index.html
 sed -i -e "s/'invalid_tracking_id'/'${GA_TRACKING_ID}'/g" index.html

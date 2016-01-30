@@ -47,8 +47,7 @@
   },
   "dependencies": {
     "less": "^1.7.5",
-    "moment-range": "~1.0.5",
-    "raven-js": "^2.1.0"
+    "moment-range": "~1.0.5"
   },
   "description": "End User Monitoring System",
   "main": "Gruntfile.js",

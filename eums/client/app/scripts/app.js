@@ -17,7 +17,7 @@ var interceptor = ["ngToast", "$q", "$location", function (ngToast, $q, location
     }
 }];
 
-angular.module('eums', ['ngRaven', 'ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
+angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
         'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable',
         'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport',
         'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData', 'SystemSettings', 'FileUploadService',
