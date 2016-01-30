@@ -58,7 +58,7 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
 /bin/bash -c "opt/scripts/setupmap/setup-map.sh '${LATITUDE}' '${LONGITUDE}' '${ZOOM_LEVEL}' \
 && opt/scripts/buildConfigs.sh '${EUMS_HOST}' '${RAPIDPRO_API_TOKEN}' '${EMAIL_PASSWORD}' '${VISION_USER}' \
 '${VISION_PASSWORD}' '${VISION_BUSINESS_AREA_CODE}' '${TIME_ZONE}' '${DJANGO_SECRET_KEY}' '${GA_TRACKING_ID}' \
-&& /usr/bin/supervisord"
+'${SENTRY_DSN}' && /usr/bin/supervisord"
 
 echo "Cleaning older eums docker images..."
 sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=3 {print$3}' | xargs -I {} sudo docker rmi {} || true
