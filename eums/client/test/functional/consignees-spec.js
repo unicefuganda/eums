@@ -142,7 +142,6 @@ describe('Consignees and subconsignees', function () {
 
             loginPage.logout();
 
-            console.log('-----> unicef_editor');
             loginPage.visit();
             loginPage.loginAs('unicef_editor', 'wakiso');
             consigneesPage.visit();
@@ -161,7 +160,6 @@ describe('Consignees and subconsignees', function () {
 
             loginPage.logout();
 
-            console.log('-----> unicef_viewer');
             loginPage.visit();
             loginPage.loginAs('unicef_viewer', 'wakiso');
             consigneesPage.visit();
