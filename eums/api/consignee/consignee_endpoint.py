@@ -62,13 +62,16 @@ class ConsigneeViewSet(ModelViewSet):
 
     @staticmethod
     def ip_edit_permissions(consignee, request):
-        request_user = UserProfile.objects.get(user=request.user)
-        created_by_user = UserProfile.objects.filter(user=consignee.created_by_user).first()
-        if created_by_user is None \
-                or created_by_user.consignee != request_user.consignee \
-                or created_by_user.user_id != request_user.user_id:
+        try:
+            request_user = UserProfile.objects.get(user=request.user)
+            created_by_user = UserProfile.objects.filter(user=consignee.created_by_user).first()
+            if created_by_user is None \
+                    or created_by_user.consignee != request_user.consignee \
+                    or created_by_user.user_id != request_user.user_id:
+                return Response(status=HTTP_200_OK, data={'permission': 'consignee_forbidden'})
+            return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
+        except:
             return Response(status=HTTP_200_OK, data={'permission': 'consignee_forbidden'})
-        return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
 
 
 consigneeRouter = DefaultRouter()

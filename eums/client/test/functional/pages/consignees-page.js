@@ -1,14 +1,12 @@
 var consigneesPage = function () {};
+var ftUtils = require('./../functional-test-utils.js');
 
 consigneesPage.prototype = Object.create({}, {
     url: { get: function () { return '/#/consignees'; }},
 
     visit: { value: function () {
         browser.get(this.url);
-        var EC = protractor.ExpectedConditions;
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var loaded = EC.stalenessOf(fadingModal);
-        browser.wait(loaded, 5000, "Timeout exceeded while loading consignees");
+        ftUtils.waitForPageToLoad();
     }},
 
     consigneeNames: { get: function () { return element.all(by.repeater('consignee in consignees').column('consignee.name')).getText(); }},
@@ -19,7 +17,6 @@ consigneesPage.prototype = Object.create({}, {
     consigneeTypeClass : { get: function () { return element(by.css('.consigneeType span')).getAttribute('class'); }},
 
     addConsignee: { value: function () { element(by.id('add-consignee')).click(); }},
-
     addConsigneeButton: { get: function () { return element(by.id('add-consignee')); }},
     editConsigneeButton: { get: function () { return element.all(by.css('.editBtn')).get(0); }},
     deleteConsigneeButton: { get: function () { return element.all(by.css('.deleteBtn')).get(0); }},

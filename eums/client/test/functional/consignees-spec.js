@@ -70,7 +70,6 @@ describe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('wakiso', 'wakiso');
             consigneesPage.visit();
-            ftUtils.waitForPageToLoad();
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.addConsignee();
@@ -78,7 +77,6 @@ describe('Consignees and subconsignees', function () {
             consigneesPage.setConsigneeLocation('IP Editor Location');
             consigneesPage.setConsigneeRemarks('IP Editor Remarks');
             consigneesPage.saveConsignee();
-            ftUtils.waitForPageToLoad();
 
             consigneesPage.searchFor('IP Editor Consignee');
             ftUtils.waitForPageToLoad();
@@ -96,7 +94,6 @@ describe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('wakiso_viewer', 'wakiso');
             consigneesPage.visit();
-            ftUtils.waitForPageToLoad();
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeFalsy();
 
             consigneesPage.searchFor('IP Editor Consignee');
@@ -109,7 +106,6 @@ describe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('wakiso', 'wakiso');
             consigneesPage.visit();
-            ftUtils.waitForPageToLoad();
 
             consigneesPage.searchFor('IP Editor Consignee');
             ftUtils.waitForPageToLoad();
@@ -125,7 +121,6 @@ describe('Consignees and subconsignees', function () {
             loginPage.visit();
             loginPage.loginAs('unicef_admin', 'wakiso');
             consigneesPage.visit();
-            ftUtils.waitForPageToLoad();
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.addConsignee();
@@ -133,7 +128,6 @@ describe('Consignees and subconsignees', function () {
             consigneesPage.setConsigneeLocation('UNICEF Admin Location');
             consigneesPage.setConsigneeRemarks('UNICEF Admin Remarks');
             consigneesPage.saveConsignee();
-            ftUtils.waitForPageToLoad();
 
             consigneesPage.searchFor('UNICEF Admin Consignee');
             ftUtils.waitForPageToLoad();
@@ -148,10 +142,10 @@ describe('Consignees and subconsignees', function () {
 
             loginPage.logout();
 
+            console.log('-----> unicef_editor');
             loginPage.visit();
             loginPage.loginAs('unicef_editor', 'wakiso');
             consigneesPage.visit();
-            ftUtils.waitForPageToLoad();
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.searchFor('UNICEF Admin Consignee');
@@ -167,10 +161,10 @@ describe('Consignees and subconsignees', function () {
 
             loginPage.logout();
 
+            console.log('-----> unicef_viewer');
             loginPage.visit();
             loginPage.loginAs('unicef_viewer', 'wakiso');
             consigneesPage.visit();
-            ftUtils.waitForPageToLoad();
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeFalsy();
 
             consigneesPage.searchFor('UNICEF Admin Consignee');

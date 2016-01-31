@@ -249,7 +249,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                     consignee.itemPermission = hasChangePermission;
                 })
                 .catch(function (result) {
-                    throw new Error('Retrive item based permission info failed' + result);
+                    //throw new Error('Retrieve item based permission info failed' + result);
+                    console.log('Retrieve item based permission info failed: ' + result);
                 });
         }
 
