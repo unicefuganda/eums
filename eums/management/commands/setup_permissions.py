@@ -23,18 +23,19 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
 
-        PermissionCode.CAN_VIEW_SELF_CONTACTS,
-        PermissionCode.CAN_VIEW_CONTACTS,
-        PermissionCode.CAN_CREATE_CONTACTS,
-        PermissionCode.CAN_EDIT_CONTACTS,
+        PermissionCode.CAN_VIEW_SELF_CONTACT,
+        PermissionCode.CAN_VIEW_CONTACT,
+        PermissionCode.CAN_CREATE_CONTACT,
+        PermissionCode.CAN_EDIT_CONTACT,
+        PermissionCode.CAN_DELETE_CONTACT,
 
         PermissionCode.CAN_VIEW_CONSIGNEE,
         PermissionCode.CAN_ADD_CONSIGNEE,
         PermissionCode.CAN_CHANGE_CONSIGNEE,
         PermissionCode.CAN_DELETE_CONSIGNEE,
 
-        'can_import_data',
-        'can_view_unicef_menu',
+        PermissionCode.CAN_IMPORT_DATA,
+        PermissionCode.CAN_VIEW_UNICEF_MENU,
 
         PermissionCode.CAN_VIEW_PURCHASE_ORDER,
         PermissionCode.CAN_PATCH_PURCHASE_ORDER,
@@ -68,10 +69,13 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
 
-        'can_view_unicef_menu',
-        PermissionCode.CAN_VIEW_SELF_CONTACTS,
-        PermissionCode.CAN_CREATE_CONTACTS,
-        PermissionCode.CAN_EDIT_CONTACTS,
+        PermissionCode.CAN_VIEW_UNICEF_MENU,
+
+        PermissionCode.CAN_VIEW_SELF_CONTACT,
+        PermissionCode.CAN_VIEW_CONTACT,
+        PermissionCode.CAN_CREATE_CONTACT,
+        PermissionCode.CAN_EDIT_CONTACT,
+        PermissionCode.CAN_DELETE_CONTACT,
 
         PermissionCode.CAN_VIEW_PURCHASE_ORDER,
         PermissionCode.CAN_PATCH_PURCHASE_ORDER,
@@ -90,7 +94,7 @@ GROUP_PERMISSIONS = {
     ],
     GROUP_UNICEF_VIEWER: [
         PermissionCode.CAN_VIEW_DASH_BOARD,
-        'can_view_unicef_menu',
+        PermissionCode.CAN_VIEW_UNICEF_MENU,
         PermissionCode.CAN_VIEW_CONSIGNEE,
 
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN,
@@ -99,9 +103,8 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
 
-        PermissionCode.CAN_VIEW_SELF_CONTACTS,
-        PermissionCode.CAN_CREATE_CONTACTS,
-        PermissionCode.CAN_EDIT_CONTACTS,
+        PermissionCode.CAN_VIEW_SELF_CONTACT,
+        PermissionCode.CAN_VIEW_CONTACT,
 
         PermissionCode.CAN_VIEW_PURCHASE_ORDER,
         PermissionCode.CAN_PATCH_PURCHASE_ORDER,
@@ -130,13 +133,14 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_CHANGE_CONSIGNEE,
         PermissionCode.CAN_DELETE_CONSIGNEE,
 
-        PermissionCode.CAN_VIEW_SELF_CONTACTS,
-        PermissionCode.CAN_CREATE_CONTACTS,
-        PermissionCode.CAN_EDIT_CONTACTS,
+        PermissionCode.CAN_VIEW_SELF_CONTACT,
+        PermissionCode.CAN_CREATE_CONTACT,
+        PermissionCode.CAN_EDIT_CONTACT,
+        PermissionCode.CAN_DELETE_CONTACT,
 
-        'change_upload',
-        'delete_upload',
-        'add_upload',
+        PermissionCode.CAN_ADD_UPLOAD,
+        PermissionCode.CAN_CHANGE_UPLOAD,
+        PermissionCode.CAN_DELETE_UPLOAD,
 
         PermissionCode.CAN_VIEW_CONSIGNEE_ITEM,
         PermissionCode.CAN_VIEW_ITEM,
@@ -153,9 +157,7 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DASH_BOARD,
         PermissionCode.CAN_VIEW_CONSIGNEE,
 
-        PermissionCode.CAN_VIEW_SELF_CONTACTS,
-        PermissionCode.CAN_CREATE_CONTACTS,
-        PermissionCode.CAN_EDIT_CONTACTS,
+        PermissionCode.CAN_VIEW_SELF_CONTACT,
 
         PermissionCode.CAN_VIEW_CONSIGNEE_ITEM,
         PermissionCode.CAN_VIEW_SYSTEM_SETTINGS,

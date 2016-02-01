@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
-    .controller('ContactController', function (ContactService, $scope, $sorter, UserService, ngToast) {
+angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast', 'Loader'])
+    .controller('ContactController', function ($scope, $q, $sorter, ngToast, UserService, ContactService, LoaderService) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
@@ -12,8 +12,11 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             this.sortBy('firstName');
             this.sort.descending = false;
 
-            UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            $q.all(promises).then(function () {
+                LoaderService.showLoader();
                 loadContacts.call(this);
             });
         };
@@ -80,18 +83,48 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             loadContacts();
         });
 
-        function loadContacts() {
-            UserService.hasPermission('auth.can_view_contacts').then(function (isPermissionGranted) {
-                if (isPermissionGranted) {
-                    ContactService.all().then(function (resultContacts) {
-                        $scope.contacts = resultContacts.sort();
-                    });
-                } else {
-                    ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
-                        $scope.contacts = resultContacts.sort();
-                    });
-                }
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("auth.can_view_contacts", $scope.userPermissions).then(function (result) {
+                    $scope.can_view_all = result;
+                });
+                UserService.hasPermission("auth.can_create_contacts", $scope.userPermissions).then(function (result) {
+                    $scope.can_add = result;
+                });
+                UserService.hasPermission("auth.can_edit_contacts", $scope.userPermissions).then(function (result) {
+                    $scope.can_change = result;
+                });
+                UserService.hasPermission("auth.can_delete_contacts", $scope.userPermissions).then(function (result) {
+                    $scope.can_delete = result;
+                });
             });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
+        }
+
+        function loadContacts() {
+            var promise = {};
+            if ($scope.can_view_all) {
+                promise = ContactService.all().then(function (resultContacts) {
+                    $scope.contacts = resultContacts.sort();
+                });
+            } else {
+                promise = ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
+                    $scope.contacts = resultContacts.sort();
+                });
+            }
+
+            promise.catch(function () {
+                    ngToast.create({content: 'Failed to load consignees', class: 'danger'});
+                })
+                .finally(function () {
+                    LoaderService.hideLoader();
+                });
         }
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {

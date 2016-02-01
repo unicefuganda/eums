@@ -41,10 +41,13 @@ class PermissionCode(object):
     CAN_VIEW_SUPPLY_EFFICIENCY_REPORT = 'can_view_supply_efficiency_report'
 
     CAN_IMPORT_DATA = 'can_import_data'
-    CAN_VIEW_SELF_CONTACTS = 'can_view_self_contacts'
-    CAN_VIEW_CONTACTS = 'can_view_contacts'
-    CAN_CREATE_CONTACTS = 'can_create_contacts'
-    CAN_EDIT_CONTACTS = 'can_edit_contacts'
+
+    CAN_VIEW_SELF_CONTACT = 'can_view_self_contacts'
+    CAN_VIEW_CONTACT = 'can_view_contacts'
+    CAN_CREATE_CONTACT = 'can_create_contacts'
+    CAN_EDIT_CONTACT = 'can_edit_contacts'
+    CAN_DELETE_CONTACT = 'can_delete_contacts'
+
     CAN_PUSH_CONTACTS_TO_RAPID_PRO = 'can_push_contacts_to_rapid_pro'
 
     CAN_ADD_CONSIGNEE = 'add_consignee'
@@ -65,6 +68,11 @@ class PermissionCode(object):
     CAN_VIEW_SYSTEM_SETTINGS = 'can_view_system_settings'
     CAN_CHANGE_SYSTEM_SETTINGS = 'change_systemsettings'
     CAN_ADD_WEB_ANSWER = 'add_web_answer'
+
+    CAN_ADD_UPLOAD = 'add_upload'
+    CAN_CHANGE_UPLOAD = 'change_upload'
+    CAN_DELETE_UPLOAD = 'delete_upload'
+
 
 perm_code_names = [
 
@@ -93,10 +101,11 @@ perm_code_names = [
     {'name': 'Can view consignees', 'codename': PermissionCode.CAN_VIEW_CONSIGNEE},
     {'name': 'Can import data', 'codename': PermissionCode.CAN_IMPORT_DATA},
 
-    {'name': 'Can view self contacts', 'codename': PermissionCode.CAN_VIEW_SELF_CONTACTS},
-    {'name': 'Can view contacts', 'codename': PermissionCode.CAN_VIEW_CONTACTS},
-    {'name': 'Can create contacts', 'codename': PermissionCode.CAN_CREATE_CONTACTS},
-    {'name': 'Can edit contacts', 'codename': PermissionCode.CAN_EDIT_CONTACTS},
+    {'name': 'Can view self contacts', 'codename': PermissionCode.CAN_VIEW_SELF_CONTACT},
+    {'name': 'Can view contacts', 'codename': PermissionCode.CAN_VIEW_CONTACT},
+    {'name': 'Can create contacts', 'codename': PermissionCode.CAN_CREATE_CONTACT},
+    {'name': 'Can edit contacts', 'codename': PermissionCode.CAN_EDIT_CONTACT},
+    {'name': 'Can delete contacts', 'codename': PermissionCode.CAN_DELETE_CONTACT},
     {'name': 'Can push contacts to RapidPro', 'codename': PermissionCode.CAN_PUSH_CONTACTS_TO_RAPID_PRO},
 
     {'name': 'Can view purchase orders', 'codename': PermissionCode.CAN_VIEW_PURCHASE_ORDER},

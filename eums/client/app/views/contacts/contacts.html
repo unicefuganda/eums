@@ -3,7 +3,8 @@
         <h4 class="page-header">Contacts</h4>
         <ng-toast></ng-toast>
 
-        <button id="add-contact" class="btn btn-primary" ng-click="showAddContact()" ng-init="canAdd()">Add Contact</button>
+        <button id="add-contact" class="btn btn-primary" ng-click="showAddContact()" ng-show="can_add">Add Contact
+        </button>
         <div class="panel panel-default line-order-panel">
             <div class="row">
                 <div class="col-xs-4 pull-right">
@@ -24,17 +25,10 @@
                 <table class="table table-bordered table-striped table-hover table-condensed" si-table>
                     <thead ng-init="initialize()">
                     <tr>
-                        <th>
-                            <a sort-by="firstName" sort-init="asc">First Name</a>
-                        </th>
-                        <th>
-                            <a sort-by="lastName">First Name</a>
-                        </th>
-                        <th>
-                            <a sort-by="phone">Phone</a>
-                        </th>
-                        <th>
-                        </th>
+                        <th><a sort-by="firstName" sort-init="asc">First Name</a></th>
+                        <th><a sort-by="lastName">First Name</a></th>
+                        <th><a sort-by="phone">Phone</a></th>
+                        <th ng-show="can_change" class="width-160"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -42,14 +36,14 @@
                         <td class="text-left">{{ contact.firstName }}</td>
                         <td class="text-left">{{ contact.lastName }}</td>
                         <td class="text-left">{{ contact.phone }}</td>
-                        <td>
+                        <td ng-show="can_change">
                             <button class="btn btn-primary"
-                                    ng-click="showEditContact(contact)">
-                                Edit
+                                    ng-show="can_change"
+                                    ng-click="showEditContact(contact)">Edit
                             </button>
                             <button class="btn btn-primary"
-                                    ng-click="showDeleteContact(contact)">
-                                Delete
+                                    ng-show="can_delete"
+                                    ng-click="showDeleteContact(contact)">Delete
                             </button>
                         </td>
                     </tr>
