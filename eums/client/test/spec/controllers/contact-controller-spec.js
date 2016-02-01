@@ -1,6 +1,7 @@
 describe('ContactController', function () {
-    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService,
-        mockToastProvider, findStubContactsPromise, mockUserService, userHasPermissionToPromise, userGetCurrentUserPromise;
+    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService, mockLoaderService,
+        mockToastProvider, findStubContactsPromise, mockUserService, userHasPermissionToPromise, userGetCurrentUserPromise,
+        deferredPermissionsResultsPromise;
 
     var stubContact = {
         _id: 3,
@@ -27,6 +28,14 @@ describe('ContactController', function () {
         }
     ];
 
+    var adminPermissions = [
+        "auth.can_view_self_contacts",
+        "auth.can_view_contacts",
+        "auth.can_create_contacts",
+        "auth.can_edit_contacts",
+        "auth.can_delete_contacts"
+    ];
+
     var stubCurrentUser = {
         username: "admin",
         first_name: "",
@@ -50,7 +59,8 @@ describe('ContactController', function () {
 
         mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
 
         inject(function ($rootScope, $controller, $compile, $q, $sorter) {
             scope = $rootScope.$new();
@@ -60,6 +70,7 @@ describe('ContactController', function () {
             deferred = $q.defer();
             stubContactPromise = $q.defer();
             toastPromise = $q.defer();
+            deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
             userGetCurrentUserPromise = $q.defer();
             mockContactService.all.and.returnValue(stubContactsPromise.promise);
@@ -70,6 +81,7 @@ describe('ContactController', function () {
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
             spyOn(angular, 'element').and.returnValue(mockElement);
             spyOn(scope, '$broadcast');
@@ -77,10 +89,11 @@ describe('ContactController', function () {
 
             $controller('ContactController', {
                 $scope: scope,
-                ContactService: mockContactService,
                 $sorter: sorter,
+                ContactService: mockContactService,
                 ngToast: mockToastProvider,
-                UserService: mockUserService
+                UserService: mockUserService,
+                LoaderService: mockLoaderService
             });
         });
     });
@@ -107,9 +120,11 @@ describe('ContactController', function () {
     });
 
     it('should fetch all contacts', function () {
+        deferredPermissionsResultsPromise.resolve(adminPermissions);
         userGetCurrentUserPromise.resolve(stubCurrentUser);
         userHasPermissionToPromise.resolve(true);
         stubContactsPromise.resolve(stubContacts);
+
         scope.initialize();
         scope.$apply();
 
@@ -202,15 +217,16 @@ describe('ContactController', function () {
 
     describe('editing a contact', function () {
         it('should edit a contact', function () {
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
             userGetCurrentUserPromise.resolve(stubCurrentUser);
             userHasPermissionToPromise.resolve(true);
             deferred.resolve();
+
             scope.update(stubContact);
             scope.$apply();
 
             expect(angular.element).toHaveBeenCalledWith('#edit-contact-modal');
             expect(mockContactService.update).toHaveBeenCalledWith(stubContact);
-            expect(mockContactService.all).toHaveBeenCalled();
         });
     });
 
