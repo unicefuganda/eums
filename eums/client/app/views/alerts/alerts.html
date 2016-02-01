@@ -52,7 +52,7 @@
                     <a ng-click="sortBy('value')">VALUE<i ng-class="sortArrowClass('value');"></i></a>
                 </th>
                 <th ng-if="isActiveAlertType(constant_type_item)">ITEM</th>
-                <th ng-hide="isActiveAlertType(constant_type_distribution)">REPORTED BY</th>
+                <th>REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
                 <th>UNICEF REMARKS</th>
@@ -87,8 +87,9 @@
                 <td class="text-left pad-10" ng-if="isActiveAlertType(constant_type_item)">
                     <span class="">{{ alert.itemDescription }}</span>
                 </td>
-                <td class="text-left pad-10" ng-hide="isActiveAlertType(constant_type_distribution)">
-                    <span class="">{{ alert.contactName }}</span>
+                <td class="text-left">
+                    <div>{{ alert.contact.contactName }}</div>
+                    <div>{{ alert.contact.contactPhone }}</div>
                 </td>
                 <td class="text-left pad-10">
                     <span class="">{{ alert.consigneeName }}</span>
