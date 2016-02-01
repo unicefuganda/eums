@@ -47,7 +47,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             if (!angular.equals(contact, $scope.currentContact)) {
                 angular.copy(contact, $scope.currentContact);
             }
-            $scope.$broadcast('edit-contact', contact);
+            $scope.$broadcast('edit-contact', $scope.currentContact);
         };
 
         $scope.deleteSelectedContact = function () {
