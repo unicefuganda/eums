@@ -1,7 +1,7 @@
 angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DeliveryService, DeliveryNode, $q, $timeout,
-                                                              DeliveryNodeService) {
+                                                              DeliveryNodeService, UserService) {
         $scope.consignee = {};
         $scope.district = {};
         $scope.errors = false;
@@ -89,17 +89,44 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
 
         function loadOrderData() {
             showLoader();
-            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
-                $scope.purchaseOrder = purchaseOrder;
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            promises.push(loadPurchaseOrderById());
+            $q.all(promises).then(function () {
                 var promises = [];
-                promises.push(loadPurchaseOrderValue(purchaseOrder));
-                promises.push(loadPurchaseOrderDeliveries(purchaseOrder).then(function () {
-                    return attachNodesToItems(purchaseOrder.purchaseorderitemSet).then(function (items) {
+                promises.push(loadPurchaseOrderValue($scope.purchaseOrder));
+                promises.push(loadPurchaseOrderDeliveries($scope.purchaseOrder).then(function () {
+                    return attachNodesToItems($scope.purchaseOrder.purchaseorderitemSet).then(function (items) {
                         $scope.purchaseOrderItems = items.map(setItemQuantityShipped);
                         $scope.contentLoaded = true;
                     });
                 }));
                 $q.all(promises).then(hideLoader);
+            });
+        }
+
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.add_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_add_distributionplan = result;
+                });
+                UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_change_distributionplan = result;
+                });
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
+        }
+
+        function loadPurchaseOrderById() {
+            return PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
+                $scope.purchaseOrder = purchaseOrder;
             });
         }
 

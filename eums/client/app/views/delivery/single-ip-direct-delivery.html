@@ -45,12 +45,14 @@
                                     <input type="hidden"
                                            search-contacts
                                            required="required"
+                                           ng-disabled="!can_add_distributionplan"
                                            value="{{ delivery.contact_person_id }}"
                                            ng-model="delivery.contact_person_id"
                                            ng-attr-id="{{ 'contact-select' }}">
                                 </div>
                                 <div class="col-md-2 form-group no-side-padding">
                                     <button type="button" class="btn btn-default"
+                                            ng-disabled="!can_add_distributionplan"
                                             ng-click="addContact(item, $index)">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
@@ -69,6 +71,7 @@
                                 <div class="col-md-12">
                                     <span class="input-group" eums-date-picker>
                                         <input type="text" class="form-control"
+                                               ng-disabled="!can_add_distributionplan"
                                                datepicker-popup="dd-MMM-yyyy"
                                                ng-model="delivery.delivery_date"
                                                is-open="datepicker[$index]"
@@ -79,6 +82,7 @@
                                                value="{{ delivery.delivery_date | date : 'dd-MMM-yyyy' }}"/>
                                         <span class="input-group-btn">
                                           <button type="button" class="btn btn-default"
+                                                  ng-disabled="!can_add_distributionplan"
                                                   ng-click="open($event, $index )">
                                               <i class="glyphicon glyphicon-calendar"></i>
                                           </button>
@@ -101,7 +105,7 @@
                                     <input type="hidden" search-consignees only-ips
                                            ng-model="delivery.consignee"
                                            ng-attr-id="{{ 'ip-select' }}"
-                                           ng-disabled="cannotChangeIp()"
+                                           ng-disabled="cannotChangeIp() || !can_add_distributionplan"
                                            value="{{ delivery.consignee }}"
                                             {{ ipFieldTitle()?
                                                     title="You can not change IP for this PO but you can still deliver more items" :
@@ -113,13 +117,15 @@
                              ng-class="{'has-error': !delivery.location && errors}">
                             <div class="row">
                                 <div class=" col-md-12">
-                                    <label for="input-location" class="control-label text-nowrap">Choose District</label>
+                                    <label for="input-location" class="control-label text-nowrap">Choose
+                                        District</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12" id="input-location" ng-if="contentLoaded">
                                     <input type="hidden"
                                            search-from-list
+                                           ng-disabled="!can_add_distributionplan"
                                            list="$districts"
                                            value="{{ delivery.location }}"
                                            ng-model="delivery.location"
@@ -139,6 +145,7 @@
                             <div class="row">
                                 <div class=" col-md-12">
                                     <input type="text" size="2" required="required"
+                                           ng-disabled="!can_add_distributionplan"
                                            ng-model="delivery.time_limitation_on_distribution" class="form-control"
                                            value="{{ delivery.time_limitation_on_distribution }}" placeholder="days"
                                            only-digits/>
@@ -207,6 +214,7 @@
                                 <td class="table-row-input-column">
                                     <input type="text" id="quantity-shipped" class="form-control"
                                            ng-model="item.quantityShipped" only-digits
+                                           ng-disabled="!can_add_distributionplan"
                                            ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
                                 </td>
                                 <td class="align-right pad-right-20">{{ item.deliveryValue(item.quantityShipped) |
@@ -216,7 +224,7 @@
                         </table>
 
                         <div class="pad-20 row">
-                            <div ng-show="purchaseOrderItems.length" class="pull-right">
+                            <div ng-show="purchaseOrderItems.length && can_add_distributionplan" class="pull-right">
                                 <button id="save-draft" type="button" class="btn btn-primary"
                                         ng-click="save()">
                                     <i class="glyphicon glyphicon-floppy-save"> </i>
