@@ -222,11 +222,13 @@ describe('ContactController', function () {
             userHasPermissionToPromise.resolve(true);
             deferred.resolve();
 
+            scope.initialize();
             scope.update(stubContact);
             scope.$apply();
 
             expect(angular.element).toHaveBeenCalledWith('#edit-contact-modal');
             expect(mockContactService.update).toHaveBeenCalledWith(stubContact);
+            expect(mockContactService.all).toHaveBeenCalled();
         });
     });
 
