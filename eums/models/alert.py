@@ -21,7 +21,6 @@ class Alert(models.Model):
     is_resolved = models.BooleanField(default=False)
     remarks = models.TextField(blank=True, null=True)
     consignee_name = models.CharField(max_length=255)
-    contact_name = models.CharField(max_length=255)
     created_on = models.DateField(auto_now_add=True)
     runnable = models.ForeignKey(Runnable)
     item_description = models.CharField(max_length=255, null=True)
