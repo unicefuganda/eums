@@ -9,17 +9,20 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             uri: EumsConfig.BACKEND_URLS.ALERTS
         });
     })
-    .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast, DeliveryService, SortService, SortArrowService) {
+    .controller('AlertsController', function ($scope, $rootScope, $q, AlertsService, LoaderService, ngToast, DeliveryService,
+                                              SortService, SortArrowService, UserService) {
 
         var SUPPORTED_FIELD = ['status', 'alertDate', 'dateShipped', 'dateReceived', 'value'];
 
+        $scope.currentUser = {};
         $scope.constant_type_delivery = 'delivery';
         $scope.constant_type_item = 'item';
         $scope.constant_type_distribution = 'distribution';
         $scope.remarks = '';
         $scope.type = $scope.constant_type_delivery;
-
         $scope.sortTerm = {field: 'alertDate', order: 'desc'};
+
+        initializeCurrentTypeView();
 
         $scope.sortArrowClass = function (criteria) {
             return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
@@ -95,10 +98,33 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                 })
         };
 
-        initializeCurrentTypeView();
-
         function initializeCurrentTypeView() {
-            loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            $q.all(promises)
+                .then(function () {
+                    LoaderService.showLoader();
+                    loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
+                });
+        }
+
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.can_view_alert", $scope.userPermissions).then(function (result) {
+                    $scope.can_view = result;
+                });
+                UserService.hasPermission("eums.change_alert", $scope.userPermissions).then(function (result) {
+                    $scope.can_change = result;
+                });
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
         }
 
         function loadInitialAlerts(urlArgs) {

@@ -1,7 +1,8 @@
 describe('AlertsController', function () {
 
-    var scope;
-    var mockAlertsService, mockLoaderService, mockToast, q, mockDeliveryService, mockSortService, mockSortArrowService;
+    var scope, deferred;
+    var mockAlertsService, mockLoaderService, mockToast, q, mockDeliveryService, mockUserService, mockSortService, mockSortArrowService;
+    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
     var type = 'delivery';
     var deferredAlerts,
         expectedAlerts = [
@@ -95,6 +96,22 @@ describe('AlertsController', function () {
             ], "pageSize": 2, "next": "http://localhost:8000/api/alert/?page=2&paginate=true"
         };
 
+    var adminPermissions = [
+        "auth.can_view_self_contacts",
+        "auth.can_view_contacts",
+        "auth.can_create_contacts",
+        "auth.can_edit_contacts",
+        "auth.can_delete_contacts"
+    ];
+
+    var stubCurrentUser = {
+        username: "admin",
+        first_name: "",
+        last_name: "",
+        userid: 5,
+        consignee_id: null,
+        email: "admin@tw.org"
+    };
 
     beforeEach(function () {
         module('Alerts');
@@ -102,90 +119,109 @@ describe('AlertsController', function () {
         mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['retriggerDelivery']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
         mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['setSortArrow']);
 
         inject(function ($controller, $rootScope, $q, ngToast) {
-
+            scope = $rootScope.$new();
             q = $q;
+            deferred = $q.defer();
             deferredAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
+            mockToast = ngToast;
+            deferredPermissionsResultsPromise = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
             mockAlertsService.get.and.returnValue($q.when({'total': 4, 'unresolved': 2}));
-
             mockAlertsService.update.and.returnValue($q.when({}));
-            mockToast = ngToast;
-            spyOn(mockToast, 'create');
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
-            scope = $rootScope.$new();
+            spyOn(mockToast, 'create');
 
             $controller('AlertsController', {
                 $scope: scope,
+                ngToast: mockToast,
                 AlertsService: mockAlertsService,
-                LoaderService: mockLoaderService,
                 DeliveryService: mockDeliveryService,
+                UserService: mockUserService,
+                LoaderService: mockLoaderService,
                 SortService: mockSortService,
-                SortArrowService: mockSortArrowService,
-                ngToast: mockToast
+                SortArrowService: mockSortArrowService
             });
         });
     });
 
-    it('should set delivery alerts on scope from result of service call', function () {
-        scope.$apply();
-        expect(mockAlertsService.all).toHaveBeenCalledWith([], {
-            page: 1,
-            field: 'alertDate',
-            order: 'desc',
-            paginate: 'true',
-            type: 'delivery'
+    describe('when loaded ', function () {
+        beforeEach(function () {
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
-        expect(scope.alerts).toEqual(expectedAlerts);
-        expect(mockLoaderService.showLoader).toHaveBeenCalled();
-        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    });
 
-    it('should set item alerts on scope when type is changed to item', function () {
-        var item_type = 'item';
-        scope.changeAlertType(item_type);
-        scope.$apply();
-        expect(mockAlertsService.all).toHaveBeenCalledWith([], {
-            page: 1,
-            field: 'alertDate',
-            order: 'desc',
-            paginate: 'true',
-            type: 'delivery'
+        it('should set delivery alerts on scope from result of service call', function () {
+            scope.$apply();
+            expect(mockAlertsService.all).toHaveBeenCalledWith([], {
+                page: 1,
+                field: 'alertDate',
+                order: 'desc',
+                paginate: 'true',
+                type: 'delivery'
+            });
+            expect(scope.alerts).toEqual(expectedAlerts);
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
         });
-        expect(mockLoaderService.showLoader).toHaveBeenCalled();
-        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    });
 
-    it('should fetch new page when pageChanged is called and put the consignees on that page on scope', function () {
-        scope.goToPage(10);
-        scope.$apply();
-        expect(mockAlertsService.all).toHaveBeenCalledWith([], {
-            page: 10,
-            field: 'alertDate',
-            order: 'desc',
-            paginate: 'true',
-            type: 'delivery'
+        it('should set item alerts on scope when type is changed to item', function () {
+            var item_type = 'item';
+            scope.changeAlertType(item_type);
+            scope.$apply();
+            expect(mockAlertsService.all).toHaveBeenCalledWith([], {
+                page: 1,
+                field: 'alertDate',
+                order: 'desc',
+                paginate: 'true',
+                type: 'item'
+            });
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
         });
-        expect(scope.alerts).toEqual(expectedAlerts);
-        expect(mockLoaderService.showLoader).toHaveBeenCalled();
-        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    });
 
-    it('should check whether alert type is the active type', function () {
-        scope.$apply();
-        expect(scope.isActiveAlertType('delivery')).toBeTruthy();
-        expect(scope.isActiveAlertType('item')).toBeFalsy();
+        it('should fetch new page when pageChanged is called and put the consignees on that page on scope', function () {
+            scope.goToPage(10);
+            scope.$apply();
+            expect(mockAlertsService.all).toHaveBeenCalledWith([], {
+                page: 10,
+                field: 'alertDate',
+                order: 'desc',
+                paginate: 'true',
+                type: 'delivery'
+            });
+            expect(scope.alerts).toEqual(expectedAlerts);
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+        });
 
-        scope.type = 'item';
-        expect(scope.isActiveAlertType('delivery')).toBeFalsy();
-        expect(scope.isActiveAlertType('item')).toBeTruthy();
+        it('should check whether alert type is the active type', function () {
+            scope.$apply();
+            expect(scope.isActiveAlertType('delivery')).toBeTruthy();
+            expect(scope.isActiveAlertType('item')).toBeFalsy();
+
+            scope.type = 'item';
+            expect(scope.isActiveAlertType('delivery')).toBeFalsy();
+            expect(scope.isActiveAlertType('item')).toBeTruthy();
+        });
     });
 
     describe('Resolve Alerts ', function () {
+        beforeEach(function () {
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+        });
+
         it('should call the update with remarks and alert id', function () {
             var alertId = 1;
             scope.$apply();

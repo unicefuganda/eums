@@ -29,7 +29,7 @@
 <div class="container-fluid alerts-container">
     <div class="table-wrapper">
         <table class="table table-bordered table-hover table-striped">
-            <thead ng-init="initialize()">
+            <thead>
             <tr ng-show="alerts">
                 <th class="centered"
                     ng-hide="isActiveAlertType(constant_type_distribution)">
@@ -56,8 +56,8 @@
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
                 <th>UNICEF REMARKS</th>
-                <th></th>
-                <th ng-show="isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)"></th>
+                <th ng-show="can_change"></th>
+                <th ng-show="can_change && isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)"></th>
             </tr>
             </thead>
 
@@ -99,22 +99,6 @@
                 <td>
                     <span class="glyphicon glyphicon-comment glyphicon-comment-color
                                  glyphicon-size-17 glyphicon-top-5" ng-click="remark($index)"></span>
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-sm resolve-alert-button"
-                            ng-if="!alert.isResolved"
-                            type="button"
-                            ng-click="setResolve($index)">
-                        Resolve
-                    </button>
-
-                    <button class="btn btn-primary btn-sm resolve-alert-button"
-                            ng-if="alert.isResolved"
-                            type="button"
-                            disabled>
-                        Resolved
-                    </button>
-
                     <div class="modal fade text-left" id="resolve-alert-modal-{{$index}}">
                         <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">
@@ -133,30 +117,44 @@
                                     </div>
                                     <form role="form">
                                         <div class="form-group">
-                                <textarea class="form-control"
-                                          ng-model="alert.remarks"
-                                          required rows="6">
-                                </textarea>
+                                            <textarea class="form-control"
+                                                      ng-disabled="!can_change"
+                                                      ng-model="alert.remarks"
+                                                      required rows="6">
+                                            </textarea>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="modal-footer centered">
                                     <button type="button"
                                             class="btn btn-default bg-grey text-white"
-                                            data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span>
-                                        Cancel
+                                            data-dismiss="modal">
+                                        <span class="glyphicon glyphicon-remove-sign margin-right-5"></span>{{ can_change ? 'Cancel' : 'Close' }}
                                     </button>
-
                                     <button type="button"
                                             class="btn btn-primary"
+                                            ng-show="can_change"
                                             ng-disabled="!alert.remarks"
                                             ng-click="resolveAlert(alert.id, alert.remarks, alert.isResolved)"
-                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span> Save
+                                            data-dismiss="modal">
+                                        <span class="glyphicon glyphicon-ok-sign margin-right-5"></span>Save
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </td>
+                <td ng-show="can_change">
+                    <button class="btn btn-primary btn-sm resolve-alert-button"
+                            ng-if="!alert.isResolved"
+                            type="button"
+                            ng-click="setResolve($index)">Resolve
+                    </button>
+                    <button class="btn btn-primary btn-sm resolve-alert-button"
+                            ng-if="alert.isResolved"
+                            type="button"
+                            disabled>Resolved
+                    </button>
                     <div class="modal fade text-left" id="resolve-confirm-modal-{{$index}}">
                         <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">
@@ -187,7 +185,7 @@
                         </div>
                     </div>
                 </td>
-                <td ng-show="isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)">
+                <td ng-show="can_change && isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)">
                     <button class="btn btn-primary btn-sm retrigger-btn"
                             type="button"
                             ng-if="isRetriggerBtnAvailable(alert)"

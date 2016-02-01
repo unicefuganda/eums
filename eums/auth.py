@@ -61,8 +61,8 @@ class PermissionCode(object):
     CAN_VIEW_RELEASE_ORDER = 'can_view_release_order'
 
     CAN_VIEW_ALERT = 'can_view_alert'
-    CAN_CHANGE_ALERT = 'change_alert'
     CAN_ADD_ALERT = 'add_alert'
+    CAN_CHANGE_ALERT = 'change_alert'
     CAN_PATCH_ALERT = 'change_alert'
 
     CAN_VIEW_SYSTEM_SETTINGS = 'can_view_system_settings'

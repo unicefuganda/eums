@@ -83,6 +83,7 @@ GROUP_PERMISSIONS = {
 
         PermissionCode.CAN_VIEW_ALERT,
         PermissionCode.CAN_PATCH_ALERT,
+
         PermissionCode.CAN_VIEW_SYSTEM_SETTINGS,
 
         PermissionCode.CAN_VIEW_STOCK_REPORT,
@@ -111,6 +112,7 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_RELEASE_ORDER,
 
         PermissionCode.CAN_VIEW_ALERT,
+
         PermissionCode.CAN_VIEW_SYSTEM_SETTINGS,
 
         PermissionCode.CAN_VIEW_STOCK_REPORT,
