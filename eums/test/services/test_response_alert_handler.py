@@ -2,8 +2,8 @@ import logging
 from unittest import TestCase
 
 import requests
-from django.conf import settings
 import requests_mock
+from django.conf import settings
 from mock import MagicMock
 
 from eums.models import Alert, Question, PurchaseOrder, Consignee, DistributionPlan, DistributionPlanNode
@@ -147,7 +147,7 @@ class ResponseAlertHandlerTest(TestCase):
         ResponseAlertHandler(runnable=delivery, answer_values=answer_values).process()
 
         alert = Alert.objects.get(consignee_name="Liverpool FC - Unique", order_number=5678)
-        self.assertEqual(alert.contact_name, "chris george")
+        self.assertEqual(alert.contact['contact_name'], "chris george")
 
     def test_should_not_create_alert_when_no_issues_with_delivery(self):
         answer_values = [

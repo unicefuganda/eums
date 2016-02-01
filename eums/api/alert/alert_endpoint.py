@@ -1,15 +1,15 @@
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q, Max
 from rest_framework import serializers
+from rest_framework import status
 from rest_framework.permissions import DjangoModelPermissions
+from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
+
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Alert, DistributionPlanNode, DistributionPlan
-from django.db.models import Q, Max
-
 from eums.permissions.alert_permissions import AlertPermissions
 
 
@@ -24,7 +24,7 @@ class AlertSerializer(serializers.ModelSerializer):
             'is_resolved',
             'remarks',
             'consignee_name',
-            'contact_name',
+            'contact',
             'created_on',
             'issue_display_name',
             'item_description',
@@ -51,8 +51,8 @@ class AlertViewSet(ReadOnlyModelViewSet):
                     runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
         elif type == 'delivery':
             return Alert.objects.filter(
-                    Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
-                    , ~Q(issue=Alert.ISSUE_TYPES.distribution_expired))
+                    Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
+                    ~Q(issue=Alert.ISSUE_TYPES.distribution_expired))
         elif type == 'distribution':
             return Alert.objects.filter(
                     Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),

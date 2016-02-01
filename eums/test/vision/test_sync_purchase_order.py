@@ -266,8 +266,6 @@ class TestSyncPurchaseOrder(TestCase):
         self.synchronizer._load_records = MagicMock(return_value=older_purchase_order)
         self.synchronizer.sync()
 
-        print PurchaseOrder.objects.count()
-
         purchase_order = PurchaseOrder.objects.get(order_number=45143984)
         self.assertEqual(purchase_order.date, datetime.datetime(2015, 11, 30, 13, 0).date())
 

@@ -1,8 +1,10 @@
 import datetime
+
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField
-from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, DistributionPlanNode, DistributionPlan, Question
+
+from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, DistributionPlanNode, DistributionPlan
 
 
 class Alert(models.Model):
@@ -54,6 +56,12 @@ class Alert(models.Model):
 
     def is_retriggered(self):
         return self.runnable.is_retriggered
+
+    @property
+    def contact(self):
+        contact = self.runnable.build_contact()
+        return {'contact_name': "%s %s" % (contact.get('firstName', ''), contact.get('lastName', '')),
+                'contact_phone': contact.get('phone', '')}
 
     def resolve_retriggered_delivery(self):
         if not self.is_resolved:

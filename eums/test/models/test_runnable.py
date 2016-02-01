@@ -2,20 +2,20 @@ from unittest import TestCase
 
 from django.conf import settings
 from mock import patch
-from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.delivery_factory import DeliveryFactory
-from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
-from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
-from eums.test.factories.run_factory import RunFactory
 from eums.models import Run, PurchaseOrderItem, Alert
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
+from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, \
     DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
@@ -132,15 +132,13 @@ class RunnableTest(TestCase):
 
         delivery.create_alert(Alert.ISSUE_TYPES.not_received)
 
-        self.assertTrue(mock_contact.called)
-
         alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
         self.assertEqual(alerts.count(), 1)
         alert = alerts.first()
         self.assertEqual(alert.order_type, PurchaseOrderItem.PURCHASE_ORDER)
         self.assertEqual(alert.order_number, 5678)
         self.assertEqual(alert.consignee_name, "Liverpool FC")
-        self.assertEqual(alert.contact_name, "Chris George")
+        self.assertEqual(alert.contact['contact_name'], "Chris George")
         self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
         self.assertFalse(alert.is_resolved)
         self.assertIsNone(alert.remarks)

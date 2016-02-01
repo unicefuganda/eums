@@ -1,4 +1,5 @@
 import factory
+
 from eums.models import Alert, ReleaseOrderItem
 from eums.test.factories.delivery_factory import DeliveryFactory
 
@@ -14,5 +15,4 @@ class AlertFactory(factory.DjangoModelFactory):
     is_resolved = False
     remarks = None
     consignee_name = 'Wakiso DHO'
-    contact_name = 'John Doe'
     runnable = factory.SubFactory(DeliveryFactory)

@@ -1,10 +1,11 @@
-from unittest import TestCase
 from datetime import datetime
+from unittest import TestCase
 
 from django.db import IntegrityError
 from mock import patch
+
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
-    Item, Consignee, Alert, Runnable, Flow
+    Item, Consignee, Alert, Flow
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -461,15 +462,13 @@ class DeliveryNodeTest(TestCase):
 
         node.create_alert(Alert.ISSUE_TYPES.not_received)
 
-        self.assertTrue(mock_contact.called)
-
         alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
         self.assertEqual(alerts.count(), 1)
         alert = alerts.first()
         self.assertEqual(alert.order_type, PurchaseOrderItem.PURCHASE_ORDER)
         self.assertEqual(alert.order_number, 5678)
         self.assertEqual(alert.consignee_name, "Liverpool FC")
-        self.assertEqual(alert.contact_name, "Chris George")
+        self.assertEqual(alert.contact['contact_name'], "Chris George")
         self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
         self.assertFalse(alert.is_resolved)
         self.assertIsNone(alert.remarks)

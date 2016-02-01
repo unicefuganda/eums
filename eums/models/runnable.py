@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from polymorphic import PolymorphicModel
+
 from eums.models import Consignee
 from eums.models.time_stamped_model import TimeStampedModel
 from eums.services.contacts import ContactService
@@ -75,6 +76,5 @@ class Runnable(PolymorphicModel, TimeStampedModel):
                 order_type=self.type(),
                 order_number=self.number(),
                 consignee_name=self.consignee.name,
-                contact_name=self.contact.full_name(),
                 item_description=self.item_description(),
                 issue=issue)

@@ -1,3 +1,6 @@
+import requests
+from mock import MagicMock
+
 from eums.models import ReleaseOrderItem, Flow, Question
 from eums.models.alert import Alert
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -9,6 +12,7 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.question_factory import TextQuestionFactory
 from eums.test.factories.run_factory import RunFactory
+from eums.test.factories.runnable_factory import RunnableFactory
 
 ENDPOINT_URL = BACKEND_URL + 'alert/'
 
@@ -21,6 +25,8 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         super(AlertEndpointTest, self).setUp()
 
     def test_should_return_information_on_an_alert(self):
+        contact_id = '54335c56b3ae9d92f038abb0'
+        runnable = RunnableFactory(contact_person_id=contact_id)
         AlertFactory(
             order_type=ReleaseOrderItem.WAYBILL,
             order_number=123456,
@@ -28,9 +34,12 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
             is_resolved=False,
             remarks='some remarks',
             consignee_name='wakiso',
-            contact_name='john doe',
-            item_description="some description")
+            item_description="some description",
+            runnable=runnable)
 
+        fake_contact = {'firstName': "test", 'lastName': "user1", 'phone': "+256 782 443439", '_id': contact_id}
+        response = MagicMock(json=MagicMock(return_value=fake_contact), status_code=200)
+        requests.get = MagicMock(return_value=response)
         response = self.client.get(ENDPOINT_URL)
 
         self.assertEqual(response.status_code, 200)
@@ -43,9 +52,9 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(first_alert['is_resolved'], False)
         self.assertEqual(first_alert['remarks'], 'some remarks')
         self.assertEqual(first_alert['consignee_name'], 'wakiso')
-        self.assertEqual(first_alert['contact_name'], 'john doe')
         self.assertEqual(first_alert['item_description'], 'some description')
         self.assertEqual(first_alert['issue_display_name'], Alert.ISSUE_TYPES[Alert.ISSUE_TYPES.not_received])
+        self.assertEqual(first_alert['contact'], {'contact_name': 'test user1', 'contact_phone': '+256 782 443439'})
 
     def test_should_return_multiple_alerts_when_multiple_exist(self):
         AlertFactory()
