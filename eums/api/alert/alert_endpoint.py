@@ -89,49 +89,59 @@ class AlertViewSet(ReadOnlyModelViewSet):
         if request.GET.get('field'):
             sort_order = request.GET.get('order')
             field_handlers = {
-                'alertDate': CommonFieldSorter('created_on', sort_order),
-                'status': CommonFieldSorter('issue', sort_order),
-                'dateShipped': RelatedFieldSorter('date_shipped', sort_order, 'runnable__delivery_date'),
-                'value': RelatedFieldSorter('total_value', sort_order, 'runnable__total_value'),
-                'dateReceived': PropertySorter('date_received', sort_order)
+                'alertDate': CommonFieldSorter(self.generate_paged_response, 'created_on', sort_order),
+                'status': CommonFieldSorter(self.generate_paged_response, 'issue', sort_order),
+                'dateShipped': RelatedFieldSorter(self.generate_paged_response, 'date_shipped', sort_order,
+                                                  'runnable__delivery_date'),
+                'value': RelatedFieldSorter(self.generate_paged_response, 'total_value', sort_order,
+                                            'runnable__total_value'),
+                'dateReceived': PropertySorter(self.generate_paged_response, 'date_received', sort_order)
             }
-            queryset = field_handlers.get(request.GET.get('field')).query(queryset)
+            return field_handlers.get(request.GET.get('field')).query(queryset)
 
+        return self.generate_paged_response(queryset)
+
+    def generate_paged_response(self, queryset):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
         serializer = self.get_serializer(queryset, many=True)
-
         return Response(serializer.data)
 
 
 class CommonFieldSorter(object):
-    def __init__(self, field_name, order):
+    def __init__(self, method, field_name, order):
         self.field_name = field_name
         self.order = order
+        self.process_method = method
 
     @property
     def _sort_field(self):
         return ('-' + self.field_name) if self.order == 'desc' else self.field_name
 
     def query(self, queryset):
-        return queryset.order_by(self._sort_field)
+        return self.process_method(queryset.order_by(self._sort_field))
 
 
 class RelatedFieldSorter(CommonFieldSorter):
-    def __init__(self, field_name, order, related_field):
-        super(RelatedFieldSorter, self).__init__(field_name, order)
+    def __init__(self, method, field_name, order, related_field):
+        super(RelatedFieldSorter, self).__init__(method, field_name, order)
         self.related_field = related_field
 
     def query(self, queryset):
-        return queryset.annotate(**{self.field_name: Max(self.related_field)}).order_by(self._sort_field)
+        return self.process_method(
+                queryset.annotate(**{self.field_name: Max(self.related_field)}).order_by(self._sort_field))
 
 
 class PropertySorter(CommonFieldSorter):
     def query(self, queryset):
-        return queryset
+        reverse_flag = True if self.order == 'desc' else False
+        alerts = list(queryset)
+        alerts = sorted(alerts, key=lambda a: getattr(a, self.field_name)() if getattr(a,
+                        self.field_name)() and not reverse_flag else 'Z',
+                        reverse=reverse_flag)
+        return self.process_method(alerts)
 
 
 alert_router = DefaultRouter()
