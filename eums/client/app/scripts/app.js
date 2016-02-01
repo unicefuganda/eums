@@ -99,7 +99,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'WarehouseDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                        return UserService.checkUserPermission('auth.can_view_distribution_plan');
                     }
                 }
             })

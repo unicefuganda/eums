@@ -25,7 +25,7 @@ class ConsigneeItemViewSet(ModelViewSet):
 
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
-        if user_profile:
+        if user_profile and user_profile.consignee:
             return ConsigneeItem.objects.filter(consignee=user_profile.consignee)
         return super(ConsigneeItemViewSet, self).get_queryset()
 

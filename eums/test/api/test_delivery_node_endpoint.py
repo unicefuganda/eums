@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 from rest_framework.status import HTTP_200_OK
@@ -17,6 +18,8 @@ from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
+
+logger = logging.getLogger(__name__)
 
 
 class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
@@ -224,6 +227,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?is_distributable=true' % ENDPOINT_URL)
 
         node_ids = [node['id'] for node in response.data]
+        logger.info(response.data)
         self.assertEqual(len(response.data), 1)
         self.assertIn(distributable_confirmed_parent.id, node_ids)
         self.assertNotIn(distributable_parent.id, node_ids)

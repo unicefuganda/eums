@@ -35,7 +35,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
 
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
-        if user_profile:
+        if user_profile and user_profile.consignee:
             return self._get_consignee_queryset(user_profile)
         is_root = self.request.GET.get('is_root')
         if is_root:
