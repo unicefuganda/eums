@@ -20306,7 +20306,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20322,7 +20321,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20338,7 +20336,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20354,7 +20351,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20370,7 +20366,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20386,7 +20381,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "bad_condition",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20402,7 +20396,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "distribution_expired",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20418,7 +20411,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20434,7 +20426,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "damaged",
       "item_description": "Safety box f.used syrgs/ndls 5lt/BOX-25 B",
       "consignee_name": "WAKISO DHO"
@@ -20450,7 +20441,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "xu xiaojuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20466,7 +20456,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Wu Lingzi",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20482,7 +20471,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "bad_condition",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20498,7 +20486,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "damaged",
       "item_description": "IEHK2006,kit,suppl.1-drugs",
       "consignee_name": "WAKISO DHO"
@@ -20514,7 +20501,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20530,7 +20516,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20546,7 +20531,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20562,7 +20546,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "bad_condition",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20578,7 +20561,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "incomplete",
       "item_description": "IEHK2006,kit,suppl.1-drugs",
       "consignee_name": "WAKISO DHO"
@@ -20594,7 +20576,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "bad_condition",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20610,7 +20591,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "substandard",
       "item_description": "IEHK2006,kit,suppl.1-drugs",
       "consignee_name": "WAKISO DHO"
@@ -20626,7 +20606,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "bad_condition",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20642,7 +20621,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "damaged",
       "item_description": "IEHK2006,kit,suppl.1-drugs",
       "consignee_name": "WAKISO DHO"
@@ -20658,7 +20636,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Gao Yuan",
       "issue": "bad_condition",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20674,7 +20651,6 @@
       "is_resolved": true,
       "created_on": "2015-12-30",
       "remarks": "The IP has distributed!",
-      "contact_name": "Xu Ren",
       "issue": "distribution_expired",
       "item_description": null,
       "consignee_name": "WAKISO DHO"
@@ -20690,7 +20666,6 @@
       "is_resolved": false,
       "created_on": "2015-12-30",
       "remarks": null,
-      "contact_name": "Enid M",
       "issue": "not_received",
       "item_description": null,
       "consignee_name": "KYENGEGWA DHO"
