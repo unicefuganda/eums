@@ -88,8 +88,8 @@
                             <td>
                                 <input type="text" id="input-quantity" class="form-control"
                                        ng-model="item.quantityIn"
-                                       ng-disabled="item.trackSubmitted" only-digits>
-
+                                       ng-disabled="item.trackSubmitted || !can_add_distributionplan"
+                                       only-digits>
                             </td>
                             <td id="input-delivery-date">
                                 <p class="table-date-width input-group" eums-date-picker>
@@ -98,16 +98,15 @@
                                            datepicker-popup="dd-MMM-yyyy"
                                            ng-model="item.deliveryDate"
                                            ng-required="true"
-                                           ng-disabled="item.trackSubmitted"
+                                           ng-disabled="item.trackSubmitted || !can_add_distributionplan"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            value="{{ item.deliveryDate | date : 'dd-MMM-yyyy' }}"
                                            required="required"/>
                                           <span class="input-group-btn">
-
                                             <button type="button" class="btn btn-default"
                                                     ng-click="open($event, $index )"
-                                                    ng-disabled="item.trackSubmitted">
+                                                    ng-disabled="item.trackSubmitted || !can_add_distributionplan">
                                                 <i class="glyphicon glyphicon-calendar"></i></button>
                                           </span>
                                 </p>
@@ -115,32 +114,31 @@
                             <td id="input-consignee" class="table-select-max-width">
                                 <input type="hidden" search-consignees only-ips
                                        ng-model="item.consignee.id"
-                                       ng-disabled="item.trackSubmitted"
+                                       ng-disabled="item.trackSubmitted || !can_add_distributionplan"
                                        value="{{ item.consignee.id }}">
                             </td>
-
                             <td id="input-contact" class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts required="required"
                                                value="{{ item.contactPerson.id }}"
                                                ng-model="item.contactPerson.id"
-                                               ng-disabled="item.trackSubmitted"
+                                               ng-disabled="item.trackSubmitted || !can_add_distributionplan"
                                                ng-attr-id="{{ 'contact-select-for-node-' + $index }}">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button" class="btn btn-default "
                                                 ng-click="addContact(item, $index)"
-                                                ng-disabled="item.trackSubmitted">
+                                                ng-disabled="item.trackSubmitted || !can_add_distributionplan">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </td>
                             <td id="input-location" class="table-select-max-width">
-                                <input type="hidden" search-from-list list="{{ districts }}"
+                                <input type="hidden" search-from-list list="$districts"
+                                       ng-disabled="item.trackSubmitted || !can_add_distributionplan"
                                        ng-model="item.location"
-                                       ng-disabled="item.trackSubmitted"
                                        value="{{ item.location }}">
                             </td>
                             <td id="input-track">
@@ -148,20 +146,20 @@
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ item.track }}"
                                            ng-model="item.track"
-                                           ng-disabled="item.trackSubmitted">
+                                           ng-disabled="item.trackSubmitted || !can_add_distributionplan">
                                 </div>
                             </td>
                             <td id="input-time-limitation-on-distribution">
                                 <input type="text" ng-model="item.timeLimitationOnDistribution" class="form-control"
                                        value="{{ item.timeLimitationOnDistribution }}" placeholder="days"
-                                       ng-disabled="item.trackSubmitted" only-digits>
+                                       ng-disabled="item.trackSubmitted || !can_add_distributionplan" only-digits>
                             </td>
                         </tr>
                     </table>
                 </div>
 
             </div>
-            <div class="pad-20 row">
+            <div class="pad-20 row" ng-show="can_add_distributionplan">
                 <button id="addConsigneeBtn" ng-show="computeQuantityLeft(distributionPlanNodes) > 0"
                         type="button" class="btn btn-primary" ng-click="addDeliveryNode()">
                     <i class="glyphicon glyphicon-plus"> </i>

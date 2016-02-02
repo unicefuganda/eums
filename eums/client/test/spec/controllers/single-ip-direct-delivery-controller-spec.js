@@ -1,6 +1,7 @@
 describe('Single IP Direct Delivery Controller', function () {
-    var mockPurchaseOrderService, scope, location, mockIpService,
-        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
+    var mockPurchaseOrderService, scope, q, location, mockIpService,
+        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, mockUserService;
+    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
     var trackedDelivery = {
@@ -41,7 +42,6 @@ describe('Single IP Direct Delivery Controller', function () {
     };
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
-    var districts = [{name: 'Kampala', id: 'Kampala'}, {name: 'Jinja', id: 'Jinja'}];
     var districtsResponse = {data: ['Kampala', 'Jinja']};
     var emptyFunction = function () {
     };
@@ -53,6 +53,21 @@ describe('Single IP Direct Delivery Controller', function () {
         else if (selector === '#view-delivery-modal') return viewDeliveryModal;
         else return mockLoader;
     };
+    var adminPermissions = [
+        "auth.can_view_self_contacts",
+        "auth.can_view_contacts",
+        "auth.can_create_contacts",
+        "auth.can_edit_contacts",
+        "auth.can_delete_contacts"
+    ];
+    var stubCurrentUser = {
+        username: "admin",
+        first_name: "",
+        last_name: "",
+        userid: 5,
+        consignee_id: null,
+        email: "admin@tw.org"
+    };
 
     beforeEach(function () {
         module('SingleIpDirectDelivery');
@@ -61,6 +76,7 @@ describe('Single IP Direct Delivery Controller', function () {
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create', 'update', 'get']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             DeliveryNodeModel = DeliveryNode;
@@ -68,7 +84,9 @@ describe('Single IP Direct Delivery Controller', function () {
             location = $location;
             toast = ngToast;
             q = $q;
-
+            deferredPermissionsResultsPromise = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
             mockPurchaseOrderService.getDetail.and.callFake(fakeGetDetail);
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
             mockPurchaseOrderService.update.and.returnValue($q.when({}));
@@ -78,6 +96,9 @@ describe('Single IP Direct Delivery Controller', function () {
             mockDeliveryService.create.and.returnValue($q.when(createdTrackedDelivery));
             mockDeliveryService.update.and.returnValue($q.when(createdTrackedDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
             spyOn(mockModal, 'modal');
@@ -93,6 +114,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 DeliveryService: mockDeliveryService,
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: DeliveryNodeModel,
+                UserService: mockUserService,
                 ngToast: toast
             });
 
@@ -107,19 +129,19 @@ describe('Single IP Direct Delivery Controller', function () {
         beforeEach(function () {
             totalValuePromise = q.defer();
             deliveriesPromise = q.defer();
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should show loader while loading and hide it after', function () {
             var getPurchaseOrder = q.defer();
             mockPurchaseOrderService.get.and.returnValue(getPurchaseOrder.promise);
             mockPurchaseOrderService.getDetail.and.callFake(fakeGetDetail);
-
             scope.$apply();
-
             expect(mockLoader.modal).toHaveBeenCalled();
             expect(mockLoader.modal.calls.count()).toBe(1);
 
-            getPurchaseOrder.resolve({});
+            getPurchaseOrder.resolve({id: 15, purchaseorderitemSet: []});
             totalValuePromise.resolve(0);
             deliveriesPromise.resolve(deliveries);
             scope.$apply();
@@ -183,7 +205,9 @@ describe('Single IP Direct Delivery Controller', function () {
 
     describe('when save is called', function () {
         beforeEach(function () {
-            scope.purchaseOrderItems = []
+            scope.purchaseOrderItems = [];
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should throw and error when required fields are not filled out', function () {
@@ -247,6 +271,9 @@ describe('Single IP Direct Delivery Controller', function () {
             nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne, quantity: itemOne.quantityShipped}, deliveryCommonFields));
             nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo, quantity: itemTwo.quantityShipped}, deliveryCommonFields));
             setScopeData();
+
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should create a new delivery when there is no current delivery on scope', function () {
@@ -379,7 +406,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(createNodeArgs.last().first().quantity).toEqual(0);
             expect(createNodeArgs.first().first().quantity).toEqual(10);
         });
-
 
         it('should mark purchase order as singleIP and save it', function () {
             scope.save(true);

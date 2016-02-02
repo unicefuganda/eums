@@ -117,7 +117,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             var promises = [];
             promises.push(loadUserPermissions());
             promises.push(loadCurrentUser());
-            console.log("PURCHASE-ORDER-ID> " + $routeParams.purchaseOrderId)
             if ($routeParams.purchaseOrderId) {
                 promises.push(loadPurchaseOrderById());
             }
@@ -126,7 +125,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             }
             $q.all(promises).then(function () {
 
-                // loadPurchaseOrderById
                 if ($scope.selectedPurchaseOrder) {
                     $scope.purchaseOrderItems = $scope.selectedPurchaseOrder.purchaseorderitemSet;
                     $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
@@ -134,7 +132,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                     });
                 }
 
-                // loadPurchaseOrderItemById
                 if ($scope.selectedPurchaseOrderItem) {
                     loadDeliveryDataFor($scope.selectedPurchaseOrderItem);
                 }

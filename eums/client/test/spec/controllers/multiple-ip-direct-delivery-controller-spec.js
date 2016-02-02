@@ -10,7 +10,6 @@ describe('MultipleIpDirectDeliveryController', function () {
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
-    var plainDistricts = ['Abim', 'Gulu'];
 
     var purchaseOrders = [
         {
@@ -52,14 +51,6 @@ describe('MultipleIpDirectDeliveryController', function () {
         last_name: 'admin',
         email: 'a@a.com',
         consignee_id: null
-    };
-
-    var stubIPUser = {
-        username: 'ip',
-        first_name: 'ip',
-        last_name: 'ip',
-        email: 'ip@ip.com',
-        consignee_id: 1
     };
 
     var stubPurchaseOrderItem = {
@@ -107,9 +98,6 @@ describe('MultipleIpDirectDeliveryController', function () {
         userid: 5,
         consignee_id: null,
         email: "admin@tw.org"
-    };
-
-    var emptyFunction = function () {
     };
 
     var setUp = function (routeParams) {
