@@ -13,7 +13,7 @@ describe('IP Report Loss Damage', function () {
 
         ipReportLossPage.visit(reportLossItemId);
 
-        expect(ipReportLossPage.itemName).toBe('Item Name: Three-pronged power cables');
-        //expect(ipReportLossPage.itemAvailableQty).toBe('Quantity Available: 50');
+        expect(ipReportLossPage.itemDescription).toBe('Item Name: Three-pronged power cables');
+        expect(ipReportLossPage.quantityAvailable).toBe('Quantity Available: 50');
     });
 });

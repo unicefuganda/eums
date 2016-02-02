@@ -1,12 +1,14 @@
 describe('IP Delivery Report Loss Controller', function () {
-    var scope, routeParams, q, mockItemService;
+    var scope, routeParams, q, mockConsigneeItemService;
+
+    var fetchedConsigneeItems = {results: [{id: 188, item: 88, itemDescription: 'some description', availableBalance: 450}]};
 
     beforeEach(function () {
         module('DeliveryByIpReportLoss');
 
         inject(function ($controller, $rootScope, $q) {
-            mockItemService = jasmine.createSpyObj('ItemService', ['get']);
-            mockItemService.get.and.returnValue($q.when('some item'));
+            mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
+            mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
 
             scope = $rootScope.$new();
             routeParams = {itemId: 88};
@@ -14,14 +16,16 @@ describe('IP Delivery Report Loss Controller', function () {
             $controller('DeliveryByIpReportLossController', {
                 $scope: scope,
                 $routeParams: routeParams,
-                ItemService: mockItemService
+                ConsigneeItemService: mockConsigneeItemService
             });
         });
     });
 
     it('should call item service with correct route params and set on scope', function () {
         scope.$apply();
-        expect(mockItemService.get).toHaveBeenCalledWith(88);
-        expect(scope.item).toBe('some item');
+        expect(mockConsigneeItemService.filter).toHaveBeenCalledWith({item: routeParams.itemId});
+        expect(scope.consigneeItem.itemId).toBe(88);
+        expect(scope.consigneeItem.itemDescription).toBe('some description');
+        expect(scope.consigneeItem.quantityAvailable).toBe(450);
     });
 });

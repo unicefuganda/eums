@@ -3,7 +3,7 @@
     <div class="eums page-header row">
         <div class="pull-left pad-top-10">Report Loss/Damage</div>
         <div class="pull-right">
-            <a href="#/deliveries-by-ip/{{ item.id }}" class="btn blue-border-button">
+            <a href="#/deliveries-by-ip/{{ consigneeItem.itemId }}" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
                 Back to Previous
             </a>
@@ -20,11 +20,11 @@
                 <table class="item-details-table">
                     <tr id="itemNameLabel">
                         <td class="bold-label">Item Name:</td>
-                        <td><span class="label label-success item-quantity-label">{{ item.description }}</span></td>
+                        <td><span class="label label-success item-quantity-label">{{ consigneeItem.itemDescription }}</span></td>
                     </tr>
                     <tr id="qty-available-label">
                         <td class="bold-label">Quantity Available:</td>
-                        <td><span class="label label-success item-quantity-label"></span></td>
+                        <td><span class="label label-success item-quantity-label">{{ consigneeItem.quantityAvailable }}</span></td>
                     </tr>
                 </table>
             </div>
