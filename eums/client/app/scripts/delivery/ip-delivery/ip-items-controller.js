@@ -1,9 +1,21 @@
 angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
-    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService) {
+    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService, UserService) {
+        $scope.currentUser = {};
         $scope.items = [];
         $scope.searching = false;
 
-        fetchItems();
+        init();
+
+        $scope.$watch('searchTerm', function (term) {
+            if (term && term.length) {
+                $scope.searching = true;
+                searchItems(term);
+            }
+            else {
+                loadItems();
+            }
+        });
+
         $scope.goToPage = function (page) {
             var urlArgs = {page: page};
             if ($scope.searchTerm && $scope.searchTerm.length) {
@@ -14,25 +26,46 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
             });
         };
 
-        $scope.$watch('searchTerm', function (term) {
-            if (term && term.length) {
-                $scope.searching = true;
-                ConsigneeItemService.search(term).then(function (response) {
-                    setScopeDataFromResponse(response);
-                }).catch(function () {
-                    //createToast('Search failed', 'danger');
-                }).finally(function () {
-                    $scope.searching = false;
-                });
-            }
-            else {
-                fetchItems();
-            }
-        });
+        function init() {
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            $q.all(promises).then(function () {
+                loadItems();
+            });
+        }
 
-        function fetchItems() {
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.add_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_add_distributionplan = result;
+                });
+                UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_change_distributionplan = result;
+                });
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
+        }
+
+        function loadItems() {
             ConsigneeItemService.all().then(function (response) {
                 setScopeDataFromResponse(response);
+            });
+        }
+
+        function searchItems(term) {
+            ConsigneeItemService.search(term).then(function (response) {
+                setScopeDataFromResponse(response);
+            }).catch(function () {
+                //createToast('Search failed', 'danger');
+            }).finally(function () {
+                $scope.searching = false;
             });
         }
 

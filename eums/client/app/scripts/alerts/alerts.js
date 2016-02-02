@@ -102,11 +102,10 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             var promises = [];
             promises.push(loadUserPermissions());
             promises.push(loadCurrentUser());
-            $q.all(promises)
-                .then(function () {
-                    LoaderService.showLoader();
-                    loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
-                });
+            $q.all(promises).then(function () {
+                LoaderService.showLoader();
+                loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
+            });
         }
 
         function loadUserPermissions() {

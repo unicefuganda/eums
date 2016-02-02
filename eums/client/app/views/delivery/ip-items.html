@@ -36,9 +36,11 @@
                     <span class="glyphicon glyphicon-eye-open"></span>
                     View Distributions</a>
                 <a ng-disabled="!item.availableBalance" href="#/deliveries-by-ip/{{ item.item }}/new"
+                   ng-show="add_distributionplan"
                    class="btn btn-sm btn-primary reportDelivery">
                     <span class="glyphicon glyphicon-plus"></span>
-                    Report New Distribution</a>
+                    Report New Distribution
+                </a>
             </td>
         </tr>
         </tbody>

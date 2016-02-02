@@ -1,24 +1,36 @@
 describe('IP Items Controller', function () {
-    var scope, q, mockConsigneeItemService, deferredSearchResults, location;
+    var scope, q, mockConsigneeItemService, deferredSearchResults, location, mockUserService;
+    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
     var items = [{id: 1, Description: 'Plumpynut'}, {id: 1, Description: 'Books'}, {id: 1, Description: 'Shoes'}];
     var paginatedItemsResponse = {results: items, count: items.length, pageSize: 2};
     var searchResults = items.first(2);
 
     beforeEach(function () {
         module('IpItems');
+        mockConsigneeItemService = jasmine.createSpyObj('mockConsigneeItemService', ['all', 'search']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
+
         inject(function ($controller, $rootScope, $q, $location) {
-            mockConsigneeItemService = jasmine.createSpyObj('mockConsigneeItemService', ['all', 'search']);
+            scope = $rootScope.$new();
+            location = $location;
+            q = $q;
             deferredSearchResults = $q.defer();
+            deferredPermissionsResultsPromise = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
             mockConsigneeItemService.all.and.returnValue($q.when(paginatedItemsResponse));
             mockConsigneeItemService.search.and.returnValue(deferredSearchResults.promise);
-            location = $location;
-            spyOn($location,'path').and.returnValue('fake location');
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
-            scope = $rootScope.$new();
-            q = $q;
+            spyOn($location, 'path').and.returnValue('fake location');
+
             $controller('IpItemsController', {
                 $scope: scope,
-                ConsigneeItemService: mockConsigneeItemService
+                $location: location,
+                ConsigneeItemService: mockConsigneeItemService,
+                UserService: mockUserService
             });
         });
     });
