@@ -114,6 +114,13 @@ describe('Route Provider', function () {
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html');
     });
 
+    it('should have route for report loss on deliveries by ip', function () {
+        var route = '/deliveries-by-ip/:itemId/report-loss';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('DeliveryByIpReportLossController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/delivery-by-ip-report-loss.html');
+    });
+
     it('should have new sub-consignee delivery by ip route', function () {
         var route = '/deliveries-by-ip/:itemId/:parentNodeId/new';
         expect((Object.keys(routes.routes))).toContain(route);

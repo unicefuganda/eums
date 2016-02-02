@@ -1,4 +1,5 @@
 from eums.client.test.functional.fixtures.mapdata_items import *
+from eums.client.test.functional.fixtures.mapdata_report_loss import *
 from eums.client.test.functional.fixtures.mapdata_sales_order import *
 from eums.models import SalesOrderItem
 

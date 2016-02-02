@@ -23,8 +23,9 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
         'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData', 'SystemSettings', 'FileUploadService',
         'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
         'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp',
-        'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'ItemFeedbackReport', 'ngPercentDisplay',
-        'eums.currencyFilters', 'SupplyEfficiencyReport', 'SupplyEfficiencyReportFilters', 'SupplyEfficiencyQueries'])
+        'DeliveryByIpReportLoss', 'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'ItemFeedbackReport',
+        'ngPercentDisplay', 'eums.currencyFilters', 'SupplyEfficiencyReport', 'SupplyEfficiencyReportFilters',
+        'SupplyEfficiencyQueries'])
 
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.interceptors.push(interceptor);
@@ -268,6 +269,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             .when('/deliveries-by-ip/:itemId/new', {
                 templateUrl: '/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html',
                 controller: 'NewDeliveryByIpController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_item');
+                    }
+                }
+            })
+            .when('/deliveries-by-ip/:itemId/report-loss', {
+                templateUrl: '/static/app/views/delivery/ip-delivery/delivery-by-ip-report-loss.html',
+                controller: 'DeliveryByIpReportLossController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_item');

@@ -1,0 +1,39 @@
+<ng-toast></ng-toast>
+<div class="container-fluid" id="delivery-by-ip-report-loss-page">
+    <div class="eums page-header row">
+        <div class="pull-left pad-top-10">Report Loss/Damage</div>
+        <div class="pull-right">
+            <a href="#/deliveries-by-ip/{{ item.id }}" class="btn blue-border-button">
+                <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
+                Back to Previous
+            </a>
+        </div>
+    </div>
+
+    <div><span class="well-sm"></span></div>
+    <div><span class="well-sm"></span></div>
+
+    <div class="row col-lg-11 three-columns-form">
+        <div class="col-md-4">
+            <div class="sub-header">ITEM DETAILS</div>
+            <div class="rounded-border">
+                <table class="item-details-table">
+                    <tr id="itemNameLabel">
+                        <td class="bold-label">Item Name:</td>
+                        <td><span class="label label-success item-quantity-label">{{ item.description }}</span></td>
+                    </tr>
+                    <tr id="qty-available-label">
+                        <td class="bold-label">Quantity Available:</td>
+                        <td><span class="label label-success item-quantity-label"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4 last-column">
+        </div>
+    </div>
+
+    <span class="well-sm"></span>
+</div>
