@@ -69,6 +69,11 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             }
         };
 
+        $scope.startAddingFile = function () {
+            $scope.fileError = "";
+            console.log($scope.fileError);
+        };
+
         $scope.toContactPage = function () {
             LoaderService.showLoader();
             $location.path('/contacts');
@@ -202,6 +207,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             });
             imageUploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
                 $scope.fileError = errorList[filter.name];
+            };
+            imageUploader.onWhenAddingFile = function (item) {
             };
             imageUploader.onAfterAddingAll = function (addedFileItems) {
                 selectedFiles = addedFileItems;
