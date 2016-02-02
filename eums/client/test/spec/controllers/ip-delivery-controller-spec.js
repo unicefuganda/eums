@@ -1,6 +1,7 @@
 describe('IP Delivery Controller', function () {
     var mockDeliveryService, scope, location, mockLoaderService, q, mockSystemSettingsService, mockFileUploadService,
         mockUserService, controller, mockAnswerService, timeout, mockIPService, mockContactService;
+    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
 
     var firstDelivery = {
         id: 1,
@@ -18,13 +19,6 @@ describe('IP Delivery Controller', function () {
         delivery_date: '2015-03-15',
         remark: 'no remarks'
     };
-    var ipEditorPermissions = [
-        "auth.can_view_distribution_plans",
-        "auth.can_add_textanswer",
-        "auth.change_textanswer",
-        "auth.add_nimericanswer",
-        "auth.change_nimericanswer"
-    ];
     var ipViewerPermissions = ["auth.can_view_distribution_plans"];
     var deliveries = [firstDelivery, secondDelivery];
     var emptyFunction = function () {
@@ -47,15 +41,44 @@ describe('IP Delivery Controller', function () {
     var settings = {
         'notification_message': 'notification'
     };
+    var ipEditorPermissions = [
+        "auth.can_view_distribution_plans",
+        "auth.can_add_textanswer",
+        "auth.change_textanswer",
+        "auth.add_nimericanswer",
+        "auth.change_nimericanswer"
+    ];
+    var adminPermissions = [
+        // admin permissions
+        "auth.can_view_self_contacts",
+        "auth.can_view_contacts",
+        "auth.can_create_contacts",
+        "auth.can_edit_contacts",
+        "auth.can_delete_contacts",
+        // ip editor permissions
+        "auth.can_view_distribution_plans",
+        "auth.can_add_textanswer",
+        "auth.change_textanswer",
+        "auth.add_nimericanswer",
+        "auth.change_nimericanswer"
+    ];
+    var stubCurrentUser = {
+        username: "admin",
+        first_name: "",
+        last_name: "",
+        userid: 5,
+        consignee_id: null,
+        email: "admin@tw.org"
+    };
 
     function initializeController(userService) {
         controller('IpDeliveryController', {
             $scope: scope,
+            $timeout: timeout,
             DeliveryService: mockDeliveryService,
             LoaderService: mockLoaderService,
             UserService: userService || mockUserService,
             AnswerService: mockAnswerService,
-            $timeout: timeout,
             IPService: mockIPService,
             ContactService: mockContactService,
             SystemSettingsService: mockSystemSettingsService,
@@ -66,22 +89,25 @@ describe('IP Delivery Controller', function () {
     beforeEach(function () {
 
         module('IpDelivery');
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
 
-        inject(function ($controller, $rootScope, $location, $q, SystemSettingsService, FileUploadService,
-                         LoaderService, UserService, AnswerService, DeliveryService, $timeout, IPService, ContactService) {
+        inject(function ($controller, $rootScope, $location, $q, $timeout, SystemSettingsService, FileUploadService,
+                         LoaderService, UserService, AnswerService, DeliveryService, IPService, ContactService) {
             controller = $controller;
             scope = $rootScope.$new();
             location = $location;
+            timeout = $timeout;
             q = $q;
             mockLoaderService = LoaderService;
-            mockUserService = UserService;
             mockAnswerService = AnswerService;
             mockDeliveryService = DeliveryService;
-            timeout = $timeout;
             mockIPService = IPService;
             mockContactService = ContactService;
             mockSystemSettingsService = SystemSettingsService;
             mockFileUploadService = FileUploadService;
+            deferredPermissionsResultsPromise = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
             spyOn(mockModal, 'modal');
@@ -89,7 +115,7 @@ describe('IP Delivery Controller', function () {
             spyOn(mockLoaderService, 'hideLoader');
             spyOn(mockLoaderService, 'showModal');
             spyOn(mockLoaderService, 'hideModal');
-            spyOn(mockUserService, 'retrieveUserPermissions');
+            //spyOn(mockUserService, 'retrieveUserPermissions');
             spyOn(mockAnswerService, 'createWebAnswer');
             spyOn(mockDeliveryService, 'all');
             spyOn(mockDeliveryService, 'getDetail');
@@ -99,9 +125,13 @@ describe('IP Delivery Controller', function () {
             spyOn(mockFileUploadService, 'getImages');
 
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
-            mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
             mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
             mockSystemSettingsService.getSettings.and.returnValue(q.when(settings));
+            //mockUserService = UserService;
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            //mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
         });
     });
 
@@ -109,6 +139,9 @@ describe('IP Delivery Controller', function () {
         var deliveriesPromise;
         beforeEach(function () {
             deliveriesPromise = q.defer();
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+            userHasPermissionToPromise.resolve(true);
         });
 
         it('should show loader while loading', function () {
@@ -149,6 +182,12 @@ describe('IP Delivery Controller', function () {
     });
 
     describe('on confirm', function () {
+        beforeEach(function () {
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+            userHasPermissionToPromise.resolve(true);
+        });
+
         it('should set active delivery to undefined when initializing the controller', function () {
             initializeController();
             scope.$apply();
@@ -223,7 +262,9 @@ describe('IP Delivery Controller', function () {
             var answersPromise;
             beforeEach(function () {
                 answersPromise = q.defer();
-
+                deferredPermissionsResultsPromise.resolve(adminPermissions);
+                userGetCurrentUserPromise.resolve(stubCurrentUser);
+                userHasPermissionToPromise.resolve(true);
             });
 
             it('should show loader', function () {
@@ -470,6 +511,12 @@ describe('IP Delivery Controller', function () {
     });
 
     describe('on filter by date range', function () {
+        beforeEach(function () {
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+            userHasPermissionToPromise.resolve(true);
+        });
+
         it('should not filter when fromDate and toDate is empty', function () {
             initializeController();
             scope.$apply();
@@ -565,7 +612,6 @@ describe('IP Delivery Controller', function () {
             var callArgs = mockDeliveryService.all.calls.allArgs();
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
             expect(callArgs[1]).toEqual([undefined, {from: '2014-07-07', query: 'wakiso programme'}]);
-
         });
     });
 });

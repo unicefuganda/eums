@@ -88,8 +88,8 @@
             <tbody>
             <tr si-sortable="single" ng-repeat="delivery in deliveries | orderFilter: query:dateQuery:searchFields">
                 <td>
-                    <span ng-class="delivery.shipmentReceived ?  'glyphicon glyphicon-ok text-success'
-                     : 'glyphicon glyphicon-remove text-danger'"></span>
+                    <span ng-class="delivery.shipmentReceived ?
+                                   'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'"></span>
                 </td>
                 <td>{{ delivery.deliveryDate | date : 'dd-MMM-yyyy' }}</td>
                 <td>{{ delivery.type }}</td>
@@ -99,7 +99,7 @@
                 <td>
                     <button ng-click="confirm(delivery)"
                             class="btn btn-default blue-border-button viewDeliveryDetailsBtn"
-                            ng-hide="delivery.confirmed">Delivery Details
+                            ng-hide="delivery.confirmed || !add_distributionplan">Delivery Details
                     </button>
                     <span ng-show="delivery.confirmed">Confirmed</span>
                 </td>

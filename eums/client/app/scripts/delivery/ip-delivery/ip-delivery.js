@@ -5,12 +5,12 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
     .controller('IpDeliveryController', function ($scope, $location, $q, ngToast, DeliveryService, LoaderService, SystemSettingsService,
                                                   UserService, AnswerService, $timeout, IPService, ContactService,
                                                   SysUtilsService, FileUploader, FileUploadService) {
-
         var timer, initializing = true,
             questionLabel = 'deliveryReceived',
             imageUploader = null,
             selectedFiles = [];
 
+        $scope.currentUser = {};
         $scope.deliveries = [];
         $scope.answers = [];
         $scope.oringalAnswers = [];
@@ -92,11 +92,13 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             }
         }, true);
 
-
         function init() {
-            loadDeliveries();
-            UserService.retrieveUserPermissions()
-                .then(function (userPermissions) {
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            $q.all(promises).then(function () {
+                loadDeliveries();
+                UserService.retrieveUserPermissions().then(function (userPermissions) {
                     $scope.canConfirm = _isSubarray(userPermissions, [
                         'auth.can_view_distribution_plans',
                         'auth.can_add_textanswer',
@@ -105,13 +107,32 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                         'auth.change_nimericanswer'
                     ]);
                 });
-            IPService.loadAllDistricts().then(function (response) {
-                $scope.districts = response.data.map(function (district) {
-                    return {id: district, name: district};
+                IPService.loadAllDistricts().then(function (response) {
+                    $scope.districts = response.data.map(function (district) {
+                        return {id: district, name: district};
+                    });
+                    $scope.districtsLoaded = true;
                 });
-                $scope.districtsLoaded = true;
             });
             initUpload();
+        }
+
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.add_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_add_distributionplan = result;
+                });
+                UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_change_distributionplan = result;
+                });
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
         }
 
         function loadDeliveries(urlArgs) {
