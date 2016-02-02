@@ -5,9 +5,9 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortArrowService,
+    .controller('WarehouseDeliveryController', function ($scope, $location, $timeout, ReleaseOrderService, SortArrowService,
                                                          SortService, SystemSettingsService, SortByService, ExportDeliveriesService,
-                                                         ngToast, LoaderService, SysUtilsService, $timeout) {
+                                                         ngToast, LoaderService, SysUtilsService) {
         var SUPPORTED_FIELD = ['orderNumber', 'deliveryDate', 'trackedDate'];
         var timer;
         var initializing = true;

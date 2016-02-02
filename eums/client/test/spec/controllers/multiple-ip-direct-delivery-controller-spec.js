@@ -136,7 +136,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             mockNodeService.update.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
-
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItem.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);

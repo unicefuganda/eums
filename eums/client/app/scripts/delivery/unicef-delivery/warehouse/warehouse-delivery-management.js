@@ -4,17 +4,98 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
     .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DeliveryService,
                                                                    DeliveryNodeService, ReleaseOrderService, ReleaseOrderItemService,
-                                                                   IPService, ngToast, ContactService) {
+                                                                   IPService, ngToast, ContactService, UserService) {
+        $scope.currentUser = {};
         $scope.datepicker = {};
         $scope.districts = [];
+        $scope.districtsLoaded = false;
         $scope.contact = {};
         $scope.selectedLocation = {};
         $scope.deliveryNodes = [];
         $scope.delivery = {};
         $scope.releaseOrderItems = [];
-        $scope.districtsLoaded = false;
         $scope.track = $scope.track ? true : false;
         $scope.valid_time_limitation = true;
+
+        $scope.addContact = function (node, nodeIndex) {
+            $scope.$broadcast('add-contact', node, nodeIndex);
+        };
+
+        $scope.$on('contact-saved', function (event, contact) {
+            $scope.contact = {id: contact._id};
+            var contactInput = $('#contact-select');
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+            contactInput.val(contact._id);
+
+            contact.id = contact._id;
+            event.stopPropagation();
+
+        });
+
+        $scope.isDeliveryTracked = function () {
+            return ($scope.delivery.track) &&
+                ($scope.contact && $scope.contact.id) &&
+                ($scope.selectedLocation && $scope.selectedLocation.id);
+        };
+
+        $scope.saveDelivery = function () {
+            if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id) || !isTimeLimitationValid()) {
+                createToast('Please fill in required field!', 'danger');
+            } else {
+                showLoadingModal(true);
+                return createOrUpdateDeliveries()
+                    .then(function () {
+                        getDelivery();
+                        showLoadingModal(false);
+                        createToast('Warehouse Delivery Saved!', 'success')
+                    })
+                    .catch(handleErrors)
+                    .finally(function () {
+                        showLoadingModal(false);
+                    });
+            }
+        };
+
+        init();
+
+        function init() {
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            $q.all(promises).then(function () {
+
+                IPService.loadAllDistricts().then(function (response) {
+                    $scope.districts = response.data.map(function (district) {
+                        return {id: district, name: district};
+                    });
+                    $scope.districtsLoaded = true;
+                });
+
+                showLoadingModal(true);
+                getDelivery();
+                showLoadingModal(false);
+            });
+        }
+
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.add_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_add_distributionplan = result;
+                });
+                UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_change_distributionplan = result;
+                });
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
+        }
 
         function createToast(message, klass) {
             ngToast.create({
@@ -40,23 +121,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             return $scope.valid_time_limitation;
         }
 
-        $scope.addContact = function (node, nodeIndex) {
-            $scope.$broadcast('add-contact', node, nodeIndex);
-        };
-
-        $scope.$on('contact-saved', function (event, contact) {
-            $scope.contact = {id: contact._id};
-            var contactInput = $('#contact-select');
-            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
-            contactInput.val(contact._id);
-
-            contact.id = contact._id;
-            event.stopPropagation();
-
-        });
-
         var setLocationAndContactFields = function () {
             ContactService.get($scope.contact.id)
                 .then(function (contact) {
@@ -71,12 +135,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 return parseFloat(orderItem.value);
             });
         }
-
-        $scope.isDeliveryTracked = function () {
-            return ($scope.delivery.track) &&
-                ($scope.contact && $scope.contact.id) &&
-                ($scope.selectedLocation && $scope.selectedLocation.id);
-        };
 
         var getDelivery = function () {
             var deliveryParams = ['consignee', 'sales_order.programme', 'delivery', 'items.item.unit'];
@@ -108,18 +166,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     }
                 });
         };
-
-        showLoadingModal(true);
-
-        IPService.loadAllDistricts().then(function (response) {
-            $scope.districts = response.data.map(function (district) {
-                return {id: district, name: district};
-            });
-            $scope.districtsLoaded = true;
-        });
-
-        getDelivery();
-        showLoadingModal(false);
 
         var saveDeliveryNodes = function () {
             var deliveryNodePromises = [];
@@ -181,24 +227,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     });
             }
         }
-
-        $scope.saveDelivery = function () {
-            if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id) || !isTimeLimitationValid()) {
-                createToast('Please fill in required field!', 'danger');
-            } else {
-                showLoadingModal(true);
-                return createOrUpdateDeliveries()
-                    .then(function () {
-                        getDelivery();
-                        showLoadingModal(false);
-                        createToast('Warehouse Delivery Saved!', 'success')
-                    })
-                    .catch(handleErrors)
-                    .finally(function () {
-                        showLoadingModal(false);
-                    });
-            }
-        };
 
         var isInvalid = function (field) {
             $scope.errors = field ? false : true;

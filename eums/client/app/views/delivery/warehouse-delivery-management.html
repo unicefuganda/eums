@@ -3,7 +3,7 @@
         <ng-toast></ng-toast>
 
         <div class="eums page-header fixed">
-                Create a Warehouse Delivery
+            Create a Warehouse Delivery
         </div>
 
         <div class="row col-lg-11 three-columns-form stripped-form">
@@ -52,12 +52,14 @@
                         <div class="bold-label pad-small">Contact Person</div>
                         <div class="col-md-10 pad-small" ng-class="{'has-error': !contact.id && errors}">
                             <div class="form-group table-contact-form-group col-md-10">
-                                <input type="hidden" search-contacts required="required" ng-disabled="isDeliveryTracked()"
+                                <input type="hidden" search-contacts required="required"
+                                       ng-disabled="isDeliveryTracked() || !can_add_distributionplan"
                                        value="{{ contact.id }}" ng-model="contact.id"
                                        ng-attr-id="{{ 'contact-select' }}">
                             </div>
                             <div class="form-group table-contact-form-group plus-btn col-md-2">
-                                <button type="button" class="btn btn-default" ng-disabled="isDeliveryTracked()"
+                                <button type="button" class="btn btn-default"
+                                        ng-disabled="isDeliveryTracked() || !can_add_distributionplan"
                                         ng-click="addContact(item, $index)">
                                     <i class="glyphicon glyphicon-plus"></i>
                                 </button>
@@ -70,15 +72,18 @@
                         <div id="input-location" class="pad-small col-md-10" ng-if="districtsLoaded"
                              ng-class="{'has-error': !selectedLocation.id && errors}">
                             <div class="table-contact-form-group col-md-10">
-                                <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="selectedLocation.id" ng-disabled="isDeliveryTracked()"
-                                       ng-attr-id="{{ 'location-select' }}"
-                                       value="{{ selectedLocation.id }}">
+                                <input type="hidden" search-from-list
+                                       list="{{ districts }}"
+                                       ng-disabled="isDeliveryTracked() || !can_add_distributionplan"
+                                       value="{{ selectedLocation.id }}"
+                                       ng-model="selectedLocation.id"
+                                       ng-attr-id="{{ 'location-select' }}">
                             </div>
                         </div>
                         <div class="margin-10 col-mg-4">
-                            <label class="control-label" ng-class="isDeliveryTracked() ? 'text-muted' : 'description-label'">
-                                <input type="checkbox" ng-disabled="isDeliveryTracked()"
+                            <label class="control-label"
+                                   ng-class="(isDeliveryTracked() || !can_add_distributionplan) ? 'text-muted' : 'description-label'">
+                                <input type="checkbox" ng-disabled="isDeliveryTracked() || !can_add_distributionplan"
                                        ng-model="track">
                                 Track delivery
                             </label>
@@ -88,9 +93,11 @@
                     <div class="col-md-12 margin-bottom-10">
                         <div class="bold-label pad-small">Time Limitation on Distribution</div>
                         <div class="col-md-10 pad-small" ng-class="{'has-error': !valid_time_limitation}">
-                             <input type="text" size="2" required="required"
-                                       ng-model="delivery.time_limitation_on_distribution" class="form-control"
-                                       value="{{ delivery.time_limitation_on_distribution }}" placeholder="days" only-digits/>
+                            <input type="text" size="2" required="required"
+                                   ng-disabled="!can_add_distributionplan"
+                                   ng-model="delivery.time_limitation_on_distribution" class="form-control"
+                                   value="{{ delivery.time_limitation_on_distribution }}"
+                                   placeholder="days" only-digits/>
                         </div>
                     </div>
 
