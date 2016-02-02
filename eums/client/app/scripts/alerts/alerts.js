@@ -131,8 +131,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             LoaderService.showLoader();
             AlertsService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
-            }).catch(function () {
-                createToast('Failed to load alerts', 'danger');
             }).finally(function () {
                 LoaderService.hideLoader()
             });

@@ -271,7 +271,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'NewDeliveryByIpController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_item');
+                        return UserService.checkUserPermission('eums.add_distributionplannode');
                     }
                 }
             })
