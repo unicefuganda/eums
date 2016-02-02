@@ -9,7 +9,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         var rootPath = '/direct-delivery/new/';
 
         $scope.datepicker = {};
-        $scope.districts = [];
         $scope.contact = {};
         $scope.selectedDate = '';
         $scope.selectedLocation = {};
@@ -18,11 +17,11 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.itemIndex = '';
         $scope.track = false;
         $scope.isReport = false;
-        $scope.districtsLoaded = false;
         $scope.IPsLoaded = false;
         $scope.distributionPlanNodes = [];
         $scope.purchaseOrderItems = [];
         $scope.implementingPartners = [];
+        $scope.selectedPurchaseOrder = {};
         $scope.isSaving = false;
 
         $scope.$watch('distributionPlanNodes', function (newPlanNodes) {
@@ -110,40 +109,72 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/') + purchaseOrderItem.id);
         };
 
+
         init();
 
         function init() {
             LoaderService.showLoader();
-
-            IPService.loadAllDistricts().then(function (response) {
-                $scope.districts = response.data.map(function (district) {
-                    return {id: district, name: district};
-                });
-                $scope.districtsLoaded = true;
-            });
-
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(loadCurrentUser());
+            console.log("PURCHASE-ORDER-ID> " + $routeParams.purchaseOrderId)
             if ($routeParams.purchaseOrderId) {
-                PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
-                    $scope.selectedPurchaseOrder = purchaseOrder;
-                    $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
+                promises.push(loadPurchaseOrderById());
+            }
+            if ($routeParams.purchaseOrderItemId) {
+                promises.push(loadPurchaseOrderItemById());
+            }
+            $q.all(promises).then(function () {
+
+                // loadPurchaseOrderById
+                if ($scope.selectedPurchaseOrder) {
+                    $scope.purchaseOrderItems = $scope.selectedPurchaseOrder.purchaseorderitemSet;
                     $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
                         return parseFloat(orderItem.value);
                     });
-                    LoaderService.hideLoader();
-                });
-            }
+                }
 
-            if ($routeParams.purchaseOrderItemId) {
-                PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item']).then(function (purchaseOrderItem) {
-                    $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-                    loadDeliveryDataFor(purchaseOrderItem);
+                // loadPurchaseOrderItemById
+                if ($scope.selectedPurchaseOrderItem) {
+                    loadDeliveryDataFor($scope.selectedPurchaseOrderItem);
+                }
+
+                LoaderService.hideLoader();
+            });
+        }
+
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.add_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_add_distributionplan = result;
                 });
-            }
+                UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
+                    $scope.can_change_distributionplan = result;
+                });
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
+            });
+        }
+
+        function loadPurchaseOrderById() {
+            return PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
+                $scope.selectedPurchaseOrder = purchaseOrder;
+            });
+        }
+
+        function loadPurchaseOrderItemById() {
+            return PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item']).then(function (purchaseOrderItem) {
+                $scope.selectedPurchaseOrderItem = purchaseOrderItem;
+            });
         }
 
         function loadDeliveryDataFor(purchaseOrderItem) {
             var filterParams = {item: purchaseOrderItem.id, is_root: 'true'};
-
             return DeliveryNodeService.filter(filterParams, ['consignee', 'contact_person_id']).then(function (nodes) {
                 $scope.distributionPlanNodes = nodes;
                 resetFields();
