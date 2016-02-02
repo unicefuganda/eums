@@ -30,3 +30,6 @@ eums/client/.node-version
 eums/client/test/functional/screenshots/
 eums/client/functional/
 eums/client/exports/*
+
+# uploaded images for local development
+eums/uploads/

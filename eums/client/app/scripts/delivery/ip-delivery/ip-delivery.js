@@ -62,7 +62,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             if (isContactOrLocationInvalid()) {
                 return;
             }
-            if (selectedFiles && selectedFiles.length > 0) {
+            if (selectedFiles && selectedFiles.length > 0 && $scope.hasReceivedDelivery) {
                 imageUploader.uploadAll();
             } else {
                 saveAnswer();
@@ -181,9 +181,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             });
             imageUploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
                 $scope.fileError = errorList[filter.name];
-            };
-            imageUploader.onAfterAddingFile = function (fileItem) {
-                $scope.fileError = "";
             };
             imageUploader.onAfterAddingAll = function (addedFileItems) {
                 selectedFiles = addedFileItems;
