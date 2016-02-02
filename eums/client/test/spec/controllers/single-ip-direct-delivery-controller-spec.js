@@ -141,7 +141,7 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockLoader.modal).toHaveBeenCalled();
             expect(mockLoader.modal.calls.count()).toBe(1);
 
-            getPurchaseOrder.resolve({id: 15, purchaseorderitemSet: []});
+            getPurchaseOrder.resolve({});
             totalValuePromise.resolve(0);
             deliveriesPromise.resolve(deliveries);
             scope.$apply();

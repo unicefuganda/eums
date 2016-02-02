@@ -8,6 +8,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
 
         var rootPath = '/direct-delivery/new/';
 
+        $scope.currentUser = {};
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.selectedDate = '';

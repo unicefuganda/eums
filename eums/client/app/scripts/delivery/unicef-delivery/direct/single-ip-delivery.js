@@ -2,6 +2,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DeliveryService, DeliveryNode, $q, $timeout,
                                                               DeliveryNodeService, UserService) {
+        $scope.currentUser = {};
         $scope.consignee = {};
         $scope.district = {};
         $scope.errors = false;
