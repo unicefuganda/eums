@@ -2,10 +2,11 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     beforeEach(module('MultipleIpDirectDelivery'));
     var mockNodeService, mockIPService, mockDeliveryService, mockPurchaseOrderItemService,
-        mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService, mockConfirmationModal, otherModal,
+        mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService,
         mockLoaderService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
-        deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredUserPromise, deferredItemPromise;
+        deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredItemPromise,
+        userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
@@ -91,6 +92,23 @@ describe('MultipleIpDirectDeliveryController', function () {
         distributionplannode_set: []
     };
 
+    var adminPermissions = [
+        "auth.can_view_self_contacts",
+        "auth.can_view_contacts",
+        "auth.can_create_contacts",
+        "auth.can_edit_contacts",
+        "auth.can_delete_contacts"
+    ];
+
+    var stubCurrentUser = {
+        username: "admin",
+        first_name: "",
+        last_name: "",
+        userid: 5,
+        consignee_id: null,
+        email: "admin@tw.org"
+    };
+
     var emptyFunction = function () {
     };
 
@@ -101,12 +119,14 @@ describe('MultipleIpDirectDeliveryController', function () {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'update']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal', 'hideModal']);
 
-        inject(function ($controller, $rootScope, $q, $location, LoaderService) {
+        inject(function ($controller, $rootScope, $q, $location) {
+            location = $location;
+            scope = $rootScope.$new();
             q = $q;
             deferred = $q.defer();
             deferredPlan = $q.defer();
@@ -116,8 +136,10 @@ describe('MultipleIpDirectDeliveryController', function () {
             deferredTopLevelNodes = $q.defer();
             deferredPurchaseOrder = $q.defer();
             deferredPurchaseOrderItem = $q.defer();
-            deferredUserPromise = $q.defer();
             deferredItemPromise = $q.defer();
+            deferredPermissionsResultsPromise = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            userGetCurrentUserPromise = $q.defer();
             mockDeliveryService.update.and.returnValue(deferredPlan.promise);
             mockDeliveryService.create.and.returnValue(deferredPlan.promise);
             mockNodeService.get.and.returnValue(deferredPlanNode.promise);
@@ -126,14 +148,14 @@ describe('MultipleIpDirectDeliveryController', function () {
             mockNodeService.update.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
+
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItem.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
-            mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
             mockItemService.get.and.returnValue(deferredItemPromise.promise);
-
-            location = $location;
-            scope = $rootScope.$new();
 
             $controller('MultipleIpDirectDeliveryController',
                 {
@@ -160,6 +182,11 @@ describe('MultipleIpDirectDeliveryController', function () {
     });
 
     describe('adding a contact', function () {
+        beforeEach(function () {
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
+        });
+
         describe('with invalid fields', function () {
             it('should be invalid when no number is supplied', function () {
                 scope.contact = {
@@ -314,60 +341,52 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     describe('when the controller is initialized', function () {
         beforeEach(function () {
-            deferredDistrictPromise.resolve({data: plainDistricts});
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should have the distributionPlanNodes defaulted to an empty list', function () {
             expect(scope.distributionPlanNodes).toEqual([]);
         });
 
-        it('should set districts in the scope variable', function () {
-            var expectedDistricts = [
-                {id: 'Abim', name: 'Abim'},
-                {id: 'Gulu', name: 'Gulu'}
-            ];
-            scope.$apply();
-
-            expect(scope.districts).toEqual(expectedDistricts);
-        });
-
         it('should have the selected purchase order in the scope', function () {
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             scope.$apply();
-
             expect(scope.selectedPurchaseOrder).toEqual(purchaseOrders[0]);
         });
 
         it('should set totalValue on the selected purchase order in the scope', function () {
             setUp({purchaseOrderId: purchaseOrders[0].id, purchaseOrderType: 'multiple'});
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             scope.$apply();
-
             expect(scope.selectedPurchaseOrder.totalValue).toEqual(1500);
+
         });
 
         it('should have the default selected purchase orders item undefined in the scope', function () {
             scope.$apply();
-
             expect(scope.selectedPurchaseOrderItem).toBeUndefined();
         });
 
         it('should set purchase order items on the scope when a purchase order is set', function () {
-            setUp({purchaseOrderId: 1, purchaseOrderType: 'multiple'});
+            setUp({purchaseOrderId: purchaseOrders[0].id, purchaseOrderType: 'multiple'});
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             scope.$apply();
             expect(scope.purchaseOrderItems).toEqual(purchaseOrders[0].purchaseorderitemSet);
         });
 
-        it('should show loader', function(){
+        it('should show loader', function () {
             scope.$apply();
-
             expect(mockLoaderService.showLoader).toHaveBeenCalled();
             expect(mockLoaderService.showLoader.calls.count()).toBe(1);
             expect(mockLoaderService.hideLoader).not.toHaveBeenCalled();
         });
 
-        it('should hide loader after purchase order is retrieved', function() {
+        it('should hide loader after purchase order is retrieved', function () {
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             scope.$apply();
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
@@ -388,8 +407,8 @@ describe('MultipleIpDirectDeliveryController', function () {
 
         it('should put the poItem on the scope', function () {
             setUp({purchaseOrderId: 1, purchaseOrderItemId: 1});
-            deferredDistrictPromise.resolve({data: plainDistricts});
-
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
             deferredTopLevelNodes.resolve(topLevelNodes);
@@ -405,8 +424,8 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.track = true;
             scope.invalidNodes = false;
             scope.distributionPlan = 1;
-            deferredDistrictPromise.resolve({data: plainDistricts});
-
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
             deferredTopLevelNodes.resolve([]);
@@ -445,13 +464,16 @@ describe('MultipleIpDirectDeliveryController', function () {
 
         it('should get distribution plan nodes for nodes if nodes exist', function () {
             setUp({purchaseOrderId: 1, purchaseOrderItemId: 1});
-            deferredDistrictPromise.resolve({data: plainDistricts});
-
+            deferredPermissionsResultsPromise.resolve(adminPermissions);
+            userGetCurrentUserPromise.resolve(stubCurrentUser);
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
             deferredTopLevelNodes.resolve(topLevelNodes);
             scope.$apply();
-            expect(mockNodeService.filter).toHaveBeenCalledWith({item : 1, is_root : 'true' }, [ 'consignee', 'contact_person_id' ]);
+            expect(mockNodeService.filter).toHaveBeenCalledWith({
+                item: 1,
+                is_root: 'true'
+            }, ['consignee', 'contact_person_id']);
         });
 
         it('should navigate to same page with POid and POItemId specified', function () {
@@ -496,7 +518,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 contactPerson: '',
                 track: false,
                 timeLimitationOnDistribution: null,
-                trackedDate : null
+                trackedDate: null
             };
 
             scope.addDeliveryNode();
@@ -590,7 +612,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 beforeEach(function () {
                     nodeId = 1;
                     deferredPlanNode.resolve({id: nodeId});
-                    deferredUserPromise.resolve(stubUser);
+                    userGetCurrentUserPromise.resolve(stubUser);
                 });
 
                 it('a node should be saved with no parent id as implementing partner', function () {
@@ -723,7 +745,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 beforeEach(inject(function ($q) {
                     nodeId = 1;
                     deferredPlanNode.resolve({id: nodeId});
-                    deferredUserPromise.resolve(stubUser);
+                    userGetCurrentUserPromise.resolve(stubUser);
 
                     deferred = $q.defer();
                     deferred.resolve({});
@@ -748,7 +770,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                         delivery_date: distributionDateFormattedForSave,
                         track: false,
                         time_limitation_on_distribution: null,
-                        tracked_date : undefined
+                        tracked_date: undefined
                     });
 
                     expect(mockNodeService.update).toHaveBeenCalledWith({
@@ -790,7 +812,7 @@ describe('MultipleIpDirectDeliveryController', function () {
 
                 scope.distributionPlanNodes = [uiPlanNodes];
                 scope.parentNode = {id: 42};
-                deferredUserPromise.resolve(stubUser);
+                userGetCurrentUserPromise.resolve(stubUser);
                 scope.track = true;
                 scope.$apply();
             });
@@ -818,7 +840,7 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     describe('isSingleIp update', function () {
         it('Should update isSingleIp flag if it is not yet set on the purchase order', function () {
-            deferredPurchaseOrder.resolve({id:1, purchaseorderitemSet:[{id:2, value:50}]});
+            deferredPurchaseOrder.resolve({id: 1, purchaseorderitemSet: [{id: 2, value: 50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
 
@@ -830,7 +852,7 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
 
         it('should not update isSingleIP flag on purchase order if flag is already set to single', function () {
-            deferredPurchaseOrder.resolve({id:1, isSingleIp: true, purchaseorderitemSet:[{id:2, value:50}]});
+            deferredPurchaseOrder.resolve({id: 1, isSingleIp: true, purchaseorderitemSet: [{id: 2, value: 50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
 
@@ -842,7 +864,7 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
 
         it('should not update isSingleIP flag on purchase order if flag is already set to multiple', function () {
-            deferredPurchaseOrder.resolve({id:1, isSingleIp: false, purchaseorderitemSet:[{id:2, value:50}]});
+            deferredPurchaseOrder.resolve({id: 1, isSingleIp: false, purchaseorderitemSet: [{id: 2, value: 50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
 
