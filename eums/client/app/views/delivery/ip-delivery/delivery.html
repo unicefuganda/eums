@@ -99,7 +99,7 @@
                 <td>
                     <button ng-click="confirm(delivery)"
                             class="btn btn-default blue-border-button viewDeliveryDetailsBtn"
-                            ng-hide="delivery.confirmed || !add_distributionplan">Delivery Details
+                            ng-hide="delivery.confirmed || !can_add_distributionplan_node">Delivery Details
                     </button>
                     <span ng-show="delivery.confirmed">Confirmed</span>
                 </td>

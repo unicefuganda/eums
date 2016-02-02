@@ -120,11 +120,11 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function loadUserPermissions() {
             return UserService.retrieveUserPermissions().then(function (permissions) {
                 $scope.userPermissions = permissions;
-                UserService.hasPermission("eums.add_distributionplan", $scope.userPermissions).then(function (result) {
-                    $scope.can_add_distributionplan = result;
+                UserService.hasPermission("eums.add_distributionplannode", $scope.userPermissions).then(function (result) {
+                    $scope.can_add_distributionplan_node = result;
                 });
-                UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
-                    $scope.can_change_distributionplan = result;
+                UserService.hasPermission("eums.change_distributionplannode", $scope.userPermissions).then(function (result) {
+                    $scope.can_change_distributionplan_node = result;
                 });
             });
         }

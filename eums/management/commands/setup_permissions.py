@@ -159,8 +159,6 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DASH_BOARD,
         PermissionCode.CAN_VIEW_CONSIGNEE,
 
-        PermissionCode.CAN_VIEW_SELF_CONTACT,
-
         PermissionCode.CAN_VIEW_CONSIGNEE_ITEM,
         PermissionCode.CAN_VIEW_SYSTEM_SETTINGS,
 
