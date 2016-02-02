@@ -28,7 +28,7 @@ class StatsSearchData:
         ip = request.GET.get('ip')
         request.user_profile = UserProfile.objects.filter(user_id=request.user.id).first()
 
-        if request.user_profile:
+        if request.user_profile and request.user_profile.consignee:
             ip = request.user_profile.consignee
 
         if ip:
