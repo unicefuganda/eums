@@ -41,13 +41,6 @@ describe('IP Delivery Controller', function () {
     var settings = {
         'notification_message': 'notification'
     };
-    var ipEditorPermissions = [
-        "auth.can_view_distribution_plans",
-        "auth.can_add_textanswer",
-        "auth.change_textanswer",
-        "auth.add_nimericanswer",
-        "auth.change_nimericanswer"
-    ];
     var adminPermissions = [
         // admin permissions
         "auth.can_view_self_contacts",
@@ -87,7 +80,6 @@ describe('IP Delivery Controller', function () {
     }
 
     beforeEach(function () {
-
         module('IpDelivery');
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
 
@@ -115,7 +107,6 @@ describe('IP Delivery Controller', function () {
             spyOn(mockLoaderService, 'hideLoader');
             spyOn(mockLoaderService, 'showModal');
             spyOn(mockLoaderService, 'hideModal');
-            //spyOn(mockUserService, 'retrieveUserPermissions');
             spyOn(mockAnswerService, 'createWebAnswer');
             spyOn(mockDeliveryService, 'all');
             spyOn(mockDeliveryService, 'getDetail');
@@ -127,11 +118,9 @@ describe('IP Delivery Controller', function () {
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
             mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
             mockSystemSettingsService.getSettings.and.returnValue(q.when(settings));
-            //mockUserService = UserService;
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
-            //mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
         });
     });
 
@@ -263,9 +252,6 @@ describe('IP Delivery Controller', function () {
             var answersPromise;
             beforeEach(function () {
                 answersPromise = q.defer();
-                deferredPermissionsResultsPromise.resolve(adminPermissions);
-                userGetCurrentUserPromise.resolve(stubCurrentUser);
-                userHasPermissionToPromise.resolve(true);
             });
 
             it('should show loader', function () {
