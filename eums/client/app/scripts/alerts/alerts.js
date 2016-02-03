@@ -22,7 +22,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.type = $scope.constant_type_delivery;
         $scope.sortTerm = {field: 'alertDate', order: 'desc'};
 
-        initializeCurrentTypeView();
+        initialize();
 
         $scope.sortArrowClass = function (criteria) {
             return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
@@ -38,7 +38,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         $scope.changeAlertType = function (type) {
             $scope.type = type;
-            initializeCurrentTypeView();
+            initialize();
         };
 
         $scope.goToPage = function (page) {
@@ -66,7 +66,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                     AlertsService.get('count').then(function (alertsCount) {
                         $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
                     });
-                    initializeCurrentTypeView();
+                    initialize();
                 })
         };
 
@@ -94,11 +94,11 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                     AlertsService.get('count').then(function (alertsCount) {
                         $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
                     });
-                    initializeCurrentTypeView();
+                    initialize();
                 })
         };
 
-        function initializeCurrentTypeView() {
+        function initialize() {
             var promises = [];
             promises.push(loadUserPermissions());
             promises.push(loadCurrentUser());
