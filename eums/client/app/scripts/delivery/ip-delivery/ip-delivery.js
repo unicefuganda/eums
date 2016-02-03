@@ -33,7 +33,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             var contactInput = $('#contact-select');
             var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
             contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
             contactInput.val(contact._id);
 
             contact.id = contact._id;
@@ -103,15 +102,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
                 loadDeliveries();
-                UserService.retrieveUserPermissions().then(function (userPermissions) {
-                    $scope.canConfirm = _isSubarray(userPermissions, [
-                        'auth.can_view_distribution_plans',
-                        'auth.can_add_textanswer',
-                        'auth.change_textanswer',
-                        'auth.add_nimericanswer',
-                        'auth.change_nimericanswer'
-                    ]);
-                });
+                initUpload();
                 IPService.loadAllDistricts().then(function (response) {
                     $scope.districts = response.data.map(function (district) {
                         return {id: district, name: district};
@@ -119,12 +110,18 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     $scope.districtsLoaded = true;
                 });
             });
-            initUpload();
         }
 
         function loadUserPermissions() {
             return UserService.retrieveUserPermissions().then(function (permissions) {
                 $scope.userPermissions = permissions;
+                $scope.canConfirm = _isSubarray(permissions, [
+                    'auth.can_view_distribution_plans',
+                    'auth.can_add_textanswer',
+                    'auth.change_textanswer',
+                    'auth.add_nimericanswer',
+                    'auth.change_nimericanswer'
+                ]);
                 UserService.hasPermission("eums.add_distributionplannode", $scope.userPermissions).then(function (result) {
                     $scope.can_add_distributionplan_node = result;
                 });

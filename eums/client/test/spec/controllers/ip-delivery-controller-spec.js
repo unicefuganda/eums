@@ -224,6 +224,7 @@ describe('IP Delivery Controller', function () {
             mockFileUploadService.getImages.and.returnValue(q.when(uploads));
             initializeController();
             var delivery = {id: 1};
+            scope.$apply();
             scope.confirm(delivery);
             scope.$apply();
 
