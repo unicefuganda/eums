@@ -75,9 +75,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         var timer;
         var initializing = true;
 
-        $scope.currentUser = {};
         $scope.consignees = [];
-
         $scope.pagination = {page: 1};
         $scope.searchTerm = {};
         $scope.searching = false;
@@ -183,7 +181,6 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
                 LoaderService.showLoader();
                 loadConsignees();
@@ -202,12 +199,6 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                 UserService.hasPermission("eums.delete_consignee", $scope.userPermissions).then(function (result) {
                     $scope.can_delete = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 
@@ -249,8 +240,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                     consignee.itemPermission = hasChangePermission;
                 })
                 .catch(function (result) {
-                    //throw new Error('Retrieve item based permission info failed' + result);
-                    console.log('Retrieve item based permission info failed: ' + result);
+                    throw new Error('Retrieve item based permission info failed' + result);
                 });
         }
 
