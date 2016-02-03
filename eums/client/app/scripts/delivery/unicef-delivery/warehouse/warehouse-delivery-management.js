@@ -5,7 +5,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
     .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DeliveryService,
                                                                    DeliveryNodeService, ReleaseOrderService, ReleaseOrderItemService,
                                                                    IPService, ngToast, ContactService, UserService) {
-        $scope.currentUser = {};
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.districtsLoaded = false;
@@ -62,7 +61,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
 
                 IPService.loadAllDistricts().then(function (response) {
@@ -87,12 +85,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
                     $scope.can_change_distributionplan = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 

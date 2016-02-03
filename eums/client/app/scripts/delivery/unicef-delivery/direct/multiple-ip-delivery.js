@@ -8,7 +8,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
 
         var rootPath = '/direct-delivery/new/';
 
-        $scope.currentUser = {};
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.selectedDate = '';
@@ -116,7 +115,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             LoaderService.showLoader();
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             if ($routeParams.purchaseOrderId) {
                 promises.push(loadPurchaseOrderById());
             }
@@ -149,12 +147,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
                     $scope.can_change_distributionplan = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 

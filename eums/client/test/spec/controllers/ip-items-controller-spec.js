@@ -1,6 +1,6 @@
 describe('IP Items Controller', function () {
     var scope, q, mockConsigneeItemService, deferredSearchResults, location, mockUserService;
-    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
+    var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var items = [{id: 1, Description: 'Plumpynut'}, {id: 1, Description: 'Books'}, {id: 1, Description: 'Shoes'}];
     var paginatedItemsResponse = {results: items, count: items.length, pageSize: 2};
     var searchResults = items.first(2);
@@ -8,7 +8,7 @@ describe('IP Items Controller', function () {
     beforeEach(function () {
         module('IpItems');
         mockConsigneeItemService = jasmine.createSpyObj('mockConsigneeItemService', ['all', 'search']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
 
         inject(function ($controller, $rootScope, $q, $location) {
             scope = $rootScope.$new();
@@ -17,11 +17,9 @@ describe('IP Items Controller', function () {
             deferredSearchResults = $q.defer();
             deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
-            userGetCurrentUserPromise = $q.defer();
             mockConsigneeItemService.all.and.returnValue($q.when(paginatedItemsResponse));
             mockConsigneeItemService.search.and.returnValue(deferredSearchResults.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
-            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
             spyOn($location, 'path').and.returnValue('fake location');

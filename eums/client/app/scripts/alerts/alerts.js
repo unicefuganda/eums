@@ -14,7 +14,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         var SUPPORTED_FIELD = ['status', 'alertDate', 'dateShipped', 'dateReceived', 'value'];
 
-        $scope.currentUser = {};
         $scope.constant_type_delivery = 'delivery';
         $scope.constant_type_item = 'item';
         $scope.constant_type_distribution = 'distribution';
@@ -101,7 +100,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         function initialize() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
                 LoaderService.showLoader();
                 loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
@@ -117,12 +115,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                 UserService.hasPermission("eums.change_alert", $scope.userPermissions).then(function (result) {
                     $scope.can_change = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 

@@ -2,7 +2,7 @@ describe('AlertsController', function () {
 
     var scope, deferred;
     var mockAlertsService, mockLoaderService, mockToast, q, mockDeliveryService, mockUserService, mockSortService, mockSortArrowService;
-    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
+    var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var type = 'delivery';
     var deferredAlerts,
         expectedAlerts = [
@@ -104,22 +104,13 @@ describe('AlertsController', function () {
         "auth.can_delete_contacts"
     ];
 
-    var stubCurrentUser = {
-        username: "admin",
-        first_name: "",
-        last_name: "",
-        userid: 5,
-        consignee_id: null,
-        email: "admin@tw.org"
-    };
-
     beforeEach(function () {
         module('Alerts');
 
         mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['retriggerDelivery']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
         mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['setSortArrow']);
 
@@ -132,12 +123,10 @@ describe('AlertsController', function () {
             mockToast = ngToast;
             deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
-            userGetCurrentUserPromise = $q.defer();
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
             mockAlertsService.get.and.returnValue($q.when({'total': 4, 'unresolved': 2}));
             mockAlertsService.update.and.returnValue($q.when({}));
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
-            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
             spyOn(mockToast, 'create');
@@ -158,7 +147,6 @@ describe('AlertsController', function () {
     describe('when loaded ', function () {
         beforeEach(function () {
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should set delivery alerts on scope from result of service call', function () {
@@ -219,7 +207,6 @@ describe('AlertsController', function () {
     describe('Resolve Alerts ', function () {
         beforeEach(function () {
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should call the update with remarks and alert id', function () {

@@ -1,7 +1,6 @@
 angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewDeliveryByIp'])
     .controller('DeliveriesByIpController', function ($scope, $q, $routeParams, ngToast, DeliveryNodeService, ItemService,
                                                       ConsigneeItemService, LoaderService, UserService) {
-        $scope.currentUser = {};
         $scope.deliveryNodes = [];
         $scope.searching = false;
         $scope.itemId = $routeParams.itemId;
@@ -48,7 +47,6 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
 
                 LoaderService.showLoader();
@@ -73,12 +71,6 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
                 UserService.hasPermission("eums.change_distributionplannode", $scope.userPermissions).then(function (result) {
                     $scope.can_change_distributionplan_node = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 

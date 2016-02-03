@@ -3,7 +3,7 @@ describe('Warehouse Delivery Management Controller', function () {
     var scope, location, q, routeParams, mockDeliveryService,
         mockDeliveryNodeService, mockReleaseOrderService, mockReleaseOrderItemService,
         mockIPService, toast, mockContactService, contact, locations, releaseOrderItem, mockUserService;
-    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
+    var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var programId = 23123;
     var consigneeId = 1;
     var releaseOrderItemId = 430;
@@ -15,14 +15,6 @@ describe('Warehouse Delivery Management Controller', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
-    var stubCurrentUser = {
-        username: "admin",
-        first_name: "",
-        last_name: "",
-        userid: 5,
-        consignee_id: null,
-        email: "admin@tw.org"
-    };
 
     beforeEach(function () {
         module('WarehouseDeliveryManagement');
@@ -94,7 +86,7 @@ describe('Warehouse Delivery Management Controller', function () {
             mockDeliveryNodeService = jasmine.createSpyObj(mockDeliveryNodeService, ['filter', 'create', 'update']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockIPService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-            mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
+            mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
 
             inject(function ($controller, $rootScope, $location, $q, ngToast) {
                 scope = $rootScope.$new();
@@ -103,7 +95,6 @@ describe('Warehouse Delivery Management Controller', function () {
                 q = $q;
                 deferredPermissionsResultsPromise = $q.defer();
                 userHasPermissionToPromise = $q.defer();
-                userGetCurrentUserPromise = $q.defer();
                 mockReleaseOrderService.get.and.returnValue(q.when(releaseOrder));
                 mockDeliveryNodeService.filter.and.returnValue(q.when([{location: 'Kampala', id: 1}]));
                 mockDeliveryNodeService.create.and.returnValue(q.when());
@@ -113,7 +104,6 @@ describe('Warehouse Delivery Management Controller', function () {
                 mockDeliveryService.create.and.returnValue(q.when({id: 232}));
                 mockDeliveryService.update.and.returnValue(q.when(updatedDelivery));
                 mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
-                mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
                 mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
                 spyOn(angular, 'element').and.callFake(jqueryFake);
@@ -138,7 +128,6 @@ describe('Warehouse Delivery Management Controller', function () {
             });
 
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should validate delivery fields before saving', function () {

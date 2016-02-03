@@ -1,7 +1,7 @@
 describe('Ip item deliveries', function () {
     var scope, routeParams, mockDeliveryNodeService, mockItemService, deferredSearchResults, mockConsigneeItemService,
         mockLoaderService, mockUserService;
-    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
+    var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var node = {
         'id': 34,
         'distribution_plan': 33,
@@ -31,14 +31,6 @@ describe('Ip item deliveries', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
-    var stubCurrentUser = {
-        username: "admin",
-        first_name: "",
-        last_name: "",
-        userid: 5,
-        consignee_id: null,
-        email: "admin@tw.org"
-    };
 
     beforeEach(function () {
         module('DeliveriesByIp');
@@ -47,7 +39,7 @@ describe('Ip item deliveries', function () {
         mockItemService = jasmine.createSpyObj('ItemService', ['get']);
         mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
         mockLoaderService = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
 
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
@@ -55,13 +47,11 @@ describe('Ip item deliveries', function () {
             deferredSearchResults = $q.defer();
             deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
-            userGetCurrentUserPromise = $q.defer();
             mockItemService.get.and.returnValue($q.when(fetchedItem));
             mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedNodesResponse));
             mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
-            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
             $controller('DeliveriesByIpController', {
@@ -76,7 +66,6 @@ describe('Ip item deliveries', function () {
         });
 
         deferredPermissionsResultsPromise.resolve(adminPermissions);
-        userGetCurrentUserPromise.resolve(stubCurrentUser);
     });
 
     it('should load deliveries on the scope', function () {

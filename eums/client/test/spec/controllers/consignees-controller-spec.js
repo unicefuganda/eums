@@ -1,7 +1,7 @@
 describe('Consignees Controller', function () {
     var mockConsigneeService, mockUserService;
-    var scope, mockConsigneeModel, deferredCanFullyEdit, timeout, toast, deferredSearchResults, deferredPermissionsResults,
-        elementSpy, userHasPermissionToPromise, userGetCurrentUserPromise;
+    var scope, mockConsigneeModel, deferredCanFullyEdit, timeout, toast, deferredSearchResults, elementSpy,
+        userHasPermissionToPromise, deferredPermissionsResults;
 
     var emptyFunction = function () {
     };
@@ -24,19 +24,11 @@ describe('Consignees Controller', function () {
         pageSize: 1
     };
     var searchResults = consignees.first(3);
-    var stubCurrentUser = {
-        username: "admin",
-        first_name: "",
-        last_name: "",
-        userid: 5,
-        consignee_id: null,
-        email: "admin@tw.org"
-    };
 
     beforeEach(function () {
         module('Consignee');
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'userCanFullyEdit']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
         mockConsigneeModel = function () {
             this.properties = emptyConsignee.properties;
         };
@@ -53,10 +45,8 @@ describe('Consignees Controller', function () {
 
             deferredPermissionsResults = $q.defer();
             userHasPermissionToPromise = $q.defer();
-            userGetCurrentUserPromise = $q.defer();
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResults.promise);
-            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
 
             toast = ngToast;
             scope = $rootScope.$new();
@@ -78,7 +68,6 @@ describe('Consignees Controller', function () {
 
     describe('loaded', function () {
         beforeEach(function () {
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
             userHasPermissionToPromise.resolve(true);
         });
 

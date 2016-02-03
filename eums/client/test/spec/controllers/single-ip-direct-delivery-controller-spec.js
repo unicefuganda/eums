@@ -1,7 +1,7 @@
 describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, scope, q, location, mockIpService,
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, mockUserService;
-    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
+    var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
     var trackedDelivery = {
@@ -60,14 +60,6 @@ describe('Single IP Direct Delivery Controller', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
-    var stubCurrentUser = {
-        username: "admin",
-        first_name: "",
-        last_name: "",
-        userid: 5,
-        consignee_id: null,
-        email: "admin@tw.org"
-    };
 
     beforeEach(function () {
         module('SingleIpDirectDelivery');
@@ -76,7 +68,7 @@ describe('Single IP Direct Delivery Controller', function () {
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create', 'update', 'get']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             DeliveryNodeModel = DeliveryNode;
@@ -86,7 +78,6 @@ describe('Single IP Direct Delivery Controller', function () {
             q = $q;
             deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
-            userGetCurrentUserPromise = $q.defer();
             mockPurchaseOrderService.getDetail.and.callFake(fakeGetDetail);
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
             mockPurchaseOrderService.update.and.returnValue($q.when({}));
@@ -97,7 +88,6 @@ describe('Single IP Direct Delivery Controller', function () {
             mockDeliveryService.update.and.returnValue($q.when(createdTrackedDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
-            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
@@ -130,7 +120,6 @@ describe('Single IP Direct Delivery Controller', function () {
             totalValuePromise = q.defer();
             deliveriesPromise = q.defer();
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should show loader while loading and hide it after', function () {
@@ -207,7 +196,6 @@ describe('Single IP Direct Delivery Controller', function () {
         beforeEach(function () {
             scope.purchaseOrderItems = [];
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should throw and error when required fields are not filled out', function () {
@@ -273,7 +261,6 @@ describe('Single IP Direct Delivery Controller', function () {
             setScopeData();
 
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
         });
 
         it('should create a new delivery when there is no current delivery on scope', function () {

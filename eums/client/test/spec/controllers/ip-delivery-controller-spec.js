@@ -1,7 +1,7 @@
 describe('IP Delivery Controller', function () {
     var mockDeliveryService, scope, location, mockLoaderService, q, mockSystemSettingsService, mockFileUploadService,
         mockUserService, controller, mockAnswerService, timeout, mockIPService, mockContactService;
-    var userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise;
+    var userHasPermissionToPromise, deferredPermissionsResultsPromise;
 
     var firstDelivery = {
         id: 1,
@@ -55,14 +55,6 @@ describe('IP Delivery Controller', function () {
         "auth.add_nimericanswer",
         "auth.change_nimericanswer"
     ];
-    var stubCurrentUser = {
-        username: "admin",
-        first_name: "",
-        last_name: "",
-        userid: 5,
-        consignee_id: null,
-        email: "admin@tw.org"
-    };
 
     function initializeController(userService) {
         controller('IpDeliveryController', {
@@ -81,7 +73,7 @@ describe('IP Delivery Controller', function () {
 
     beforeEach(function () {
         module('IpDelivery');
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
 
         inject(function ($controller, $rootScope, $location, $q, $timeout, SystemSettingsService, FileUploadService,
                          LoaderService, UserService, AnswerService, DeliveryService, IPService, ContactService) {
@@ -99,7 +91,6 @@ describe('IP Delivery Controller', function () {
             mockFileUploadService = FileUploadService;
             deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
-            userGetCurrentUserPromise = $q.defer();
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
             spyOn(mockModal, 'modal');
@@ -119,7 +110,6 @@ describe('IP Delivery Controller', function () {
             mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
             mockSystemSettingsService.getSettings.and.returnValue(q.when(settings));
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
-            mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
         });
     });
@@ -129,7 +119,6 @@ describe('IP Delivery Controller', function () {
         beforeEach(function () {
             deliveriesPromise = q.defer();
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
             userHasPermissionToPromise.resolve(true);
         });
 
@@ -173,7 +162,6 @@ describe('IP Delivery Controller', function () {
     describe('on confirm', function () {
         beforeEach(function () {
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
             userHasPermissionToPromise.resolve(true);
         });
 
@@ -500,7 +488,6 @@ describe('IP Delivery Controller', function () {
     describe('on filter by date range', function () {
         beforeEach(function () {
             deferredPermissionsResultsPromise.resolve(adminPermissions);
-            userGetCurrentUserPromise.resolve(stubCurrentUser);
             userHasPermissionToPromise.resolve(true);
         });
 

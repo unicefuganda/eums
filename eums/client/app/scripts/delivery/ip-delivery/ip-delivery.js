@@ -10,7 +10,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             imageUploader = null,
             selectedFiles = [];
 
-        $scope.currentUser = {};
         $scope.deliveries = [];
         $scope.answers = [];
         $scope.oringalAnswers = [];
@@ -99,7 +98,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
                 loadDeliveries();
                 initUpload();
@@ -128,12 +126,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 UserService.hasPermission("eums.change_distributionplannode", $scope.userPermissions).then(function (result) {
                     $scope.can_change_distributionplan_node = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 

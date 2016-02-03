@@ -1,6 +1,5 @@
 angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
     .controller('IpItemsController', function ($scope, $q, ConsigneeItemService, UserService) {
-        $scope.currentUser = {};
         $scope.items = [];
         $scope.searching = false;
 
@@ -29,7 +28,6 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             $q.all(promises).then(function () {
                 loadItems();
             });
@@ -44,12 +42,6 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
                 UserService.hasPermission("eums.change_distributionplannode", $scope.userPermissions).then(function (result) {
                     $scope.can_change_distributionplan_node = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 

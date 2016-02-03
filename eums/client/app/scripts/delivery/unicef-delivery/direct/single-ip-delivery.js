@@ -2,7 +2,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DeliveryService, DeliveryNode, $q, $timeout,
                                                               DeliveryNodeService, UserService) {
-        $scope.currentUser = {};
         $scope.consignee = {};
         $scope.district = {};
         $scope.errors = false;
@@ -92,7 +91,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             showLoader();
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(loadCurrentUser());
             promises.push(loadPurchaseOrderById());
             $q.all(promises).then(function () {
                 var subPromises = [];
@@ -116,12 +114,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                 UserService.hasPermission("eums.change_distributionplan", $scope.userPermissions).then(function (result) {
                     $scope.can_change_distributionplan = result;
                 });
-            });
-        }
-
-        function loadCurrentUser() {
-            return UserService.getCurrentUser().then(function (user) {
-                $scope.currentUser = user;
             });
         }
 
