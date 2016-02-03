@@ -379,11 +379,9 @@ describe('MultipleIpDirectDeliveryController', function () {
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
             expect(mockLoaderService.hideLoader.calls.count()).toBe(1);
         });
-
     });
 
     describe('when the controller is initialized with PO and POItem', function () {
-
         var topLevelNodes = [{
             consignee: {
                 name: 'Save the Children'
@@ -426,7 +424,6 @@ describe('MultipleIpDirectDeliveryController', function () {
     });
 
     describe('when purchase order item selected changes, ', function () {
-
         var topLevelNodes = [{
             consignee: {
                 name: 'Save the Children'
@@ -861,6 +858,5 @@ describe('MultipleIpDirectDeliveryController', function () {
             expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });
-
     });
 });

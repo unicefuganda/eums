@@ -443,7 +443,6 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('on contact-saved', function(){
-
        it('should set the contact_id when contact-saved event is fired', function(){
            scope.delivery = {};
            var contact = {"firstName":"Manuel","lastName":"Konde","phone":"+256755437493","_id":"55a50d4d613ffb4c13bef708"};

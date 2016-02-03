@@ -26,7 +26,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             var contactInput = $('#contact-select');
             var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
             contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
             contactInput.val(contact._id);
 
             contact.id = contact._id;

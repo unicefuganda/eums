@@ -95,15 +95,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             promises.push(loadCurrentUser());
             promises.push(loadPurchaseOrderById());
             $q.all(promises).then(function () {
-                var promises = [];
-                promises.push(loadPurchaseOrderValue($scope.purchaseOrder));
-                promises.push(loadPurchaseOrderDeliveries($scope.purchaseOrder).then(function () {
+                var subPromises = [];
+                subPromises.push(loadPurchaseOrderValue($scope.purchaseOrder));
+                subPromises.push(loadPurchaseOrderDeliveries($scope.purchaseOrder).then(function () {
                     return attachNodesToItems($scope.purchaseOrder.purchaseorderitemSet).then(function (items) {
                         $scope.purchaseOrderItems = items.map(setItemQuantityShipped);
                         $scope.contentLoaded = true;
                     });
                 }));
-                $q.all(promises).then(hideLoader);
+                $q.all(subPromises).then(hideLoader);
             });
         }
 
