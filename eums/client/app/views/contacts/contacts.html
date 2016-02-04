@@ -40,7 +40,7 @@
                         <td class="text-left">{{ contact.phone }}</td>
                         <td class="text-left">{{ contact.district }}</td>
                         <td class="text-left" id="contact.ips">
-                            <div ng-repeat="ip in contact.ips | orderBy: 'toString()'">{{ ip }}</div>
+                            <div ng-repeat="ip in contact.ips">{{ ip }}</div>
                         </td>
                         <td ng-show="can_change">
                             <button class="btn btn-primary"

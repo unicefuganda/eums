@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast', 'Loader'])
-    .controller('ContactController', function ($scope, $q, $sorter, ngToast, UserService, ContactService, LoaderService) {
+angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable',
+        'ui.bootstrap', 'ngToast', 'Loader', 'Consignee'])
+    .controller('ContactController', function ($scope, $q, $sorter, ngToast, UserService,
+                                               ContactService, LoaderService, ConsigneeService) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
@@ -113,10 +115,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             if ($scope.can_view_all) {
                 promise = ContactService.all().then(function (resultContacts) {
                     $scope.contacts = resultContacts.sort();
+                    setIpName($scope.contacts);
                 });
             } else {
                 promise = ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
                     $scope.contacts = resultContacts.sort();
+                    setIpName($scope.contacts);
                 });
             }
 
@@ -126,6 +130,18 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 .finally(function () {
                     LoaderService.hideLoader();
                 });
+        }
+
+        function setIpName(contacts) {
+            contacts.forEach(function (contact) {
+                var ip_names = [];
+                contact.ips.forEach(function (id) {
+                    ConsigneeService.get(id).then(function (ip) {
+                        ip_names.push(ip.name);
+                    })
+                });
+                contact.ips = ip_names;
+            })
         }
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {
