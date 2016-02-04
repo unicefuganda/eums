@@ -3,6 +3,7 @@ import ast
 from celery.utils.log import get_task_logger
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 from eums.models import Run, RunQueue, Flow, Question
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service, RapidProService
@@ -20,8 +21,10 @@ def hook(request):
     try:
         params = request.POST
         logger.info("params %s:" % params)
-        flow = rapid_pro_service.flow(params['flow'])
-        run = Run.objects.filter(phone=params['phone']).order_by('-id').first()
+        # flow = rapid_pro_service.flow(params['flow'])
+        run = Run.objects.filter(Q(phone=params['phone']) & (
+            Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
+        logger.info(run)
         answer = _save_answer(flow, params, run)
 
         if flow.is_end(answer):
