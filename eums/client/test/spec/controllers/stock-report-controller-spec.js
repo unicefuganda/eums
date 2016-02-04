@@ -1,10 +1,8 @@
 describe('StockReportController', function () {
     var scope, mockStockReportService, mockConsigneeService, mockIpService, mockLoaderService, mockEumsErrorMessageService,
-        stubStockReport, deferredStubReport, stubDistricts, toastPromise, mockToastProvider, deferredDistricts, mockUserService,
-        deferredUser, deferredConsignee;
-    var adminUser, ipUser;
-
-    stubStockReport = {
+        deferredStubReport, toastPromise, mockToastProvider, deferredDistricts, mockUserService,
+        deferredUser, deferredConsignee, mockSystemSettingsService;
+    var stubStockReport = {
         data: {
             count: 2,
             pageSize: 10,
@@ -58,12 +56,13 @@ describe('StockReportController', function () {
             ]
         }
     };
-
-    stubDistricts = {data: ['Adjumani', 'Luweero']};
-
-    adminUser = {"username": "admin", "first_name": "", "last_name": "", "email": "admin@tw.org", "consignee_id": null};
-
-    ipUser = {"username": "wakiso", "first_name": "", "last_name": "", "email": "ip@ip.com", "consignee_id": 5};
+    var stubDistricts = {data: ['Adjumani', 'Luweero']};
+    var adminUser = {"username": "admin", "first_name": "", "last_name": "", "email": "admin@tw.org", "consignee_id": null};
+    var ipUser = {"username": "wakiso", "first_name": "", "last_name": "", "email": "ip@ip.com", "consignee_id": 5};
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('StockReport');
@@ -76,9 +75,10 @@ describe('StockReportController', function () {
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
-
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $rootScope, $q) {
+            scope = $rootScope.$new();
             deferredStubReport = $q.defer();
             toastPromise = $q.defer();
             deferredDistricts = $q.defer();
@@ -90,8 +90,8 @@ describe('StockReportController', function () {
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
             mockConsigneeService.get.and.returnValue(deferredConsignee.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUser.promise);
-
-            scope = $rootScope.$new();
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
             $controller('StockReportController', {
                 $scope: scope,
@@ -101,6 +101,7 @@ describe('StockReportController', function () {
                 IPService: mockIpService,
                 LoaderService: mockLoaderService,
                 UserService: mockUserService,
+                SystemSettingsService: mockSystemSettingsService,
                 ErrorMessageService: mockEumsErrorMessageService
             });
         });

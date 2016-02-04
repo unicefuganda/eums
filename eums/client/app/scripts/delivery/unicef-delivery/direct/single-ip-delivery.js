@@ -1,7 +1,7 @@
-angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
+angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSettingsService'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DeliveryService, DeliveryNode, $q, $timeout,
-                                                              DeliveryNodeService, UserService) {
+                                                              DeliveryNodeService, UserService, SystemSettingsService) {
         $scope.consignee = {};
         $scope.district = {};
         $scope.errors = false;
@@ -91,8 +91,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             showLoader();
             var promises = [];
             promises.push(loadUserPermissions());
+            promises.push(SystemSettingsService.getSettingsWithDefault());
             promises.push(loadPurchaseOrderById());
-            $q.all(promises).then(function () {
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
                 var subPromises = [];
                 subPromises.push(loadPurchaseOrderValue($scope.purchaseOrder));
                 subPromises.push(loadPurchaseOrderDeliveries($scope.purchaseOrder).then(function () {

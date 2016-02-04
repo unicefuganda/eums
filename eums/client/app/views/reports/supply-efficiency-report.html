@@ -23,8 +23,7 @@
                             <th ng-if="view == views.OUTCOME" class="contextual-column">Outcome</th>
                             <th ng-if="view == views.DOCUMENT" colspan="2" class="contextual-column">PO / Waybill</th>
                             <th ng-if="view == views.IP" class="contextual-column">Implementing Partner</th>
-                            <th ng-if="view == views.LOCATION" class="contextual-column">District</th>
-
+                            <th ng-if="view == views.LOCATION" class="contextual-column">{{ systemSettings.district_label }}</th>
                             <th class="centered standard-column">UNICEF</th>
                             <th class="centered standard-column" colspan="3">IP RECEIPT</th>
                             <th class="centered standard-column" colspan="2">IP DISTRIBUTION</th>
@@ -41,7 +40,7 @@
                             </td>
                             <td class="centered contextual" sort-by="identifier.delivery.location"
                                 ng-if="view == views.DELIVERY">
-                                District
+                                {{ systemSettings.district_label }}
                             </td>
 
                             <td class="centered contextual" sort-by="identifier.order_item.item.description"
@@ -72,7 +71,7 @@
                             </td>
 
                             <td class="centered contextual" sort-by="identifier.location" sort-init="asc"
-                                ng-if="view == views.LOCATION">District
+                                ng-if="view == views.LOCATION">{{ systemSettings.district_label }}
                                 Name
                             </td>
 

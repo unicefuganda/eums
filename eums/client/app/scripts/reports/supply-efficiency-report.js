@@ -1,8 +1,9 @@
 'use strict';
 
-angular.module('SupplyEfficiencyReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SupplyEfficiencyQueries', 'SysUtils'])
-    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService, SysUtilsService, $location) {
+angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives',
+        'SupplyEfficiencyQueries', 'SysUtils', 'SystemSettingsService'])
+    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService,
+                                                              SysUtilsService, $location, SystemSettingsService) {
         $scope.views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
         $scope.totals = {};
@@ -16,6 +17,9 @@ angular.module('SupplyEfficiencyReport', [
             location: 'LOCATION'
         };
         var viewInUrl = $location.search().by;
+
+        init();
+
         $scope.view = $scope.views[urlToViewMapping[viewInUrl]];
 
         $scope.$on('filters-changed', function (_, newFilters) {
@@ -25,6 +29,16 @@ angular.module('SupplyEfficiencyReport', [
 
         $scope.formatDate = function (date) {
             return SysUtilsService.formatDate(date);
+        };
+
+        function init() {
+            loadSystemSettings();
+        }
+
+        function loadSystemSettings() {
+            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
+                $scope.systemSettings = settings;
+            });
         }
 
         function generateReport() {

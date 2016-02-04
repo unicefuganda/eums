@@ -23,9 +23,9 @@
 </div>
 
 <div class="form-group" id="supply-efficiency-report-district-input">
-    <div class="blue-unicef">District</div>
+    <div class="blue-unicef">{{ systemSettings.district_label }}</div>
     <input class="form-control" search-from-list list="$districts" type="hidden" ng-model="filters.location"
-           placeholder="Select a district"/>
+           placeholder="Select a {{ systemSettings.district_label }}"/>
 </div>
 
 <div class="input-group col-md-12" id="supply-efficiency-report-start-date-input">

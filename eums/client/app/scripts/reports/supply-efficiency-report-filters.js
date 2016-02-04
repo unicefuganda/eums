@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programme'])
-    .controller('SupplyEfficiencyReportFiltersController', function ($scope) {
+angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programme', 'SystemSettingsService'])
+    .controller('SupplyEfficiencyReportFiltersController', function ($scope, SystemSettingsService) {
         $scope.filters = {startDate: new moment(1, "MM").toDate(), endDate: new moment("Dec 31", "MMM DD").toDate()};
 
         $scope.clearFilters = function () {
@@ -12,6 +12,8 @@ angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programm
             $scope.filters = {startDate: new moment(1, "MM").toDate(), endDate: new moment("Dec 31", "MMM DD").toDate()};
         };
 
+        init();
+
         $scope.$watch('filters', function (newFilters) {
             var cleanFilters = {};
             Object.each(newFilters, function (name, val) {
@@ -19,4 +21,14 @@ angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programm
             });
             $scope.$emit('filters-changed', cleanFilters);
         }, true);
+
+        function init() {
+            loadSystemSettings();
+        }
+
+        function loadSystemSettings() {
+            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
+                $scope.systemSettings = settings;
+            });
+        }
     });

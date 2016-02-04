@@ -1,19 +1,28 @@
 describe('Supply Efficiency Report Filter Controller Spec', function () {
+    var scope, mockSystemSettingsService;
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
-    var scope;
     beforeEach(function () {
         module('SupplyEfficiencyReportFilters');
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
-        inject(function ($rootScope, $controller) {
+        inject(function ($rootScope, $q, $controller) {
             scope = $rootScope.$new();
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
+
             spyOn(scope, '$broadcast');
             spyOn(scope, '$emit');
+
             $controller('SupplyEfficiencyReportFiltersController', {
-                $scope: scope
+                $scope: scope,
+                SystemSettingsService: mockSystemSettingsService
             });
         });
     });
-
 
     it('should filter by the first and last date of this year by default', function() {
         scope.$apply();
@@ -24,7 +33,6 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
     it('should clear all filters', function () {
         scope.filters = {orderNumber: 810};
         scope.$apply();
-
         scope.clearFilters();
 
         expect(scope.$broadcast).toHaveBeenCalledWith('clear-consignee');
@@ -51,7 +59,6 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         scope.$apply();
 
         expect(scope.$emit).toHaveBeenCalledWith('filters-changed', scope.filters);
-
     });
 
     it('should remove filters with falsy from filters before broadcasting', function () {
@@ -66,6 +73,5 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         scope.$apply();
 
         expect(scope.$emit).toHaveBeenCalledWith('filters-changed', expectedFilters);
-
     });
 });

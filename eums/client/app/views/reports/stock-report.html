@@ -11,21 +11,21 @@
                 </ul>
             </div>
         </div>
-
         <ng-toast></ng-toast>
-
         <div>
             <div class="form-horizontal">
                 <div style="display: inline-block;">
                     <div class="form-group col-lg-5 margin-top-15">
                         <div class="pad-bottom-5" style="overflow: hidden;">
                             <div class="col-lg-4 filter-label">
-                                <label class="control-label description-label" for="select-district">District:</label>
+                                <label class="control-label description-label"
+                                       for="select-district">{{ systemSettings.district_label }}:</label>
                             </div>
                             <div class="col-lg-8" ng-if="districtsLoaded">
                                 <input id="select-district" class="form-control" type="hidden" search-from-list
                                        list="{{ districts }}"
-                                       ng-model="reportParams.selectedLocation" placeholder="All Districts">
+                                       ng-model="reportParams.selectedLocation"
+                                       placeholder="All {{ systemSettings.district_label }}s">
                             </div>
                         </div>
                         <div class="pad-top-5 pad-bottom-5" style="overflow: hidden;">

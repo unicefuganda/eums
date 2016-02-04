@@ -1,6 +1,6 @@
 describe('Supply Efficiency Report Controller Spec', function () {
 
-    var scope, childScope, mockReportService, mockLocation, mockLoaderService;
+    var scope, childScope, mockReportService, mockLocation, mockLoaderService, mockSystemSettingsService;
     var mockViews = {DELIVERY: 1, ITEM: 2, OUTCOME: 3, DOCUMENT: 4, IP: 5, LOCATION: 6};
     var mockReport =
         [
@@ -53,25 +53,33 @@ describe('Supply Efficiency Report Controller Spec', function () {
                 }
             }
         ];
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('SupplyEfficiencyReport');
         mockReportService = jasmine.createSpyObj('mockSupplyEfficiencyReportService', ['generate']);
         mockLocation = jasmine.createSpyObj('$location', ['search']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($rootScope, $controller, $q) {
-            mockReportService.generate.and.returnValue($q.when(mockReport));
-            mockReportService.VIEWS = mockViews;
-            mockLocation.search.and.returnValue({by: 'delivery'});
-
             scope = $rootScope.$new();
             childScope = scope.$new();
 
+            mockReportService.generate.and.returnValue($q.when(mockReport));
+            mockReportService.VIEWS = mockViews;
+            mockLocation.search.and.returnValue({by: 'delivery'});
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
+
             $controller('SupplyEfficiencyReportController', {
                 $scope: scope,
-                SupplyEfficiencyReportService: mockReportService,
                 $location: mockLocation,
+                SupplyEfficiencyReportService: mockReportService,
+                SystemSettingsService: mockSystemSettingsService,
                 LoaderService: mockLoaderService
             });
             scope.$emit('filters-changed', {});
@@ -123,8 +131,9 @@ describe('Supply Efficiency Report Controller Spec', function () {
         mockLocation.search.and.returnValue({by: viewInUrl});
         $controller('SupplyEfficiencyReportController', {
             $scope: scope,
-            SupplyEfficiencyReportService: mockReportService,
             $location: mockLocation,
+            SupplyEfficiencyReportService: mockReportService,
+            SystemSettingsService: mockSystemSettingsService,
             LoaderService: mockLoaderService
         });
 

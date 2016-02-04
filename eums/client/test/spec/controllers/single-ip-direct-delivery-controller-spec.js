@@ -1,6 +1,6 @@
 describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, scope, q, location, mockIpService,
-        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, mockUserService;
+        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, mockUserService, mockSystemSettingsService;
     var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
@@ -60,6 +60,10 @@ describe('Single IP Direct Delivery Controller', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('SingleIpDirectDelivery');
@@ -69,6 +73,7 @@ describe('Single IP Direct Delivery Controller', function () {
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create', 'update', 'get']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             DeliveryNodeModel = DeliveryNode;
@@ -89,6 +94,8 @@ describe('Single IP Direct Delivery Controller', function () {
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue(q.when(stubSettings));
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
             spyOn(mockModal, 'modal');
@@ -105,6 +112,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: DeliveryNodeModel,
                 UserService: mockUserService,
+                SystemSettingsService: mockSystemSettingsService,
                 ngToast: toast
             });
 
