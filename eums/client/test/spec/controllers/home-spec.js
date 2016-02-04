@@ -5,21 +5,31 @@ describe('Module: Home', function () {
     beforeEach(module('Home'));
 
     describe('Controller:Home', function () {
-        var mockUserService, deferred, mockMapService, mockLoaderService;
+        var mockUserService, deferred, mockMapService, mockLoaderService, mockSystemSettingsService;
+        var stubSettings = {
+            'notification_message': 'notification',
+            'district_label': 'district'
+        };
 
         beforeEach(inject(function ($controller, $rootScope, $location, $q) {
-            location = $location;
             scope = $rootScope.$new();
+            location = $location;
+            deferred = $q.defer();
             mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
             mockMapService = jasmine.createSpyObj('mockMapService', ['addHeatMap', 'clickLayer']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
-            deferred = $q.defer();
+            mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
+
             mockUserService.getCurrentUser.and.returnValue(deferred.promise);
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
+
             $controller('HomeController', {
                 $scope: scope,
                 UserService: mockUserService,
                 MapService: mockMapService,
-                LoaderService: mockLoaderService
+                LoaderService: mockLoaderService,
+                SystemSettingsService: mockSystemSettingsService
             });
         }));
 

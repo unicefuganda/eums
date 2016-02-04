@@ -1,26 +1,34 @@
 'use strict';
 
 angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrderItem', 'PurchaseOrder', 'eums.map',
-    'Loader', 'map.layers'])
-    .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
+        'Loader', 'map.layers', 'SystemSettingsService'])
+    .controller('HomeController', function ($rootScope, $scope, $q, $location, UserService, MapService, LoaderService,
+                                            SystemSettingsService) {
         $scope.filter = {programme: '', ip: '', from: '', to: ''};
-        $scope.deliveryStatus = {mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
-                                    mapNotReceived: true};
-
+        $scope.deliveryStatus = {
+            mapReceivedWithIssues: true,
+            mapNonResponse: true,
+            mapReceived: true,
+            mapNotReceived: true
+        };
         $scope.datepicker = {from: false, to: false};
         $scope.data = {totalStats: {}, district: '', ipView: false};
         $scope.deliveryStatusCollapsed = false;
-
         $scope.directiveValues = {};
+        $scope.tmp = {mapReceivedAll: true};
 
-        UserService.getCurrentUser().then(function (user) {
-            $scope.user = user;
-        });
+        init();
+
+        $scope.$watchCollection('deliveryStatus', function (newDeliveryStatus, oldDeliveryStatus) {
+            if (!Object.equal(newDeliveryStatus, oldDeliveryStatus)) {
+                redrawMapColors();
+            }
+        }, true);
 
         $scope.showDetailedResponses = function () {
             var item_url = '/item-feedback-report/';
             var ip_url = '/ip-feedback-report-by-delivery/';
-            var url = $scope.data.ipView? ip_url : item_url;
+            var url = $scope.data.ipView ? ip_url : item_url;
             $location.path(url + $scope.data.district);
         };
 
@@ -29,19 +37,11 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
             redrawMapColors();
         };
 
-        var redrawMapColors = function () {
-            LoaderService.showLoader();
-            MapService.addHeatMap($scope);
-            $scope.data.district && MapService.clickLayer($scope.data.district);
-        };
-
         $scope.$watchCollection('filter', function (newFilter, oldFilter) {
             if (!Object.equal(newFilter, oldFilter)) {
                 redrawMapColors();
             }
         }, true);
-
-        $scope.tmp = {mapReceivedAll: true};
 
         $scope.updateAllReceived = function () {
             $scope.tmp.mapReceivedAll = ($scope.deliveryStatus.mapReceived && $scope.deliveryStatus.mapReceivedWithIssues);
@@ -52,11 +52,28 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
             $scope.deliveryStatus.mapReceivedWithIssues = $scope.tmp.mapReceivedAll;
         };
 
-        $scope.$watchCollection('deliveryStatus', function (newDeliveryStatus, oldDeliveryStatus) {
-            if (!Object.equal(newDeliveryStatus, oldDeliveryStatus)) {
-                redrawMapColors();
-            }
-        }, true);
+        function init() {
+            LoaderService.showLoader();
+            var promises = [];
+            promises.push(loadCurrentUser());
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
+                LoaderService.hideLoader();
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.user = user;
+            });
+        }
+
+        var redrawMapColors = function () {
+            LoaderService.showLoader();
+            MapService.addHeatMap($scope);
+            $scope.data.district && MapService.clickLayer($scope.data.district);
+        };
     })
     .controller('ResponseController', function ($scope, $q, $routeParams, DeliveryService, PurchaseOrderService,
                                                 DeliveryNodeService, PurchaseOrderItemService) {

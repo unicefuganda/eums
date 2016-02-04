@@ -1,11 +1,16 @@
 describe('ItemFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController, mockSystemSettingsService;
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('ItemFeedbackReport');
 
-        mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
+        mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -14,18 +19,20 @@ describe('ItemFeedbackReportController', function () {
             timeout = $timeout;
 
             mockReportService.itemFeedbackReport.and.returnValue(deferredResult.promise);
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
             initController = function (route) {
                 $controller('ItemFeedbackReportController', {
                     $scope: scope,
                     $location: location,
+                    $routeParams: route,
                     ReportService: mockReportService,
                     LoaderService: mockLoader,
-                    $routeParams: route,
+                    SystemSettingsService: mockSystemSettingsService
                 });
             };
             initController({});
-
         });
     });
 

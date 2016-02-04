@@ -1,6 +1,10 @@
 describe('IpFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout, contactDeffer,
-        route = {}, initController, mockEumsErrorMessageService, mockContactService;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout,
+        route = {}, initController, mockEumsErrorMessageService, mockContactService, mockSystemSettingsService;
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('IpFeedbackReportByDelivery');
@@ -9,6 +13,7 @@ describe('IpFeedbackReportController', function () {
         mockContactService = jasmine.createSpyObj('mockContactService', ['ContactService']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
         mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -16,8 +21,10 @@ describe('IpFeedbackReportController', function () {
             scope = $rootScope.$new();
             location = $location;
             timeout = $timeout;
-
             mockReportService.ipFeedbackReportByDelivery.and.returnValue(deferredResult.promise);
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
+
             initController = function (routeParams) {
                 $controller('IpFeedbackReportByDeliveryController', {
                     $scope: scope,
@@ -26,6 +33,7 @@ describe('IpFeedbackReportController', function () {
                     ReportService: mockReportService,
                     ContactService: mockContactService,
                     LoaderService: mockLoader,
+                    SystemSettingsService: mockSystemSettingsService,
                     ErrorMessageService: mockEumsErrorMessageService
                 });
             };
@@ -70,7 +78,7 @@ describe('IpFeedbackReportController', function () {
 
     describe('on paginate', function () {
         it('should call the service with page number', function () {
-            deferredResult.resolve({results:[{},{}]});
+            deferredResult.resolve({results: [{}, {}]});
             scope.$apply();
 
             scope.goToPage(2);
@@ -118,7 +126,7 @@ describe('IpFeedbackReportController', function () {
         });
 
         it('should call endpoint when searchTerm district changes', function () {
-            scope.searchTerm.selectedLocation = 'Adjumani'; 
+            scope.searchTerm.selectedLocation = 'Adjumani';
             scope.$apply();
 
             expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({

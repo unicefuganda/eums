@@ -1,11 +1,13 @@
 'use strict';
 
-angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Contact', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Contact', 'Loader', 'EumsErrorMessage',
+        'Sort', 'SortArrow', 'SysUtils', 'ngToast', 'SystemSettingsService'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService, ContactService,
-                                                                  ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
+                                                                  ErrorMessageService, SortService, SortArrowService,
+                                                                  SysUtilsService, ngToast, SystemSettingsService) {
         var SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
         var timer;
         var initializing = true;
@@ -18,6 +20,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
         $scope.$watchCollection('searchTerm', function () {
             $scope.pagination.page = 1;
             if (initializing) {
+                loadSystemSettings();
                 loadIpFeedbackReportByDelivery();
                 initializing = false;
             } else {
@@ -89,6 +92,12 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
+            });
+        }
+
+        function loadSystemSettings() {
+            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
+                $scope.systemSettings = settings;
             });
         }
 

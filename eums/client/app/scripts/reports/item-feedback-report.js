@@ -1,12 +1,13 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'Contact', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'Contact', 'EumsErrorMessage', 'Option',
+        'Sort', 'SortArrow', 'SysUtils', 'ngToast', 'SystemSettingsService'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
+    .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams, ngToast,
                                                           ReportService, LoaderService, ErrorMessageService, SortService,
-                                                          ContactService, SortArrowService, SysUtilsService, ngToast) {
+                                                          ContactService, SortArrowService, SysUtilsService, SystemSettingsService) {
 
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
@@ -21,6 +22,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
             if (initializing) {
+                loadSystemSettings();
                 loadItemFeedbackReport();
                 initializing = false;
             } else {
@@ -99,6 +101,12 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
+            });
+        }
+
+        function loadSystemSettings() {
+            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
+                $scope.systemSettings = settings;
             });
         }
 

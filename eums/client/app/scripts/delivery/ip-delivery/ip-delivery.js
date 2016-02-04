@@ -98,9 +98,9 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            promises.push(SystemSettingsService.getSettings());
+            promises.push(SystemSettingsService.getSettingsWithDefault());
             $q.all(promises).then(function (returns) {
-                $scope.notificationMessage = returns[1].notification_message;
+                $scope.systemSettings = returns[1];
                 loadDeliveries();
                 initUpload();
                 IPService.loadAllDistricts().then(function (response) {
