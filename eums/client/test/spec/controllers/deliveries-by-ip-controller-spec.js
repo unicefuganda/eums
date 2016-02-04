@@ -1,6 +1,6 @@
 describe('Ip item deliveries', function () {
     var scope, routeParams, mockDeliveryNodeService, mockItemService, deferredSearchResults, mockConsigneeItemService,
-        mockLoaderService, mockUserService;
+        mockLoaderService, mockUserService, mockSystemSettingsService;
     var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var node = {
         'id': 34,
@@ -31,6 +31,10 @@ describe('Ip item deliveries', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('DeliveriesByIp');
@@ -40,6 +44,7 @@ describe('Ip item deliveries', function () {
         mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
         mockLoaderService = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
@@ -53,6 +58,8 @@ describe('Ip item deliveries', function () {
             mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
             $controller('DeliveriesByIpController', {
                 $scope: scope,
@@ -61,7 +68,8 @@ describe('Ip item deliveries', function () {
                 ConsigneeItemService: mockConsigneeItemService,
                 DeliveryNodeService: mockDeliveryNodeService,
                 LoaderService: mockLoaderService,
-                UserService: mockUserService
+                UserService: mockUserService,
+                SystemSettingsService: mockSystemSettingsService
             });
         });
 

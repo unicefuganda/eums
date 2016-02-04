@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'SortBy',
-        'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'SysUtils', 'ngToast'])
+        'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'SysUtils', 'ngToast', 'SystemSettingsService'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, SortByService, SortArrowService,
-                                                      SortService, PurchaseOrderService, UserService, IPService, $sorter,
-                                                      LoaderService, ExportDeliveriesService, ngToast, SysUtilsService, $timeout) {
-
+    .controller('DirectDeliveryController', function ($scope, $location, $timeout, ProgrammeService, SortByService,
+                                                      SortArrowService, SortService, PurchaseOrderService, UserService,
+                                                      IPService, $sorter, LoaderService, ExportDeliveriesService, ngToast,
+                                                      SysUtilsService, SystemSettingsService) {
         var rootPath = '/direct-delivery/new/';
         var SUPPORTED_FIELD = ['orderNumber', 'date', 'trackedDate', 'lastShipmentDate', 'poType', 'programmeName'];
         var timer;
@@ -37,6 +37,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
             if (initializing) {
+                loadSystemSettings();
                 loadPurchaseOrders();
                 initializing = false;
             } else {
@@ -122,6 +123,12 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
+            });
+        }
+
+        function loadSystemSettings() {
+            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
+                $scope.systemSettings = settings;
             });
         }
 

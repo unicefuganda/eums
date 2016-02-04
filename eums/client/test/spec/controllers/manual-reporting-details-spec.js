@@ -4,7 +4,7 @@ describe('ManualReportingDetailsController', function () {
     var mockIPService, mockConsigneeService, mockPurchaseOrderService, mockPurchaseOrderItemService,
         mockReleaseOrderService, mockReleaseOrderItemService, mockSalesOrderService,
         mockDeliveryService, mockDeliveryNodeService, mockSalesOrderItemService,
-        mockSortArrowService, mockBackend;
+        mockSortArrowService, mockBackend, mockSystemSettingsService;
     var receivedOptionsEndpointUrl, qualityOptionsEndpointUrl, satisfiedOptionsEndpointUrl;
     var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
         deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
@@ -18,6 +18,10 @@ describe('ManualReportingDetailsController', function () {
         salesOrderId = 1,
         programmeName = 'Test Programme';
     var nodeResponse;
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('Option');
@@ -136,6 +140,7 @@ describe('ManualReportingDetailsController', function () {
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass', 'setSortArrow']);
 
         inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q, $httpBackend, EumsConfig, OptionService) {
@@ -166,6 +171,8 @@ describe('ManualReportingDetailsController', function () {
             mockDeliveryNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemPromise.promise);
+            mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue(q.when(stubSettings));
             mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
             mockSortArrowService.setSortArrow.and.returnValue(deferredSortArrowResult.promise);
 
@@ -209,6 +216,7 @@ describe('ManualReportingDetailsController', function () {
                     DeliveryNodeService: mockDeliveryNodeService,
                     SalesOrderItemService: mockSalesOrderItemService,
                     SalesOrderService: mockSalesOrderService,
+                    SystemSettingsService: mockSystemSettingsService,
                     OptionService: OptionService,
                     SortArrowService: mockSortArrowService
                 });

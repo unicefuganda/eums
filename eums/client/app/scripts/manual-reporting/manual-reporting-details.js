@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
-        'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
+        'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'SystemSettingsService',
         'Delivery', 'DeliveryNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
     .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService,
                                                               OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
                                                               ReleaseOrderItemService, ngToast, ContactService, DeliveryService,
                                                               DeliveryNodeService, AnswerService, QuestionService, RunService,
-                                                              SalesOrderService, SalesOrderItemService) {
+                                                              SalesOrderService, SalesOrderItemService, SystemSettingsService) {
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.responseIndex = '';
@@ -16,6 +16,12 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         $scope.responses = [];
 
         $scope.initialize = function () {
+            var promises = [];
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[0];
+            });
+
             showLoadingModal(true);
             loadLists();
             if ($routeParams.purchaseOrderId) {

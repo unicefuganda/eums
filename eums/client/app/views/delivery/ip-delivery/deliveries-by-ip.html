@@ -44,7 +44,7 @@
                 <i class="glyphicon blue-unicef"
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" ng-model="searchTerm"
-                       placeholder="Search by Consignee, District or Date in format 'YYYY-MM-DD'"/>
+                       placeholder="Search by Consignee, {{ systemSettings.district_label }} or Date in format 'YYYY-MM-DD'"/>
                 <span class="text-warning" ng-show="searchTerm.length && !deliveryNodes.length">
                     There are no matches to your search criteria.
                 </span>
@@ -62,7 +62,7 @@
                 <th class="left-aligned">Date Shipped</th>
                 <th class="left-aligned">Consignee</th>
                 <th class="left-aligned">Contact Person</th>
-                <th class="left-aligned">District</th>
+                <th class="left-aligned">{{ systemSettings.district_label }}</th>
                 <th class="left-aligned">IP Notes</th>
                 <th class="left-aligned"></th>
             </tr>

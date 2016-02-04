@@ -1,6 +1,6 @@
-angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewDeliveryByIp'])
+angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewDeliveryByIp', 'SystemSettingsService'])
     .controller('DeliveriesByIpController', function ($scope, $q, $routeParams, ngToast, DeliveryNodeService, ItemService,
-                                                      ConsigneeItemService, LoaderService, UserService) {
+                                                      ConsigneeItemService, LoaderService, UserService, SystemSettingsService) {
         $scope.deliveryNodes = [];
         $scope.searching = false;
         $scope.itemId = $routeParams.itemId;
@@ -47,7 +47,9 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            $q.all(promises).then(function () {
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
 
                 LoaderService.showLoader();
                 loadPromises.push(ItemService.get($scope.itemId).then(function (item) {

@@ -96,7 +96,6 @@ describe('AlertsController', function () {
                 }
             ], "pageSize": 2, "next": "http://localhost:8000/api/alert/?page=2&paginate=true"
         };
-
     var adminPermissions = [
         "auth.can_view_self_contacts",
         "auth.can_view_contacts",

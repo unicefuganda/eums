@@ -3,10 +3,9 @@ describe('DirectDeliveryController', function () {
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
     var mockContactService, mockProgrammeService, mockPurchaseOrderService,
-        mockLoaderService, mockSortService, mockSortArrowService;
+        mockLoaderService, mockSortService, mockSortArrowService, mockSystemSettingsService;
     var deferred, deferredPlan, deferredPurchaseOrder, mockExportDeliveryService, mockToast,
         deferredSortResult, deferredSortArrowResult, deferredExportResult, timeout;
-
     var programmeOne = {
         id: 1,
         name: 'Test Programme'
@@ -20,6 +19,10 @@ describe('DirectDeliveryController', function () {
         hasPlan: 'true'
     };
     var stubPurchaseOrders = [stubPurchaseOrderOne];
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('DirectDelivery');
@@ -29,9 +32,10 @@ describe('DirectDeliveryController', function () {
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
+        mockToast = jasmine.createSpyObj('mockToast', ['create']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass']);
-        mockToast = jasmine.createSpyObj('mockToast', ['create']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend,
                          EumsConfig, SysUtilsService, $timeout) {
@@ -49,6 +53,8 @@ describe('DirectDeliveryController', function () {
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
             mockSortService.sortBy.and.returnValue(deferredSortResult.promise);
             mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
             timeout = $timeout;
             location = $location;
@@ -60,6 +66,7 @@ describe('DirectDeliveryController', function () {
             $controller('DirectDeliveryController',
                 {
                     $scope: scope,
+                    $timeout: timeout,
                     ContactService: mockContactService,
                     ProgrammeService: mockProgrammeService,
                     PurchaseOrderService: mockPurchaseOrderService,
@@ -69,7 +76,7 @@ describe('DirectDeliveryController', function () {
                     LoaderService: mockLoaderService,
                     ExportDeliveriesService: mockExportDeliveryService,
                     ngToast: mockToast,
-                    $timeout: timeout,
+                    SystemSettingsService: mockSystemSettingsService,
                     SortService: mockSortService,
                     SortArrowService: mockSortArrowService
                 });
