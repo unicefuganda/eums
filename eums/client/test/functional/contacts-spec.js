@@ -16,6 +16,8 @@ describe('Contacts', function () {
         expect(contactsPage.contactFirstNames).toContain('John');
         expect(contactsPage.contactLastNames).toContain('Doe');
         expect(contactsPage.contactPhoneNumbers).toContain('+256771234567');
+        expect(contactsPage.contactDistricts).toContain('wakiso');
+        expect(contactsPage.contactIps).toContain('WAKISO DHO');
     });
 
     it('Searching for contacts should show only relevant results', function () {

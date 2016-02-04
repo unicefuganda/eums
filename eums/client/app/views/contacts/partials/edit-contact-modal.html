@@ -20,12 +20,19 @@
                     <div class="form-group">
                         <input type="tel" class="input form-control" ng-model="currentContact.phone" required>
                     </div>
+                    <div class="form-group">
+                        <input type="tel" class="input form-control" ng-model="currentContact.district" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" class="input form-control" ng-model="currentContact.ips" required>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn"
                         ng-click="update(currentContact)"
-                        ng-disabled="invalidContact(currentContact)">Save Contact</button>
+                        ng-disabled="invalidContact(currentContact)">Save Contact
+                </button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
             </div>
         </div>

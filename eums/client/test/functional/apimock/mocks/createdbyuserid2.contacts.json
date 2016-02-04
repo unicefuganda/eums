@@ -1,16 +1,24 @@
 [
   {
-    "_id":"559281d40c42914aad3d6006",
-    "firstName":"John",
-    "lastName":"Doe",
-    "phone":"+256771234567",
-    "createdByUserId": 2
+    "_id": "559281d40c42914aad3d6006",
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "+256771234567",
+    "createdByUserId": 2,
+    "district": "kampala",
+    "ips": [
+      "KAMPALA DHO"
+    ]
   },
   {
-    "_id":"559281d40c42914aad3d6007",
-    "firstName":"Jade",
-    "lastName":"Sam",
-    "phone":"+256771234568",
-    "createdByUserId": 2
+    "_id": "559281d40c42914aad3d6007",
+    "firstName": "Jade",
+    "lastName": "Sam",
+    "phone": "+256771234568",
+    "createdByUserId": 2,
+    "district": "kampala",
+    "ips": [
+      "KAMPALA DHO"
+    ]
   }
 ]

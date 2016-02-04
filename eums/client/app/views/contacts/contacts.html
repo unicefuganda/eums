@@ -28,6 +28,8 @@
                         <th><a sort-by="firstName" sort-init="asc">First Name</a></th>
                         <th><a sort-by="lastName">First Name</a></th>
                         <th><a sort-by="phone">Phone</a></th>
+                        <th><a sort-by="district">District</a></th>
+                        <th><a sort-by="ips">Ip/Consignee</a></th>
                         <th ng-show="can_change" class="width-160"></th>
                     </tr>
                     </thead>
@@ -36,6 +38,10 @@
                         <td class="text-left">{{ contact.firstName }}</td>
                         <td class="text-left">{{ contact.lastName }}</td>
                         <td class="text-left">{{ contact.phone }}</td>
+                        <td class="text-left">{{ contact.district }}</td>
+                        <td class="text-left" id="contact.ips">
+                            <div ng-repeat="ip in contact.ips | orderBy: 'toString()'">{{ ip }}</div>
+                        </td>
                         <td ng-show="can_change">
                             <button class="btn btn-primary"
                                     ng-show="can_change"

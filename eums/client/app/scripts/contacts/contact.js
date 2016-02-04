@@ -34,7 +34,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.invalidContact = function (contact) {
-            return !(contact.firstName && contact.lastName && contact.phone);
+            return !(contact.firstName && contact.lastName && contact.phone && contact.district && contact.ips);
         };
 
         $scope.showAddContact = function () {
@@ -244,7 +244,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 };
 
                 scope.invalidContact = function (contact) {
-                    return !(contact.firstName && contact.lastName && contact.phone);
+                    return !(contact.firstName && contact.lastName && contact.phone && contact.district && contact.ips);
                 };
 
                 var emitEvent = function (contact) {

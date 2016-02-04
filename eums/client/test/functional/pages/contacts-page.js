@@ -29,6 +29,18 @@ ContactsPage.prototype = Object.create({}, {
         }
     },
 
+    contactDistricts: {
+        get: function () {
+            return element.all(by.repeater('contact in contacts').column('contact.district')).getText();
+        }
+    },
+
+    contactIps: {
+        get: function () {
+            return element.all(by.id('contact.ips')).getText();
+        }
+    },
+
     contactCount: {
         get: function () {
             return element.all(by.repeater('contact in contacts')).count();
