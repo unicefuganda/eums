@@ -41,6 +41,7 @@ def hook(request):
 def _save_answer(flow, params, run):
     answer_values = ast.literal_eval(params['values'])
     latest_answer = answer_values[-1]
+    logger.info(latest_answer)
     question = Question.objects.filter(flow=flow, label=latest_answer['label']).first().get_subclass_instance()
     return question.create_answer(params, run)
 
