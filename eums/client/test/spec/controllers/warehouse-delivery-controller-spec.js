@@ -13,31 +13,37 @@ describe('Warehouse Delivery Controller', function () {
         modal: function () {
         }
     };
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('WarehouseDelivery');
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
-        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['sortArrowClass']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
+
         inject(function ($controller, $rootScope, $location, $q, $sorter, $timeout) {
+            scope = $rootScope.$new();
+            location = $location;
+            timeout = $timeout;
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
             deferredSystemSettings = $q.defer();
             deferredSortResult = $q.defer();
             deferredSortArrowResult = $q.defer();
-            mockSystemSettingsService.getSettings.and.returnValue(deferredSystemSettings.promise);
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
             mockSortService.sortBy.and.returnValue(deferredSortResult.promise);
             mockSortArrowService.sortArrowClass.and.returnValue(deferredSortArrowResult.promise);
-            scope = $rootScope.$new();
-            location = $location;
-            timeout = $timeout;
+            mockSystemSettingsService.getSettings.and.returnValue(deferredSystemSettings.promise);
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
             spyOn(angular, 'element').and.returnValue(fakeElement);
 

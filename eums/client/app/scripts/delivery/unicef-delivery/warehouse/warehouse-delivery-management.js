@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable', 'DeliveryNode', 'ui.bootstrap',
-        'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
+        'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'SystemSettingsService'])
     .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DeliveryService,
                                                                    DeliveryNodeService, ReleaseOrderService, ReleaseOrderItemService,
-                                                                   IPService, ngToast, ContactService, UserService) {
+                                                                   IPService, ngToast, ContactService, UserService, SystemSettingsService) {
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.districtsLoaded = false;
@@ -15,6 +15,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         $scope.releaseOrderItems = [];
         $scope.track = $scope.track ? true : false;
         $scope.valid_time_limitation = true;
+
+        init();
 
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
@@ -56,12 +58,12 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             }
         };
 
-        init();
-
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            $q.all(promises).then(function () {
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
 
                 IPService.loadAllDistricts().then(function (response) {
                     $scope.districts = response.data.map(function (district) {

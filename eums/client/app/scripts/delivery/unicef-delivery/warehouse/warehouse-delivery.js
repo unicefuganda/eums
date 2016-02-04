@@ -33,6 +33,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
             if (initializing) {
+                loadSystemSettings();
                 loadReleaseOrder();
                 initializing = false;
             } else {
@@ -83,6 +84,12 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
             timer = $timeout(function () {
                 loadReleaseOrder()
             }, 2000);
+        }
+
+        function loadSystemSettings() {
+            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
+                $scope.systemSettings = settings;
+            });
         }
 
         function loadReleaseOrder() {

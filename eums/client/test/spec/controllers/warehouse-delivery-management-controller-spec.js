@@ -1,7 +1,7 @@
 describe('Warehouse Delivery Management Controller', function () {
 
     var scope, location, q, routeParams, mockDeliveryService,
-        mockDeliveryNodeService, mockReleaseOrderService, mockReleaseOrderItemService,
+        mockDeliveryNodeService, mockReleaseOrderService, mockReleaseOrderItemService, mockSystemSettingsService,
         mockIPService, toast, mockContactService, contact, locations, releaseOrderItem, mockUserService;
     var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var programId = 23123;
@@ -15,6 +15,10 @@ describe('Warehouse Delivery Management Controller', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('WarehouseDeliveryManagement');
@@ -87,6 +91,7 @@ describe('Warehouse Delivery Management Controller', function () {
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockIPService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
+            mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
             inject(function ($controller, $rootScope, $location, $q, ngToast) {
                 scope = $rootScope.$new();
@@ -105,6 +110,8 @@ describe('Warehouse Delivery Management Controller', function () {
                 mockDeliveryService.update.and.returnValue(q.when(updatedDelivery));
                 mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
                 mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+                mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
+                mockSystemSettingsService.getSettingsWithDefault.and.returnValue(q.when(stubSettings));
 
                 spyOn(angular, 'element').and.callFake(jqueryFake);
                 spyOn(mockModal, 'modal');
@@ -123,6 +130,7 @@ describe('Warehouse Delivery Management Controller', function () {
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     IPService: mockIPService,
                     UserService: mockUserService,
+                    SystemSettingsService: mockSystemSettingsService,
                     ContactService: mockContactService
                 });
             });
