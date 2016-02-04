@@ -21,8 +21,7 @@ def hook(request):
         params = request.POST
         logger.info("params %s:" % params)
         flow = rapid_pro_service.flow(params['flow'])
-        run = Run.objects.filter(phone=params['phone'],
-                                 status=Run.STATUS.scheduled).order_by('-id').first()
+        run = Run.objects.filter(phone=params['phone']).order_by('-id').first()
         answer = _save_answer(flow, params, run)
 
         if flow.is_end(answer):
