@@ -1,4 +1,5 @@
 from rest_framework.decorators import detail_route
+from rest_framework import status
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
 from eums.api.standard_pagination import StandardResultsSetPagination
@@ -7,6 +8,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.models import DistributionPlanNode as DeliveryNode, UserProfile
 from eums.permissions.distribution_plan_node_permissions import DistributionPlanNodePermissions
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_loss_factory import DeliveryNodeLossFactory
 
 
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
@@ -70,6 +73,14 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         node = self.get_object()
         lineage = node.lineage()
         return Response(self.get_serializer(lineage, many=True).data)
+
+    @detail_route(methods=['patch'])
+    def report_loss(self, request, pk=None):
+        quantity_lost = request.data['quantity']
+        node = self.get_object()
+        node.losses.create(quantity=quantity_lost)
+        node.save() # for updating the balance on the node - DO NOT REMOVE
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 distributionPlanNodeRouter = DefaultRouter()

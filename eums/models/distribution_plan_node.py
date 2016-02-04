@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Sum
 from eums.models.flow import Flow
 from eums.models import Runnable, Arc, Programme
 from eums.models.delivery_node_manager import DeliveryNodeManager
@@ -31,7 +31,7 @@ class DistributionPlanNode(Runnable):
             self.delete()
             return self
         if _is_root:
-            self.balance = self.acknowledged - self.quantity_out() if self.acknowledged else 0
+            self.balance = self._root_balance() if self.acknowledged else 0
         else:
             self.balance = self.quantity_in() - self.quantity_out()
 
@@ -141,10 +141,17 @@ class DistributionPlanNode(Runnable):
 
     def update_balance(self):
         if self.is_root:
-            self.balance = self.acknowledged - self.quantity_out() if self.acknowledged else 0
+            self.balance = self._root_balance() if self.acknowledged else 0
         else:
             self.balance = self.quantity_in() - self.quantity_out()
         self.save()
+
+    def _root_balance(self):
+        return self.acknowledged - self.quantity_out() - self.total_amount_lost()
+
+    def total_amount_lost(self):
+        total_amount_lost = self.losses.aggregate(Sum('quantity'))['quantity__sum']
+        return 0 if total_amount_lost is None else total_amount_lost
 
     @staticmethod
     def _update_parent_balances(parents):

@@ -30,6 +30,7 @@ from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.delete_records import DeleteRecords
 from eums.models.vision_sync_info import VisionSyncInfo
 from eums.models.upload import Upload
+from eums.models.delivery_node_loss import DeliveryNodeLoss
 
 __all__ = [
     'Consignee',
@@ -66,5 +67,6 @@ __all__ = [
     'DeleteRecords',
     'SystemSettings',
     'VisionSyncInfo',
-    'Upload'
+    'Upload',
+    'DeliveryNodeLoss'
 ]

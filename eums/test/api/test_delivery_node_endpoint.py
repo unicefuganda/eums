@@ -2,10 +2,12 @@ import json
 import logging
 from datetime import datetime
 
+from django.contrib.auth.models import User, Group
 from rest_framework.status import HTTP_200_OK
 
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeViewSet
-from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan
+from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, DeliveryNodeLoss, \
+    DistributionPlanNode, UserProfile
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -288,6 +290,21 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertItemsEqual(node_ids, [child.id, grand_child.id])
         self.assertNotIn(root.id, node_ids)
         self.assertNotIn(great_grand_child.id, node_ids)
+
+    def test_should_report_loss_on_node(self):
+        self.log_ip_editor_in()
+
+        self.assertEqual(DeliveryNodeLoss.objects.count(), 0)
+        node_one = DeliveryNodeFactory(acknowledged=100, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        loss = {'quantity': 15}
+
+        response = self.client.patch(ENDPOINT_URL + str(node_one.id) + '/report_loss/', data=json.dumps(loss), content_type='application/json')
+
+        node = DeliveryNodeLoss.objects.first().delivery_node
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(DeliveryNodeLoss.objects.count(), 1)
+        self.assertEqual(node.balance, 85)
 
     def test_returned_nodes_should_have_order_type_field(self):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))

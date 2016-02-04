@@ -183,5 +183,15 @@ describe('Delivery Node Service', function () {
         });
         mockBackend.flush();
     });
+
+    it('should call report loss action twice when two nodes are updated', function () {
+        var nodeOneId = 22;
+        var nodeTwoId = 23;
+        var nodeLosses = [{id: nodeOneId, quantity: 100}, {id: nodeTwoId, quantity: 150}];
+        mockBackend.whenPATCH(planNodeEndpointUrl + nodeOneId + '/report_loss/').respond(204);
+        mockBackend.whenPATCH(planNodeEndpointUrl + nodeTwoId + '/report_loss/').respond(204);
+        planNodeService.reportLoss(nodeLosses);
+        mockBackend.flush();
+    });
 });
 

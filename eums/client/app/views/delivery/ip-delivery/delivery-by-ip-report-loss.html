@@ -20,18 +20,97 @@
                 <table class="item-details-table">
                     <tr id="itemNameLabel">
                         <td class="bold-label">Item Name:</td>
-                        <td><span class="label label-success item-quantity-label">{{ consigneeItem.itemDescription }}</span></td>
+                        <td><span
+                                class="label label-success item-quantity-label">{{ consigneeItem.itemDescription }}</span>
+                        </td>
                     </tr>
                     <tr id="qty-available-label">
                         <td class="bold-label">Quantity Available:</td>
-                        <td><span class="label label-success item-quantity-label">{{ consigneeItem.quantityAvailable }}</span></td>
+                        <td><span
+                                class="label label-success item-quantity-label">{{ consigneeItem.quantityAvailable }}</span>
+                        </td>
                     </tr>
                 </table>
             </div>
         </div>
         <div class="col-md-4">
+            <div class="sub-header">JUSTIFICATION FOR LOSS/DAMAGE FOR ITEMS</div>
+            <div>
+                <textarea rows="5" class="form-control"></textarea>
+            </div>
         </div>
         <div class="col-md-4 last-column">
+            <div class="sub-header">CHOOSE QUANTITY</div>
+            <div class="row margin-bottom-20">
+                <table class="table-condensed col-lg-12">
+                    <thead>
+                    <tr class="summary-row table-header">
+                        <th class="item-list-col-header col-lg-1">&nbsp;</th>
+                        <th class="item-list-col-header centered col-lg-3">PO/Waybill</th>
+                        <th class="item-list-col-header centered col-lg-3">UNICEF Delivery Date</th>
+                        <th class="item-list-col-header centered col-lg-3">Avail. Qty</th>
+                        <th class="item-list-col-header col-lg-2">&nbsp;</th>
+                    </tr>
+                    </thead>
+                </table>
+
+                <div ng-repeat="deliveryGroup in deliveryGroups">
+                    <table class="accordion col-lg-12">
+                        <thead>
+                        <tr>
+                            <th class="col-lg-1">
+                                <i class="pull-left glyphicon text-danger"
+                                                    ng-class="{'glyphicon-chevron-down': deliveryGroup.isOpen(), 'glyphicon-chevron-right': !deliveryGroup.isOpen()}"
+                                                    ng-click="updateSelectedOrderNumber(deliveryGroup.orderNumber)"></i>
+                            </th>
+                            <th class="col-lg-3 centered">{{ deliveryGroup.orderNumber }}</th>
+                            <th class="col-lg-3 centered">&nbsp;</th>
+                            <th class="col-lg-3 centered">{{ deliveryGroup.totalQuantity }}</th>
+                            <th class="col-lg-2">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-show="deliveryGroup.isOpen()" ng-repeat="delivery in selectedDeliveries">
+                            <td class="col-lg-1">&nbsp;</td>
+                            <td class="col-lg-3">&nbsp;</td>
+                            <td class="col-lg-3 centered">{{ delivery.deliveryDate | date: 'dd-MMM-yyyy' }}</td>
+                            <td class="col-lg-3 centered">{{ delivery.balance }}</td>
+                            <td class="col-lg-2">
+                                <div ng-class="{'has-error': (!delivery.quantitySelected || delivery.quantitySelected > delivery.balance) && errors}">
+                                    <input type="text" id="quantity-selected-{{ $index }}" class="input-number form-control"
+                                           only-digits
+                                           required
+                                           ng-model="delivery.quantitySelected">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="pad-10" ng-show="deliveryGroup.isOpen()">
+                            <td>&nbsp;</td>
+                            <td colspan="3" class="align-right pad-10 bold-label">TOTAL SELECTED QTY</td>
+                            <td>
+                                <span id="total-selected-quantity" class="label-100 pad-6 label-success">
+                                    {{ totalQuantitySelected }}
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="row pull-right margin-bottom-20">
+                <div id="discard-delivery-report" class="btn warning-border-button"
+                     ng-show="quantityAvailable" ng-click="discard(item.id)">
+                    <span class="glyphicon glyphicon-remove"></span>Discard
+                </div>
+                <button id="save-losses" type="button" class="btn btn-primary"
+                        ng-click="save()">
+                    <i class="glyphicon glyphicon-floppy-save"> </i>
+                    Save
+                </button>
+            </div>
+
         </div>
     </div>
 

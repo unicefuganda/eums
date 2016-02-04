@@ -23,5 +23,6 @@ class ConsigneeItem(models.Model):
 
     def available_balance(self):
         deliveries = DistributionPlanNode.objects.filter(pk__in=self.deliveries, consignee=self.consignee)
+        total_amount_lost = reduce(lambda total, delivery: total + delivery.total_amount_lost(), deliveries, 0)
         amount_distributed = reduce(lambda total, delivery: total + delivery.quantity_out(), deliveries, 0)
-        return self.amount_received - amount_distributed
+        return self.amount_received - amount_distributed - total_amount_lost

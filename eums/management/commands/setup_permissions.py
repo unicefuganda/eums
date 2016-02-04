@@ -128,6 +128,7 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
+        PermissionCode.CAN_PATCH_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_VIEW_DASH_BOARD,
 
         PermissionCode.CAN_VIEW_CONSIGNEE,

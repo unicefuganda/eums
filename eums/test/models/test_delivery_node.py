@@ -11,6 +11,7 @@ from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_loss_factory import DeliveryNodeLossFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
@@ -375,9 +376,11 @@ class DeliveryNodeTest(TestCase):
 
         self.assertEqual(node.type(), 'Waybill')
 
-    def test_should_set_balance_on_node_when_saved(self):
+    def test_should_set_balance_to_zero_when_no_acknowledged(self):
         node = DeliveryNodeFactory(quantity=100)
         self.assertEqual(node.balance, 0)
+
+    def test_should_set_balance_to_acknowledged(self):
         node = DeliveryNodeFactory(quantity=100, acknowledged=73)
         self.assertEqual(node.balance, 73)
 
@@ -394,6 +397,19 @@ class DeliveryNodeTest(TestCase):
 
         child_two.delete()
         self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 50)
+
+    def test_should_take_losses_into_account_when_calculating_balance(self):
+        node = DeliveryNodeFactory(acknowledged=50)
+        DeliveryNodeLossFactory(quantity=10, delivery_node=node)
+        node.save()
+        self.assertEqual(node.balance, 40)
+
+    def test_should_take_multiple_losses_into_account_when_calculating_balance(self):
+        node = DeliveryNodeFactory(acknowledged=50)
+        DeliveryNodeLossFactory(quantity=10, delivery_node=node)
+        DeliveryNodeLossFactory(quantity=25, delivery_node=node)
+        node.save()
+        self.assertEqual(node.balance, 15)
 
     def test_should_set_total_value_on_single_parent_node_when_saved(self):
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000.0)
@@ -597,3 +613,14 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(grand_child_one.distribution_plan, delivery_one)
         self.assertEqual(grand_child_two.distribution_plan, delivery_two)
         self.assertIsNone(grand_child_three.distribution_plan)
+
+    def test_should_create_a_loss_associated_with_particular_node(self):
+        delivery_node = DeliveryNodeFactory()
+        DeliveryNodeLossFactory(quantity=10, remark='building fire', delivery_node=delivery_node)
+        DeliveryNodeLossFactory(quantity=5, remark='building down', delivery_node=delivery_node)
+
+        self.assertEqual(delivery_node.losses.count(), 2)
+        self.assertEqual(delivery_node.losses.first().quantity, 10)
+        self.assertEqual(delivery_node.losses.first().remark, 'building fire')
+        self.assertEqual(delivery_node.losses.last().quantity, 5)
+        self.assertEqual(delivery_node.losses.last().remark, 'building down')

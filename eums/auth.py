@@ -24,6 +24,7 @@ class PermissionCode(object):
     CAN_VIEW_DISTRIBUTION_PLAN_NODE = 'can_view_distribution_plan_node'
     CAN_ADD_DISTRIBUTION_PLAN_NODE = 'add_distributionplannode'
     CAN_CHANGE_DISTRIBUTION_PLAN_NODE = 'change_distributionplannode'
+    CAN_PATCH_DISTRIBUTION_PLAN_NODE = 'change_distributionplannode'
 
     CAN_VIEW_CONSIGNEE_ITEM = 'can_view_consignee_item'
     CAN_VIEW_ITEM = 'can_view_item'

@@ -82,6 +82,15 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                 },
                 getLineage: function(node) {
                     return this.getDetail(node, 'lineage/');
+                },
+                reportLoss: function(nodeLosses) {
+                    var lossPromises = [];
+                    nodeLosses.each(function (loss) {
+                        lossPromises.push($http.patch(
+                            EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + loss.id + '/report_loss/',
+                            {quantity: loss.quantity}));
+                    });
+                    return $q.all(lossPromises);
                 }
             }
         });

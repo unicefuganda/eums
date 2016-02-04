@@ -197,9 +197,12 @@ class TestSyncPurchaseOrder(TestCase):
 
     def test_should_save_purchase_order_items(self):
         self._sync_purchase_order()
-        all_purchase_order_items = PurchaseOrderItem.objects.all()
-        actual_purchase_item_1 = all_purchase_order_items[0]
-        actual_purchase_item_2 = all_purchase_order_items[1]
+
+        expected_order_number_one = self.expected_purchase_order_1.order_number
+        expected_order_number_two = self.expected_purchase_order_2.order_number
+
+        actual_purchase_item_1 = PurchaseOrderItem.objects.get(purchase_order__order_number=expected_order_number_one)
+        actual_purchase_item_2 = PurchaseOrderItem.objects.get(purchase_order__order_number=expected_order_number_two)
 
         self._assert_purchase_order_item_equal(actual_purchase_item_1, self.expected_purchase_order_item_1)
         self._assert_purchase_order_item_equal(actual_purchase_item_2, self.expected_purchase_order_item_2)
