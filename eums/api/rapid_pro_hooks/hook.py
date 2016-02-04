@@ -21,7 +21,7 @@ def hook(request):
     try:
         params = request.POST
         logger.info("params %s:" % params)
-        # flow = rapid_pro_service.flow(params['flow'])
+        flow = rapid_pro_service.flow(params['flow'])
         run = Run.objects.filter(Q(phone=params['phone']) & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
         logger.info(run)
