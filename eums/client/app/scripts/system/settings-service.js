@@ -15,7 +15,7 @@ angular.module('SystemSettingsService', ['eums.config'])
             getSettingsWithDefault: function () {
                 return this.getSettings().then(function (result) {
                     if (!result.district_label) {
-                        result.district_label = "My-District-3";
+                        result.district_label = "District";
                     }
                     return result;
                 });
