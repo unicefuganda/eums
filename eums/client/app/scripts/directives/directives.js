@@ -75,6 +75,12 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     $(element).select2('val', newValue ? newValue : '');
                 });
 
+                attrs.$observe('placeholder', function (newValue) {
+                    // console.log("=PLACEHOLDER=> " + newValue);
+                    $(element).siblings('div').find('a span.select2-chosen').text(newValue);
+                    $(element).attr('placeholder', newValue);
+                });
+
                 scope.$on('clear-list', function () {
                     var select2Input = $(element).siblings('div').find('a span.select2-chosen');
                     select2Input.text('');
