@@ -40,3 +40,9 @@ class SystemSettingsTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL + str(system_settings.id) + '/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(response.data.get('auto_track'))
+
+    def test_get_default_subdivision_name_should_return_district(self):
+        system_settings = SystemSettingsFactory(district_label="District")
+        response = self.client.get(ENDPOINT_URL + str(system_settings.id) + '/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('district_label'), "District")

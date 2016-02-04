@@ -5,16 +5,16 @@
         <div class="container-fluid width-min-600 width-max-700">
             <div class="row row-spaced">
                 <div class="col-xs-5">
-                    <label class="pull-right" for="notification">Subdivision Name</label>
+                    <label class="pull-right" for="district_label">Subdivision Name</label>
                 </div>
                 <div class="col-xs-7">
-                    <form name="settingsForm" novalidate>
-                        <input class="form-control" rows="2" id="notification" name="notification"
-                               ng-class="{ 'maxlength-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
+                    <form name="districtLabelSettingsForm" novalidate>
+                        <input class="form-control" id="district_label" name="district_label"
+                               ng-class="{ 'maxlength-error' : districtLabelSettingsForm.district_label.$invalid && !districtLabelSettingsForm.district_label.$pristine }"
                                ng-model="districtLabel" ng-maxlength="30"/>
                     </form>
-                    <p ng-show="settingsForm.notification.$error.maxlength" class="text-danger" ng-cloak>
-                        Notification message word limit to 300
+                    <p ng-show="districtLabelSettingsForm.district_label.$error.maxlength" class="text-danger" ng-cloak>
+                        District label word limit to 30
                     </p>
                     <p class="pad-top-5 help-block">
                         This should be the standard subdivision name in your country (e.g. district or province).
@@ -40,14 +40,19 @@
                         This will allow you to inform IPs on who to contact if deliveries are not showing up on their
                         dashboard or put any other relevant info related to reporting on deliveries.
                     </p>
-                    <div class="pad-top-5">
-                        <button class="btn btn-eums-danger" ng-click="cancelNotificationMessage()"><i
-                                class="glyphicon glyphicon-remove"></i> Cancel
-                        </button>
-                        <button class="btn btn-eums-success" ng-click="saveNotificationMessage(settingsForm.$valid)"><i
-                                class="glyphicon glyphicon-floppy-disk"></i> Save
-                        </button>
-                    </div>
+                </div>
+            </div>
+            <div class="row pad-top-5">
+                <div class="col-xs-5">
+                </div>
+                <div class="col-xs-7">
+                    <button class="btn btn-eums-danger" ng-click="cancelMessages()"><i
+                            class="glyphicon glyphicon-remove"></i> Cancel
+                    </button>
+                    <button class="btn btn-eums-success"
+                            ng-click="saveMessages(settingsForm.$valid && districtLabelSettingsForm.$valid)">
+                        <i class="glyphicon glyphicon-floppy-disk"></i> Save
+                    </button>
                 </div>
             </div>
         </div>

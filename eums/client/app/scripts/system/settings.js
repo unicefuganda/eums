@@ -26,14 +26,10 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         $scope.currectStartDate = null;
         $scope.isAllowSync = false;
         $scope.currentNotificationMessage = '';
+        $scope.currentDistrictLabel = '';
         $scope.notificationMessage = '';
 
-        SystemSettingsService.getSettings().then(function (settings) {
-            $scope.settings.syncStartDate = settings.sync_start_date ? new Date(settings.sync_start_date) : null;
-            $scope.currectStartDate = $scope.settings.syncStartDate;
-            isCancelledOrInitUpdated = $scope.isSelected = settings.auto_track;
-            $scope.notificationMessage = $scope.currentNotificationMessage = settings.notification_message;
-        });
+        init();
 
         $('input[name="auto-track-switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
             $timeout(function () {
@@ -59,23 +55,30 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             });
         };
 
-        $scope.saveNotificationMessage = function (isValid) {
-            if (isValid) {
-                if ($scope.notificationMessage != $scope.currentNotificationMessage) {
-                    SystemSettingsService.updateSettings({notification_message: $scope.notificationMessage}).then(function (response) {
-                        $scope.currentNotificationMessage = $scope.notificationMessage;
-                        ngToast.create({content: "Notification message saved successfully", class: 'success'});
-                    });
-                } else {
-                    ngToast.create({content: "Notification message not changed", class: 'danger'});
-                }
+        $scope.saveMessages = function (isValid) {
+            if (!isValid) {
+                ngToast.create({content: "The form data is invalid", class: 'danger'});
+                return;
+            }
+
+            if ($scope.notificationMessage != $scope.currentNotificationMessage ||
+                $scope.districtLabel != $scope.currentDistrictLabel) {
+                SystemSettingsService.updateSettings({
+                    notification_message: $scope.notificationMessage,
+                    district_label: $scope.districtLabel
+                }).then(function (response) {
+                    $scope.currentNotificationMessage = $scope.notificationMessage;
+                    $scope.currentDistrictLabel = $scope.districtLabel;
+                    ngToast.create({content: "Settings saved successfully", class: 'success'});
+                });
             } else {
-                ngToast.create({content: "Notification message word limit to 300", class: 'danger'});
+                ngToast.create({content: "Settings not changed", class: 'danger'});
             }
         };
 
-        $scope.cancelNotificationMessage = function () {
+        $scope.cancelMessages = function () {
             $scope.notificationMessage = $scope.currentNotificationMessage;
+            $scope.districtLabel = $scope.currentDistrictLabel;
         };
 
         $scope.clickSyncBtn = function () {
@@ -95,6 +98,16 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             $scope.currectStartDate = SysUtilsService.formatDateToYMD($scope.settings.syncStartDate);
             SystemSettingsService.updateSettings({sync_start_date: $scope.currectStartDate});
         };
+
+        function init() {
+            SystemSettingsService.getSettings().then(function (settings) {
+                $scope.settings.syncStartDate = settings.sync_start_date ? new Date(settings.sync_start_date) : null;
+                $scope.currectStartDate = $scope.settings.syncStartDate;
+                $scope.notificationMessage = $scope.currentNotificationMessage = settings.notification_message;
+                $scope.districtLabel = $scope.currentDistrictLabel = settings.district_label;
+                isCancelledOrInitUpdated = $scope.isSelected = settings.auto_track;
+            });
+        }
 
         function isNewDate() {
             return $scope.currectStartDate == null && $scope.settings.syncStartDate
