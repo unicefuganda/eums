@@ -2,65 +2,82 @@
     <div class="content">
         <h4 class="eums page-header">System Configuration</h4>
 
-        <div class="container-fluid">
+        <div class="container-fluid width-min-600 width-max-700">
             <div class="row row-spaced">
-                <div class="col-md-offset-2 col-md-3">
-                    <label class="pull-right" for="notification">Notification message to IPs</label>
+                <div class="col-xs-5">
+                    <label class="pull-right" for="notification">Subdivision Name</label>
                 </div>
-                <div class="col-md-4">
-                    <p>
+                <div class="col-xs-7">
                     <form name="settingsForm" novalidate>
-                            <textarea class="form-control" rows="5" id="notification" name="notification"
-                                      ng-class="{ 'maxlength-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
-
-                                      ng-model="notificationMessage" ng-maxlength="300"></textarea>
+                        <input class="form-control" rows="2" id="notification" name="notification"
+                               ng-class="{ 'maxlength-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
+                               ng-model="districtLabel" ng-maxlength="30"/>
                     </form>
-                    </p>
                     <p ng-show="settingsForm.notification.$error.maxlength" class="text-danger" ng-cloak>
                         Notification message word limit to 300
                     </p>
-                    <p>
+                    <p class="pad-top-5 help-block">
+                        This should be the standard subdivision name in your country (e.g. district or province).
+                        The name will appear in all location labels in the system.
+                    </p>
+                </div>
+            </div>
+            <div class="row pad-top-5">
+                <div class="col-xs-5">
+                    <label class="pull-right" for="notification">Notification message to IPs</label>
+                </div>
+                <div class="col-xs-7">
+                    <form name="settingsForm" novalidate>
+                        <textarea class="form-control" rows="5" id="notification" name="notification"
+                                  ng-class="{ 'maxlength-error' : settingsForm.notification.$invalid && !settingsForm.notification.$pristine }"
+                                  ng-model="notificationMessage" ng-maxlength="300"></textarea>
+                    </form>
+                    <p ng-show="settingsForm.notification.$error.maxlength" class="text-danger" ng-cloak>
+                        Notification message word limit to 300
+                    </p>
+                    <p class="pad-top-5 help-block">
                         This message will be displayed on the IP's UNICEF Shipment page when IPs report on delivery.
                         This will allow you to inform IPs on who to contact if deliveries are not showing up on their
                         dashboard or put any other relevant info related to reporting on deliveries.
                     </p>
-                    <button class="btn btn-eums-danger" ng-click="cancelNotificationMessage()"><i
-                            class="glyphicon glyphicon-remove"></i> Cancel
-                    </button>
-                    <button class="btn btn-eums-success" ng-click="saveNotificationMessage(settingsForm.$valid)"><i
-                            class="glyphicon glyphicon-floppy-disk"></i> Save
-                    </button>
+                    <div class="pad-top-5">
+                        <button class="btn btn-eums-danger" ng-click="cancelNotificationMessage()"><i
+                                class="glyphicon glyphicon-remove"></i> Cancel
+                        </button>
+                        <button class="btn btn-eums-success" ng-click="saveNotificationMessage(settingsForm.$valid)"><i
+                                class="glyphicon glyphicon-floppy-disk"></i> Save
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="row row-spaced">
-                <div class="col-md-offset-2 col-md-3">
+        </div>
+        <div class="container-fluid width-min-600 width-max-700">
+            <div class="row row-spaced pad-top-5">
+                <div class="col-xs-5">
                     <label class="pull-right">Auto Track Warehouse Delivery</label>
                 </div>
-
-                <div class="col-md-4">
-                    <input
-                            bs-switch
-                            ng-model="isSelected"
-                            type="checkbox"
-                            id="auto-track-switch"
-                            name="auto-track-switch"
-                            switch-active="{{ isActive }}"
-                            switch-on-text="{{ onText }}"
-                            switch-off-text="{{ offText }}"
-                            switch-animate="{{ animate }}"
-                            switch-size="{{ size }}"
-                            switch-radio-off="{{ radioOff }}"
-                            switch-label-width="{{ labelWidth }}"
-                            switch-handle-width="{{ handleWidth }}"
-                            switch-inverse="{{ !inverse }}"
-                    />
+                <div class="col-xs-7">
+                    <input type="checkbox"
+                           id="auto-track-switch"
+                           name="auto-track-switch"
+                           bs-switch
+                           ng-model="isSelected"
+                           switch-active="{{ isActive }}"
+                           switch-on-text="{{ onText }}"
+                           switch-off-text="{{ offText }}"
+                           switch-animate="{{ animate }}"
+                           switch-size="{{ size }}"
+                           switch-radio-off="{{ radioOff }}"
+                           switch-label-width="{{ labelWidth }}"
+                           switch-handle-width="{{ handleWidth }}"
+                           switch-inverse="{{ !inverse }}"/>
                 </div>
             </div>
-            <div class="row row-spaced">
-                <div class="col-md-offset-2 col-md-3">
-                    <label class="pull-right">Start Date for VISION Data Import</label>
+            <div class="row row-spaced pad-top-5 pad-bottom-20">
+                <div class="col-xs-5">
+                    <label class="pull-right vertical-align-middle">Start Date for VISION Data Import</label>
                 </div>
-                <div class="col-md-2">
+                <div class="col-xs-5 pad-right-0">
                     <span class="input-group" eums-date-picker>
                         <input type="text" class="form-control white-bg"
                                datepicker-popup="dd-MMM-yyyy"
@@ -82,8 +99,12 @@
                         </span>
                     </span>
                 </div>
-                <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">
-                    <i class="glyphicon glyphicon-log-out"></i> Start sync</a>
+                <div class="col-xs-2 pad-left-5">
+                    <span eums-date-picker>
+                        <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">
+                            <i class="glyphicon glyphicon-log-out"></i> Start sync</a>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
