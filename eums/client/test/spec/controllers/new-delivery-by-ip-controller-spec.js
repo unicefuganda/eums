@@ -1,13 +1,16 @@
 describe('New IP Delivery Controller', function () {
     var mockIpService, location, scope, q, mockDeliveryService, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
-        mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups, timeout;
+        mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups, timeout, mockSystemSettingsService;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
     var fetchedItem = {id: 1, description: 'Some name', unit: 1};
     var fetchedConsigneeItems = {results: [{id: 2, availableBalance: 450}]};
-
     var distributionPlan = {id: 1, programme: "Some programme"};
     var createdDistributionPlan = {id: 2, programme: "Some programme"};
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('NewDeliveryByIp');
@@ -33,38 +36,42 @@ describe('New IP Delivery Controller', function () {
         ];
 
         inject(function ($controller, $rootScope, $q, $location, ngToast, $timeout) {
+            scope = $rootScope.$new();
+            timeout = $timeout;
+            location = $location;
+            toast = ngToast;
+            q = $q;
+            routeParams = {itemId: 2};
+            mockDeliveryNode = function (options) {
+                this.track = options.track;
+            };
+
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['get', 'create']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
             mockItemService = jasmine.createSpyObj('ItemService', ['get']);
-            mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
+            mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter'])
+            mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
+
             mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
-            mockDeliveryNode = function (options) {
-                this.track = options.track;
-            };
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryService.get.and.returnValue($q.when(distributionPlan));
             mockDeliveryService.create.and.returnValue($q.when(createdDistributionPlan));
             mockDeliveryNodeService.filter.and.returnValue($q.when(ipNodes));
             mockDeliveryNodeService.create.and.returnValue($q.when({}));
             mockItemService.get.and.returnValue($q.when(fetchedItem));
+            mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue(q.when(stubSettings));
 
-            location = $location;
             spyOn($location, 'path');
-
-            scope = $rootScope.$new();
-            routeParams = {itemId: 2};
-            toast = ngToast;
-            timeout = $timeout
-
             spyOn(toast, 'create');
 
-            q = $q;
             $controller('NewDeliveryByIpController', {
                 $scope: scope,
-                IPService: mockIpService,
+                $timeout: timeout,
                 $routeParams: routeParams,
+                IPService: mockIpService,
                 DeliveryService: mockDeliveryService,
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: mockDeliveryNode,
@@ -72,8 +79,8 @@ describe('New IP Delivery Controller', function () {
                 $location: location,
                 ItemService: mockItemService,
                 ConsigneeItemService: mockConsigneeItemService,
-                LoaderService: mockLoaderService,
-                $timeout: timeout
+                SystemSettingsService: mockSystemSettingsService,
+                LoaderService: mockLoaderService
             });
         });
     });

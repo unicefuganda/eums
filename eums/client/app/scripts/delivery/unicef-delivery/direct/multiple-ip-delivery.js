@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DeliveryNode', 'User', 'Consignee', 'ngTable',
-        'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item', 'Loader'])
+        'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item', 'Loader', 'SystemSettingsService'])
     .controller('MultipleIpDirectDeliveryController', function ($scope, $location, $q, $timeout, IPService, UserService, PurchaseOrderItemService,
                                                                 ConsigneeService, DeliveryService, DeliveryNodeService, ProgrammeService,
-                                                                PurchaseOrderService, $routeParams, ngToast, LoaderService) {
+                                                                PurchaseOrderService, $routeParams, ngToast, LoaderService,
+                                                                SystemSettingsService) {
 
         var rootPath = '/direct-delivery/new/';
 
@@ -23,6 +24,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.implementingPartners = [];
         $scope.selectedPurchaseOrder = {};
         $scope.isSaving = false;
+
+        init();
 
         $scope.$watch('distributionPlanNodes', function (newPlanNodes) {
             if (isNaN($scope.invalidNodes) && $scope.distributionPlanNodes.length) {
@@ -109,31 +112,28 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/') + purchaseOrderItem.id);
         };
 
-        init();
-
         function init() {
             LoaderService.showLoader();
             var promises = [];
             promises.push(loadUserPermissions());
+            promises.push(SystemSettingsService.getSettingsWithDefault());
             if ($routeParams.purchaseOrderId) {
                 promises.push(loadPurchaseOrderById());
             }
             if ($routeParams.purchaseOrderItemId) {
                 promises.push(loadPurchaseOrderItemById());
             }
-            $q.all(promises).then(function () {
-
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
                 if ($scope.selectedPurchaseOrder) {
                     $scope.purchaseOrderItems = $scope.selectedPurchaseOrder.purchaseorderitemSet;
                     $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
                         return parseFloat(orderItem.value);
                     });
                 }
-
                 if ($scope.selectedPurchaseOrderItem) {
                     loadDeliveryDataFor($scope.selectedPurchaseOrderItem);
                 }
-
                 LoaderService.hideLoader();
             });
         }

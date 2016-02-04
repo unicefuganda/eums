@@ -79,7 +79,7 @@
                         <th id="input-planned-distribution-date-header">Shipment Date</th>
                         <th class="table-select-header-width">Consignee</th>
                         <th class="table-contact-select-header-width">Contact Person</th>
-                        <th class="table-select-header-width">District</th>
+                        <th class="table-select-header-width">{{ systemSettings.district_label }}</th>
                         <th class="table-header-width">Track</th>
                         <th class="table-header-width">Time limitation on Distribution</th>
                         </thead>
@@ -138,7 +138,7 @@
                             <td id="input-location" class="table-select-max-width">
                                 <input type="hidden" search-from-list list="$districts"
                                        ng-disabled="item.trackSubmitted || !can_add_distributionplan"
-                                       ng-model="item.location"
+                                       ng-model="item.location" placeholder="All {{ systemSettings.district_label }}s"
                                        value="{{ item.location }}">
                             </td>
                             <td id="input-track">

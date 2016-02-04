@@ -1,26 +1,24 @@
 'use strict';
 
-angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
+angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsService'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
+    .controller('NewSubConsigneeDeliveryByIpController', function ($scope, $q, IPService, DeliveryNodeService, $routeParams,
                                                                    DeliveryNode, ngToast, LoaderService, $window, $timeout,
-                                                                   ItemService, ContactService) {
+                                                                   ItemService, ContactService, SystemSettingsService) {
+        var loadPromises = [];
+
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
         $scope.errors = false;
         $scope.searching = false;
         $scope.addingNewDelivery = false;
-
-        $scope.goBack = function () {
-            $window.history.back();
-        };
-
-        var loadPromises = [];
         $scope.itemId = $routeParams.itemId;
         var parentNodeId = $routeParams.parentNodeId;
         var filterParams = {item__item: $scope.itemId, parent: parentNodeId, paginate: true};
+
+        init();
 
         loadPromises.push(IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
@@ -33,10 +31,47 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.item = item;
         }));
 
-
         loadPromises.push(fetchNodes());
 
         loadPromises.push(loadParentNode());
+
+        $scope.$watch('searchTerm', function (term) {
+            if (term && term.length) {
+                $scope.searching = true;
+                DeliveryNodeService.search(term, [], filterParams).then(function (response) {
+                    setScopeDataFromResponse(response);
+                }).finally(function () {
+                    $scope.searching = false;
+                });
+            }
+            else {
+                fetchNodes();
+            }
+        });
+
+        $scope.$watch('newDelivery.deliveryDate', function (val) {
+            if (val) {
+                var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
+                $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
+            }
+        });
+
+        $scope.$on('contact-saved', function (event, contact) {
+            var contactInput = angular.element('#contact-select');
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+            $scope.newDelivery.contact = contact;
+            $scope.newDelivery.contact_person_id = contact._id;
+
+            event.stopPropagation();
+        });
+
+        $scope.$on('consignee-saved', function (event, consignee) {
+            $scope.newDelivery.consignee = consignee;
+            $scope.$broadcast('set-consignee', consignee);
+            event.stopPropagation();
+        });
 
         $scope.toggleNewDeliveryForm = function () {
             resetNewDeliveryForm();
@@ -52,6 +87,34 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger');
             }
         };
+
+        $scope.addContact = function () {
+            $scope.$broadcast('add-contact');
+        };
+
+        $scope.goToPage = function (page) {
+            var urlArgs = {page: page};
+            if ($scope.searchTerm && $scope.searchTerm.length) {
+                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
+            }
+            fetchNodes(urlArgs);
+        };
+
+        $scope.goBack = function () {
+            $window.history.back();
+        };
+
+        $scope.addConsignee = function () {
+            $scope.$broadcast('add-consignee');
+        };
+
+        function init() {
+            var promises = [];
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[0];
+            });
+        }
 
         function scopeDataIsValid() {
             return requiredFieldsAreFilled() && quantityIsValid();
@@ -73,7 +136,6 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             ngToast.create({content: message, class: klass});
         }
 
-
         function save() {
             $scope.newDelivery.item = $scope.parentNode.item;
             $scope.newDelivery.distributionPlan = $scope.parentNode.distributionPlan;
@@ -92,61 +154,6 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 createToast('Delivery Successfully Created', 'success');
             });
         }
-
-        $scope.addContact = function () {
-            $scope.$broadcast('add-contact');
-        };
-
-        $scope.$on('contact-saved', function (event, contact) {
-            var contactInput = angular.element('#contact-select');
-            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
-            $scope.newDelivery.contact = contact;
-            $scope.newDelivery.contact_person_id = contact._id;
-
-            event.stopPropagation();
-        });
-
-        $scope.addConsignee = function () {
-            $scope.$broadcast('add-consignee');
-        };
-
-        $scope.$on('consignee-saved', function (event, consignee) {
-            $scope.newDelivery.consignee = consignee;
-            $scope.$broadcast('set-consignee', consignee);
-            event.stopPropagation();
-        });
-
-        $scope.$watch('newDelivery.deliveryDate', function (val) {
-            if (val) {
-                var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
-                $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
-            }
-        });
-
-        $scope.goToPage = function (page) {
-            var urlArgs = {page: page};
-            if ($scope.searchTerm && $scope.searchTerm.length) {
-                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
-            }
-            fetchNodes(urlArgs);
-        };
-
-
-        $scope.$watch('searchTerm', function (term) {
-            if (term && term.length) {
-                $scope.searching = true;
-                DeliveryNodeService.search(term, [], filterParams).then(function (response) {
-                    setScopeDataFromResponse(response);
-                }).finally(function () {
-                    $scope.searching = false;
-                });
-            }
-            else {
-                fetchNodes();
-            }
-        });
 
         function fetchNodes(extraArgs) {
             var requestArgs = extraArgs ? Object.merge(extraArgs, filterParams) : filterParams;

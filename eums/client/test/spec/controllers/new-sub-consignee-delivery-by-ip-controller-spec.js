@@ -1,10 +1,14 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
         mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults, mockWindow,
-        mockHistory, mockItemService, item, mockContactService, contact, lineageNodes, parentLineage, timeout;
+        mockHistory, mockItemService, item, mockContactService, contact, lineageNodes, parentLineage, timeout,
+        mockSystemSettingsService;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
-
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('NewSubConsigneeDeliveryByIp');
@@ -38,18 +42,24 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         ];
 
         inject(function ($controller, $rootScope, $q, $location, ngToast, $timeout) {
+            scope = $rootScope.$new();
+            routeParams = {itemId: 2, parentNodeId: 10};
+            toast = ngToast;
+            timeout = $timeout;
+            q = $q;
+            deferredSearchResults = $q.defer();
+            mockDeliveryNode = function (options) {
+                this.track = options.track;
+            };
+
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get', 'search', 'getLineage']);
             mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
-            mockDeliveryNode = function (options) {
-                this.track = options.track;
-            };
+            mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
             mockHistory = jasmine.createSpyObj('mockHistory', ['back']);
-            mockWindow = {history: mockHistory};
 
-            deferredSearchResults = $q.defer();
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedChildNodes));
             mockDeliveryNodeService.getLineage.and.returnValue($q.when(lineageNodes));
@@ -58,27 +68,25 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
             mockItemService.get.and.returnValue($q.when(item));
             mockContactService.get.and.returnValue($q.when(contact));
-
-            scope = $rootScope.$new();
-            routeParams = {itemId: 2, parentNodeId: 10};
-            toast = ngToast;
-            timeout = $timeout;
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
             spyOn(toast, 'create');
+            mockWindow = {history: mockHistory};
 
-            q = $q;
             $controller('NewSubConsigneeDeliveryByIpController', {
                 $scope: scope,
-                IPService: mockIpService,
                 $routeParams: routeParams,
+                $timeout: timeout,
+                $window: mockWindow,
+                IPService: mockIpService,
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: mockDeliveryNode,
                 ngToast: toast,
                 LoaderService: mockLoaderService,
-                $window: mockWindow,
                 ItemService: mockItemService,
                 ContactService: mockContactService,
-                $timeout: timeout
+                SystemSettingsService: mockSystemSettingsService
             });
         });
     });
@@ -410,6 +418,4 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         scope.$apply();
         expect(mockHistory.back).toHaveBeenCalled();
     });
-
-
 });

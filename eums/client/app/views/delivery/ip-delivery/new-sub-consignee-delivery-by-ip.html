@@ -62,7 +62,7 @@
             <td class="col-md-2 pad-bottom-5">Date Shipped</td>
             <td class="col-md-3 pad-bottom-5">Sub-consignee</td>
             <td class="col-md-2 pad-bottom-5">Contact Person</td>
-            <td class="col-md-2 pad-bottom-5">District</td>
+            <td class="col-md-2 pad-bottom-5">{{ systemSettings.district_label }}</td>
             <td class="col-md-1 centered pad-bottom-5">End User</td>
             <td class="col-md-1 centered pad-bottom-5"></td>
         </tr>
@@ -140,6 +140,7 @@
                 <div id="input-location" class="pad-small"
                      ng-class="{'has-error': !newDelivery.location && errors}">
                     <input type="hidden" ng-if="districtsLoaded"
+                           placeholder="All {{ systemSettings.district_label }}s"
                            search-from-list
                            list="{{ districts }}"
                            ng-model="newDelivery.location"
@@ -192,7 +193,7 @@
             <th class="item-list-col-header">Date Shipped</th>
             <th class="item-list-col-header">Sub-consignee</th>
             <th class="item-list-col-header">Contact Person</th>
-            <th class="item-list-col-header">District</th>
+            <th class="item-list-col-header">{{ systemSettings.district_label }}</th>
             <th class="item-list-col-header"></th>
         </tr>
         <tr ng-repeat="delivery in deliveries">

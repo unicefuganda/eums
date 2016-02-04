@@ -3,13 +3,16 @@ describe('MultipleIpDirectDeliveryController', function () {
     beforeEach(module('MultipleIpDirectDelivery'));
     var mockNodeService, mockIPService, mockDeliveryService, mockPurchaseOrderItemService,
         mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService,
-        mockLoaderService;
+        mockLoaderService, mockSystemSettingsService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
         deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredItemPromise,
         userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var scope, q, mockToastProvider, location;
-
     var orderNumber = '00001';
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     var purchaseOrders = [
         {
@@ -102,6 +105,7 @@ describe('MultipleIpDirectDeliveryController', function () {
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal', 'hideModal']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $rootScope, $q, $location) {
             location = $location;
@@ -132,6 +136,8 @@ describe('MultipleIpDirectDeliveryController', function () {
             mockItemService.get.and.returnValue(deferredItemPromise.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue(q.when(stubSettings));
 
             $controller('MultipleIpDirectDeliveryController',
                 {
@@ -146,6 +152,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                     PurchaseOrderService: mockPurchaseOrderService,
                     IPService: mockIPService,
                     UserService: mockUserService,
+                    SystemSettingsService: mockSystemSettingsService,
                     ItemService: mockItemService,
                     ngToast: mockToastProvider,
                     LoaderService: mockLoaderService

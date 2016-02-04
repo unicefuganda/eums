@@ -9,11 +9,8 @@
             </a>
         </div>
     </div>
-
     <div><span class="well-sm"></span></div>
     <div><span class="well-sm"></span></div>
-
-
     <div class="row col-lg-11 three-columns-form">
         <div class="col-md-4">
             <div class="sub-header">ITEM DETAILS</div>
@@ -96,11 +93,12 @@
                     </div>
                 </div>
                 <div class="col-md-12 margin-bottom-10">
-                    <div class="bold-label pad-small">District</div>
+                    <div class="bold-label pad-small">{{ systemSettings.district_label }}</div>
                     <div id="input-location" class="pad-small col-md-10"
                          ng-class="{'has-error': !newDelivery.location && errors}">
                         <div class="pad-small">
                             <input type="hidden" ng-if="districtsLoaded"
+                                   placeholder="All {{ systemSettings.district_label }}s"
                                    search-from-list
                                    list="{{ districts }}"
                                    ng-model="newDelivery.location"
