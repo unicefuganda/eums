@@ -355,7 +355,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 scope.$on('clear-consignee', function () {
                     var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     consigneeSelect2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-consignee', function (_, consignee) {

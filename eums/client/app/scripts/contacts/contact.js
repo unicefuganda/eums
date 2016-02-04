@@ -7,6 +7,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         $scope.currentContact = {};
         $scope.contact = {};
         $scope.currentUser = {};
+        $scope.directiveValues = {};
 
         $scope.initialize = function () {
             this.sortBy('firstName');
@@ -226,6 +227,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         scope.object = object;
                         scope.objectIndex = objectIndex;
                         contactInput.val('');
+                        scope.$broadcast('clear-consignee');
+                        scope.$broadcast('clear-list');
                         $('#model-name').text('Add Contact');
                         $('#add-contact-modal').modal();
                     });
