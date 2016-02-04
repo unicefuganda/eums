@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'Loader', 'SortBy', 'Sort'])
+angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'Loader', 'SortBy', 'Sort',
+        'SystemSettingsService'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1});
     }])
@@ -10,7 +11,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         });
     })
     .controller('AlertsController', function ($scope, $rootScope, $q, AlertsService, LoaderService, ngToast, DeliveryService,
-                                              SortService, SortArrowService, UserService) {
+                                              SortService, SortArrowService, UserService, SystemSettingsService) {
 
         var SUPPORTED_FIELD = ['status', 'alertDate', 'dateShipped', 'dateReceived', 'value'];
 
@@ -100,7 +101,9 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         function initialize() {
             var promises = [];
             promises.push(loadUserPermissions());
-            $q.all(promises).then(function () {
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
                 LoaderService.showLoader();
                 loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
             });

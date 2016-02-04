@@ -54,7 +54,7 @@
                 <th ng-if="isActiveAlertType(constant_type_item)">ITEM</th>
                 <th>REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
-                <th>DISTRICT</th>
+                <th>{{ systemSettings.district_label }}</th>
                 <th>UNICEF REMARKS</th>
                 <th ng-show="can_change"></th>
                 <th ng-show="can_change && isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)"></th>

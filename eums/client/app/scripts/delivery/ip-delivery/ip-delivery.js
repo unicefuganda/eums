@@ -98,7 +98,9 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function init() {
             var promises = [];
             promises.push(loadUserPermissions());
-            $q.all(promises).then(function () {
+            promises.push(SystemSettingsService.getSettings());
+            $q.all(promises).then(function (returns) {
+                $scope.notificationMessage = returns[1].notification_message;
                 loadDeliveries();
                 initUpload();
                 IPService.loadAllDistricts().then(function (response) {
@@ -133,10 +135,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             var promises = [];
             LoaderService.showLoader();
             promises.push(DeliveryService.all(undefined, urlArgs));
-            promises.push(SystemSettingsService.getSettings());
             $q.all(promises).then(function (returns) {
                 $scope.deliveries = returns[0];
-                $scope.notificationMessage = returns[1].notification_message;
                 LoaderService.hideLoader();
             });
         }

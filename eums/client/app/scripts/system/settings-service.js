@@ -12,6 +12,14 @@ angular.module('SystemSettingsService', ['eums.config'])
                 });
                 return result.promise;
             },
+            getSettingsWithDefault: function () {
+                return this.getSettings().then(function (result) {
+                    if (!result.district_label) {
+                        result.district_label = "My-District-3";
+                    }
+                    return result;
+                });
+            },
             updateSettings: function (data) {
                 var result = $q.defer();
                 $http.put(EumsConfig.BACKEND_URLS.SYSTEM_SETTINGS + '/1', data).then(function (response) {

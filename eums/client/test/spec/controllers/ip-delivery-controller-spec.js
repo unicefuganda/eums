@@ -39,7 +39,8 @@ describe('IP Delivery Controller', function () {
         'data': ['wakiso']
     };
     var settings = {
-        'notification_message': 'notification'
+        'notification_message': 'notification',
+        'district_label': 'district'
     };
     var adminPermissions = [
         // admin permissions

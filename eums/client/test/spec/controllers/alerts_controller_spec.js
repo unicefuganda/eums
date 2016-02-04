@@ -1,7 +1,8 @@
 describe('AlertsController', function () {
 
     var scope, deferred;
-    var mockAlertsService, mockLoaderService, mockToast, q, mockDeliveryService, mockUserService, mockSortService, mockSortArrowService;
+    var mockAlertsService, mockLoaderService, mockToast, q, mockDeliveryService, mockUserService, mockSortService,
+        mockSortArrowService, mockSystemSettingsService;
     var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var type = 'delivery';
     var deferredAlerts,
@@ -103,6 +104,10 @@ describe('AlertsController', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
+    };
 
     beforeEach(function () {
         module('Alerts');
@@ -110,7 +115,8 @@ describe('AlertsController', function () {
         mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['retriggerDelivery']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockSortService = jasmine.createSpyObj('mockSortService', ['sortBy']);
         mockSortArrowService = jasmine.createSpyObj('mockSortArrowService', ['setSortArrow']);
 
@@ -128,6 +134,8 @@ describe('AlertsController', function () {
             mockAlertsService.update.and.returnValue($q.when({}));
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue(q.when(stubSettings));
 
             spyOn(mockToast, 'create');
 
@@ -138,6 +146,7 @@ describe('AlertsController', function () {
                 DeliveryService: mockDeliveryService,
                 UserService: mockUserService,
                 LoaderService: mockLoaderService,
+                SystemSettingsService: mockSystemSettingsService,
                 SortService: mockSortService,
                 SortArrowService: mockSortArrowService
             });
