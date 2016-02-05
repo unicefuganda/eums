@@ -200,15 +200,26 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
     })
     .directive('searchConsignees', function (ConsigneeService, $timeout) {
         function formatConsignee(consignee) {
-            var consigneeHasLocation = consignee.location && consignee.location.length;
-            var consigneeDescription = consigneeHasLocation ? consignee.name + ' / ' + consignee.location : consignee.name;
-            return Object.merge(consignee, {text: consigneeDescription});
+            return Object.merge(consignee, {text: _([consignee.customerId, consignee.location]).compact().join(' | ')});
         }
 
         function formatResponse(data) {
             return data.map(function (contact) {
                 return formatConsignee(contact);
             });
+        }
+
+        function consigneeFormatResult(item) {
+            var markup =
+                '<div class="row-fluid">' +
+                '<div class="span3">' + item.name + '</div>' +
+                '<div class="span3 text-warning"><small><i>' + item.text + '</i></small></div>' +
+                '</div>';
+            return markup;
+        }
+
+        function consigneeFormatSelection(item) {
+            return item.name;
         }
 
         return {
@@ -240,12 +251,19 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                                 callback({});
                             }
                         });
+                    },
+                    formatResult: consigneeFormatResult,
+                    formatSelection: consigneeFormatSelection,
+                    dropdownCssClass: "bigdrop",
+                    escapeMarkup: function (m) {
+                        return m;
                     }
                 });
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
+                    $(element).siblings("div").attr('title', consignee && consignee.text);
                     scope.$apply();
                 });
 
@@ -270,14 +288,35 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
         };
     })
     .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
+        function formatConsignee(consignee) {
+            return Object.merge(consignee, {text: _([consignee.customerId, consignee.location]).compact().join(' | ')});
+        }
+
+        function formatResponse(data) {
+            return data.map(function (contact) {
+                return formatConsignee(contact);
+            });
+        }
+
+        function consigneeFormatResult(item) {
+            var markup =
+                '<div class="row-fluid">' +
+                '<div class="span3">' + item.name + '</div>' +
+                '<div class="span3 text-warning"><small><i>' + item.text + '</i></small></div>' +
+                '</div>';
+            return markup;
+        }
+
+        function consigneeFormatSelection(item) {
+            return item.name;
+        }
+
         return {
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.directiveValues.allIps = displayedData.map(function (consignee) {
-                        return {id: consignee.id, text: consignee.name}
-                    });
+                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (resultConsignees) {
+                    scope.directiveValues.allIps = formatResponse(resultConsignees);
                     scope.displayIps = scope.directiveValues.allIps;
                     scope.populateIpsSelect2(scope.displayIps);
                 });
@@ -287,14 +326,21 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                         placeholder: 'All Implementing Partners',
                         allowClear: true,
                         data: _.sortBy(displayIps, function (ip) {
-                            return ip.text;
-                        })
+                            return ip.name;
+                        }),
+                        formatResult: consigneeFormatResult,
+                        formatSelection: consigneeFormatSelection,
+                        dropdownCssClass: "bigdrop",
+                        escapeMarkup: function (m) {
+                            return m;
+                        }
                     });
                 };
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
+                    $(element).siblings("div").attr('title', consignee && consignee.text);
                     scope.$apply();
                 });
 
