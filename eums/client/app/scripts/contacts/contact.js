@@ -101,6 +101,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 UserService.hasPermission("auth.can_delete_contacts", $scope.userPermissions).then(function (result) {
                     $scope.can_delete = result;
                 });
+                UserService.hasPermission("auth.can_view_users", $scope.userPermissions).then(function (result) {
+                    $scope.can_view_users = result;
+                });
             });
         }
 
@@ -134,7 +137,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         function convertIdToName(contacts) {
             convertIpIdToName(contacts);
-            convertUserIdToName(contacts);
+            if ($scope.can_view_users) {
+                convertUserIdToName(contacts);
+            }
         }
 
         function convertIpIdToName(contacts) {

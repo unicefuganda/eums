@@ -30,7 +30,7 @@
                         <th><a sort-by="phone">Phone</a></th>
                         <th><a sort-by="district">District</a></th>
                         <th><a sort-by="ips">Ip / Consignee</a></th>
-                        <th><a sort-by="createdBy">Created By</a></th>
+                        <th ng-show="can_view_users"><a sort-by="createdBy">Created By</a></th>
                         <th ng-show="can_change" class="width-160"></th>
                     </tr>
                     </thead>
@@ -43,7 +43,7 @@
                         <td class="text-left" id="contact.ipNames">
                             <div ng-repeat="ipName in contact.ipNames | orderBy: 'toString()'">{{ ipName }}</div>
                         </td>
-                        <td class="text-left">{{ contact.createdByUserName }}</td>
+                        <td class="text-left" ng-show="can_view_users">{{ contact.createdByUserName }}</td>
                         <td ng-show="can_change">
                             <button class="btn btn-primary"
                                     ng-show="can_change"
