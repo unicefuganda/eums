@@ -269,6 +269,49 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             }
         };
     })
+    .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
+                    scope.directiveValues.allIps = displayedData.map(function (consignee) {
+                        return {id: consignee.id, text: consignee.name}
+                    });
+                    scope.displayIps = scope.directiveValues.allIps;
+                    scope.populateIpsSelect2(scope.displayIps);
+                });
+
+                scope.populateIpsSelect2 = function (displayIps) {
+                    $(element).select2({
+                        placeholder: 'All Implementing Partners',
+                        allowClear: true,
+                        data: _.sortBy(displayIps, function (ip) {
+                            return ip.text;
+                        })
+                    });
+                };
+
+                element.change(function () {
+                    var consignee = $(element).select2('data');
+                    ngModel.$setViewValue(consignee && consignee.id);
+                    scope.$apply();
+                });
+
+                scope.$on('clear-consignee', function () {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text('');
+                    $(element).val(undefined);
+                });
+
+                scope.$on('set-consignee', function (_, consignee) {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text(consignee.name);
+                    $(element).val(consignee.id);
+                });
+            }
+        }
+    })
     //TODO Remove this directive. Make use of the one in the Programme module
     .directive('searchProgrammes', function (ProgrammeService) {
         return {
@@ -333,49 +376,6 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 elem.change(function () {
                     ngModel.$setViewValue(String($(elem).select2('data').id));
                     scope.$apply();
-                });
-            }
-        }
-    })
-    .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            link: function (scope, element, attrs, ngModel) {
-                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.directiveValues.allIps = displayedData.map(function (consignee) {
-                        return {id: consignee.id, text: consignee.name}
-                    });
-                    scope.displayIps = scope.directiveValues.allIps;
-                    scope.populateIpsSelect2(scope.displayIps);
-                });
-
-                scope.populateIpsSelect2 = function (displayIps) {
-                    $(element).select2({
-                        placeholder: 'All Implementing Partners',
-                        allowClear: true,
-                        data: _.sortBy(displayIps, function (ip) {
-                            return ip.text;
-                        })
-                    });
-                };
-
-                element.change(function () {
-                    var consignee = $(element).select2('data');
-                    ngModel.$setViewValue(consignee && consignee.id);
-                    scope.$apply();
-                });
-
-                scope.$on('clear-consignee', function () {
-                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    consigneeSelect2Input.text('');
-                    $(element).val(undefined);
-                });
-
-                scope.$on('set-consignee', function (_, consignee) {
-                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    consigneeSelect2Input.text(consignee.name);
-                    $(element).val(consignee.id);
                 });
             }
         }
