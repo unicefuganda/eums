@@ -22,7 +22,7 @@ describe('Warehouse Delivery', function () {
         warehouseDeliveryPage.selectWaybillByNumber(WAYBILL_NUMBER);
 
         warehouseDeliveryPage.selectContact('John');
-        warehouseDeliveryPage.selectLocation('wakiso');
+        warehouseDeliveryPage.selectLocation('Wakiso');
         warehouseDeliveryPage.enableTracking();
         warehouseDeliveryPage.saveDelivery();
 

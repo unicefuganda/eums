@@ -35,8 +35,8 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
     }},
 
     selectLocation: { value: function (location) {
-        element(by.id('select2-chosen-7')).click();
-        element(by.id('s2id_autogen7_search')).clear().sendKeys(location);
+        element(by.id('select2-chosen-8')).click();
+        element(by.id('s2id_autogen8_search')).clear().sendKeys(location);
         element(by.css('.select2-results li')).click();
     }},
 
