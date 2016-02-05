@@ -157,9 +157,16 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         function convertUserIdToName(contacts) {
             contacts.forEach(function (contact) {
                 UserService.getUserById(contact.createdByUserId).then(function (user) {
-                    contact.createdByUserName = user.username;
+                    contact.createdByUserName = getEntityName(user.groups[0]);
                 })
             });
+        }
+
+        function getEntityName(group) {
+            if (group.startsWith('UNICEF')) {
+                return 'UNICEF';
+            }
+            return 'IP';
         }
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {

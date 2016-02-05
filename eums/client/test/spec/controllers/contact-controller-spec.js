@@ -48,7 +48,7 @@ describe('ContactController', function () {
         email: "admin@tw.org"
     };
 
-    var user = {id: 1, username: 'admin'};
+    var user = {id: 1, username: 'admin', groups: ['UNICEF_admin']};
 
     var consignee = {id: 8, name: 'WAKISO DHO'};
 
@@ -144,7 +144,7 @@ describe('ContactController', function () {
         scope.$apply();
 
         expect(scope.contacts).toEqual(stubContacts);
-        expect(scope.contacts[0].createdByUserName).toEqual('admin');
+        expect(scope.contacts[0].createdByUserName).toEqual('UNICEF');
         expect(scope.contacts[0].ipNames).toEqual(['WAKISO DHO']);
     });
 
