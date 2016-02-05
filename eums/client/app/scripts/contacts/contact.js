@@ -256,7 +256,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         scope.object = object;
                         scope.objectIndex = objectIndex;
                         contactInput.val('');
-                        scope.$broadcast('clear-consignee');
+                        scope.$broadcast('clear-consignees');
                         scope.$broadcast('clear-list');
                         $('#model-name').text('Add Contact');
                         $('#add-contact-modal').modal();
@@ -268,7 +268,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     isEdit = true;
                     contactInput.intlTelInput('setNumber', contact.phone);
                     scope.$broadcast('set-location', {id: contact.district, name: contact.district});
-                    scope.$broadcast('set-consignee', {id: contact.ips[0], name: contact.ipNames[0]});
+                    scope.$broadcast('set-consignees', contact.ips);
                     $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
                 });
