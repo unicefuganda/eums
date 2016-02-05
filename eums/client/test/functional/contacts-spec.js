@@ -17,7 +17,7 @@ describe('Contacts', function () {
         expect(contactsPage.contactLastNames).toContain('Doe');
         expect(contactsPage.contactPhoneNumbers).toContain('+256771234567');
         expect(contactsPage.contactDistricts).toContain('wakiso');
-        expect(contactsPage.contactIps).toContain('WAKISO DHO');
+        expect(contactsPage.contactIpNames).toContain('WAKISO DHO');
     });
 
     it('Searching for contacts should show only relevant results', function () {
@@ -37,7 +37,7 @@ describe('Contacts', function () {
         contactsPage.visit();
     });
 
-    it('IP\'s contacts should be shown on the contacts page', function () {
+    it("IP's contacts should be shown on the contacts page", function () {
         expect(contactsPage.contactCount).toEqual(2);
         expect(contactsPage.contactFirstNames).toContain('John');
         expect(contactsPage.contactLastNames).toContain('Doe');

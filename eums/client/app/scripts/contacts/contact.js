@@ -267,6 +267,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     scope.contact = contact;
                     isEdit = true;
                     contactInput.intlTelInput('setNumber', contact.phone);
+                    scope.$broadcast('set-location', {id: contact.district, name: contact.district});
+                    scope.$broadcast('set-consignee', {id: contact.ips[0], name: contact.ipNames[0]});
                     $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
                 });
