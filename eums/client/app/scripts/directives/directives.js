@@ -198,7 +198,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             }
         };
     })
-    .directive('searchConsignees', function (ConsigneeService, $timeout) {
+    .directive('searchConsignees', function ($timeout, ConsigneeService) {
         function formatConsignee(consignee) {
             return Object.merge(consignee, {text: _([consignee.customerId, consignee.location]).compact().join(' | ')});
         }
@@ -287,7 +287,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             }
         };
     })
-    .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
+    .directive('selectIP', function ($timeout, ProgrammeService, DeliveryService, ConsigneeService) {
         function formatConsignee(consignee) {
             return Object.merge(consignee, {text: _([consignee.customerId, consignee.location]).compact().join(' | ')});
         }
@@ -315,27 +315,35 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (resultConsignees) {
-                    scope.directiveValues.allIps = formatResponse(resultConsignees);
-                    scope.displayIps = scope.directiveValues.allIps;
-                    scope.populateIpsSelect2(scope.displayIps);
+                element.select2({
+                    allowClear: true,
+                    placeholder: 'All Implementing Partners',
+                    query: function (query) {
+                        var data = {results: []};
+                        ConsigneeService.search(query.term, [], {type: 'IMPLEMENTING_PARTNER'}).then(function (resultConsignees) {
+                            data.results = formatResponse(resultConsignees);
+                            query.callback(data);
+                        });
+                    },
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
+                            var modelValue = ngModel.$modelValue;
+                            if (modelValue) {
+                                ConsigneeService.get(modelValue).then(function (consignee) {
+                                    callback(formatConsignee(consignee));
+                                });
+                            } else {
+                                callback({});
+                            }
+                        });
+                    },
+                    formatResult: consigneeFormatResult,
+                    formatSelection: consigneeFormatSelection,
+                    dropdownCssClass: "bigdrop",
+                    escapeMarkup: function (m) {
+                        return m;
+                    }
                 });
-
-                scope.populateIpsSelect2 = function (displayIps) {
-                    $(element).select2({
-                        placeholder: 'All Implementing Partners',
-                        allowClear: true,
-                        data: _.sortBy(displayIps, function (ip) {
-                            return ip.name;
-                        }),
-                        formatResult: consigneeFormatResult,
-                        formatSelection: consigneeFormatSelection,
-                        dropdownCssClass: "bigdrop",
-                        escapeMarkup: function (m) {
-                            return m;
-                        }
-                    });
-                };
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
