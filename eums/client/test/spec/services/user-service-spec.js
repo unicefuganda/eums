@@ -44,7 +44,7 @@ describe('User Service', function () {
         });
     });
 
-    describe('when get-current-user', function () {
+    describe('when get user', function () {
         it('should get current user', function (done) {
             var fakeUser = {username: 'x'};
             mockBackend.whenGET('/api/current-user/').respond(200, fakeUser);
@@ -60,10 +60,22 @@ describe('User Service', function () {
             mockBackend.expectGET('/api/current-user/').respond(200, fakeUser);
             userService.getCurrentUser().then(function (user) {
                 expect(user).toEqual(fakeUser);
-                userService.getCurrentUser().then(function (user) {
-                    expect(user).toEqual(fakeUser);
-                    done();
-                });
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should get user by id', function (done) {
+            var userId = 1;
+            var fakeUser = {
+                id: userId,
+                username: 'Sam'
+            };
+            mockBackend.expectGET('/api/user/' + userId).respond(200, fakeUser);
+
+            userService.getUserById(userId).then(function (user) {
+                expect(user).toEqual(fakeUser);
+                done();
             });
             mockBackend.flush();
         });
@@ -128,4 +140,5 @@ describe('User Service', function () {
             });
         });
     });
+
 });

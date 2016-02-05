@@ -41,9 +41,9 @@
                         <td class="text-left">{{ contact.phone }}</td>
                         <td class="text-left">{{ contact.district }}</td>
                         <td class="text-left" id="contact.ips">
-                            <div ng-repeat="ip in contact.ips">{{ ip }}</div>
+                            <div ng-repeat="ipName in contact.ipNames">{{ ipName }}</div>
                         </td>
-                        <td class="text-left">{{ contact.createdByUserId }}</td>
+                        <td class="text-left">{{ contact.createdByUserName }}</td>
                         <td ng-show="can_change">
                             <button class="btn btn-primary"
                                     ng-show="can_change"

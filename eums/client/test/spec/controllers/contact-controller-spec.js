@@ -1,7 +1,8 @@
 describe('ContactController', function () {
-    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService, mockLoaderService,
-        mockToastProvider, findStubContactsPromise, mockUserService, userHasPermissionToPromise, userGetCurrentUserPromise,
-        deferredPermissionsResultsPromise;
+    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService,
+        mockLoaderService, mockConsigneeService, userGetUserByIdPromise, mockToastProvider, findStubContactsPromise,
+        mockUserService, userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise,
+        consigneePromise;
 
     var stubContact = {
         _id: 3,
@@ -17,14 +18,16 @@ describe('ContactController', function () {
             firstName: 'Andrew',
             lastName: 'Mukiza',
             phone: '+234778945674',
-            createdByUserId: 5
+            createdByUserId: 1,
+            ips: [8]
         },
         {
             _id: 2,
             firstName: 'James',
             lastName: 'Oloo',
             phone: '+234778945675',
-            createdByUserId: 5
+            createdByUserId: 5,
+            ips: [1]
         }
     ];
 
@@ -45,6 +48,10 @@ describe('ContactController', function () {
         email: "admin@tw.org"
     };
 
+    var user = {id: 1, username: 'admin'};
+
+    var consignee = {id: 8, name: 'WAKISO DHO'};
+
     var mockElement = {
         modal: function () {
 
@@ -59,8 +66,9 @@ describe('ContactController', function () {
 
         mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'retrieveUserPermissions'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'getUserById', 'retrieveUserPermissions'])
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
 
         inject(function ($rootScope, $controller, $compile, $q, $sorter) {
             scope = $rootScope.$new();
@@ -73,6 +81,8 @@ describe('ContactController', function () {
             deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
             userGetCurrentUserPromise = $q.defer();
+            userGetUserByIdPromise = $q.defer();
+            consigneePromise = $q.defer();
             mockContactService.all.and.returnValue(stubContactsPromise.promise);
             mockContactService.findContacts.and.returnValue(findStubContactsPromise.promise);
             mockContactService.create.and.returnValue(stubContactPromise.promise);
@@ -81,7 +91,9 @@ describe('ContactController', function () {
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
+            mockUserService.getUserById.and.returnValue(userGetUserByIdPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            mockConsigneeService.get.and.returnValue(consigneePromise.promise);
 
             spyOn(angular, 'element').and.returnValue(mockElement);
             spyOn(scope, '$broadcast');
@@ -93,7 +105,8 @@ describe('ContactController', function () {
                 ContactService: mockContactService,
                 ngToast: mockToastProvider,
                 UserService: mockUserService,
-                LoaderService: mockLoaderService
+                LoaderService: mockLoaderService,
+                ConsigneeService: mockConsigneeService
             });
         });
     });
@@ -124,11 +137,15 @@ describe('ContactController', function () {
         userGetCurrentUserPromise.resolve(stubCurrentUser);
         userHasPermissionToPromise.resolve(true);
         stubContactsPromise.resolve(stubContacts);
+        userGetUserByIdPromise.resolve(user);
+        consigneePromise.resolve(consignee);
 
         scope.initialize();
         scope.$apply();
 
         expect(scope.contacts).toEqual(stubContacts);
+        expect(scope.contacts[0].createdByUserName).toEqual('admin');
+        expect(scope.contacts[0].ipNames).toEqual(['WAKISO DHO']);
     });
 
     describe('showing modals', function () {
@@ -193,7 +210,9 @@ describe('ContactController', function () {
             scope.contact = {
                 firstName: 'Dudette',
                 lastName: 'Awesome',
-                phone: '+256782555444'
+                phone: '+256782555444',
+                district: 'wakiso',
+                ips: [1, 2]
             };
             scope.$apply();
 

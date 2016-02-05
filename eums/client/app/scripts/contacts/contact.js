@@ -115,12 +115,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             if ($scope.can_view_all) {
                 promise = ContactService.all().then(function (resultContacts) {
                     $scope.contacts = resultContacts.sort();
-                    setIpName($scope.contacts);
+                    convertIdToName($scope.contacts);
                 });
             } else {
                 promise = ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
                     $scope.contacts = resultContacts.sort();
-                    setIpName($scope.contacts);
+                    convertIdToName($scope.contacts);
                 });
             }
 
@@ -132,16 +132,29 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 });
         }
 
-        function setIpName(contacts) {
+        function convertIdToName(contacts) {
+            convertIpIdToName(contacts);
+            convertUserIdToName(contacts);
+        }
+
+        function convertIpIdToName(contacts) {
             contacts.forEach(function (contact) {
-                var ip_names = [];
+                var ipNames = [];
                 contact.ips.forEach(function (id) {
                     ConsigneeService.get(id).then(function (ip) {
-                        ip_names.push(ip.name);
+                        ipNames.push(ip.name);
                     })
                 });
-                contact.ips = ip_names;
+                contact.ipNames = ipNames;
             })
+        }
+
+        function convertUserIdToName(contacts) {
+            contacts.forEach(function (contact) {
+                UserService.getUserById(contact.createdByUserId).then(function (user) {
+                    contact.createdByUserName = user.username;
+                })
+            });
         }
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {

@@ -42,6 +42,11 @@ angular.module('User', ['eums.config', 'NavigationTabs'])
                 return $http.get(EumsConfig.BACKEND_URLS.PERMISSION + '/all').then(function (result) {
                     return result.data;
                 });
+            },
+            getUserById: function(userId) {
+                return $http.get(EumsConfig.BACKEND_URLS.USER + userId).then(function (result) {
+                   return result.data;
+                });
             }
         };
     })
