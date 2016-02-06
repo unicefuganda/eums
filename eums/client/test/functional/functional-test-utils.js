@@ -5,12 +5,12 @@ var FunctionalTestUtils = (function () {
             browser.sleep(1000);
             element(by.id(id)).click();
             element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
-            element(by.css('.select2-results li')).click();
+            element(by.id('select2-drop')).element(by.css('.select2-results li')).click();
         },
         fillSelect2ChosenNoTop: function (id, input) {
             element(by.id(id)).click();
             element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
-            element(by.css('.select2-results li')).click();
+            element(by.id('select2-drop')).element(by.css('.select2-results li')).click();
         },
         waitForPageToLoad: function (elem) {
             var EC = protractor.ExpectedConditions;
