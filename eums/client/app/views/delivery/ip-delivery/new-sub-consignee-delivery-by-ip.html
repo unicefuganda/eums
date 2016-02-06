@@ -177,7 +177,7 @@
             <i class="glyphicon "
                ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
             <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                   placeholder="Search by Sub-consignee, District or Date in format 'YYYY-MM-DD'"/>
+                   placeholder="Search by Sub-consignee, {{ systemSettings.district_label }} or Date in format 'YYYY-MM-DD'"/>
                 <span class="text-info" ng-show="searchTerm.length && !deliveries.length">
                     There are no matches to your search criteria.
                 </span>

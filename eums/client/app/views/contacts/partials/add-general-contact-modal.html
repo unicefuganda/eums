@@ -10,9 +10,7 @@
 
                 <form role="form">
                     <div class="form-group">
-                        <input type="text"
-                               class="input form-control"
-                               ng-model="contact.firstName" required
+                        <input type="text" class="input form-control" ng-model="contact.firstName" required
                                placeholder="First Name">
                     </div>
                     <div class="form-group">
@@ -23,7 +21,7 @@
                         <input id="contact-phone" type="tel" ng-keyup="contactChanged()" class="input form-control" required>
                     </div>
                     <div class="form-group">
-                        <input id="select-district" class="form-control" type="hidden" placeholder="District"
+                        <input id="select-district" class="form-control" type="hidden" placeholder="{{ systemSettings.district_label }}"
                                search-from-list list=$districts ng-model="contact.district" required>
                     </div>
                     <div class="form-group">

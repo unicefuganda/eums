@@ -46,13 +46,13 @@
             </ul>
         </div>
         <div ng-hide="data.latestDeliveries" class="centered pad-10">
-            No responses from this district.
+            No responses from this <span class="text-lowercase">{{ systemSettings.district_label }}</span>.
         </div>
         <div ng-show="data.latestDeliveries" class="centered margin-bottom-none pad-10 border-none">
             <button ng-click="showDetailedResponses()" id="response-page-btn" type="button"
                     class="btn btn-default btn-xs blue-border-button pad-5"><span
                     class="glyphicon glyphicon-new-window"></span>
-                View District Responses
+                View {{ systemSettings.district_label }} Responses
             </button>
         </div>
     </div>

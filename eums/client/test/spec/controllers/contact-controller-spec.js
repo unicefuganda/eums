@@ -1,9 +1,8 @@
 describe('ContactController', function () {
     var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService,
-        mockLoaderService, mockConsigneeService, userGetUserByIdPromise, mockToastProvider, findStubContactsPromise,
-        mockUserService, userHasPermissionToPromise, userGetCurrentUserPromise, deferredPermissionsResultsPromise,
-        consigneePromise;
-
+        mockLoaderService, mockConsigneeService, mockUserService, mockSystemSettingsService;
+    var userGetUserByIdPromise, mockToastProvider, findStubContactsPromise, userHasPermissionToPromise,
+        userGetCurrentUserPromise, deferredPermissionsResultsPromise, consigneePromise;
     var stubContact = {
         _id: 3,
         firstName: 'John',
@@ -11,7 +10,6 @@ describe('ContactController', function () {
         phone: '+234778922674',
         createdByUserId: 5
     };
-
     var stubContacts = [
         {
             _id: 1,
@@ -30,7 +28,6 @@ describe('ContactController', function () {
             ips: [1]
         }
     ];
-
     var adminPermissions = [
         "auth.can_view_self_contacts",
         "auth.can_view_contacts",
@@ -38,7 +35,6 @@ describe('ContactController', function () {
         "auth.can_edit_contacts",
         "auth.can_delete_contacts"
     ];
-
     var stubCurrentUser = {
         username: "admin",
         first_name: "",
@@ -47,15 +43,16 @@ describe('ContactController', function () {
         consignee_id: null,
         email: "admin@tw.org"
     };
-
     var user = {id: 1, username: 'admin', groups: ['UNICEF_admin']};
-
     var consignee = {id: 8, name: 'WAKISO DHO'};
-
     var mockElement = {
         modal: function () {
 
         }
+    };
+    var stubSettings = {
+        'notification_message': 'notification',
+        'district_label': 'district'
     };
 
     beforeEach(module('Contact'));
@@ -67,6 +64,7 @@ describe('ContactController', function () {
         mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'getUserById', 'retrieveUserPermissions'])
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
 
@@ -93,6 +91,8 @@ describe('ContactController', function () {
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);
             mockUserService.getUserById.and.returnValue(userGetUserByIdPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
+            mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
+            mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
             mockConsigneeService.get.and.returnValue(consigneePromise.promise);
 
             spyOn(angular, 'element').and.returnValue(mockElement);
@@ -105,6 +105,7 @@ describe('ContactController', function () {
                 ContactService: mockContactService,
                 ngToast: mockToastProvider,
                 UserService: mockUserService,
+                SystemSettingsService: mockSystemSettingsService,
                 LoaderService: mockLoaderService,
                 ConsigneeService: mockConsigneeService
             });

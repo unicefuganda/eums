@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable',
-        'ui.bootstrap', 'ngToast', 'Loader', 'Consignee'])
-    .controller('ContactController', function ($scope, $q, $sorter, ngToast, UserService,
-                                               ContactService, LoaderService, ConsigneeService) {
+        'ui.bootstrap', 'ngToast', 'Loader', 'Consignee', 'SystemSettingsService'])
+    .controller('ContactController', function ($scope, $q, $sorter, ngToast, UserService, ContactService, LoaderService,
+                                               ConsigneeService, SystemSettingsService) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
@@ -18,8 +18,10 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             var promises = [];
             promises.push(loadUserPermissions());
             promises.push(loadCurrentUser());
-            $q.all(promises).then(function () {
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
                 LoaderService.showLoader();
+                $scope.systemSettings = returns[2];
                 loadContacts.call(this);
             });
         };
