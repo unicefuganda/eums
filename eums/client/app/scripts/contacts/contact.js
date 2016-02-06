@@ -9,7 +9,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         $scope.currentContact = {};
         $scope.contact = {};
         $scope.currentUser = {};
-        $scope.directiveValues = {};
 
         $scope.initialize = function () {
             this.sortBy('firstName');

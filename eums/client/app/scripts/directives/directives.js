@@ -439,10 +439,10 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.directiveValues.allIps = displayedData.map(function (consignee) {
+                    scope.allIps = displayedData.map(function (consignee) {
                         return {id: consignee.id, text: consignee.name}
                     });
-                    scope.displayIps = scope.directiveValues.allIps;
+                    scope.displayIps = scope.allIps;
                     scope.populateIpsSelect2(scope.displayIps);
                 });
 
