@@ -7,12 +7,17 @@ describe('Consignees Controller', function () {
     };
     var fakeElement = {modal: emptyFunction, hasClass: emptyFunction};
     var savedConsignee = {
-        id: 1, name: 'Dwelling Places', switchToReadMode: emptyFunction, switchToEditMode: emptyFunction
+        id: 1, name: 'Dwelling Places',
+        switchToFullyEditMode: emptyFunction,
+        switchToEditRemarksMode: emptyFunction,
+        switchToEditLocationAndRemarksMode: emptyFunction,
+        switchToReadMode: emptyFunction
     };
     var emptyConsignee = {
         properties: null,
-        switchToEditMode: emptyFunction,
-        switchToEditRemarkMode: emptyFunction,
+        switchToFullyEditMode: emptyFunction,
+        switchToEditRemarksMode: emptyFunction,
+        switchToEditLocationAndRemarksMode: emptyFunction,
         switchToReadMode: emptyFunction
     };
     var consignees = [savedConsignee, {id: 2, name: 'Save the children'}, {id: 3, name: 'Amuru DHO'}];
@@ -113,20 +118,28 @@ describe('Consignees Controller', function () {
             expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
         });
 
-        it('should switch consignee to edit mode on edit when user has permission to fully edit', function () {
+        it('should switch consignee to edit-fully mode on edit when user has the permission', function () {
             deferredCanFullyEdit.resolve({permission: 'can_edit_fully'});
-            spyOn(emptyConsignee, 'switchToEditMode');
+            spyOn(emptyConsignee, 'switchToFullyEditMode');
             scope.edit(emptyConsignee);
             scope.$apply();
-            expect(emptyConsignee.switchToEditMode).toHaveBeenCalled();
+            expect(emptyConsignee.switchToFullyEditMode).toHaveBeenCalled();
         });
 
-        it('should switch consignee to edit-remark-mode on edit when user does has permission to edit partially', function () {
-            deferredCanFullyEdit.resolve({permission: 'can_edit_partially'});
-            spyOn(emptyConsignee, 'switchToEditRemarkMode');
+        it('should switch consignee to edit-remarks-mode on edit when user has the permission', function () {
+            deferredCanFullyEdit.resolve({permission: 'can_edit_remarks'});
+            spyOn(emptyConsignee, 'switchToEditRemarksMode');
             scope.edit(emptyConsignee);
             scope.$apply();
-            expect(emptyConsignee.switchToEditRemarkMode).toHaveBeenCalled();
+            expect(emptyConsignee.switchToEditRemarksMode).toHaveBeenCalled();
+        });
+
+        it('should switch consignee to edit-location-and-remarks-mode on edit when user has the permission', function () {
+            deferredCanFullyEdit.resolve({permission: 'can_edit_location_and_remarks'});
+            spyOn(emptyConsignee, 'switchToEditLocationAndRemarksMode');
+            scope.edit(emptyConsignee);
+            scope.$apply();
+            expect(emptyConsignee.switchToEditLocationAndRemarksMode).toHaveBeenCalled();
         });
 
         it('should switch consignee to read mode on edit when user does not have permission to edit', function () {
@@ -150,7 +163,7 @@ describe('Consignees Controller', function () {
             deferredCanFullyEdit.resolve({permission: 'can_edit_fully'});
             spyOn(savedConsignee, 'switchToReadMode');
             scope.$apply();
-            savedConsignee.switchToEditMode();
+            savedConsignee.switchToFullyEditMode();
             scope.cancelEditOrCreate(savedConsignee);
             scope.$apply();
             expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
@@ -209,7 +222,11 @@ describe('Consignees Controller', function () {
             scope.$apply();
             timeout.flush();
 
-            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', page: 1, search : searchText});
+            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                page: 1,
+                search: searchText
+            });
             expect(scope.consignees).toEqual(searchResults);
 
             scope.searchTerm.search = '';
@@ -231,7 +248,11 @@ describe('Consignees Controller', function () {
             scope.$apply();
             scope.goToPage(10);
             scope.$apply();
-            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', page: 10, search: searchText});
+            expect(mockConsigneeService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                page: 10,
+                search: searchText
+            });
         });
 
         it('should toggle search mode during search', function () {

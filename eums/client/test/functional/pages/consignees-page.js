@@ -16,6 +16,10 @@ consigneesPage.prototype = Object.create({}, {
     consigneeCount: { get: function () { return element.all(by.repeater('consignee in consignees')).count(); }},
     consigneeTypeClass : { get: function () { return element(by.css('.consigneeType span')).getAttribute('class'); }},
 
+    consigneeNameEditingInput: { get: function () { return element.all(by.model('consignee.name')).get(0).element(by.xpath('..')); }},
+    consigneeRemarksEditingInput: { get: function () { return element.all(by.model('consignee.remarks')).get(0).element(by.xpath('..')); }},
+    consigneeLocationEditingInput: { get: function () { return element.all(by.model('consignee.location')).get(0).element(by.xpath('..')); }},
+
     addConsignee: { value: function () { element(by.id('add-consignee')).click(); }},
     addConsigneeButton: { get: function () { return element(by.id('add-consignee')); }},
     editConsigneeButton: { get: function () { return element.all(by.css('.editBtn')).get(0); }},

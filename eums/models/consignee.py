@@ -17,11 +17,12 @@ class Consignee(TimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
     created_by_user = models.ForeignKey(User, editable=False, null=True)
 
-    def has_only_dirty_remarks(self, new_attributes):
-        editable_fields = model_to_dict(self)
+    def has_only_changed_editable_fields(self, new_attributes):
+        edit_allowed_fields = ['remarks', 'location']
+        model_fields = model_to_dict(self)
         for key, value in new_attributes.iteritems():
-            if key != 'remarks' and key in editable_fields:
-                if editable_fields[key] != value:
+            if not edit_allowed_fields.__contains__(key) and key in model_fields:
+                if model_fields[key] != value:
                     return False
         return True
 

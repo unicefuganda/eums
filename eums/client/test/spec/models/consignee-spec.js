@@ -32,40 +32,57 @@ describe('Consignee Model', function () {
 
     it('should by default not be inEditMode if it has an id', function () {
         var consignee = new ConsigneeModel({id: 10});
-        expect(consignee.inEditMode).toBe(false);
+        expect(consignee.inFullyEditMode).toBe(false);
     });
 
     it('should by default be inEditMode if it does not have an id', function () {
         var consignee = new ConsigneeModel();
-        expect(consignee.inEditMode).toBe(true);
+        expect(consignee.inFullyEditMode).toBe(true);
     });
 
-    it('should switch to edit mode upon request', function () {
+    it('should switch to edit fully mode upon request', function () {
+        var consignee = new ConsigneeModel({id: 12});
+        expect(consignee.inFullyEditMode).toBe(false);
+        expect(consignee.isEditingRemarks).toBe(false);
+        expect(consignee.isEditingLocation).toBe(false);
+        consignee.switchToFullyEditMode();
+        expect(consignee.inFullyEditMode).toBe(true);
+        expect(consignee.isEditingRemarks).toBe(true);
+        expect(consignee.isEditingLocation).toBe(true);
+    });
+
+    it('should switch to edit-remarks mode upon request', function () {
         var consignee = new ConsigneeModel({id: 11});
-        expect(consignee.inEditMode).toBe(false);
-        expect(consignee.inEditRemarkMode).toBe(false);
-        consignee.switchToEditMode();
-        expect(consignee.inEditMode).toBe(true);
-        expect(consignee.inEditRemarkMode).toBe(true);
+        expect(consignee.inFullyEditMode).toBe(false);
+        expect(consignee.isEditingRemarks).toBe(false);
+        expect(consignee.isEditingLocation).toBe(false);
+        consignee.switchToEditRemarksMode();
+        expect(consignee.inFullyEditMode).toBe(false);
+        expect(consignee.isEditingRemarks).toBe(true);
+        expect(consignee.isEditingLocation).toBe(false);
+    });
+
+    it('should switch to edit-location-and-remarks mode upon request', function () {
+        var consignee = new ConsigneeModel({id: 11});
+        expect(consignee.inFullyEditMode).toBe(false);
+        expect(consignee.isEditingRemarks).toBe(false);
+        expect(consignee.isEditingLocation).toBe(false);
+        consignee.switchToEditLocationAndRemarksMode();
+        expect(consignee.inFullyEditMode).toBe(false);
+        expect(consignee.isEditingRemarks).toBe(true);
+        expect(consignee.isEditingLocation).toBe(true);
     });
 
     it('should switch to read mode upon request', function () {
         var consignee = new ConsigneeModel();
-        expect(consignee.inEditMode).toBe(true);
-        expect(consignee.inEditRemarkMode).toBe(true);
+        expect(consignee.inFullyEditMode).toBe(true);
+        expect(consignee.isEditingRemarks).toBe(true);
+        expect(consignee.isEditingLocation).toBe(true);
         consignee.id = 12;
         consignee.switchToReadMode();
-        expect(consignee.inEditMode).toBe(false);
-        expect(consignee.inEditRemarkMode).toBe(false);
-    });
-
-    it('should switch to edit remark mode upon request', function () {
-        var consignee = new ConsigneeModel({id: 12});
-        expect(consignee.inEditRemarkMode).toBe(false);
-        expect(consignee.inEditMode).toBe(false);
-        consignee.switchToEditRemarkMode();
-        expect(consignee.inEditRemarkMode).toBe(true);
-        expect(consignee.inEditMode).toBe(false);
+        expect(consignee.inFullyEditMode).toBe(false);
+        expect(consignee.isEditingRemarks).toBe(false);
+        expect(consignee.isEditingLocation).toBe(false);
     });
 
     it('should be invalid if name is not set', function() {

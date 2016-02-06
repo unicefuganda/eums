@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def is_consignee_belong_to_request_user(obj, request):
     if request.method in ['DELETE', 'PUT']:
-        if obj.created_by_user is None or (obj.has_only_dirty_remarks(request.data) and request.method == 'PUT'):
+        if obj.created_by_user is None or (obj.has_only_changed_editable_fields(request.data) and request.method == 'PUT'):
             return True
 
         request_user_group = request.user.groups.first()
@@ -27,7 +27,7 @@ def is_consignee_belong_to_request_user(obj, request):
 
 
 def has_permission_to_update_or_delete_with_error_msg(obj, request):
-    if request.method == 'PUT' and not obj.has_only_dirty_remarks(request.data) or request.method == 'DELETE':
+    if request.method == 'PUT' and not obj.has_only_changed_editable_fields(request.data) or request.method == 'DELETE':
         if obj.imported_from_vision:
             return False, 'Permission Denied: Consignee was imported from Vision'
 

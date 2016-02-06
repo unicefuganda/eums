@@ -9,12 +9,16 @@ from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Consignee, DistributionPlanNode, UserProfile
 from eums.permissions.consignee_permissions import ConsigneePermissions
 from eums.auth import *
+from model_utils import Choices
 
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Consignee
         fields = ('id', 'name', 'type', 'imported_from_vision', 'customer_id', 'location', 'remarks', 'created_by_user')
+
+
+ITEM_PERMISSIONS = Choices('can_edit_fully', 'can_edit_remarks', 'can_edit_location_and_remarks', 'consignee_forbidden')
 
 
 class ConsigneeViewSet(ModelViewSet):
@@ -46,19 +50,21 @@ class ConsigneeViewSet(ModelViewSet):
     @detail_route()
     def permission_to_edit(self, request, pk=None):
         if request.user.groups.first() is None:
-            return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
+            return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.can_edit_fully})
         consignee = self.get_object()
         if consignee.imported_from_vision:
             return self.vision_import_edit_permissions(request)
         if request.user.groups.first().name in [GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR]:
-            return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
+            return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.can_edit_fully})
         return self.ip_edit_permissions(consignee, request)
 
     @staticmethod
     def vision_import_edit_permissions(request):
-        if request.user.groups.first().name in [GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR, GROUP_IP_EDITOR]:
-            return Response(status=HTTP_200_OK, data={'permission': 'can_edit_partially'})
-        return Response(status=HTTP_200_OK, data={'permission': 'consignee_forbidden'})
+        if request.user.groups.first().name in [GROUP_UNICEF_ADMIN, GROUP_UNICEF_EDITOR]:
+            return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.can_edit_location_and_remarks})
+        if request.user.groups.first().name in [GROUP_IP_EDITOR]:
+            return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.can_edit_remarks})
+        return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.consignee_forbidden})
 
     @staticmethod
     def ip_edit_permissions(consignee, request):
@@ -68,10 +74,10 @@ class ConsigneeViewSet(ModelViewSet):
             if created_by_user is None \
                     or created_by_user.consignee != request_user.consignee \
                     or created_by_user.user_id != request_user.user_id:
-                return Response(status=HTTP_200_OK, data={'permission': 'consignee_forbidden'})
-            return Response(status=HTTP_200_OK, data={'permission': 'can_edit_fully'})
+                return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.consignee_forbidden})
+            return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.can_edit_fully})
         except:
-            return Response(status=HTTP_200_OK, data={'permission': 'consignee_forbidden'})
+            return Response(status=HTTP_200_OK, data={'permission': ITEM_PERMISSIONS.consignee_forbidden})
 
 
 consigneeRouter = DefaultRouter()

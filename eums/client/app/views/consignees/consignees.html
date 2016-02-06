@@ -33,33 +33,32 @@
             <table class="table table-bordered table-striped table-hover table-condensed">
                 <thead>
                 <tr>
-                    <th></th>
-                    <th><a>Name</a></th>
-                    <th><a>Location</a></th>
-                    <th class="centered"><a>Vision ID</a></th>
-                    <th><a>General Remarks</a></th>
-                    <th ng-show="can_change" class="width-160"></th>
+                    <th class="width-40"></th>
+                    <th class=""><a>Name</a></th>
+                    <th class=""><a>Location</a></th>
+                    <th class="width-160"><a>Vision ID</a></th>
+                    <th class=""><a>General Remarks</a></th>
+                    <th class="width-160" ng-show="can_change"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="consignee in consignees">
                     <td class="consigneeType">
-                        <span ng-show="consignee.importedFromVision"
-                              class="glyphicon glyphicon-ok text-success"></span>
+                        <span ng-show="consignee.importedFromVision" class="glyphicon glyphicon-ok text-success"></span>
                     </td>
                     <td class="text-left">
-                        <span ng-show="!consignee.inEditMode || consignee.importedFromVision">
+                        <span ng-show="!(consignee.inFullyEditMode && !consignee.importedFromVision)">
                             {{ consignee.name }}
                         </span>
-                        <span ng-show="consignee.inEditMode && !consignee.importedFromVision">
+                        <span ng-show="consignee.inFullyEditMode && !consignee.importedFromVision">
                             <input class="table-input form-control" ng-model="consignee.name">
                         </span>
                     </td>
                     <td class="text-left">
-                        <span ng-show="!consignee.inEditMode || consignee.importedFromVision">
+                        <span ng-show="!(consignee.inFullyEditMode || consignee.isEditingLocation)">
                             {{ consignee.location }}
                         </span>
-                        <span ng-show="consignee.inEditMode && !consignee.importedFromVision">
+                        <span ng-show="consignee.inFullyEditMode || consignee.isEditingLocation">
                             <input class="table-input form-control" ng-model="consignee.location">
                         </span>
                     </td>
@@ -69,13 +68,15 @@
                         </span>
                     </td>
                     <td class="text-left">
-                        <span ng-show="!consignee.inEditRemarkMode">{{ consignee.remarks }}</span>
-                        <span ng-show="consignee.inEditRemarkMode">
+                        <span ng-show="!(consignee.inFullyEditMode || consignee.isEditingRemarks)">
+                            {{ consignee.remarks }}
+                        </span>
+                        <span ng-show="consignee.inFullyEditMode || consignee.isEditingRemarks">
                             <input class="table-input form-control" ng-model="consignee.remarks">
                         </span>
                     </td>
                     <td ng-show="can_change">
-                        <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
+                        <span ng-show="!(consignee.inFullyEditMode || consignee.isEditingRemarks || consignee.isEditingLocation)">
                             <button ng-show="can_change && consignee.itemPermission"
                                     class="btn btn-sm btn-default blue-border-button editBtn"
                                     ng-click="edit(consignee)">Edit
@@ -86,7 +87,7 @@
                                     ng-class="{'invisible': consignee.importedFromVision}">Delete
                             </button>
                         </span>
-                        <span ng-show="consignee.inEditMode || consignee.inEditRemarkMode">
+                        <span ng-show="consignee.inFullyEditMode || consignee.isEditingRemarks || consignee.isEditingLocation">
                             <button class="btn btn-sm btn-default blue-border-button saveBtn"
                                     ng-click="save(consignee)"
                                     ng-disabled="!consignee.isValid">Save

@@ -7,18 +7,27 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
     .factory('Consignee', function () {
         return function (json) {
             !json && (json = {});
-            Object.defineProperty(this, 'inEditMode', {
+            Object.defineProperty(this, 'inFullyEditMode', {
                 get: function () {
-                    if (this._inEditMode) {
+                    if (this._inFullyEditMode) {
                         return true;
                     }
                     return this.id === undefined || this.id === null;
                 }.bind(this)
             });
 
-            Object.defineProperty(this, 'inEditRemarkMode', {
+            Object.defineProperty(this, 'isEditingRemarks', {
                 get: function () {
-                    if (this._inEditRemarkMode) {
+                    if (this._isEditingRemarks) {
+                        return true;
+                    }
+                    return this.id === undefined || this.id === null;
+                }.bind(this)
+            });
+
+            Object.defineProperty(this, 'isEditingLocation', {
+                get: function () {
+                    if (this._isEditingLocation) {
                         return true;
                     }
                     return this.id === undefined || this.id === null;
@@ -40,23 +49,32 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             this.createdByUser = json.createdByUser || null;
             this.itemPermission = null;
 
-            this._inEditMode = false;
-            this._inEditRemarkMode = false;
+            this._inFullyEditMode = false;
+            this._isEditingRemarks = false;
+            this._isEditingLocation = false;
 
-            this.switchToEditMode = function () {
-                this._inEditMode = true;
-                this._inEditRemarkMode = true;
+            this.switchToFullyEditMode = function () {
+                this._inFullyEditMode = true;
+                this._isEditingRemarks = true;
+                this._isEditingLocation = true;
             };
-            this.switchToEditRemarkMode = function () {
-                this._inEditMode = false;
-                this._inEditRemarkMode = true;
+            this.switchToEditRemarksMode = function () {
+                this._inFullyEditMode = false;
+                this._isEditingRemarks = true;
+                this._isEditingLocation = false;
+            };
+            this.switchToEditLocationAndRemarksMode = function () {
+                this._inFullyEditMode = false;
+                this._isEditingRemarks = true;
+                this._isEditingLocation = true;
             };
             this.switchToReadMode = function () {
                 if (!this.id) {
                     throw new Error('cannot switch consignee without id to read mode');
                 }
-                this._inEditMode = false;
-                this._inEditRemarkMode = false;
+                this._inFullyEditMode = false;
+                this._isEditingRemarks = false;
+                this._isEditingLocation = false;
             };
         };
     })
@@ -74,6 +92,9 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
     .controller('ConsigneesController', function ($scope, $q, $timeout, ngToast, ConsigneeService, Consignee, LoaderService, UserService) {
         var timer;
         var initializing = true;
+        var CAN_EDIT_FULLY = 'can_edit_fully';
+        var CAN_EDIT_REMARKS = 'can_edit_remarks';
+        var CAN_EDIT_LOCATION_AND_REMARKS = 'can_edit_location_and_remarks';
 
         $scope.consignees = [];
         $scope.pagination = {page: 1};
@@ -145,13 +166,15 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
         $scope.edit = function (consignee) {
             ConsigneeService.userCanFullyEdit(consignee).then(function (responce) {
-                if (responce.permission == 'can_edit_fully')
-                    consignee.switchToEditMode();
-                else if (responce.permission == 'can_edit_partially')
-                    consignee.switchToEditRemarkMode();
+                if (responce.permission == CAN_EDIT_FULLY)
+                    consignee.switchToFullyEditMode();
+                else if (responce.permission == CAN_EDIT_REMARKS)
+                    consignee.switchToEditRemarksMode();
+                else if (responce.permission == CAN_EDIT_LOCATION_AND_REMARKS)
+                    consignee.switchToEditLocationAndRemarksMode();
                 else
                     consignee.switchToReadMode();
-            }).catch(function (result) {
+            }).catch(function () {
                 consignee.switchToReadMode();
             });
         };
@@ -236,7 +259,10 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         function getConsigneeItemPermission(consignee) {
             ConsigneeService.userCanFullyEdit(consignee)
                 .then(function (permissionResponse) {
-                    var hasChangePermission = permissionResponse.permission == 'can_edit_fully' || permissionResponse.permission == 'can_edit_partially';
+                    var hasChangePermission =
+                        permissionResponse.permission == CAN_EDIT_FULLY ||
+                        permissionResponse.permission == CAN_EDIT_REMARKS ||
+                        permissionResponse.permission == CAN_EDIT_LOCATION_AND_REMARKS;
                     consignee.itemPermission = hasChangePermission;
                 })
                 .catch(function (result) {

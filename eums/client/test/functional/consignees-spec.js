@@ -6,7 +6,7 @@ var ftUtils = require('./functional-test-utils.js');
 
 describe('Consignees and subconsignees', function () {
 
-    describe('main functionality', function() {
+    describe('main functionality', function () {
 
         beforeEach(function () {
             loginPage.visit();
@@ -78,19 +78,28 @@ describe('Consignees and subconsignees', function () {
             consigneesPage.setConsigneeRemarks('IP Editor Remarks');
             consigneesPage.saveConsignee();
 
+            // IP-Editor should be able to fully-edit of his own added item
             consigneesPage.searchFor('IP Editor Consignee');
             ftUtils.waitForPageToLoad();
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
+            consigneesPage.editConsignee();
+            expect(consigneesPage.consigneeNameEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeRemarksEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeLocationEditingInput.isDisplayed()).toBeTruthy();
 
             // Search for consignee imported from Vision
+            // IP-Editor should only be able to edit-remarks of vision imported item
             consigneesPage.searchFor('WAKISO');
             ftUtils.waitForPageToLoad();
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
+            consigneesPage.editConsignee();
+            expect(consigneesPage.consigneeNameEditingInput.isDisplayed()).toBeFalsy();
+            expect(consigneesPage.consigneeRemarksEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeLocationEditingInput.isDisplayed()).toBeFalsy();
 
             loginPage.logout();
-
             loginPage.visit();
             loginPage.loginAs('wakiso_viewer', 'wakiso');
             consigneesPage.visit();
@@ -102,7 +111,6 @@ describe('Consignees and subconsignees', function () {
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
 
             loginPage.logout();
-
             loginPage.visit();
             loginPage.loginAs('wakiso', 'wakiso');
             consigneesPage.visit();
@@ -117,7 +125,7 @@ describe('Consignees and subconsignees', function () {
             expect(consigneesPage.consigneeCount).toEqual(0);
         });
 
-        it('should give add, edit and delete consignees permissions to appropriate UNICEF roles', function() {
+        it('should give add, edit and delete consignees permissions to appropriate UNICEF roles', function () {
             loginPage.visit();
             loginPage.loginAs('unicef_admin', 'wakiso');
             consigneesPage.visit();
@@ -135,31 +143,44 @@ describe('Consignees and subconsignees', function () {
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
 
             // Search for consignee imported from Vision
+            // UNICEF-Admin should only be able to edit-location-and-remarks of vision imported item
             consigneesPage.searchFor('WAKISO');
             ftUtils.waitForPageToLoad();
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
+            consigneesPage.editConsignee();
+            expect(consigneesPage.consigneeNameEditingInput.isDisplayed()).toBeFalsy();
+            expect(consigneesPage.consigneeRemarksEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeLocationEditingInput.isDisplayed()).toBeTruthy();
 
             loginPage.logout();
-
             loginPage.visit();
             loginPage.loginAs('unicef_editor', 'wakiso');
             consigneesPage.visit();
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
+            // UNICEF-Editor should be able to fully-edit of other admin added item
             consigneesPage.searchFor('UNICEF Admin Consignee');
             ftUtils.waitForPageToLoad();
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
+            consigneesPage.editConsignee();
+            expect(consigneesPage.consigneeNameEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeRemarksEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeLocationEditingInput.isDisplayed()).toBeTruthy();
 
             // Search for consignee imported from Vision
+            // UNICEF-Editor should only be able to edit-location-and-remarks of vision imported item
             consigneesPage.searchFor('WAKISO');
             ftUtils.waitForPageToLoad();
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
-            expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();            
+            expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
+            consigneesPage.editConsignee();
+            expect(consigneesPage.consigneeNameEditingInput.isDisplayed()).toBeFalsy();
+            expect(consigneesPage.consigneeRemarksEditingInput.isDisplayed()).toBeTruthy();
+            expect(consigneesPage.consigneeLocationEditingInput.isDisplayed()).toBeTruthy();
 
             loginPage.logout();
-
             loginPage.visit();
             loginPage.loginAs('unicef_viewer', 'wakiso');
             consigneesPage.visit();
@@ -168,7 +189,7 @@ describe('Consignees and subconsignees', function () {
             consigneesPage.searchFor('UNICEF Admin Consignee');
             ftUtils.waitForPageToLoad();
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeFalsy();
-            expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();                        
+            expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
         });
     });
 });

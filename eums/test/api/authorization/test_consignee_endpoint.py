@@ -50,13 +50,13 @@ class ConsigneeEndpointTest(PermissionsTestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_should_give_unicef_admin_permission_to_partially_edit_vision_consignee(self):
+    def test_should_give_unicef_admin_permission_to_edit_location_and_remarks_of_vision_consignee(self):
         consignee = ConsigneeFactory(imported_from_vision=True)
 
         self._login_as('UNICEF_admin')
         response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
 
-        self.assertEqual(response.data['permission'], 'can_edit_partially')
+        self.assertEqual(response.data['permission'], 'can_edit_location_and_remarks')
         self.assertEqual(response.status_code, 200)
 
     def test_should_allow_unicef_admin_to_add_consignee(self):
@@ -151,6 +151,15 @@ class ConsigneeEndpointTest(PermissionsTestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Consignee.objects.count(), 0)
 
+    def test_should_give_unicef_admin_permission_to_edit_location_and_remarks_of_vision_consignee(self):
+        consignee = ConsigneeFactory(imported_from_vision=True)
+
+        self._login_as('UNICEF_admin')
+        response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.data['permission'], 'can_edit_location_and_remarks')
+        self.assertEqual(response.status_code, 200)
+
     # UNICEF Editors
 
     def test_should_give_unicef_editor_permission_to_fully_edit_consignee(self):
@@ -196,13 +205,13 @@ class ConsigneeEndpointTest(PermissionsTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Consignee.objects.count(), 1)
 
-    def test_should_give_unicef_editor_permission_to_partially_edit_vision_consignee(self):
+    def test_should_give_unicef_editor_permission_to_edit_location_and_remarks_of_vision_consignee(self):
         consignee = ConsigneeFactory(imported_from_vision=True)
 
         self._login_as('UNICEF_editor')
         response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
 
-        self.assertEqual(response.data['permission'], 'can_edit_partially')
+        self.assertEqual(response.data['permission'], 'can_edit_location_and_remarks')
         self.assertEqual(response.status_code, 200)
 
     # UNICEF Viewers
@@ -228,6 +237,15 @@ class ConsigneeEndpointTest(PermissionsTestCase):
         response = self.client.delete(ENDPOINT_URL + str(consignee.id) + '/')
 
         self.assertEqual(response.status_code, 403)
+
+    def test_should_disallow_unicef_viewer_to_edit_vision_consignee(self):
+        consignee = ConsigneeFactory(imported_from_vision=True)
+
+        self._login_as('UNICEF_viewer')
+        response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.data['permission'], 'consignee_forbidden')
+        self.assertEqual(response.status_code, 200)
 
     # IP Editors
 
@@ -459,6 +477,15 @@ class ConsigneeEndpointTest(PermissionsTestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    def test_should_give_ip_editor_permission_to_edit_remarks_of_vision_consignee(self):
+        consignee = ConsigneeFactory(imported_from_vision=True)
+
+        self._login_as('Implementing Partner_editor')
+        response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.data['permission'], 'can_edit_remarks')
+        self.assertEqual(response.status_code, 200)
+
     # IP Viewers
 
     def test_should_disallow_ip_viewer_to_add_consignee(self):
@@ -482,6 +509,15 @@ class ConsigneeEndpointTest(PermissionsTestCase):
         response = self.client.delete(ENDPOINT_URL + str(consignee.id) + '/')
 
         self.assertEqual(response.status_code, 403)
+
+    def test_should_disallow_ip_viewer_to_edit_vision_consignee(self):
+        consignee = ConsigneeFactory(imported_from_vision=True)
+
+        self._login_as('Implementing Partner_viewer')
+        response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.data['permission'], 'consignee_forbidden')
+        self.assertEqual(response.status_code, 200)
 
     # Helper methods
 
