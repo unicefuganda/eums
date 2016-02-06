@@ -26,6 +26,13 @@ describe('ContactController', function () {
             phone: '+234778945675',
             createdByUserId: 5,
             ips: [1]
+        },
+        {
+            _id: 3,
+            firstName: 'John',
+            lastName: 'Doe',
+            phone: '+234778945676',
+            ips: []
         }
     ];
     var adminPermissions = [
@@ -147,6 +154,11 @@ describe('ContactController', function () {
         expect(scope.contacts).toEqual(stubContacts);
         expect(scope.contacts[0].createdByUserName).toEqual('UNICEF');
         expect(scope.contacts[0].ipNames).toEqual(['WAKISO DHO']);
+        expect(scope.contacts[1].createdByUserName).toEqual('UNICEF');
+        expect(scope.contacts[1].ipNames).toEqual(['WAKISO DHO']);
+        expect(scope.contacts[2].createdByUserName).toEqual('');
+        expect(scope.contacts[2].ipNames).toEqual([]);
+
     });
 
     describe('showing modals', function () {

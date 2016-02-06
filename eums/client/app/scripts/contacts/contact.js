@@ -159,9 +159,13 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         function convertUserIdToName(contacts) {
             contacts.forEach(function (contact) {
-                UserService.getUserById(contact.createdByUserId).then(function (user) {
-                    contact.createdByUserName = getEntityName(user.groups[0]);
-                })
+                if (!contact.createdByUserId) {
+                    contact.createdByUserName = '';
+                } else {
+                    UserService.getUserById(contact.createdByUserId).then(function (user) {
+                        contact.createdByUserName = getEntityName(user.groups[0]);
+                    })
+                }
             });
         }
 
