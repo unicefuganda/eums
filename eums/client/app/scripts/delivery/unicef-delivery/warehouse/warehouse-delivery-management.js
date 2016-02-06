@@ -7,7 +7,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                                                                    IPService, ngToast, ContactService, UserService, SystemSettingsService) {
         $scope.datepicker = {};
         $scope.districts = [];
-        $scope.districtsLoaded = false;
         $scope.contact = {};
         $scope.selectedLocation = {};
         $scope.deliveryNodes = [];
@@ -31,7 +30,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
             contact.id = contact._id;
             event.stopPropagation();
-
         });
 
         $scope.isDeliveryTracked = function () {
@@ -64,14 +62,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             promises.push(SystemSettingsService.getSettingsWithDefault());
             $q.all(promises).then(function (returns) {
                 $scope.systemSettings = returns[1];
-
-                IPService.loadAllDistricts().then(function (response) {
-                    $scope.districts = response.data.map(function (district) {
-                        return {id: district, name: district};
-                    });
-                    $scope.districtsLoaded = true;
-                });
-
                 showLoadingModal(true);
                 getDelivery();
                 showLoadingModal(false);
@@ -110,17 +100,17 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         }
 
         function isTimeLimitationValid() {
-            $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution === 0 ? false : true;
+            $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution !== 0;
             return $scope.valid_time_limitation;
         }
 
         var setLocationAndContactFields = function () {
-            ContactService.get($scope.contact.id)
-                .then(function (contact) {
-                    $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
-                });
-
-            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
+            ContactService.get($scope.contact.id).then(function (contact) {
+                if (!contact) {
+                    return;
+                }
+                $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+            });
         };
 
         function releaseOrderItemsTotalValue() {

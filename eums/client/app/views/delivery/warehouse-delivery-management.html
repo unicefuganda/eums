@@ -69,12 +69,12 @@
 
                     <div class="col-md-12 margin-bottom-10">
                         <div class="bold-label pad-small">Choose {{ systemSettings.district_label }}</div>
-                        <div id="input-location" class="pad-small col-md-10" ng-if="districtsLoaded"
+                        <div id="input-location" class="pad-small col-md-10"
                              ng-class="{'has-error': !selectedLocation.id && errors}">
                             <div class="table-contact-form-group col-md-10">
                                 <input type="hidden" search-from-list
                                        placeholder="All {{ systemSettings.district_label }}s"
-                                       list="{{ districts }}"
+                                       list="$districts"
                                        ng-disabled="isDeliveryTracked() || !can_add_distributionplan"
                                        value="{{ selectedLocation.id }}"
                                        ng-model="selectedLocation.id"

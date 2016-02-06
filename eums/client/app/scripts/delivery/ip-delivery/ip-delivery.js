@@ -213,13 +213,14 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         }
 
         function setLocationAndContactFields() {
-            if ($scope.contact.id)
-                ContactService.get($scope.contact.id)
-                    .then(function (contact) {
-                        if (contact) {
-                            $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
-                        }
-                    });
+            if ($scope.contact.id) {
+                ContactService.get($scope.contact.id).then(function (contact) {
+                    if (!contact) {
+                        return;
+                    }
+                    $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+                });
+            }
             $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
         }
 

@@ -4,6 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var ipWarehousePage = require('./pages/ip-warehouse-page.js');
+var ftUtils = require('./functional-test-utils.js');
 
 describe('Warehouse Delivery', function () {
 
@@ -21,7 +22,7 @@ describe('Warehouse Delivery', function () {
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-danger');
         warehouseDeliveryPage.selectWaybillByNumber(WAYBILL_NUMBER);
 
-        warehouseDeliveryPage.selectContact('John');
+        warehouseDeliveryPage.selectContact('John Doe');
         warehouseDeliveryPage.selectLocation('Wakiso');
         warehouseDeliveryPage.enableTracking();
         warehouseDeliveryPage.saveDelivery();
