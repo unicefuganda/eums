@@ -95,13 +95,13 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         }, true);
 
         function init() {
+            initUpload();
             var promises = [];
             promises.push(loadUserPermissions());
             promises.push(SystemSettingsService.getSettingsWithDefault());
             $q.all(promises).then(function (returns) {
                 $scope.systemSettings = returns[1];
                 loadDeliveries();
-                initUpload();
                 IPService.loadAllDistricts().then(function (response) {
                     $scope.districts = response.data.map(function (district) {
                         return {id: district, name: district};
