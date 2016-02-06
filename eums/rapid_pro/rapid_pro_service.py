@@ -42,22 +42,40 @@ class RapidProService(object):
         payload = FlowRequestTemplate().build(phone=contact['phone'], flow=self.flow_id(flow),
                                               sender=sender, item=item,
                                               contact_name="%s %s" % (contact['firstName'], contact['lastName']))
+
+        logger.info("payload %s" % json.dumps(payload))
+
+        logger.info("url: %s" % settings.RAPIDPRO_URLS['RUNS'])
+        logger.info("header: %s" % HEADER)
+
         if settings.RAPIDPRO_LIVE:
-            response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER)
+            response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER, verify=False)
+            logger.info("Response from RapidPro: %s, %s" % (response.status_code, response.json()))
 
     def flow(self, flow_id):
+        logger.info("flow_id: %s" % flow_id)
+
         self.__sync_if_required()
+
         flow_id = int(flow_id)
         if flow_id not in self.cache.flow_label_mapping:
             raise FlowLabelNonExistException()
+
         rapid_pro_flow_label = self.cache.flow_label_mapping[flow_id]
+        print "rapid_pro_flow_label=%s" % rapid_pro_flow_label
+
         flow_label = RapidProService.internal_flow_label(rapid_pro_flow_label)
+
+        print "label=%s" % flow_label
+
         return Flow.objects.filter(label__in=flow_label).first()
 
     def flow_id(self, flow):
+        logger.info("flow_id: %s" % flow)
+        logger.info("url: %s" % settings.RAPIDPRO_URLS['RUNS'])
+        logger.info("header: %s" % HEADER)
 
         self.__sync_if_required()
-
         rapid_pro_flow_label = RapidProService.rapid_pro_label(flow.label)
         if rapid_pro_flow_label is not None:
             for flow_id, labels in self.cache.flow_label_mapping.iteritems():
@@ -72,12 +90,14 @@ class RapidProService(object):
             self.__sync()
 
     def __sync(self):
-        response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER)
+        response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER, verify=False)
+        print "~~~~~response: %s" % response
         if response.status_code == 200:
             self.cache.invalidate()
             flows = response.json()['results']
+            print "flows::::%s" % flows
             self.cache.update(
-                    flow_label_mapping={rapid['flow']: rapid['labels'] for rapid in flows if len(rapid['labels']) > 0})
+                flow_label_mapping={rapid['flow']: rapid['labels'] for rapid in flows if len(rapid['labels']) > 0})
         else:
             logger.warning("Failed to get flows information from Rapidpro, response=%s" % response)
 
