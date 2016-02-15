@@ -75,9 +75,10 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 });
 
                 attrs.$observe('placeholder', function (newValue) {
-                    // console.log("=PLACEHOLDER=> " + newValue);
-                    $(element).siblings('div').find('a span.select2-chosen').text(newValue);
-                    $(element).attr('placeholder', newValue);
+                    if (!$(element).val()) {
+                        $(element).siblings('div').find('a span.select2-chosen').text(newValue);
+                        $(element).attr('placeholder', newValue);
+                    }
                 });
 
                 scope.$on('clear-list', function () {
@@ -166,7 +167,6 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 scope.$watch(function () {
                     return scope.$parent.$eval(attrs.ngModel);
                 }, function (newValue, oldValue) {
-                    // console.log("=Contacts=> " + newValue + ', ' + oldValue);
                     $(element).select2('val', newValue ? newValue : '');
                 });
 
