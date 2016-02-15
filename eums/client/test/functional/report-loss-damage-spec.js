@@ -2,6 +2,7 @@
 
 var loginPage = require('./pages/login-page.js');
 var ipReportLossPage = require('./pages/ip-report-loss-page.js');
+var ipWarehousePage = require('./pages/ip-warehouse-page.js');
 
 describe('IP Report Loss Damage', function () {
 
@@ -14,13 +15,17 @@ describe('IP Report Loss Damage', function () {
         ipReportLossPage.visit(reportLossItemId);
 
         expect(ipReportLossPage.itemDescription).toBe('Item Name: Three-pronged power cables');
-        expect(ipReportLossPage.quantityAvailable).toBe('Quantity Available: 50');
+        expect(ipReportLossPage.quantityAvailable).toBe('Quantity Available: 60');
         expect(ipReportLossPage.totalSelectedQuantity).toBe('0');
 
         ipReportLossPage.selectQuantityLost('10');
+        ipReportLossPage.inputLostJustification('Some laptops were stolen');
         ipReportLossPage.saveLosses();
 
-        //expect(ipReportLossPage.toastMessage).toContain('Loss reported successfully');
-        //expect(ipReportLossPage.quantityAvailable).toBe('Quantity Available: 40');
+        browser.sleep(1000);
+
+        var savedItem = ipWarehousePage.firstItem;
+        expect(savedItem.description).toBe('Three-pronged power cables');
+        expect(savedItem.balance).toBe('50');
     });
 });

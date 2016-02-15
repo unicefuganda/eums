@@ -1,137 +1,259 @@
 var EC = protractor.ExpectedConditions;
-var IpWarehousePage = function () {};
+var IpWarehousePage = function () {
+};
 
 IpWarehousePage.prototype = Object.create({}, {
 
-    url: { get: function () { return '/#/ip-items'; }},
+    url: {
+        get: function () {
+            return '/#/ip-items';
+        }
+    },
 
-    visit: { value: function () {
-        browser.get(this.url);
-    }},
+    visit: {
+        value: function () {
+            browser.get(this.url);
+        }
+    },
 
-    searchBar: { get: function () {
-        return element(by.id('filter'));
-    }},
+    searchBar: {
+        get: function () {
+            return element(by.id('filter'));
+        }
+    },
 
-    searchForItem: { value: function (searchTerm) {
-        var loadingCog = element(by.css('.glyphicon-cog'));
-        var searchReady = EC.and(EC.visibilityOf(this.searchBar), EC.stalenessOf(loadingCog));
+    searchForItem: {
+        value: function (searchTerm) {
+            var loadingCog = element(by.css('.glyphicon-cog'));
+            var searchReady = EC.and(EC.visibilityOf(this.searchBar), EC.stalenessOf(loadingCog));
 
-        browser.wait(searchReady, 5000, "Timeout exceeded while waiting for search to be ready");
-        this.searchBar.clear().sendKeys(searchTerm);
-        browser.sleep(2000);
-        browser.wait(searchReady, 5000, "Timeout exceeded while retrieving search results");
-    }},
+            browser.wait(searchReady, 5000, "Timeout exceeded while waiting for search to be ready");
+            this.searchBar.clear().sendKeys(searchTerm);
+            browser.sleep(2000);
+            browser.wait(searchReady, 5000, "Timeout exceeded while retrieving search results");
+        }
+    },
 
-    warehouseItemCount: { get: function () {
-        return element.all(by.repeater('($index, item) in items')).count();
-    }},
+    warehouseItemCount: {
+        get: function () {
+            return element.all(by.repeater('($index, item) in items')).count();
+        }
+    },
 
-    itemDescriptions: { get: function () { return element.all(by.repeater('($index, item) in items').column('item.itemDescription')).getText(); }},
-    itemBalances: { get: function () { return element.all(by.repeater('($index, item) in items').column('item.availableBalance')).getText(); }},
+    itemDescriptions: {
+        get: function () {
+            return element.all(by.repeater('($index, item) in items').column('item.itemDescription')).getText();
+        }
+    },
+    itemBalances: {
+        get: function () {
+            return element.all(by.repeater('($index, item) in items').column('item.availableBalance')).getText();
+        }
+    },
 
-    viewFirstItem: { value: function () {
-        element.all(by.css('.viewDelivery')).get(0).click();
-        waitForPageToLoad();
-    }},
-    reportOnFirstItem: { value: function () {
-        element.all(by.css('.reportDelivery')).get(0).click();
-        waitForPageToLoad();
-    }},
+    firstItem: {
+        get: function () {
+            return {
+                description: element(by.repeater('($index, item) in items').row(0).column('item.itemDescription')).getText(),
+                balance: element(by.repeater('($index, item) in items').row(0).column('item.availableBalance')).getText()
+            };
+        }
+    },
 
-    itemName: { get: function () { return element(by.id('itemNameLabel')).getText(); }},
-    itemAvailableQty: { get: function () { return element(by.id('qty-available-label')).getText(); }},
+    viewFirstItem: {
+        value: function () {
+            element.all(by.css('.viewDelivery')).get(0).click();
+            waitForPageToLoad();
+        }
+    },
+    reportOnFirstItem: {
+        value: function () {
+            element.all(by.css('.reportDelivery')).get(0).click();
+            waitForPageToLoad();
+        }
+    },
 
-    notificationWarning: { get: function () { return element(by.css('.notification-warning'))}},
+    itemName: {
+        get: function () {
+            return element(by.id('itemNameLabel')).getText();
+        }
+    },
+    itemAvailableQty: {
+        get: function () {
+            return element(by.id('qty-available-label')).getText();
+        }
+    },
 
-    specifyShipmentDate: { value: function (date) {
-        element(by.css('#input-delivery-date input')).clear().sendKeys(date);
-    }},
-    specifyConsignee: { value: function (input) {
-        fillSelect2Chosen('input-consignee', input);
-    }},
-    specifyContact: { value: function (input) {
-        fillSelect2Chosen('input-contact', input);
-    }},
-    specifyLocation: { value: function (input) {
-        fillSelect2Chosen('input-location', input);
-    }},
-    markAsEndUser: { value: function () {
-        element(by.id('end-user-check')).click();
-    }},
+    notificationWarning: {
+        get: function () {
+            return element(by.css('.notification-warning'))
+        }
+    },
 
-    specifyQuantity: { value: function (input) {
-        element(by.id('quantity-shipped')).clear().sendKeys(input);
-    }},
+    specifyShipmentDate: {
+        value: function (date) {
+            element(by.css('#input-delivery-date input')).clear().sendKeys(date);
+        }
+    },
+    specifyConsignee: {
+        value: function (input) {
+            fillSelect2Chosen('input-consignee', input);
+        }
+    },
+    specifyContact: {
+        value: function (input) {
+            fillSelect2Chosen('input-contact', input);
+        }
+    },
+    specifyLocation: {
+        value: function (input) {
+            fillSelect2Chosen('input-location', input);
+        }
+    },
+    markAsEndUser: {
+        value: function () {
+            element(by.id('end-user-check')).click();
+        }
+    },
 
-    saveDelivery: { value: function () {
-        element(by.id('save-delivery-report')).click();
-    }},
+    specifyQuantity: {
+        value: function (input) {
+            element(by.id('quantity-shipped')).clear().sendKeys(input);
+        }
+    },
 
-    discardDelivery: { value: function () {
-        element(by.id('discard-delivery-report')).click();
-        waitForPageToLoad();
-    }},
+    saveDelivery: {
+        value: function () {
+            element(by.id('save-delivery-report')).click();
+        }
+    },
 
-    deliveryCount: { get: function () {
-        return element.all(by.repeater('($index, node) in deliveryNodes')).count();
-    }},
+    discardDelivery: {
+        value: function () {
+            element(by.id('discard-delivery-report')).click();
+            waitForPageToLoad();
+        }
+    },
 
-    deliveryQuantities: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.quantityIn')).getText(); }},
-    deliveryDates: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.deliveryDate')).getText(); }},
-    deliveryConsignees: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.consigneeName')).getText(); }},
-    deliveryContacts: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.contactPerson.firstName')).getText(); }},
-    deliveryLocations: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.location')).getText(); }},
+    deliveryCount: {
+        get: function () {
+            return element.all(by.repeater('($index, node) in deliveryNodes')).count();
+        }
+    },
 
-    createNewDelivery: { value: function () {
-        element(by.id('create-new-delivery')).click();
-        waitForPageToLoad();
-    }},
+    deliveryQuantities: {
+        get: function () {
+            return element.all(by.repeater('($index, node) in deliveryNodes').column('node.quantityIn')).getText();
+        }
+    },
+    deliveryDates: {
+        get: function () {
+            return element.all(by.repeater('($index, node) in deliveryNodes').column('node.deliveryDate')).getText();
+        }
+    },
+    deliveryConsignees: {
+        get: function () {
+            return element.all(by.repeater('($index, node) in deliveryNodes').column('node.consigneeName')).getText();
+        }
+    },
+    deliveryContacts: {
+        get: function () {
+            return element.all(by.repeater('($index, node) in deliveryNodes').column('node.contactPerson.firstName')).getText();
+        }
+    },
+    deliveryLocations: {
+        get: function () {
+            return element.all(by.repeater('($index, node) in deliveryNodes').column('node.location')).getText();
+        }
+    },
 
-    viewSubconsignees: { value: function () {
-        element.all(by.css('.subconsignee-column')).get(0).click();
-        waitForPageToLoad();
-    }},
+    createNewDelivery: {
+        value: function () {
+            element(by.id('create-new-delivery')).click();
+            waitForPageToLoad();
+        }
+    },
 
-    addSubconsignee: { value: function () {
-        element(by.id('new-subconsignee-btn')).click();
-    }},
+    viewSubconsignees: {
+        value: function () {
+            element.all(by.css('.subconsignee-column')).get(0).click();
+            waitForPageToLoad();
+        }
+    },
 
-    specifySubQuantity: { value: function (input) {
-        element(by.css('#quantity-shipped input')).clear().sendKeys(input);
-    }},
+    addSubconsignee: {
+        value: function () {
+            element(by.id('new-subconsignee-btn')).click();
+        }
+    },
 
-    subDeliveryCount: { get: function () {
-        return element.all(by.repeater('delivery in deliveries')).count();
-    }},
+    specifySubQuantity: {
+        value: function (input) {
+            element(by.css('#quantity-shipped input')).clear().sendKeys(input);
+        }
+    },
 
-    fullUrl: { value: function(partialUrl) {
-        return browser.baseUrl + partialUrl;
-    }},
+    subDeliveryCount: {
+        get: function () {
+            return element.all(by.repeater('delivery in deliveries')).count();
+        }
+    },
 
-    viewFirstSubconsignee: { value: function () {
-        element.all(by.css('.viewSubConsignee')).get(0).click();
-        waitForPageToLoad();
-    }},
+    fullUrl: {
+        value: function (partialUrl) {
+            return browser.baseUrl + partialUrl;
+        }
+    },
 
-    subDeliveryQuantities: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.quantityIn')).getText(); }},
-    subDeliveryDates: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.deliveryDate')).getText(); }},
-    subDeliveryConsignees: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.consigneeName')).getText(); }},
-    subDeliveryContacts: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.contactPerson.firstName')).getText(); }},
-    subDeliveryLocations: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.location')).getText(); }},
+    viewFirstSubconsignee: {
+        value: function () {
+            element.all(by.css('.viewSubConsignee')).get(0).click();
+            waitForPageToLoad();
+        }
+    },
 
-    breadCrumbs: { get: function () { return element.all(by.css('.breadcrumb li')); }}
+    subDeliveryQuantities: {
+        get: function () {
+            return element.all(by.repeater('delivery in deliveries').column('delivery.quantityIn')).getText();
+        }
+    },
+    subDeliveryDates: {
+        get: function () {
+            return element.all(by.repeater('delivery in deliveries').column('delivery.deliveryDate')).getText();
+        }
+    },
+    subDeliveryConsignees: {
+        get: function () {
+            return element.all(by.repeater('delivery in deliveries').column('delivery.consigneeName')).getText();
+        }
+    },
+    subDeliveryContacts: {
+        get: function () {
+            return element.all(by.repeater('delivery in deliveries').column('delivery.contactPerson.firstName')).getText();
+        }
+    },
+    subDeliveryLocations: {
+        get: function () {
+            return element.all(by.repeater('delivery in deliveries').column('delivery.location')).getText();
+        }
+    },
+
+    breadCrumbs: {
+        get: function () {
+            return element.all(by.css('.breadcrumb li'));
+        }
+    }
 });
 
 module.exports = new IpWarehousePage;
 
-function fillSelect2Chosen (id, input) {
+function fillSelect2Chosen(id, input) {
     element(by.id(id)).click();
     element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
     element(by.id('select2-drop')).element(by.css('.select2-results li')).click();
 }
 
-function waitForPageToLoad () {
+function waitForPageToLoad() {
     var loadingModal = element(by.id('loading'));
     var fadingModal = element(by.css('.modal-backdrop.fade'));
     var pageHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));

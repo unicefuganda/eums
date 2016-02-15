@@ -3,7 +3,7 @@
     <div class="eums page-header row">
         <div class="pull-left pad-top-10">Report Loss/Damage</div>
         <div class="pull-right">
-            <a href="#/deliveries-by-ip/{{ consigneeItem.itemId }}" class="btn blue-border-button">
+            <a href="#/ip-items" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
                 Back to Previous
             </a>
@@ -34,9 +34,9 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="sub-header"><label for="justification-remark">JUSTIFICATION FOR LOSS/DAMAGE FOR ITEMS</label></div>
+            <div class="sub-header">JUSTIFICATION FOR LOSS/DAMAGE FOR ITEMS</div>
             <div>
-                <textarea rows="5" id="justification-remark" class="form-control" ng-model="justification"></textarea>
+                <textarea rows="5" class="form-control" ng-model="justification" id="remark"></textarea>
             </div>
         </div>
         <div class="col-md-4 last-column">
@@ -104,7 +104,7 @@
                      ng-show="quantityAvailable" ng-click="discard(item.id)">
                     <span class="glyphicon glyphicon-remove"></span>Discard
                 </div>
-                <button id="" type="button" class="btn btn-primary"
+                <button id="save-losses" type="button" class="btn btn-primary"
                         ng-click="save()">
                     <i class="glyphicon glyphicon-floppy-save"> </i>
                     Save

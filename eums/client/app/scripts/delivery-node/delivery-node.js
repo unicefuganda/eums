@@ -88,7 +88,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                     nodeLosses.each(function (loss) {
                         lossPromises.push($http.patch(
                             EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + loss.id + '/report_loss/',
-                            {quantity: loss.quantity}));
+                            {quantity: loss.quantity, justification: loss.justification}));
                     });
                     return $q.all(lossPromises);
                 }

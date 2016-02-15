@@ -153,8 +153,8 @@ describe('IP Delivery Report Loss Controller', function () {
         deliveryNodeTwo.quantitySelected = 4;
         scope.save();
         expect(mockDeliveryNodeService.reportLoss).toHaveBeenCalledWith([
-            {id: deliveryNodeOne.id, quantity: 8},
-            {id: deliveryNodeTwo.id, quantity: 4}
+            {id: deliveryNodeOne.id, quantity: 8, justification: ''},
+            {id: deliveryNodeTwo.id, quantity: 4, justification: ''}
         ]);
     });
 
@@ -164,7 +164,7 @@ describe('IP Delivery Report Loss Controller', function () {
         deliveryNodeOne.quantitySelected = 8;
         scope.save();
         expect(mockDeliveryNodeService.reportLoss).toHaveBeenCalledWith([
-            {id: deliveryNodeOne.id, quantity: 8}
+            {id: deliveryNodeOne.id, quantity: 8, justification: ''}
         ]);
     });
 
@@ -176,7 +176,18 @@ describe('IP Delivery Report Loss Controller', function () {
         deliveryNodeTwo.quantitySelected = 0;
         scope.save();
         expect(mockDeliveryNodeService.reportLoss).toHaveBeenCalledWith([
-            {id: deliveryNodeOne.id, quantity: 8}
+            {id: deliveryNodeOne.id, quantity: 8, justification: ''}
+        ]);
+    });
+
+    it('should include content when justification textarea is not empty', function () {
+        scope.$apply();
+        var deliveryNodeOne = scope.selectedDeliveries.first();
+        deliveryNodeOne.quantitySelected = 3;
+        scope.justification = 'fire';
+        scope.save();
+        expect(mockDeliveryNodeService.reportLoss).toHaveBeenCalledWith([
+            {id: deliveryNodeOne.id, quantity: 3, justification: 'fire'}
         ]);
     });
 

@@ -41,6 +41,12 @@
                     <span class="glyphicon glyphicon-plus"></span>
                     Report New Distribution
                 </a>
+                <a ng-disabled="!item.availableBalance" href="#/deliveries-by-ip/{{ item.item }}/report-loss"
+                   ng-show="can_add_distributionplan_node"
+                   class="btn btn-sm btn-primary reportDelivery">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Report Loss
+                </a>
             </td>
         </tr>
         </tbody>

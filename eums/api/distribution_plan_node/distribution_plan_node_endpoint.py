@@ -76,8 +76,9 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     @detail_route(methods=['patch'])
     def report_loss(self, request, pk=None):
         quantity_lost = request.data['quantity']
+        justification = request.data['justification']
         node = self.get_object()
-        node.losses.create(quantity=quantity_lost)
+        node.losses.create(quantity=quantity_lost, remark=justification)
         node.save() # for updating the balance on the node - DO NOT REMOVE
         return Response(status=status.HTTP_204_NO_CONTENT)
 

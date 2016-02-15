@@ -27,6 +27,12 @@ IpReportLossPage.prototype = Object.create({}, {
         }
     },
 
+    inputLostJustification: {
+        value: function (input) {
+            element(by.id('remark')).clear().sendKeys(input);
+        }
+    },
+
     saveLosses: {
         value: function () {
             element(by.id('save-losses')).click();
@@ -36,12 +42,6 @@ IpReportLossPage.prototype = Object.create({}, {
     totalSelectedQuantity: {
         get: function () {
             return element(by.id('total-selected-quantity')).getText();
-        }
-    },
-
-    toastMessage: {
-        get: function () {
-            return element(by.repeater('message in messages')).getText();
         }
     }
 });

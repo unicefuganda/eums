@@ -296,7 +296,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(DeliveryNodeLoss.objects.count(), 0)
         node_one = DeliveryNodeFactory(acknowledged=100, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        loss = {'quantity': 15}
+        loss = {'quantity': 15, 'justification': 'stolen'}
 
         response = self.client.patch(ENDPOINT_URL + str(node_one.id) + '/report_loss/', data=json.dumps(loss), content_type='application/json')
 
@@ -305,6 +305,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(DeliveryNodeLoss.objects.count(), 1)
         self.assertEqual(node.balance, 85)
+        self.assertEqual(DeliveryNodeLoss.objects.first().remark, 'stolen')
 
     def test_returned_nodes_should_have_order_type_field(self):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))

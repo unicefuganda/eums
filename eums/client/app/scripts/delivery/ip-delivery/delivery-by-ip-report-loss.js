@@ -8,12 +8,17 @@ angular.module('DeliveryByIpReportLoss', ['eums.config', 'ngToast'])
                                                               LoaderService, DeliveryNodeService, $location) {
         var itemId = $routeParams.itemId;
 
+        $scope.justification = "";
         $scope.save = function () {
             var nodesWithQuantity = $scope.selectedDeliveries.filter(function (deliveryNode) {
                 return deliveryNode.quantitySelected > 0;
             });
             var nodesWithLoss = nodesWithQuantity.map(function (deliveryNode) {
-                return {id: deliveryNode.id, quantity: deliveryNode.quantitySelected};
+                return {
+                    id: deliveryNode.id,
+                    quantity: deliveryNode.quantitySelected,
+                    justification: $scope.justification
+                };
             });
 
             if (nodesWithLoss.length && scopeDataIsValid(nodesWithQuantity)) {
