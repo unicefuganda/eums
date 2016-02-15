@@ -1,3 +1,5 @@
+'use strict';
+
 describe('New IP Delivery Controller', function () {
     var mockIpService, location, scope, q, mockDeliveryService, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
         mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups, timeout, mockSystemSettingsService;
@@ -21,18 +23,12 @@ describe('New IP Delivery Controller', function () {
             {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30, balance: 30},
             {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40, balance: 40},
             {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10, balance: 10},
-            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20, balance: 20},
+            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20, balance: 20}
         ];
 
         deliveryGroups = [
-            {
-                orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4, isOpen: function () {
-            }
-            },
-            {
-                orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2, isOpen: function () {
-            }
-            }
+            { orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4, isOpen: function () {} },
+            { orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2, isOpen: function () {} }
         ];
 
         inject(function ($controller, $rootScope, $q, $location, ngToast, $timeout) {
@@ -51,7 +47,7 @@ describe('New IP Delivery Controller', function () {
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
             mockItemService = jasmine.createSpyObj('ItemService', ['get']);
-            mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter'])
+            mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
             mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
             mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
@@ -142,7 +138,7 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
         var selectedDeliveries = [
             {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10, balance: 10},
-            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20, balance: 20},
+            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20, balance: 20}
         ];
         expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
     });

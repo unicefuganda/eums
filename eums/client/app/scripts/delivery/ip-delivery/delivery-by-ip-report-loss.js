@@ -4,24 +4,37 @@ angular.module('DeliveryByIpReportLoss', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('DeliveryByIpReportLossController', function ($scope, $routeParams, ngToast, $q, ConsigneeItemService, DeliveryNodeService) {
+    .controller('DeliveryByIpReportLossController', function ($scope, $routeParams, ngToast, $q, ConsigneeItemService,
+                                                              LoaderService, DeliveryNodeService, $location) {
         var itemId = $routeParams.itemId;
 
         $scope.save = function () {
             var nodesWithQuantity = $scope.selectedDeliveries.filter(function (deliveryNode) {
-               return deliveryNode.quantitySelected > 0;
+                return deliveryNode.quantitySelected > 0;
             });
             var nodesWithLoss = nodesWithQuantity.map(function (deliveryNode) {
                 return {id: deliveryNode.id, quantity: deliveryNode.quantitySelected};
             });
 
-            // Show loader
+            if (nodesWithLoss.length && scopeDataIsValid(nodesWithQuantity)) {
+                LoaderService.showLoader();
+                DeliveryNodeService.reportLoss(nodesWithLoss).then(function () {
+                    createToast('Loss/Damage Successfully Reported', 'success');
+                    $location.path('/ip-items');
+                }).catch(function () {
+                    createToast('Failed to Report Loss/Damage', 'danger');
+                }).finally(LoaderService.hideLoader);
+            } else {
+                createToast('Cannot save. Please fill out or fix values', 'danger');
+            }
+        };
 
-            DeliveryNodeService.reportLoss(nodesWithLoss).then(function (responses) {
-                console.log('success');
-                // Hide loader
-                // Show toast
-            });
+        $scope.updateSelectedOrderNumber = function (orderNumber) {
+            if ($scope.selectedOrderNumber != orderNumber) {
+                $scope.selectedOrderNumber = orderNumber;
+            } else {
+                $scope.selectedOrderNumber = undefined;
+            }
         };
 
         $scope.$watch('selectedDeliveries', function (deliveries) {
@@ -33,19 +46,30 @@ angular.module('DeliveryByIpReportLoss', ['eums.config', 'ngToast'])
             }
         }, true);
 
+        $scope.$watch('selectedOrderNumber', function (selectedOrderNumber) {
+            if ($scope.allDeliveries) {
+                $scope.selectedDeliveries = $scope.allDeliveries.filter(function (delivery) {
+                    return delivery.orderNumber == selectedOrderNumber;
+                });
+            }
+        });
+
         function init() {
-            ConsigneeItemService.filter({item: itemId}).then(function (response) {
+            var promises = [];
+            promises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
                 var item = response.results.first();
                 $scope.consigneeItem = {
                     itemId: item.item,
                     itemDescription: item.itemDescription,
                     quantityAvailable: item.availableBalance
                 };
-            });
-
-            DeliveryNodeService.filter({item__item: itemId, is_distributable: true}).then(function (nodes) {
+            }));
+            promises.push(DeliveryNodeService.filter({
+                item__item: itemId,
+                is_distributable: true
+            }).then(function (nodes) {
                 $scope.deliveryGroups = [];
-                //$scope.selectedOrderNumber = "";
+                $scope.selectedOrderNumber = "";
                 nodes.forEach(function (node) {
                     updateDeliveryGroups(node, nodes);
                 });
@@ -53,9 +77,13 @@ angular.module('DeliveryByIpReportLoss', ['eums.config', 'ngToast'])
                 $scope.selectedDeliveries = $scope.allDeliveries.filter(function (delivery) {
                     return delivery.orderNumber == $scope.deliveryGroups.first().orderNumber;
                 });
-                //$scope.selectedOrderNumber = $scope.deliveryGroups.first().orderNumber;
-            });
+                $scope.selectedOrderNumber = $scope.deliveryGroups.first().orderNumber;
+            }));
 
+            LoaderService.showLoader();
+            $q.all(promises).catch(function () {
+                createToast('failed to load deliveries', 'danger');
+            }).finally(LoaderService.hideLoader);
         }
 
         function updateDeliveryGroups(node, nodes) {
@@ -68,12 +96,11 @@ angular.module('DeliveryByIpReportLoss', ['eums.config', 'ngToast'])
                 deliveryGroup.totalQuantity = getTotalValueFrom(nodes, orderNumber, 'balance', function (balance) {
                     return balance || 0;
                 });
-                deliveryGroup.numberOfShipments = getTotalValueFrom(nodes, orderNumber, 'numberOfShipment', function (balance) {
+                deliveryGroup.numberOfShipments = getTotalValueFrom(nodes, orderNumber, 'numberOfShipment', function () {
                     return 1;
                 });
                 deliveryGroup.isOpen = function () {
-                    return true;
-                    //return this.orderNumber == $scope.selectedOrderNumber;
+                    return this.orderNumber == $scope.selectedOrderNumber;
                 };
                 $scope.deliveryGroups.push(deliveryGroup);
             }
@@ -86,6 +113,27 @@ angular.module('DeliveryByIpReportLoss', ['eums.config', 'ngToast'])
                 }
                 return acc;
             }, 0);
+        }
+
+        function scopeDataIsValid(parentDeliveries) {
+            return allQuantitiesAreValid() && deliveriesAreFromOneOrder(parentDeliveries);
+        }
+
+        function allQuantitiesAreValid() {
+            return !$scope.selectedDeliveries.any(function (delivery) {
+                return delivery.quantitySelected > delivery.balance;
+            });
+        }
+
+        function deliveriesAreFromOneOrder(parentDeliveries) {
+            var parentDeliveryOrderHashes = parentDeliveries.map(function (delivery) {
+                return delivery.orderNumber + delivery.orderType;
+            });
+            return parentDeliveryOrderHashes.unique().length == 1;
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
         }
 
         init();

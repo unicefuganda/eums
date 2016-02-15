@@ -69,7 +69,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
         $scope.startAddingFile = function () {
             $scope.fileError = "";
-            console.log($scope.fileError);
         };
 
         $scope.toContactPage = function () {

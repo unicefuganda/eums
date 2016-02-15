@@ -10,8 +10,10 @@ consignee_wakiso = Consignee.objects.get(name='WAKISO DHO')
 
 item = ItemFactory(description='Three-pronged power cables')
 order_item = PurchaseOrderItemFactory(item=item)
+order_item_2 = PurchaseOrderItemFactory(item=item)
 delivery_one = DeliveryFactory(confirmed=True)
 delivery_two = DeliveryFactory(confirmed=True)
+delivery_three = DeliveryFactory(confirmed=True)
 deliver_node_one = DeliveryNodeFactory(
         item=order_item,
         consignee=consignee_wakiso,
@@ -24,11 +26,19 @@ deliver_node_two = DeliveryNodeFactory(
         distribution_plan=delivery_two,
         acknowledged=20,
         tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+deliver_node_three = DeliveryNodeFactory(
+        item=order_item_2,
+        consignee=consignee_wakiso,
+        distribution_plan=delivery_three,
+        acknowledged=10,
+        tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+
 ArcFactory(quantity=30, source=None, target=deliver_node_one)
 ArcFactory(quantity=20, source=None, target=deliver_node_two)
+ArcFactory(quantity=10, source=None, target=deliver_node_three)
 
 ConsigneeItemFactory(
     item=item,
-    amount_received=50,
+    amount_received=60,
     consignee=consignee_wakiso,
-    deliveries=[deliver_node_one.id, deliver_node_two.id])
+    deliveries=[deliver_node_one.id, deliver_node_two.id, deliver_node_three.id])
