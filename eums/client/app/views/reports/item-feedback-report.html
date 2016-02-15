@@ -99,10 +99,12 @@
                 </div>
                 <div class="row"> 
                     <div class="col-xs-2 filter-label"> 
-                        <label class="control-label description-label" for="select-district">{{ systemSettings.district_label }}:</label> 
+                        <label class="control-label description-label"
+                               for="select-district">{{ systemSettings.district_label }}:</label> 
                     </div>
                     <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-district-container">
-                        <input id="select-district" class="form-control" type="hidden" placeholder="All {{ systemSettings.district_label }}s"
+                        <input id="select-district" class="form-control" type="hidden"
+                               placeholder="All {{ systemSettings.district_label }}s"
                                search-from-list list="$districts" ng-model="searchTerm.selectedLocation"
                                value="{{ searchTerm.selectedLocation }}">
                     </div>
@@ -127,12 +129,12 @@
                     <th class="align-left"><a ng-click="sortBy('value')" class="padded-multi-line-5 value">VALUE<i
                             ng-class="sortArrowClass('value')"></i></a></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
-                    <th class="align-left"><a ng-click="sortBy('dateOfReceipt')"
+                    <th class="align-left"><a ng-click="sortBy('mergedDateOfReceipt')"
                                               class="padded-multi-line-5 dateOfReceipt">DATE RECEIVED<i
-                            ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
-                    <th class="align-left"><a ng-click="sortBy('amountReceived')"
+                            ng-class="sortArrowClass('mergedDateOfReceipt')"></i></a></th>
+                    <th class="align-left"><a ng-click="sortBy('answers.amountReceived.value')"
                                               class="padded-multi-line-5 amountReceived">QUANTITY RECEIVED<i
-                            ng-class="sortArrowClass('amountReceived')"></i></a></th>
+                            ng-class="sortArrowClass('answers.amountReceived.value')"></i></a></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECIPIENT REMARKS</span></th>
@@ -158,39 +160,38 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
-
                     <td>
-                        <span ng-if="itemReport.answers.productReceived == 'Yes' || itemReport.answers.itemReceived == 'Yes'"
+                        <span ng-if="itemReport.answers.productReceived.value == 'Yes' || itemReport.answers.itemReceived.value == 'Yes'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
-                        <span ng-if="itemReport.answers.productReceived == 'No' || itemReport.answers.itemReceived == 'No'"
+                        <span ng-if="itemReport.answers.productReceived.value == 'No' || itemReport.answers.itemReceived.value == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
                     <td><span
-                            class="padded-multi-line-5">{{ formatDate(itemReport.dateOfReceipt) }}</span>
+                            class="padded-multi-line-5">{{ formatDate(itemReport.mergedDateOfReceipt) }}</span>
                     </td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived.value }}</span></td>
                     <td>
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Good'"
+                        <span ng-if="itemReport.answers.qualityOfProduct.value == 'Good'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-yes">Good</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Substandard'"
+                        <span ng-if="itemReport.answers.qualityOfProduct.value == 'Substandard'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-substandard">Substandard</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Incomplete'"
+                        <span ng-if="itemReport.answers.qualityOfProduct.value == 'Incomplete'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-incomplete">Incomplete</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Expired'"
+                        <span ng-if="itemReport.answers.qualityOfProduct.value == 'Expired'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-expired">Expired</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Damaged'"
+                        <span ng-if="itemReport.answers.qualityOfProduct.value == 'Damaged'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-no">Damaged</span>
                     </td>
                     <td>
                         <div class="align-center">
                         <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
-                              ng-class="{'glyphicon-ok-sign': itemReport.answers.satisfiedWithProduct == 'Yes',
-                                                'eums-text-color-ok': itemReport.answers.satisfiedWithProduct == 'Yes',
-                                  'glyphicon-remove-sign': itemReport.answers.satisfiedWithProduct == 'No',
-                                                'eums-text-color-no': itemReport.answers.satisfiedWithProduct == 'No'
+                              ng-class="{'glyphicon-ok-sign': itemReport.answers.satisfiedWithProduct.value == 'Yes',
+                                                'eums-text-color-ok': itemReport.answers.satisfiedWithProduct.value == 'Yes',
+                                  'glyphicon-remove-sign': itemReport.answers.satisfiedWithProduct.value == 'No',
+                                                'eums-text-color-no': itemReport.answers.satisfiedWithProduct.value == 'No'
                                 }">
                             </span>
                         </div>
@@ -198,7 +199,7 @@
                     <td>
                         <div class="align-center">
                             <a class="button" ng-click="showRemarks($index)"
-                               ng-show="itemReport.answers.additionalDeliveryComments">
+                               ng-show="itemReport.answers.additionalDeliveryComments.value">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
@@ -218,7 +219,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="eums-modal-content">
-                                            {{ itemReport.answers.additionalDeliveryComments }}
+                                            {{ itemReport.answers.additionalDeliveryComments.value }}
                                         </div>
                                     </div>
                                     <div class="modal-footer centered">

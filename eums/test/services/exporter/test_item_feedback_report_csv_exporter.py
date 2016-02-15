@@ -35,25 +35,22 @@ class ItemFeedbackReportExporterTest(TestCase):
         order_number = 81020737
         quantity_shipped = 4
         value = 4.48
-        answers = {'qualityOfProduct': 'Good', 'amountReceived': 4, 'itemReceived': 'Yes',
-                   'satisfiedWithProduct': 'Yes', 'additionalDeliveryComments': ''}
+        answers = {'itemReceived': {'id': 31, 'value': 'Yes'},
+                   'dateOfReceipt': {'id': 32, 'value': ''},
+                   'amountReceived': {'id': 33, 'value': 4},
+                   'qualityOfProduct': {'id': 34, 'value': 'Good'},
+                   'satisfiedWithProduct': {'id': 35, 'value': 'Yes'},
+                   'additionalDeliveryComments': {'id': 36, 'value': ''}}
 
-        amount_received = 4
-        quality_of_product = 'Good'
-        satisfied_with_product = 'Yes'
-        additional_delivery_comments = ''
         first_name = 'Shenjian'
         last_name = 'Yuan'
         phone = '18192235667'
         contact_name = '%s %s' % (first_name, last_name)
         additional_remarks = 'additional remarks'
+        merged_date_of_receipt = ''
         items_feedback = [{'tree_position': tree_position,
-                           'additionalDeliveryComments': additional_delivery_comments,
-                           'qualityOfProduct': quality_of_product,
-                           'amountReceived': amount_received,
                            'consignee': consignee,
                            'answers': answers,
-                           'satisfiedWithProduct': satisfied_with_product,
                            'implementing_partner': implementing_partner,
                            'value': value,
                            'programme': programme,
@@ -62,9 +59,9 @@ class ItemFeedbackReportExporterTest(TestCase):
                            'contactPhone': phone,
                            'item_description': item_description,
                            'quantity_shipped': quantity_shipped,
-                           'additional_remarks': additional_remarks
+                           'additional_remarks': additional_remarks,
+                           'mergedDateOfReceipt': merged_date_of_receipt
                            }, ]
-
         row_value = [
             item_description,
             programme.get('name'),
@@ -76,15 +73,15 @@ class ItemFeedbackReportExporterTest(TestCase):
             order_number,
             quantity_shipped,
             value,
-            answers.get('itemReceived'),
-            answers.get('dateOfReceipt'),
-            amount_received,
-            quality_of_product,
-            satisfied_with_product,
-            additional_delivery_comments,
+            answers.get('itemReceived', {}).get('value'),
+            answers.get('dateOfReceipt', {}).get('value'),
+            answers.get('amountReceived', {}).get('value'),
+            answers.get('qualityOfProduct', {}).get('value'),
+            answers.get('satisfiedWithProduct', {}).get('value'),
+            answers.get('additionalDeliveryComments', {}).get('value'),
             additional_remarks
-
         ]
+
         csv_exporter = ItemFeedbackReportExporter(self.HOSTNAME)
         assembled_data = csv_exporter.assemble_csv_data(items_feedback)
         header = csv_exporter.config_headers()

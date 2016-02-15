@@ -63,7 +63,7 @@ describe('ItemFeedbackReportController', function () {
             scope.$apply();
 
             expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
-                field: 'dateOfReceipt',
+                field: 'mergedDateOfReceipt',
                 order: 'desc'
             }, 1);
             expect(scope.report).toEqual(response.results);
@@ -89,7 +89,7 @@ describe('ItemFeedbackReportController', function () {
 
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
             expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
-                field: 'dateOfReceipt',
+                field: 'mergedDateOfReceipt',
                 order: 'desc',
                 ip: 2
             }, 1);
@@ -100,7 +100,7 @@ describe('ItemFeedbackReportController', function () {
             scope.$apply();
 
             expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
-                field: 'dateOfReceipt',
+                field: 'mergedDateOfReceipt',
                 order: 'desc',
                 selectedLocation: 'Adjumani'
             }, 1);
@@ -117,7 +117,7 @@ describe('ItemFeedbackReportController', function () {
             scope.$digest();
 
             expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
-                field: 'dateOfReceipt',
+                field: 'mergedDateOfReceipt',
                 order: 'desc'
             }, 2);
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);

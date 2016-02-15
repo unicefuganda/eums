@@ -17,8 +17,7 @@ PAGE_SIZE = 10
 ITEM_QUESTIONS = {'received': (Question.LABEL.itemReceived, Question.LABEL.productReceived),
                   'satisfied': (Question.LABEL.satisfiedWithProduct,),
                   'quality': (Question.LABEL.qualityOfProduct,)}
-sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived')
-
+sort = StandardDicSort('quantity_shipped', 'value', 'mergedDateOfReceipt', 'answers.amountReceived.value')
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +33,6 @@ def item_feedback_report(request):
     response = sort.sort_by(request, response)
     paginated_results = Paginator(response, PAGE_SIZE)
     page_number = get_page_number(request)
-
     reports_current_page = paginated_results.page(page_number)
 
     data = {
@@ -117,13 +115,10 @@ def build_answers_for_nodes(nodes, response):
             'location': node.location,
             'additional_remarks': node.additional_remarks,
             'tree_position': node.tree_position,
-            'contact_person_id': node.contact_person_id
+            'contact_person_id': node.contact_person_id,
+            'mergedDateOfReceipt': answer_list.get('dateOfReceipt', {}).get('value') if answer_list.get(
+                    'dateOfReceipt') else plan_answer_list.get('dateOfReceipt', {}).get('value')
         }
-        delivery_node.update(answer_list)
-        delivery_node['dateOfReceipt'] = answer_list.get('dateOfReceipt') \
-            if answer_list.get('dateOfReceipt') \
-            else plan_answer_list.get('dateOfReceipt')
-
         response.append(delivery_node)
 
 
@@ -131,8 +126,8 @@ def _build_answer_list(node_responses):
     answer_list = {}
     for run, answers in node_responses.iteritems():
         for answer in answers:
-            answer_list.update(
-                    {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
+            answer_list.update({answer.question.label: {
+                'id': answer.id, 'value': answer.value.text if isinstance(answer.value, Option) else answer.value}})
     return answer_list
 
 

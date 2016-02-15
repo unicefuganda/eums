@@ -122,12 +122,12 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
     },
     dateOfReceipt: {
         get: function () {
-            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.dateOfReceipt')).getText();
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.mergedDateOfReceipt')).getText();
         }
     },
     amountReceived: {
         get: function () {
-            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.amountReceived')).getText();
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.amountReceived.value')).getText();
         }
     },
     qualityOfProduct: {
@@ -147,17 +147,17 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
     },
     received: {
         get: function () {
-            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.productReceived')).getText();
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.productReceived.value')).getText();
         }
     },
     satisfied: {
         get: function () {
-            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.satisfiedWithProduct')).getText();
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.satisfiedWithProduct.value')).getText();
         }
     },
     quality: {
         get: function () {
-            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.qualityOfProduct')).getText();
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.qualityOfProduct.value')).getText();
         }
     },
     sortBy: {

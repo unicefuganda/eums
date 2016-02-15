@@ -9,12 +9,12 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                                                           ReportService, LoaderService, ErrorMessageService, SortService,
                                                           ContactService, SortArrowService, SysUtilsService, SystemSettingsService) {
 
-        var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
+        var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'mergedDateOfReceipt', 'answers.amountReceived.value'];
         var timer;
         var initializing = true;
 
         $scope.searchTerm = $routeParams.district ? {selectedLocation: SysUtilsService.capitalize($routeParams.district)} : {};
-        $scope.sortTerm = {field: 'dateOfReceipt', order: 'desc'};
+        $scope.sortTerm = {field: 'mergedDateOfReceipt', order: 'desc'};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
 
@@ -53,7 +53,6 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
-                loadItemFeedbackReport()
             }
         };
 
