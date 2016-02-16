@@ -123,7 +123,7 @@ describe('Home Page', function () {
                 homePage.clickMapLayer('Amuru');
                 expect(homePage.latestDeliveriesCount).toEqual(2);
                 homePage.latestDeliveryResponses.then(function (responses) {
-                    expect(responses[1].getText()).toEqual('Consignee 13 on 25-Sep-2014\nNOT RECEIVED');
+                    expect(responses[1].getText()).toEqual('Consignee 14 on 25-Sep-2014\nNOT RECEIVED');
                 });
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
