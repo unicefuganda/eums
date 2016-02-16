@@ -26,6 +26,14 @@ class RapidProService(object):
         else:
             return None
 
+    @staticmethod
+    def internal_flow_label(label):
+        flow_label_result = []
+        for flow_label, rapid_pro_label in RapidProService.rapid_pro_label_map.items():
+            if label[0] == rapid_pro_label:
+                flow_label_result.append(flow_label)
+                return flow_label_result
+
     def __init__(self):
         super(RapidProService, self).__init__()
         self.cache = InMemoryCache()
@@ -34,21 +42,18 @@ class RapidProService(object):
         payload = FlowRequestTemplate().build(phone=contact['phone'], flow=self.flow_id(flow),
                                               sender=sender, item=item,
                                               contact_name="%s %s" % (contact['firstName'], contact['lastName']))
-
-        logger.info("payload %s" % json.dumps(payload))
-
         if settings.RAPIDPRO_LIVE:
             response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER)
             logger.info("Response from RapidPro: %s, %s" % (response.status_code, response.json()))
 
     def flow(self, flow_id):
         self.__sync_if_required()
-
         flow_id = int(flow_id)
         if flow_id not in self.cache.flow_label_mapping:
             raise FlowLabelNonExistException()
-
-        return Flow.objects.filter(label__in=self.cache.flow_label_mapping[flow_id]).first()
+        rapid_pro_flow_label = self.cache.flow_label_mapping[flow_id]
+        flow_label = RapidProService.internal_flow_label(rapid_pro_flow_label)
+        return Flow.objects.filter(label__in=flow_label).first()
 
     def flow_id(self, flow):
         self.__sync_if_required()

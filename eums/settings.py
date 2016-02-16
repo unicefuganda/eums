@@ -99,7 +99,7 @@ STATIC_URL = '/static/'
 DELIVERY_STATUS_CHECK_DELAY = 7
 
 # Expiry time (days) for a scheduled flow ** This should match the one set in rapid pro! and has a max value of 30 days
-MAX_ALLOWED_REPLY_PERIOD = 7
+MAX_ALLOWED_REPLY_PERIOD = 1
 
 # Buffer time in case run is scheduled for immediate delivery (due to node not being saved immediately on delivery)
 DELIVERY_BUFFER_IN_SECONDS = 10

@@ -1,0 +1,458 @@
+{
+  "version": 8, 
+  "flows": [
+    {
+      "base_language": "eng", 
+      "action_sets": [
+        {
+          "y": 0, 
+          "x": 625, 
+          "destination": "6ae4cada-e35f-4d34-90dc-ceb64d7f3e14", 
+          "uuid": "c58ae934-7888-422e-a8a6-60b26a048b23", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Hi @extra.contactName, @extra.sender has sent you items in a delivery with @extra.product. Have you received it? Please reply YES or NO."
+              }, 
+              "type": "reply"
+            }
+          ]
+        }, 
+        {
+          "y": 191, 
+          "x": 868, 
+          "destination": "6ae4cada-e35f-4d34-90dc-ceb64d7f3e14", 
+          "uuid": "c4e85d59-b979-48c5-98df-f1b3698ec8f2", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Sorry, I didn't understand your response. Have you received the delivery? Please reply YES or NO."
+              }, 
+              "type": "reply"
+            }
+          ]
+        }, 
+        {
+          "y": 992, 
+          "x": 634, 
+          "destination": "b4ea1ef1-f9fc-4a80-9c93-34dab8c666da", 
+          "uuid": "c940e155-f325-41c1-9651-3f3f8fd1f688", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Is the delivery in a good shape? Please reply with either YES or NO."
+              }, 
+              "type": "reply"
+            }, 
+            {
+              "action": "POST", 
+              "type": "api", 
+              "webhook": "http://52.19.6.55/api/hook"
+            }
+          ]
+        }, 
+        {
+          "y": 602, 
+          "x": 987, 
+          "destination": "56604c46-1f96-40cc-8206-be0296127b64", 
+          "uuid": "633a3e40-f1c0-4b1a-a2f3-b34c2c105888", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Sorry I didn't understand that date. Please reply with the date you received the delivery in the format of dd/mm/yyyy."
+              }, 
+              "type": "reply"
+            }
+          ]
+        }, 
+        {
+          "y": 483, 
+          "x": 664, 
+          "destination": "56604c46-1f96-40cc-8206-be0296127b64", 
+          "uuid": "7884fe48-fa7e-4baa-9140-edafd77ed14f", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Excellent. That's great news. Please let us know what date you received the delivery. Reply with the date in the format of dd/mm/yyyy."
+              }, 
+              "type": "reply"
+            }, 
+            {
+              "action": "POST", 
+              "type": "api", 
+              "webhook": "http://52.19.6.55/api/hook"
+            }
+          ]
+        }, 
+        {
+          "y": 1246, 
+          "x": 843, 
+          "destination": "b4ea1ef1-f9fc-4a80-9c93-34dab8c666da", 
+          "uuid": "ab581aec-f1b2-490a-8770-99aac1323f72", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Sorry, I didn't understand your response. Please reply with just YES or NO."
+              }, 
+              "type": "reply"
+            }
+          ]
+        }, 
+        {
+          "y": 1368, 
+          "x": 412, 
+          "destination": "098ea589-34b2-4706-96e5-39ecd35b909b", 
+          "uuid": "af853456-ff26-4b71-beaa-d3febb88e9cd", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Are you satisfied with the delivery? Please respond with either YES or NO."
+              }, 
+              "type": "reply"
+            }, 
+            {
+              "action": "POST", 
+              "type": "api", 
+              "webhook": "http://52.19.6.55/api/hook"
+            }
+          ]
+        }, 
+        {
+          "y": 350, 
+          "x": 339, 
+          "destination": null, 
+          "uuid": "0b083d53-23a3-4ec8-9703-e67b25337bb8", 
+          "actions": [
+            {
+              "action": "POST", 
+              "type": "api", 
+              "webhook": "http://52.19.6.55/api/hook"
+            }, 
+            {
+              "msg": {
+                "eng": "Thank you for your response. We will follow up and will get back to you if needed."
+              }, 
+              "type": "reply"
+            }
+          ]
+        }, 
+        {
+          "y": 2219, 
+          "x": 369, 
+          "destination": null, 
+          "uuid": "e047081f-36e9-4bfd-9ca1-2702fdd6017c", 
+          "actions": [
+            {
+              "action": "POST", 
+              "type": "api", 
+              "webhook": "http://52.19.6.55/api/hook"
+            }
+          ]
+        }, 
+        {
+          "y": 1611, 
+          "x": 832, 
+          "destination": "098ea589-34b2-4706-96e5-39ecd35b909b", 
+          "uuid": "3f606653-7dda-41a5-a6fb-9eb7a73f1783", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Sorry, I didn't understand your response. Please reply with just YES or NO"
+              }, 
+              "type": "reply"
+            }
+          ]
+        }, 
+        {
+          "y": 1743, 
+          "x": 368, 
+          "destination": "afacc3b7-13b1-4ea3-954b-e3bb6e181a8a", 
+          "uuid": "6c9b3c11-eb06-4bd4-99c0-545bf51f07ea", 
+          "actions": [
+            {
+              "msg": {
+                "eng": "Please send us any additional comments you may have regarding the delivery you received."
+              }, 
+              "type": "reply"
+            }, 
+            {
+              "action": "POST", 
+              "type": "api", 
+              "webhook": "http://52.19.6.55/api/hook"
+            }
+          ]
+        }
+      ], 
+      "version": 8, 
+      "flow_type": "F", 
+      "entry": "c58ae934-7888-422e-a8a6-60b26a048b23", 
+      "rule_sets": [
+        {
+          "uuid": "b4ea1ef1-f9fc-4a80-9c93-34dab8c666da", 
+          "webhook_action": null, 
+          "rules": [
+            {
+              "test": {
+                "test": {
+                  "eng": "Yes Y"
+                }, 
+                "type": "contains_any"
+              }, 
+              "category": {
+                "base": "Yes", 
+                "eng": "Yes"
+              }, 
+              "destination": "af853456-ff26-4b71-beaa-d3febb88e9cd", 
+              "uuid": "b5b24b28-49cd-4981-bcce-72a5ba6f170a", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "test": {
+                  "eng": "No N"
+                }, 
+                "type": "contains_any"
+              }, 
+              "category": {
+                "base": "No", 
+                "eng": "No"
+              }, 
+              "destination": "af853456-ff26-4b71-beaa-d3febb88e9cd", 
+              "uuid": "ef15c074-5eec-40d2-9385-c6b53e41e642", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "test": "true", 
+                "type": "true"
+              }, 
+              "category": {
+                "base": "Other", 
+                "eng": "Other"
+              }, 
+              "destination": "ab581aec-f1b2-490a-8770-99aac1323f72", 
+              "uuid": "cb6c2d0f-42ab-4a72-b6a9-7cb204617976", 
+              "destination_type": "A"
+            }
+          ], 
+          "webhook": null, 
+          "ruleset_type": "wait_message", 
+          "label": "isDeliveryInGoodOrder", 
+          "operand": "@step.value", 
+          "finished_key": null, 
+          "response_type": "", 
+          "y": 1207, 
+          "x": 423, 
+          "config": {}
+        }, 
+        {
+          "uuid": "6ae4cada-e35f-4d34-90dc-ceb64d7f3e14", 
+          "webhook_action": null, 
+          "rules": [
+            {
+              "test": {
+                "test": {
+                  "eng": "yes y "
+                }, 
+                "type": "contains_any"
+              }, 
+              "category": {
+                "base": "Yes", 
+                "eng": "Yes"
+              }, 
+              "destination": "7884fe48-fa7e-4baa-9140-edafd77ed14f", 
+              "uuid": "eca69664-27f8-447a-bc0b-1fa66c4d3553", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "test": {
+                  "eng": "no n"
+                }, 
+                "type": "contains_any"
+              }, 
+              "category": {
+                "base": "No", 
+                "eng": "No"
+              }, 
+              "destination": "0b083d53-23a3-4ec8-9703-e67b25337bb8", 
+              "uuid": "516d133f-b97e-4452-890f-0db9758d3e56", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "type": "true"
+              }, 
+              "category": {
+                "base": "Other", 
+                "eng": "Other"
+              }, 
+              "destination": "c4e85d59-b979-48c5-98df-f1b3698ec8f2", 
+              "uuid": "1e726125-d778-46be-9990-a8106504eece", 
+              "destination_type": "A"
+            }
+          ], 
+          "webhook": null, 
+          "ruleset_type": "wait_message", 
+          "label": "deliveryReceived", 
+          "operand": "@step.value", 
+          "finished_key": null, 
+          "response_type": "", 
+          "y": 175, 
+          "x": 227, 
+          "config": {}
+        }, 
+        {
+          "uuid": "56604c46-1f96-40cc-8206-be0296127b64", 
+          "webhook_action": null, 
+          "rules": [
+            {
+              "test": {
+                "test": "^\\d{1,2}/(0?[1-9]|10|11|12)/\\d{4}$", 
+                "type": "date"
+              }, 
+              "category": {
+                "base": "is a date", 
+                "eng": "is a date"
+              }, 
+              "destination": "c940e155-f325-41c1-9651-3f3f8fd1f688", 
+              "uuid": "caf7fa80-6490-4a1d-9a7e-a1b0b2c8ce54", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "test": "true", 
+                "type": "true"
+              }, 
+              "category": {
+                "base": "Other", 
+                "eng": "Other"
+              }, 
+              "destination": "633a3e40-f1c0-4b1a-a2f3-b34c2c105888", 
+              "uuid": "5c450462-0793-4875-a87e-3e1f1eea1b2d", 
+              "destination_type": "A"
+            }
+          ], 
+          "webhook": null, 
+          "ruleset_type": "wait_message", 
+          "label": "dateOfReceipt", 
+          "operand": "@step.value", 
+          "finished_key": null, 
+          "response_type": "", 
+          "y": 842, 
+          "x": 677, 
+          "config": {}
+        }, 
+        {
+          "uuid": "afacc3b7-13b1-4ea3-954b-e3bb6e181a8a", 
+          "webhook_action": null, 
+          "rules": [
+            {
+              "test": {
+                "test": "true", 
+                "type": "true"
+              }, 
+              "category": {
+                "base": "All Responses", 
+                "eng": "All Responses"
+              }, 
+              "destination": "e047081f-36e9-4bfd-9ca1-2702fdd6017c", 
+              "uuid": "42c9fd90-f2b6-4cd2-988c-43b9dd97a865", 
+              "destination_type": "A"
+            }
+          ], 
+          "webhook": null, 
+          "ruleset_type": "wait_message", 
+          "label": "additionalDeliveryComments", 
+          "operand": "@step.value", 
+          "finished_key": null, 
+          "response_type": "", 
+          "y": 2051, 
+          "x": 343, 
+          "config": {}
+        }, 
+        {
+          "uuid": "098ea589-34b2-4706-96e5-39ecd35b909b", 
+          "webhook_action": null, 
+          "rules": [
+            {
+              "test": {
+                "test": {
+                  "eng": "Yes Y"
+                }, 
+                "base": "YES", 
+                "type": "contains_any"
+              }, 
+              "category": {
+                "base": "Yes", 
+                "eng": "Yes"
+              }, 
+              "destination": "6c9b3c11-eb06-4bd4-99c0-545bf51f07ea", 
+              "uuid": "4ebe7d4d-4e94-47b7-839b-ad458a543b00", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "test": {
+                  "eng": "No N"
+                }, 
+                "base": "NO", 
+                "type": "contains_any"
+              }, 
+              "category": {
+                "base": "No", 
+                "eng": "No"
+              }, 
+              "destination": "6c9b3c11-eb06-4bd4-99c0-545bf51f07ea", 
+              "uuid": "e3a28413-3b03-4cbf-aab0-4ced36680aa1", 
+              "destination_type": "A"
+            }, 
+            {
+              "test": {
+                "test": "true", 
+                "type": "true"
+              }, 
+              "category": {
+                "base": "Other", 
+                "eng": "Other"
+              }, 
+              "destination": "3f606653-7dda-41a5-a6fb-9eb7a73f1783", 
+              "uuid": "684fdb07-3d47-4e43-abb4-3d2cb7277c2e", 
+              "destination_type": "A"
+            }
+          ], 
+          "webhook": null, 
+          "ruleset_type": "wait_message", 
+          "label": "satisfiedWithDelivery", 
+          "operand": "@step.value", 
+          "finished_key": null, 
+          "response_type": "", 
+          "y": 1583, 
+          "x": 379, 
+          "config": {}
+        }
+      ], 
+      "metadata": {
+        "uuid": "a8d90b9b-4bad-49e3-a36b-e0aa7216333b", 
+        "notes": [], 
+        "expires": 1440, 
+        "name": "EUMS IP Acknowledgement", 
+        "saved_on": "2016-02-16T10:49:11.153706Z", 
+        "id": 6, 
+        "revision": 1
+      }
+    }
+  ], 
+  "triggers": [
+    {
+      "trigger_type": "K", 
+      "flow": {
+        "name": "EUMS IP Acknowledgement", 
+        "id": 6
+      }, 
+      "groups": [], 
+      "keyword": "eums", 
+      "channel": null
+    }
+  ]
+}

@@ -26,7 +26,8 @@ mm_question_5 = Question.build_question(TextQuestion, text='When to expect delay
                                         flow=middle_man_flow, position=3)
 middle_man_flow.end_nodes.append([mm_question_5.id, Flow.NO_OPTION])
 
-mm_question_6 = Question.build_question(TextQuestion, text='Additional Remarks', label='additionalComments',
+mm_question_6 = Question.build_question(TextQuestion, text='Additional Remarks',
+                                        label=Question.LABEL.additionalDeliveryComments,
                                         flow=middle_man_flow, position=4)
 
 middle_man_flow.save()

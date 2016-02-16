@@ -9,14 +9,12 @@ EU_QUALITY_OF_PRODUCT = None
 EU_SATISFACTION = None
 EU_INFORMED_OF_DELAY = None
 EU_REVISED_DELIVERY_DATE = None
-EU_DISSATISFACTION_FEEDBACK = None
 EU_OPT_DAMAGED = None
 EU_OPT_GOOD = None
 EU_OPT_SATISFIED = None
 EU_OPT_NOT_SATISFIED = None
 EU_OPT_EXPIRED = None
-EU_SATISFACTION_FEEDBACK = None
-EU_NOTGOODCOMMENT_FEEDBACK = None
+EU_ADDITIONAL_REMARK = None
 END_USER_FLOW = None
 
 
@@ -24,7 +22,7 @@ def seed_questions():
     global WAS_PRODUCT_RECEIVED, PRODUCT_WAS_RECEIVED, PRODUCT_WAS_NOT_RECEIVED, EU_DATE_RECEIVED, EU_AMOUNT_RECEIVED
     global EU_QUALITY_OF_PRODUCT, EU_SATISFACTION, EU_INFORMED_OF_DELAY, EU_REVISED_DELIVERY_DATE, EU_OPT_EXPIRED
     global EU_OPT_DAMAGED, EU_OPT_GOOD, EU_OPT_SATISFIED, EU_OPT_NOT_SATISFIED
-    global EU_DISSATISFACTION_FEEDBACK, EU_SATISFACTION_FEEDBACK, EU_NOTGOODCOMMENT_FEEDBACK
+    global EU_ADDITIONAL_REMARK
     global END_USER_FLOW
 
     END_USER_FLOW, _ = Flow.objects.get_or_create(label=Flow.Label.END_USER)
@@ -77,16 +75,18 @@ def seed_questions():
     END_USER_FLOW.end_nodes.append([EU_SATISFACTION.id, EU_OPT_NOT_SATISFIED.id])
     END_USER_FLOW.save()
 
-    EU_NOTGOODCOMMENT_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Not good',
-                                                         label='notGoodComment', flow=END_USER_FLOW, position=5)
+    EU_ADDITIONAL_REMARK = Question.build_question(TextQuestion, text='Additional Remarks',
+                                                   label=Question.LABEL.additionalDeliveryComments,
+                                                   flow=END_USER_FLOW, position=6)
 
-    EU_SATISFACTION_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Satisfaction',
-                                                       label='feedbackAboutSatisfaction',
-                                                       flow=END_USER_FLOW, position=6)
 
-    EU_DISSATISFACTION_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Dissatisfaction',
-                                                          label='feedbackAboutDissatisfaction',
-                                                          flow=END_USER_FLOW, position=6)
+    # EU_NOTGOODCOMMENT_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Not good',
+    #                                                      label='notGoodComment', flow=END_USER_FLOW, position=5)
+    #
+    #
+    # EU_DISSATISFACTION_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Dissatisfaction',
+    #                                                       label='feedbackAboutDissatisfaction',
+    #                                                       flow=END_USER_FLOW, position=6)
 
     questions = {
         'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED,
@@ -96,9 +96,7 @@ def seed_questions():
         'DATE_RECEIVED': EU_DATE_RECEIVED,
         'INFORMED_OF_DELAY': EU_INFORMED_OF_DELAY,
         'REVISED_DELIVERY_DATE': EU_REVISED_DELIVERY_DATE,
-        'NOT_GOOD_FEEDBACK': EU_NOTGOODCOMMENT_FEEDBACK,
-        'SATISFACTION_FEEDBACK': EU_SATISFACTION_FEEDBACK,
-        'DISSATISFACTION_FEEDBACK': EU_DISSATISFACTION_FEEDBACK
+        'ADDITIONAL_REMARK': EU_ADDITIONAL_REMARK
     }
     options = {
         'PRODUCT_WAS_RECEIVED': PRODUCT_WAS_RECEIVED,
