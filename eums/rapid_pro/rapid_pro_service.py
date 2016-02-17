@@ -44,7 +44,6 @@ class RapidProService(object):
                                               contact_name="%s %s" % (contact['firstName'], contact['lastName']))
         if settings.RAPIDPRO_LIVE:
             response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER)
-            logger.info("Response from RapidPro: %s, %s" % (response.status_code, response.json()))
 
     def flow(self, flow_id):
         self.__sync_if_required()
@@ -56,7 +55,9 @@ class RapidProService(object):
         return Flow.objects.filter(label__in=flow_label).first()
 
     def flow_id(self, flow):
+
         self.__sync_if_required()
+
         rapid_pro_flow_label = RapidProService.rapid_pro_label(flow.label)
         if rapid_pro_flow_label is not None:
             for flow_id, labels in self.cache.flow_label_mapping.iteritems():
@@ -76,7 +77,7 @@ class RapidProService(object):
             self.cache.invalidate()
             flows = response.json()['results']
             self.cache.update(
-                flow_label_mapping={rapid['flow']: rapid['labels'] for rapid in flows if len(rapid['labels']) > 0})
+                    flow_label_mapping={rapid['flow']: rapid['labels'] for rapid in flows if len(rapid['labels']) > 0})
         else:
             logger.warning("Failed to get flows information from Rapidpro, response=%s" % response)
 

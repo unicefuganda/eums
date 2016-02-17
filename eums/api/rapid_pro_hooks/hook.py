@@ -10,8 +10,8 @@ from eums.rapid_pro.rapid_pro_service import rapid_pro_service, RapidProService
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
 
-
 logger = get_task_logger(__name__)
+
 
 # TODO-RAPID: code structure
 @csrf_exempt
@@ -24,7 +24,6 @@ def hook(request):
         flow = rapid_pro_service.flow(params['flow'])
         run = Run.objects.filter(Q(phone=params['phone']) & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
-        logger.info(run)
         answer = _save_answer(flow, params, run)
 
         if flow.is_end(answer):
@@ -41,7 +40,6 @@ def hook(request):
 def _save_answer(flow, params, run):
     answer_values = ast.literal_eval(params['values'])
     latest_answer = answer_values[-1]
-    logger.info(latest_answer)
     question = Question.objects.filter(flow=flow, label=latest_answer['label']).first().get_subclass_instance()
     return question.create_answer(params, run)
 
