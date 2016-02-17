@@ -60,7 +60,8 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
                                                                 item_number=record['PO_ITEM'])
             try:
                 release_order_item = ReleaseOrderItem.objects.get(release_order__order_number=order.order_number,
-                                                                  purchase_order_item=purchase_order_item)
+                                                                  purchase_order_item=purchase_order_item,
+                                                                  item_number=record['RELEASE_ORDER_ITEM'])
                 return self._update_item(release_order_item, record['DELIVERY_QUANTITY'], record['VALUE'])
             except ObjectDoesNotExist:
                 item, _ = Item.objects.get_or_create(id=purchase_order_item.item_id)
