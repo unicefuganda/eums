@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from eums import settings
 from eums.models import PurchaseOrder, SalesOrder, PurchaseOrderItem, Item
 from eums.settings import VISION_URL
 from eums.vision.order_synchronizer import OrderSynchronizer

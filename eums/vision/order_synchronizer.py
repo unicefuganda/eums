@@ -1,9 +1,12 @@
 import datetime
 import json
 from abc import ABCMeta, abstractmethod
+from celery.utils.log import get_task_logger
 
 from eums.vision.vision_data_converter import convert_vision_value, format_records
 from eums.vision.vision_data_synchronizer import VisionDataSynchronizer, VisionException
+
+logger = get_task_logger(__name__)
 
 
 class OrderSynchronizer(VisionDataSynchronizer):
@@ -41,10 +44,13 @@ class OrderSynchronizer(VisionDataSynchronizer):
     def _save_records(self, records):
         formatted_records = format_records(self._filter_records(records), self.order_info)
         for record in formatted_records:
-            order = self._get_or_create_order(record)
-            if order:
-                for item in record['ITEMS']:
-                    self._update_or_create_item(item, order)
+            try:
+                order = self._get_or_create_order(record)
+                if order:
+                    for item in record['ITEMS']:
+                        self._update_or_create_item(item, order)
+            except VisionException, e:
+                logger.error(e.message)
 
     @staticmethod
     def _get_url(base_url, start_date, end_date):
