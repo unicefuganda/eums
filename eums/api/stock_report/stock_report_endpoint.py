@@ -12,7 +12,7 @@ from eums.permissions.stock_report_permissions import StockReportPermissions
 
 PAGE_SIZE = 10
 sort = StandardDicSort('last_shipment_date', 'last_received_date',
-                       'total_value_received', 'total_value_dispensed', 'balance')
+                       'total_value_received', 'total_value_dispensed', 'total_value_lost', 'balance')
 
 mixin = RequestFilterMixin()
 

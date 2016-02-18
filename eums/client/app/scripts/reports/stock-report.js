@@ -9,7 +9,7 @@ angular.module('StockReport', [
     .controller('StockReportController', function ($scope, $q, StockReportService, ConsigneeService, SortByService,
                                                    ReportService, IPService, LoaderService, UserService, ErrorMessageService,
                                                    SortService, SortArrowService, SysUtilsService, ngToast, SystemSettingsService) {
-        var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
+        var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'total_value_lost', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
