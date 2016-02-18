@@ -1,11 +1,14 @@
 from decimal import Decimal
 
+from celery.utils.log import get_task_logger
 from django.core.exceptions import ObjectDoesNotExist
 
 from eums.models import SalesOrder, Programme, Item, SalesOrderItem
 from eums.settings import VISION_URL
 from eums.vision.order_synchronizer import OrderSynchronizer
 from eums.vision.vision_data_synchronizer import VisionException
+
+logger = get_task_logger(__name__)
 
 
 class SalesOrderSynchronizer(OrderSynchronizer):
@@ -23,6 +26,7 @@ class SalesOrderSynchronizer(OrderSynchronizer):
             digit_fields = ('SALES_ORDER_NO',)
             for key in SalesOrderSynchronizer.REQUIRED_KEYS:
                 if not (record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record)):
+                    logger.info('Invalid sales order: %s', record)
                     return False
             return True
 

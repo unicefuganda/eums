@@ -1,9 +1,12 @@
+from celery.utils.log import get_task_logger
 from django.core.exceptions import ObjectDoesNotExist
 
 from eums.models import ReleaseOrder, Consignee, PurchaseOrderItem, ReleaseOrderItem, Item, SalesOrder, PurchaseOrder
 from eums.settings import VISION_URL
 from eums.vision.order_synchronizer import OrderSynchronizer
 from eums.vision.vision_data_synchronizer import VisionException
+
+logger = get_task_logger(__name__)
 
 
 class ReleaseOrderSynchronizer(OrderSynchronizer):
@@ -23,6 +26,7 @@ class ReleaseOrderSynchronizer(OrderSynchronizer):
             digit_fields = ('RELEASE_ORDER_NUMBER', 'SO_NUMBER', 'PO_NUMBER')
             for key in ReleaseOrderSynchronizer.REQUIRED_KEYS:
                 if not (record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record)):
+                    logger.info('Invalid release order: %s', record)
                     return False
             return True
 

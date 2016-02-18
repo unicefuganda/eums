@@ -1,9 +1,12 @@
+from celery.utils.log import get_task_logger
 from django.core.exceptions import ObjectDoesNotExist
 
 from eums.models import PurchaseOrder, SalesOrder, PurchaseOrderItem, Item
 from eums.settings import VISION_URL
 from eums.vision.order_synchronizer import OrderSynchronizer
 from eums.vision.vision_data_synchronizer import VisionException
+
+logger = get_task_logger(__name__)
 
 
 class PurchaseOrderSynchronizer(OrderSynchronizer):
@@ -22,8 +25,10 @@ class PurchaseOrderSynchronizer(OrderSynchronizer):
             digit_fields = ('SO_NUMBER', 'PO_NUMBER')
             for key in PurchaseOrderSynchronizer.REQUIRED_KEYS:
                 if not record[key] and OrderSynchronizer._is_all_digit(digit_fields, key, record):
+                    logger.info('Invalid purchase order: %s', record)
                     return False
             if not record['PO_TYPE'] in PurchaseOrderSynchronizer.SUPPORTED_PO_TYPE:
+                logger.info('Invalid purchase order with wrong type: %s', record)
                 return False
             return True
 
