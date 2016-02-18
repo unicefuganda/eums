@@ -83,6 +83,8 @@ def _get_report_details_for_node(node):
     purchase_order_number = node.item.number()
     quantity_received = _compute_quantity_received(node)
     total_value_received = quantity_received * node.item.unit_value()
+    quantity_lost = node.total_amount_lost()
+    total_value_lost = quantity_lost * node.item.unit_value()
     quantity_dispensed = node.quantity_out()
     value_dispensed = quantity_dispensed * node.item.unit_value()
     ip_delivery = DistributionPlan.objects.get(pk=node.distribution_plan.id)
@@ -94,7 +96,8 @@ def _get_report_details_for_node(node):
         'last_received_date': str(ip_delivery.received_date()),
         'total_value_received': total_value_received,
         'total_value_dispensed': value_dispensed,
-        'balance': (total_value_received - value_dispensed),
+        'total_value_lost': total_value_lost,
+        'balance': (total_value_received - value_dispensed - total_value_lost),
         'items': [{'code': node.item.item.material_code,
                    'description': node.item.item.description,
                    'location': node.location,
@@ -104,7 +107,8 @@ def _get_report_details_for_node(node):
                    'quantity_confirmed': quantity_received,
                    'date_confirmed': str(ip_delivery.received_date()),
                    'quantity_dispatched': quantity_dispensed,
-                   'balance': quantity_received - quantity_dispensed}]
+                   'quantity_lost': quantity_lost,
+                   'balance': quantity_received - quantity_dispensed - quantity_lost}]
     }
 
 
@@ -159,8 +163,10 @@ def _update_report_item(matching_report_item, report_item):
         'total_value_received']
     matching_report_item['total_value_dispensed'] = matching_report_item['total_value_dispensed'] + report_item[
         'total_value_dispensed']
+    matching_report_item['total_value_lost'] = matching_report_item['total_value_lost'] + report_item[
+        'total_value_lost']
     matching_report_item['balance'] = matching_report_item['total_value_received'] - matching_report_item[
-        'total_value_dispensed']
+        'total_value_dispensed'] - matching_report_item['total_value_lost']
     matching_report_item['items'].append(report_item['items'][0])
 
     if matching_report_item['last_shipment_date'] < report_item['last_shipment_date']:

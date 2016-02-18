@@ -38,7 +38,8 @@ describe('Stock Report', function () {
 
         expect(stockReportPage.stockDocumentNumbers).toContain('12345');
         expect(stockReportPage.stockReceivedValues).toContain('$87.14');
-        expect(stockReportPage.stockBalances).toContain('$87.14');
+        expect(stockReportPage.stockLossValues).toContain('$6.00');
+        expect(stockReportPage.stockBalances).toContain('$81.14');
 
         stockReportPage.selectFirstPO();
         expect(stockReportPage.itemCodes).toContain('S0060240');
@@ -50,7 +51,8 @@ describe('Stock Report', function () {
         expect(stockReportPage.itemConfirmedQty).toContain('80');
         expect(stockReportPage.itemConfirmedQty).toContain('500');
         expect(stockReportPage.itemDeliveryDate).toContain('11-Jul-2015');
-        expect(stockReportPage.itemBalances).toContain('80');
+        expect(stockReportPage.itemLostQty).toContain('6');
+        expect(stockReportPage.itemBalances).toContain('74');
         expect(stockReportPage.itemBalances).toContain('500');
     });
 

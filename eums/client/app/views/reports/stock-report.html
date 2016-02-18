@@ -158,6 +158,8 @@
                                 <th class="col-lg-3 centered"><a ng-click="sortBy('total_value_dispensed')"
                                                                  class="padded-multi-line-5 centered total_value_dispensed">Value
                                     Dispensed<i ng-class="sortArrowClass('total_value_dispensed')"></i></a></th>
+                                <th class="col-lg-3 centered"><a class="padded-multi-line-5 centered total_value_lost">Value
+                                    Lost/Damaged<i ng-class="sortArrowClass('total_value_lost')"></i></a></th>
                                 <th class="col-lg-3 centered"><a ng-click="sortBy('balance')"
                                                                  class="padded-multi-line-5 centered balance">Balance<i
                                         ng-class="sortArrowClass('balance')"></i></a></th>
@@ -179,6 +181,7 @@
                                 </td>
                                 <td><span class="pull-right">{{ reportItem.total_value_dispensed | currency }}</span>
                                 </td>
+                                <td><span class="pull-right">{{ reportItem.total_value_lost | currency }}</span></td>
                                 <td><span class="pull-right">{{ reportItem.balance | currency }}</span></td>
                             </tr>
                             <tr ng-show="openDocument === reportItem.document_number">
@@ -196,6 +199,7 @@
                                             <td>Quantity Confirmed</td>
                                             <td>Date Confirmed</td>
                                             <td>Quantity Dispatched</td>
+                                            <td>Quantity Lost/Damaged</td>
                                             <td>Quantity Balance</td>
                                         </tr>
                                         </thead>
@@ -210,6 +214,7 @@
                                             <td><span class="pull-right">{{ item.quantity_confirmed }}</span></td>
                                             <td>{{ formatDate(item.date_confirmed)}}</td>
                                             <td><span class="pull-right">{{ item.quantity_dispatched }}</span></td>
+                                            <td><span class="pull-right">{{ item.quantity_lost }}</span></td>
                                             <td><span class="pull-right">{{ item.balance }}</span></td>
                                         </tr>
                                         </tbody>

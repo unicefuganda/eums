@@ -31,6 +31,7 @@ StockReportPage.prototype = Object.create({}, {
 
     stockDocumentNumbers: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.document_number')).getText(); }},
     stockReceivedValues: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.total_value_received')).getText(); }},
+    stockLossValues: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.total_value_lost')).getText(); }},
     stockBalances: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.balance')).getText(); }},
 
     selectFirstPO: { value: function () { element.all(by.repeater('reportItem in reportData').column('reportItem.document_number')).get(0).click(); }},
@@ -41,6 +42,7 @@ StockReportPage.prototype = Object.create({}, {
     itemDeliveredQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_delivered')).getText(); }},
     itemConfirmedQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_confirmed')).getText(); }},
     itemDeliveryDate: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.date_delivered')).getText(); }},
+    itemLostQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_lost')).getText(); }},
     itemBalances: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.balance')).getText(); }},
     sortBy: {
         value: function(className, order) {
