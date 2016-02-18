@@ -168,7 +168,20 @@
                     <td><span
                             class="padded-multi-line-5">{{ formatDate(itemReport.mergedDateOfReceipt) }}</span>
                     </td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived.value }}</span></td>
+                    <td>
+                        <span class="padded-multi-line-5">{{ itemReport.answers.amountReceived.value }}</span>
+                        <div class="margin-top-5 pad-5">
+                            <a class="button margin-right-20"
+                               ng-show="isAmountReceivedEditable(itemReport.answers.amountReceived)"
+                               ng-click="showStockAdjustmentDialog(itemReport.answers.amountReceived)">
+                                <span class="button glyphicon blue-unicef glyphicon-pencil"></span>
+                            </a>
+                            <a class="button"
+                               ng-show="isAmountReceivedEverChanged(itemReport.answers.amountReceived)">
+                                <span class="button glyphicon blue-unicef glyphicon-asterisk"></span>
+                            </a>
+                        </div>
+                    </td>
                     <td>
                         <span ng-if="itemReport.answers.qualityOfProduct.value == 'Good'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-yes">Good</span>
@@ -234,9 +247,9 @@
                         </div>
                     </td>
                     <td class="align-center">
-                    <span ng-if="itemReport.additional_remarks" class="glyphicon glyphicon-comment glyphicon-comment-color
-                                        glyphicon-size-17 glyphicon-top-5"
-                          ng-click="showAdditionalRemarks(itemReport.additional_remarks)"></span>
+                        <span ng-if="itemReport.additional_remarks" class="glyphicon glyphicon-comment
+                                    glyphicon-comment-color glyphicon-size-17 glyphicon-top-5"
+                              ng-click="showAdditionalRemarks(itemReport.additional_remarks)"></span>
                     </td>
                 </tr>
                 </tbody>
@@ -258,4 +271,5 @@
         </div>
     </div>
     <ng-include src="'/static/app/views/delivery/partials/additional-remarks-dialog.html'"></ng-include>
+    <ng-include src="'/static/app/views/reports/partials/stock-adjustment-modal-dialog.html'"></ng-include>
 </div>

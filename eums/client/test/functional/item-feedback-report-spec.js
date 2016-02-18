@@ -60,7 +60,7 @@ describe('Item Feedback Report', function () {
     });
 
     it('should sort by value', function () {
-        ftUtils.wait(5000);
+        ftUtils.wait(3000);
         itemFeedbackReport.sortBy('value', 'desc');
 
         expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
@@ -69,5 +69,16 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.orderNumbers).toContain('2014111');
         expect(itemFeedbackReport.quantitiesShipped).toContain('10');
         expect(itemFeedbackReport.values).toContain('$200.00');
+    });
+
+    it('should be able to adjust amount-received value', function () {
+        itemFeedbackReport.searchByReceived('Yes');
+        itemFeedbackReport.searchByItemDescription('MUAC,Child 11.5 Red/PAC-50');
+        ftUtils.wait(1000);
+        itemFeedbackReport.clickShowStockAdjustmentDialogIconInFirstRow();
+        itemFeedbackReport.setValueOfEditingAmountReceived(701);
+        itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 701');
+        itemFeedbackReport.clickSaveButtonOfEditingAmountReceivedDialog();
+        expect(itemFeedbackReport.amountReceived).toContain('701');
     });
 });

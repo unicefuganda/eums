@@ -32,3 +32,5 @@ class NumericAnswerFactory(factory.DjangoModelFactory):
     run = factory.SubFactory(RunFactory)
     question = factory.SubFactory(NumericQuestionFactory)
     value = 42
+    remark = "Some remark"
+

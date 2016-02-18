@@ -18,50 +18,55 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
     searchByItemDescription: {
         value: function (itemDescription) {
             element(by.model('searchTerm.itemDescription')).sendKeys(itemDescription);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
     searchByProgramme: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-programme-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
     searchByWaybill: {
         value: function (waybill) {
             element(by.model('searchTerm.poWaybill')).sendKeys(waybill);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
-
     searchByRecipientType: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-recipient-type-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
-
     searchByReceived: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-received-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
     searchBySatisfied: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-satisfied-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
     searchByQuality: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-quality-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
-
     searchByDistrict: {
         value: function (searchTerm) {
             functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-district-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
         }
     },
 
@@ -161,15 +166,41 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
         }
     },
     sortBy: {
-        value: function(className, order) {
+        value: function (className, order) {
             var toBeSorted = element(by.css('.padded-multi-line-5.' + className));
             toBeSorted.click();
             if (order === 'asc') {
                 toBeSorted.click();
             }
         }
-    }
+    },
 
+    clickShowStockAdjustmentDialogIconInFirstRow: {
+        value: function () {
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.amountReceived.value')).get(0)
+                .element(by.xpath('..'))
+                .element(by.css('.button.margin-right-20')).click();
+        }
+    },
+    setValueOfEditingAmountReceived: {
+        value: function (newAmount) {
+            return element(by.id('stock-adjustment-modal-dialog')).element(by.model('editingAmountReceivedObj.value'))
+                .clear()
+                .sendKeys(newAmount);
+        }
+    },
+    setRemarkOfEditingAmountReceived: {
+        value: function (newRemark) {
+            return element(by.id('stock-adjustment-modal-dialog')).element(by.model('editingAmountReceivedObj.remark'))
+                .clear()
+                .sendKeys(newRemark);
+        }
+    },
+    clickSaveButtonOfEditingAmountReceivedDialog: {
+        value: function () {
+            return element(by.id('stock-adjustment-modal-dialog')).element(by.css('.save-buttons')).click();
+        }
+    }
 });
 
 module.exports = new ItemFeedbackReportPage;

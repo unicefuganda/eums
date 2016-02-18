@@ -35,9 +35,8 @@ class Answer(TimeStampedModel):
                                                 Q(question=question),
                                                 ~ Q(run__status='cancelled'),
                                                 ~ Q(run__status='expired')).order_by('-modified')
-
             answers.append(
-                Answer._build_answer_response(answer, question)
+                    Answer._build_answer_response(answer, question)
             )
         return answers
 
@@ -88,6 +87,7 @@ class NumericAnswer(Answer):
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
     date_created = models.DateTimeField(default=timezone.now)
+    remark = models.TextField(blank=True, null=True)
 
     def format(self):
         return u'%s' % self.value

@@ -34,7 +34,6 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         node_one, purchase_order_item, _, node_two, _, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
-
         results = response.data['results']
 
         self.assertEqual(len(response.data['results']), 6)
@@ -49,15 +48,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertFieldExists({'tree_position': node_one.tree_position}, results)
         self.assertFieldExists({'additional_remarks': node_one.additional_remarks}, results)
         self.assertGreaterEqual(len(results[0]['answers']), 3)
-
-    def assertFieldExists(self, field, value_list):
-        field_exists = False
-        for key, value in field.iteritems():
-            for actual in value_list:
-                if key in actual and value == actual[key]:
-                    field_exists = True
-                    break
-        self.assertTrue(field_exists)
+        self.assertEqual(results[0]['answers'].get('amountReceived').get('remark'), 'Some remark')
 
     def test_should_return_paginated_items_and_all_their_answers(self):
         total_number_of_items = 20
@@ -182,6 +173,21 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL + '?quality=Damaged', content_type='application/json')
         self.assertEqual(len(response.data['results']), 3)
 
+    def test_unicef_admin_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_admin_in, HTTP_200_OK)
+
+    def test_unicef_editor_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_editor_in, HTTP_200_OK)
+
+    def test_unicef_viewer_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+
+    def test_ip_editor_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_ip_editor_in, HTTP_200_OK)
+
+    def test_ip_viewer_should_have_permission_to_view_item_feedback_report(self):
+        self.log_and_assert_view_item_feedback_report_permission(self.log_ip_viewer_in, HTTP_200_OK)
+
     def setup_nodes_with_answers(self):
         ip = ConsigneeFactory(name='ip one')
         middle_man = ConsigneeFactory(name='middle man one', type=Consignee.TYPES.middle_man)
@@ -201,11 +207,9 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         ip_node_two = DeliveryNodeFactory(consignee=ip, item=release_order_item, quantity=100,
                                           distribution_plan=DeliveryFactory(track=True), programme=programme_two,
                                           location='Kampala', tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True)
-
         ip_node_three = DeliveryNodeFactory(consignee=ip, item=release_order_item, quantity=100,
                                             distribution_plan=DeliveryFactory(track=True), programme=programme_two,
                                             location='Gulu', tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True)
-
         middle_man_node = DeliveryNodeFactory(consignee=middle_man, item=purchase_order_item,
                                               programme=programme_one, location='Wakiso', track=True,
                                               tree_position=Flow.Label.MIDDLE_MAN, parents=[(ip_node_one, 1500)],
@@ -333,21 +337,15 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         return nodes
 
-    def test_unicef_admin_should_have_permission_to_view_item_feedback_report(self):
-        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_admin_in, HTTP_200_OK)
-
-    def test_unicef_editor_should_have_permission_to_view_item_feedback_report(self):
-        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_editor_in, HTTP_200_OK)
-
-    def test_unicef_viewer_should_have_permission_to_view_item_feedback_report(self):
-        self.log_and_assert_view_item_feedback_report_permission(self.log_unicef_viewer_in, HTTP_200_OK)
-
-    def test_ip_editor_should_have_permission_to_view_item_feedback_report(self):
-        self.log_and_assert_view_item_feedback_report_permission(self.log_ip_editor_in, HTTP_200_OK)
-
-    def test_ip_viewer_should_have_permission_to_view_item_feedback_report(self):
-        self.log_and_assert_view_item_feedback_report_permission(self.log_ip_viewer_in, HTTP_200_OK)
-
     def log_and_assert_view_item_feedback_report_permission(self, log_func, status_code):
         log_func()
         self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)
+
+    def assertFieldExists(self, field, value_list):
+        field_exists = False
+        for key, value in field.iteritems():
+            for actual in value_list:
+                if key in actual and value == actual[key]:
+                    field_exists = True
+                    break
+        self.assertTrue(field_exists)

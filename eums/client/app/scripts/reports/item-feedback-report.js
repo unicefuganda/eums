@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'Contact', 'EumsErrorMessage', 'Option',
-        'Sort', 'SortArrow', 'SysUtils', 'ngToast', 'SystemSettingsService'])
+        'Sort', 'SortArrow', 'SysUtils', 'ngToast', 'SystemSettingsService', 'Answer'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams, ngToast,
                                                           ReportService, LoaderService, ErrorMessageService, SortService,
-                                                          ContactService, SortArrowService, SysUtilsService, SystemSettingsService) {
+                                                          ContactService, SortArrowService, SysUtilsService,
+                                                          SystemSettingsService, AnswerService) {
 
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'mergedDateOfReceipt', 'answers.amountReceived.value'];
         var timer;
@@ -17,6 +18,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.sortTerm = {field: 'mergedDateOfReceipt', order: 'desc'};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
+        $scope.editingAmountReceivedObj = {};
 
         // todo: use '_.throttle' instead of the timer
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
@@ -59,6 +61,53 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.showRemarks = function (index) {
             var remarksModalId = 'remarks-modal-' + index;
             LoaderService.showModal(remarksModalId)
+        };
+
+        $scope.showStockAdjustmentDialog = function (amountReceivedObj) {
+            if (!angular.equals(amountReceivedObj, $scope.editingAmountReceivedObj)) {
+                angular.copy(amountReceivedObj, $scope.editingAmountReceivedObj);
+            }
+            LoaderService.showModal('stock-adjustment-modal-dialog')
+        };
+
+        $scope.saveStockAdjustment = function (amountReceivedObj) {
+            if (!amountReceivedObj || !amountReceivedObj.id) {
+                throw new Error('The to-update answer id cannot be empty');
+            }
+
+            var updatedValue = {
+                value: amountReceivedObj.value,
+                remark: amountReceivedObj.remark ? amountReceivedObj.remark : ''
+            };
+            AnswerService.updateNumericAnswer(amountReceivedObj.id, updatedValue).then(function () {
+                $scope.report.forEach(function (item) {
+                    if (item.answers &&
+                        item.answers.amountReceived &&
+                        item.answers.amountReceived.id === amountReceivedObj.id) {
+                        if (!angular.equals(amountReceivedObj, item.answers.amountReceived)) {
+                            angular.copy(amountReceivedObj, item.answers.amountReceived);
+                        }
+                    }
+                });
+                $scope.editingAmountReceivedObj = {};
+                ngToast.create({content: 'Adjust received quantity successfully completed', class: 'success'});
+            }).catch(function () {
+                ngToast.create({content: 'Operation failed', class: 'danger'})
+            });
+        };
+
+        $scope.isAmountReceivedEditable = function (amountReceivedObj) {
+            if (amountReceivedObj) {
+                return !isNaN(amountReceivedObj.value);
+            }
+            return amountReceivedObj;
+        };
+
+        $scope.isAmountReceivedEverChanged = function (amountReceivedObj) {
+            if (amountReceivedObj) {
+                return !isNaN(amountReceivedObj.value) && amountReceivedObj.remark;
+            }
+            return amountReceivedObj;
         };
 
         $scope.formatDate = function (date) {

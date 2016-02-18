@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Option, MultipleChoiceAnswer, Question
+    ReleaseOrderItem, Option, MultipleChoiceAnswer, Question, NumericAnswer
 from eums.permissions.item_feedback_report_permissions import ItemFeedbackReportPermissions
 from eums.utils import get_lists_intersection
 
@@ -126,8 +126,10 @@ def _build_answer_list(node_responses):
     answer_list = {}
     for run, answers in node_responses.iteritems():
         for answer in answers:
-            answer_list.update({answer.question.label: {
-                'id': answer.id, 'value': answer.value.text if isinstance(answer.value, Option) else answer.value}})
+            temp = {'id': answer.id, 'value': answer.value.text if isinstance(answer.value, Option) else answer.value}
+            if type(answer) is NumericAnswer:
+                temp['remark'] = answer.remark
+            answer_list.update({answer.question.label: temp})
     return answer_list
 
 
@@ -139,7 +141,6 @@ def item_tracked_nodes(request, ip=None):
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_waybill)
         nodes = nodes.filter(Q(item=purchase_order_item) |
                              Q(item=release_order_item))
-
     if ip:
         nodes = nodes.filter(ip=ip)
 

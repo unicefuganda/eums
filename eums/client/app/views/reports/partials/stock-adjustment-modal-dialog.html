@@ -1,0 +1,41 @@
+<div class="modal fade text-left" id="stock-adjustment-modal-dialog">
+    <div class="modal-dialog modal-sixty-percent-size">
+        <div class="modal-content col-md-offset-3 col-md-6">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="eums-modal-header">Adjust received quantity</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 form-group">
+                        <h4 class="blue-unicef">Quantity received</h4>
+                        <input type="text" class="input form-control"
+                               required ng-model="editingAmountReceivedObj.value">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 form-group">
+                        <h4 class="blue-unicef">Reason for modify quantity</h4>
+                            <textarea class="form-control" required rows="3"
+                                      ng-model="editingAmountReceivedObj.remark">
+                            </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer centered">
+                <button type="button" data-dismiss="modal"
+                        class="btn btn-default bg-grey text-white">
+                    <span class="glyphicon glyphicon-remove-sign margin-right-5"></span>{{ can_change ? 'Cancel' : 'Close' }}
+                </button>
+                <button type="button" data-dismiss="modal"
+                        class="btn btn-primary save-buttons"
+                        ng-click="saveStockAdjustment(editingAmountReceivedObj)">
+                    <span class="glyphicon glyphicon-ok-sign margin-right-5"></span>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
