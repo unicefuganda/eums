@@ -79,15 +79,6 @@ def seed_questions():
                                                    label=Question.LABEL.additionalDeliveryComments,
                                                    flow=END_USER_FLOW, position=6)
 
-
-    # EU_NOTGOODCOMMENT_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Not good',
-    #                                                      label='notGoodComment', flow=END_USER_FLOW, position=5)
-    #
-    #
-    # EU_DISSATISFACTION_FEEDBACK = Question.build_question(TextQuestion, text='Feedback about Dissatisfaction',
-    #                                                       label='feedbackAboutDissatisfaction',
-    #                                                       flow=END_USER_FLOW, position=6)
-
     questions = {
         'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED,
         'QUALITY_OF_PRODUCT': EU_QUALITY_OF_PRODUCT,
