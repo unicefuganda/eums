@@ -32,7 +32,8 @@ class StockReportExporterTest(TestCase):
         last_received_date = ''
         total_value_dispensed = '$140'
         last_shipment_date = '2014-09-25'
-        balance = '-140'
+        total_value_lost = '$60'
+        balance = '-200'
         programme = u'AAASpecial Programme'
         item = {
                 'quantity_dispatched':  7,
@@ -41,7 +42,8 @@ class StockReportExporterTest(TestCase):
                 'description': u'Another Funny Item',
                 'date_delivered': '2014-09-25',
                 'date_confirmed': '',
-                'balance': -7,
+                'quantity_lost': 3,
+                'balance': -10,
                 'quantity_confirmed': 0,
                 'consignee': u'Consignee 62',
                 'location': u'Kampala'}
@@ -50,6 +52,7 @@ class StockReportExporterTest(TestCase):
                    'last_received_date': last_received_date,
                    'total_value_dispensed': total_value_dispensed,
                    'last_shipment_date': last_shipment_date,
+                   'total_value_lost': total_value_lost,
                    'balance': balance,
                    'programme': programme,
                    'item': item}, ]
@@ -63,6 +66,7 @@ class StockReportExporterTest(TestCase):
             last_received_date,
             total_value_received,
             total_value_dispensed,
+            total_value_lost,
             balance,
             item.get('code'),
             item.get('description'),
@@ -73,6 +77,7 @@ class StockReportExporterTest(TestCase):
             item.get('quantity_confirmed'),
             item.get('date_confirmed'),
             item.get('quantity_dispatched'),
+            item.get('quantity_lost'),
             item.get('balance')
         ]
         assembled_data = csv_exporter.assemble_csv_data(stocks)
