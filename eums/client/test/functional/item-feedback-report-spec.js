@@ -74,11 +74,13 @@ describe('Item Feedback Report', function () {
     it('should be able to adjust amount-received value', function () {
         itemFeedbackReport.searchByReceived('Yes');
         itemFeedbackReport.searchByItemDescription('MUAC,Child 11.5 Red/PAC-50');
+        itemFeedbackReport.searchByWaybill('12345');
+        itemFeedbackReport.sortBy('amountReceived', 'desc');
         ftUtils.wait(1000);
         itemFeedbackReport.clickShowStockAdjustmentDialogIconInFirstRow();
-        itemFeedbackReport.setValueOfEditingAmountReceived(701);
-        itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 701');
+        itemFeedbackReport.setValueOfEditingAmountReceived(3001);
+        itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 3001');
         itemFeedbackReport.clickSaveButtonOfEditingAmountReceivedDialog();
-        expect(itemFeedbackReport.amountReceived).toContain('701');
+        expect(itemFeedbackReport.amountReceived).toContain('3001');
     });
 });

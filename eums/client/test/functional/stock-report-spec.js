@@ -8,17 +8,14 @@ var ftUtils = require('./functional-test-utils.js');
 describe('Stock Report', function () {
 
     it('should show the report with IP filtering', function () {
-
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
         stockReportPage.visit();
-
         ftUtils.waitForPageToLoad();
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeFalsy();
 
         stockReportPage.selectOutcome('unattached programme');
-
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeTruthy();
 
         expect(stockReportPage.totalReceived).toContain('$0.00');
