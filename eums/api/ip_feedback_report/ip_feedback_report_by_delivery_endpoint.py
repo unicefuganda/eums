@@ -157,18 +157,20 @@ def _filter_po_way_bill(request):
 def _filter_track_and_confirmed_auto_track_nodes(request):
     nodes = DistributionPlanNode.objects.filter(Q(distribution_plan__track=True) | (
         Q(distribution_plan__track=False) & Q(distribution_plan__is_auto_track_confirmed=True)))
-
     kwargs = {'tree_position': Flow.Label.IMPLEMENTING_PARTNER}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
+    status_value = params.get("status")
+    if status_value:
+        params.update({"status": status_value.split(',')})
     kwargs.update(_filter_fields(params))
-
     return nodes.filter(**kwargs)
 
 
 def _filter_fields(params):
-    query_fields = {'programme_id': 'programme_id', 
+    query_fields = {'programme_id': 'programme_id',
                     'consignee_id': 'distribution_plan__consignee_id',
-                    'location': 'location__iexact'}
+                    'location': 'location__iexact',
+                    'status': 'distribution_plan__run__status__in'}
     search_params = {}
     for key, value in params.iteritems():
         query_field = query_fields.get(key)

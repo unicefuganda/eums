@@ -136,7 +136,18 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
 
         function getSearchTerm() {
             var filters = _($scope.searchTerm).omit(_.isUndefined).omit(_.isNull).value();
+            if (filters.status) {
+                filters.status = processStatusValue(filters.status)
+            }
             return filters;
+        }
+
+        function processStatusValue(status) {
+            var statusValue = {
+                "Complete": "completed",
+                "Incomplete": "expired,scheduled"
+            }
+            return statusValue[status];
         }
 
         function getSortTerm() {
