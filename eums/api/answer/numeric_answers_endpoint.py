@@ -1,10 +1,12 @@
 from rest_framework import serializers
 from rest_framework import status
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
 from eums.models import NumericAnswer
+from eums.permissions.numeric_answer_permissions import NumericAnswerPermissions
 
 
 class NumericAnswerSerializer(serializers.ModelSerializer):
@@ -14,6 +16,7 @@ class NumericAnswerSerializer(serializers.ModelSerializer):
 
 
 class NumericAnswerViewSet(ModelViewSet):
+    permission_classes = (DjangoModelPermissions, NumericAnswerPermissions)
     queryset = NumericAnswer.objects.all().order_by('id')
     serializer_class = NumericAnswerSerializer
 

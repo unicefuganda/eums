@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'Contact', 'EumsErrorMessage', 'Option',
-        'Sort', 'SortArrow', 'SysUtils', 'ngToast', 'SystemSettingsService', 'Answer'])
+        'Sort', 'SortArrow', 'SysUtils', 'ngToast', 'SystemSettingsService', 'Answer', 'ui.bootstrap'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams, ngToast,
                                                           ReportService, LoaderService, ErrorMessageService, SortService,
                                                           ContactService, SortArrowService, SysUtilsService,
-                                                          SystemSettingsService, AnswerService) {
+                                                          SystemSettingsService, AnswerService, UserService) {
 
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'mergedDateOfReceipt', 'answers.amountReceived.value'];
         var timer;
@@ -24,7 +24,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             $scope.pagination.page = 1;
             if (initializing) {
-                loadSystemSettings();
+                init();
                 loadItemFeedbackReport();
                 initializing = false;
             } else {
@@ -71,10 +71,11 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         };
 
         $scope.saveStockAdjustment = function (amountReceivedObj) {
-            if (!amountReceivedObj || !amountReceivedObj.id) {
-                throw new Error('The to-update answer id cannot be empty');
+            if (!amountReceivedObj || !amountReceivedObj.id || !amountReceivedObj.remark) {
+                return;
             }
 
+            amountReceivedObj.value = amountReceivedObj.value ? amountReceivedObj.value : 0;
             var updatedValue = {
                 value: amountReceivedObj.value,
                 remark: amountReceivedObj.remark ? amountReceivedObj.remark : ''
@@ -129,6 +130,24 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             LoaderService.showModal("additional-remarks-modal-dialog");
         };
 
+        function init() {
+            var promises = [];
+            promises.push(loadUserPermissions());
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[1];
+            });
+        }
+
+        function loadUserPermissions() {
+            return UserService.retrieveUserPermissions().then(function (permissions) {
+                $scope.userPermissions = permissions;
+                UserService.hasPermission("eums.change_numericanswer", $scope.userPermissions).then(function (result) {
+                    $scope.can_change = result;
+                });
+            });
+        }
+
         function startTimer() {
             timer = $timeout(function () {
                 loadItemFeedbackReport()
@@ -142,19 +161,13 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
-                setContactToReports($scope.report)
+                setContactToReports($scope.report);
                 updateProgrammes(response.programmeIds);
             }, function () {
                 ErrorMessageService.showError();
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
-            });
-        }
-
-        function loadSystemSettings() {
-            SystemSettingsService.getSettingsWithDefault().then(function (settings) {
-                $scope.systemSettings = settings;
             });
         }
 

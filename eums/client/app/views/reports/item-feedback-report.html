@@ -17,7 +17,7 @@
 <div class="container-fluid">
     <div class="content">
         <div class="row">
-            <div class="form-group margin-right-20 margin-top-20">
+            <div class="form-group margin-right-20 margin-top-20 margin-bottom-10">
                 <div class="row">
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Item Description:</label>
@@ -119,7 +119,14 @@
                 </div>
             </div>
         </div>
-
+        <div class="form-group margin-right-20 margin-top-10 margin-bottom-10">
+            <div class="row margin-right-20">
+                <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">
+                    <span class="glyphicon blue-unicef glyphicon-asterisk pad-right-5"></span>
+                    Quantity has been modified by UNICEF Admin
+                </div>
+            </div>
+        </div>
         <div class="table-wrapper">
             <table class="table table-bordered table-hover table-striped table-condensed">
                 <thead>
@@ -180,11 +187,12 @@
                         <span class="padded-multi-line-5">{{ itemReport.answers.amountReceived.value }}</span>
                         <div class="margin-top-5 pad-5">
                             <a class="button margin-right-20"
-                               ng-show="isAmountReceivedEditable(itemReport.answers.amountReceived)"
+                               ng-show="can_change && isAmountReceivedEditable(itemReport.answers.amountReceived)"
                                ng-click="showStockAdjustmentDialog(itemReport.answers.amountReceived)">
                                 <span class="button glyphicon blue-unicef glyphicon-pencil"></span>
                             </a>
-                            <a class="button"
+                            <a class="button" popover="{{ itemReport.answers.amountReceived.remark }}"
+                               popover-animation="true" popover-placement="auto top" popover-trigger="mouseenter"
                                ng-show="isAmountReceivedEverChanged(itemReport.answers.amountReceived)">
                                 <span class="button glyphicon blue-unicef glyphicon-asterisk"></span>
                             </a>

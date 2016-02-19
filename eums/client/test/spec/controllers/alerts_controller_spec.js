@@ -126,8 +126,8 @@ describe('AlertsController', function () {
             deferredAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
             mockToast = ngToast;
-            deferredPermissionsResultsPromise = $q.defer();
             userHasPermissionToPromise = $q.defer();
+            deferredPermissionsResultsPromise = $q.defer();
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
             mockAlertsService.get.and.returnValue($q.when({'total': 4, 'unresolved': 2}));
             mockAlertsService.update.and.returnValue($q.when({}));

@@ -175,11 +175,11 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
         }
     },
 
-    clickShowStockAdjustmentDialogIconInFirstRow: {
+    showStockAdjustmentDialogIconInFirstRow: {
         value: function () {
             return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.amountReceived.value')).get(0)
                 .element(by.xpath('..'))
-                .element(by.css('.button.margin-right-20')).click();
+                .element(by.css('.button.margin-right-20'));
         }
     },
     setValueOfEditingAmountReceived: {
@@ -196,9 +196,9 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
                 .sendKeys(newRemark);
         }
     },
-    clickSaveButtonOfEditingAmountReceivedDialog: {
+    saveButtonOfEditingAmountReceivedDialog: {
         value: function () {
-            return element(by.id('stock-adjustment-modal-dialog')).element(by.css('.save-buttons')).click();
+            return element(by.id('stock-adjustment-modal-dialog')).element(by.css('.save-buttons'));
         }
     }
 });

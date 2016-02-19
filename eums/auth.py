@@ -68,7 +68,12 @@ class PermissionCode(object):
 
     CAN_VIEW_SYSTEM_SETTINGS = 'can_view_system_settings'
     CAN_CHANGE_SYSTEM_SETTINGS = 'change_systemsettings'
+
     CAN_ADD_WEB_ANSWER = 'add_web_answer'
+    CAN_ADD_NUMERIC_ANSWER = 'add_numericanswer'
+    CAN_CHANGE_NUMERIC_ANSWER = 'change_numericanswer'
+    CAN_PATCH_NUMERIC_ANSWER = 'change_numericanswer'
+    CAN_DELETE_NUMERIC_ANSWER = 'delete_numericanswer'
 
     CAN_ADD_UPLOAD = 'add_upload'
     CAN_CHANGE_UPLOAD = 'change_upload'

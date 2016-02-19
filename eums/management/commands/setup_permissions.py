@@ -53,6 +53,8 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
 
         PermissionCode.CAN_VIEW_ITEM,
+        PermissionCode.CAN_CHANGE_NUMERIC_ANSWER,
+        PermissionCode.CAN_PATCH_NUMERIC_ANSWER,
     ],
     GROUP_UNICEF_EDITOR: [
         PermissionCode.CAN_VIEW_DASH_BOARD,
@@ -92,6 +94,8 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
 
         PermissionCode.CAN_VIEW_ITEM,
+        PermissionCode.CAN_CHANGE_NUMERIC_ANSWER,
+        PermissionCode.CAN_PATCH_NUMERIC_ANSWER,
     ],
     GROUP_UNICEF_VIEWER: [
         PermissionCode.CAN_VIEW_DASH_BOARD,
@@ -121,7 +125,6 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
 
         PermissionCode.CAN_VIEW_ITEM,
-
     ],
     GROUP_IP_EDITOR: [
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,

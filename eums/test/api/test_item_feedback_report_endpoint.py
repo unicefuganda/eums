@@ -33,7 +33,8 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
     def test_should_return_items_and_all_their_answers(self):
         node_one, purchase_order_item, _, node_two, _, _ = self.setup_nodes_with_answers()
 
-        response = self.client.get(ENDPOINT_URL, content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?field=answers.amountReceived.value&order=desc',
+                                   content_type='application/json')
         results = response.data['results']
 
         self.assertEqual(len(response.data['results']), 6)
@@ -48,7 +49,8 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertFieldExists({'tree_position': node_one.tree_position}, results)
         self.assertFieldExists({'additional_remarks': node_one.additional_remarks}, results)
         self.assertGreaterEqual(len(results[0]['answers']), 3)
-        self.assertEqual(results[0]['answers'].get('amountReceived').get('remark'), 'Some remark')
+        print results[0]
+        self.assertEqual(results[0]['answers'].get('amountReceived').get('remark'), 'Some remark 2')
 
     def test_should_return_paginated_items_and_all_their_answers(self):
         total_number_of_items = 20
@@ -286,7 +288,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         middle_man_node_run = RunFactory(runnable=middle_man_node)
         MultipleChoiceAnswerFactory(question=mm_question_1, run=middle_man_node_run, value=mm_option_1)
         TextAnswerFactory(question=mm_question_2, run=middle_man_node_run, value='2014-9-25')
-        NumericAnswerFactory(question=mm_question_3, run=middle_man_node_run, value=1500)
+        NumericAnswerFactory(question=mm_question_3, run=middle_man_node_run, value=1501, remark='Some remark 2')
 
         end_user_run_one = RunFactory(runnable=end_user_node_one)
         MultipleChoiceAnswerFactory(question=eu_question_1, run=end_user_run_one, value=eu_option_1)

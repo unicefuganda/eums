@@ -9,7 +9,6 @@ ENDPOINT_URL = BACKEND_URL + 'numeric-answers/'
 
 
 class NumericAnswerEndpointTest(AuthenticatedAPITestCase):
-
     def prepare_test_data(self):
         numeric_question = NumericQuestionFactory(label='dateOfReceipt')
         run = RunFactory()
@@ -73,7 +72,7 @@ class NumericAnswerEndpointTest(AuthenticatedAPITestCase):
             "value": 1,
             "question": numeric_question.id,
             "run": run.id,
-            "remark": ""
+            "remark": None
         }
         response = self.client.post(ENDPOINT_URL, numeric_answer_details, format='json')
 
@@ -81,47 +80,49 @@ class NumericAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(numeric_answer_details, response.data)
 
     def test_should_update_numeric_answers(self):
-        numeric_question = NumericQuestionFactory(label='amountReceived')
-        numeric_answer = NumericAnswerFactory(value=1, question=numeric_question)
-        updated_numeric_answer_details = {
-            "value": 2,
-            "remark": "Some remark"
-        }
-        response = self.client.patch(ENDPOINT_URL+str(numeric_answer.id)+"/", updated_numeric_answer_details, format='json')
-
+        updated_numeric_answer = {"value": 2, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_unicef_admin_in, updated_numeric_answer)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictContainsSubset(updated_numeric_answer_details, response.data)
+        self.assertDictContainsSubset(updated_numeric_answer, response.data)
 
     def test_should_success_when_update_numeric_answers_with_value_0(self):
-        numeric_question = NumericQuestionFactory(label='amountReceived')
-        numeric_answer = NumericAnswerFactory(value=1, question=numeric_question)
-        updated_numeric_answer_details = {
-            "value": 0,
-            "remark": "Some remark"
-        }
-        response = self.client.patch(ENDPOINT_URL+str(numeric_answer.id)+"/", updated_numeric_answer_details, format='json')
-
+        updated_numeric_answer = {"value": 0, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_unicef_admin_in, updated_numeric_answer)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictContainsSubset(updated_numeric_answer_details, response.data)
+        self.assertDictContainsSubset(updated_numeric_answer, response.data)
 
     def test_should_failed_when_update_numeric_answers_with_value_none(self):
-        numeric_question = NumericQuestionFactory(label='amountReceived')
-        numeric_answer = NumericAnswerFactory(value=1, question=numeric_question)
-        updated_numeric_answer_details = {
-            "value": None,
-            "remark": "Some remark"
-        }
-        response = self.client.patch(ENDPOINT_URL+str(numeric_answer.id)+"/", updated_numeric_answer_details, format='json')
-
+        updated_numeric_answer = {"value": None, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_unicef_admin_in, updated_numeric_answer)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_should_failed_when_update_numeric_answers_with_remark_empty(self):
+        updated_numeric_answer = {"value": 2, "remark": ""}
+        response = self.__login_and_update_existing_numeric_answer(self.log_unicef_admin_in, updated_numeric_answer)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unicef_editor_should_have_permission_to_update_numeric_answer(self):
+        updated_numeric_answer = {"value": 2, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_unicef_editor_in, updated_numeric_answer)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_unicef_viewer_should_not_have_permission_to_update_numeric_answer(self):
+        updated_numeric_answer = {"value": 2, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_unicef_viewer_in, updated_numeric_answer)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_ip_editor_should_not_have_permission_to_update_numeric_answer(self):
+        updated_numeric_answer = {"value": 2, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_ip_editor_in, updated_numeric_answer)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_ip_viewer_should_not_have_permission_to_update_numeric_answer(self):
+        updated_numeric_answer = {"value": 2, "remark": "Some remark"}
+        response = self.__login_and_update_existing_numeric_answer(self.log_ip_viewer_in, updated_numeric_answer)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def __login_and_update_existing_numeric_answer(self, login_func, updated_numeric_answer):
+        login_func()
         numeric_question = NumericQuestionFactory(label='amountReceived')
         numeric_answer = NumericAnswerFactory(value=1, question=numeric_question)
-        updated_numeric_answer_details = {
-            "value": 2,
-            "remark": ""
-        }
-        response = self.client.patch(ENDPOINT_URL+str(numeric_answer.id)+"/", updated_numeric_answer_details, format='json')
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        return self.client.patch(ENDPOINT_URL + str(numeric_answer.id) + "/", updated_numeric_answer, format='json')

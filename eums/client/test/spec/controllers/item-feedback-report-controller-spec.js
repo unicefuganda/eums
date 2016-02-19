@@ -1,7 +1,7 @@
 describe('ItemFeedbackReportController', function () {
     var scope, location, mockReportService, mockLoader, timeout, initController, mockSystemSettingsService,
-        mockAnswerService;
-    var deferredResult, deferredUpdateNumericAnswerResult;
+        mockAnswerService, mockUserService;
+    var deferredResult, deferredUpdateNumericAnswerResult, userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var stubSettings = {
         'notification_message': 'notification',
         'district_label': 'district'
@@ -118,6 +118,7 @@ describe('ItemFeedbackReportController', function () {
         module('ItemFeedbackReport');
 
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
         mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockAnswerService = jasmine.createSpyObj('mockAnswerService', ['updateNumericAnswer']);
@@ -129,10 +130,12 @@ describe('ItemFeedbackReportController', function () {
 
             deferredResult = $q.defer();
             deferredUpdateNumericAnswerResult = $q.defer();
+            userHasPermissionToPromise = $q.defer();
+            deferredPermissionsResultsPromise = $q.defer();
             mockReportService.itemFeedbackReport.and.returnValue(deferredResult.promise);
             mockAnswerService.updateNumericAnswer.and.returnValue(deferredUpdateNumericAnswerResult.promise);
-            //mockAnswerService.updateNumericAnswer.and.returnValue($q.when({}));
-
+            mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
             mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
             mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
@@ -143,6 +146,7 @@ describe('ItemFeedbackReportController', function () {
                     $routeParams: route,
                     ReportService: mockReportService,
                     AnswerService: mockAnswerService,
+                    UserService: mockUserService,
                     SystemSettingsService: mockSystemSettingsService,
                     LoaderService: mockLoader
                 });
