@@ -108,6 +108,14 @@
                                search-from-list list="$districts" ng-model="searchTerm.selectedLocation"
                                value="{{ searchTerm.selectedLocation }}">
                     </div>
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Response:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-response-container">
+                        <input id="filter-by-status" type="hidden" placeholder="Response Status"
+                               select-option="response status"
+                               ng-model="searchTerm.status"/>
+                    </div>
                 </div>
             </div>
         </div>

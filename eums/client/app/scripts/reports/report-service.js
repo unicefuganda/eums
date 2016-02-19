@@ -44,6 +44,7 @@ angular.module('ReportService', ['eums.config'])
                 quality: params.quality,
                 satisfied: params.satisfied,
                 good_condition: params.good_condition,
+                status: params.status,
                 field: params.field,
                 order: params.order,
                 outcome: params.selectedOutcomeId,

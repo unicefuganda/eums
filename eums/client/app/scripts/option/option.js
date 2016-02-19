@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Option', ['eums.config', 'eums.service-factory'])
-    .factory('OptionService', function ($http, EumsConfig, ServiceFactory) {
+    .factory('OptionService', function ($http, $q, EumsConfig, ServiceFactory) {
         var itemReceivedOptions = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.RECEIVED_OPTIONS}).all;
         var itemQualityOptions = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.QUALITY_OPTIONS}).all;
         var itemSatisfiedOptions = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.SATISFIED_OPTIONS}).all;
@@ -9,7 +9,7 @@ angular.module('Option', ['eums.config', 'eums.service-factory'])
         var deliverySatisfiedOptions = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.DELIVERY_SATISFIED_OPTIONS}).all;
         var deliveryConditionOptions = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.DELIVERY_CONDITION_OPTIONS}).all;
 
-        var getItemService = function(question) {
+        var getItemService = function (question) {
             switch (question) {
                 case 'received':
                     return itemReceivedOptions;
@@ -22,7 +22,7 @@ angular.module('Option', ['eums.config', 'eums.service-factory'])
             }
         };
 
-        var getDeliveryService = function(question) {
+        var getDeliveryService = function (question) {
             switch (question) {
                 case 'received':
                     return deliveryReceivedOptions;
@@ -35,13 +35,26 @@ angular.module('Option', ['eums.config', 'eums.service-factory'])
             }
         };
 
+        var getResponseStatus = function () {
+            var result = [{"id": 1, "text": "Complete"}, {"id": 2, "text": "Incomplete"}];
+            var deferred = $q.defer();
+            deferred.resolve(result);
+            return deferred.promise;
+        };
+
+        var getResponseService = function () {
+            return getResponseStatus;
+        };
+
         return {
-            getService: function(type, question) {
+            getService: function (type, question) {
                 switch (type) {
                     case 'item':
                         return getItemService(question);
                     case 'delivery':
                         return getDeliveryService(question);
+                    case 'response':
+                        return getResponseService();
                     default:
                         throw 'unknown type';
                 }
