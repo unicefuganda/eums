@@ -56,15 +56,17 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             if (!angular.equals(contact, $scope.currentContact)) {
                 angular.copy(contact, $scope.currentContact);
             }
+
             showAdditionalInfo();
             $scope.$broadcast('edit-contact', $scope.currentContact);
         };
 
         function showAdditionalInfo() {
-             $scope.isAddtionalInfoVisiable = true;
+            $scope.isAddtionalInfoVisiable = true;
         }
+
         function hideAdditionalInfo() {
-             $scope.isAddtionalInfoVisiable = false;
+            $scope.isAddtionalInfoVisiable = false;
         }
 
         $scope.deleteSelectedContact = function () {
@@ -178,6 +180,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         }
 
         function getEntityName(group) {
+
             if (group.startsWith('UNICEF')) {
                 return 'UNICEF';
             }
@@ -294,7 +297,11 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     scope.contact = contact;
                     isEdit = true;
                     contactInput.intlTelInput('setNumber', contact.phone);
-                    scope.$broadcast('set-location', {id: contact.district, name: contact.district});
+                    if (!contact.district) {
+                        scope.$broadcast('clear-location');
+                    } else {
+                        scope.$broadcast('set-location', {id: contact.district, name: contact.district});
+                    }
                     scope.$broadcast('set-consignees', contact.ips);
                     $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
@@ -313,7 +320,14 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     $('#add-contact-modal').modal('hide');
                 };
 
+                function buildPayload(contact) {
+                    contact.district = contact.district ? contact.district : '';
+                    contact.ips = contact.ips ? contact.ips : [];
+                }
+
                 scope.saveContact = function (contact) {
+                    buildPayload(contact);
+
                     if (isEdit) {
                         ContactService.update(contact)
                             .then(function (createdContact) {

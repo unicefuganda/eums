@@ -81,7 +81,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     }
                 });
 
-                scope.$on('clear-list', function () {
+                scope.$on('clear-location', function () {
                     var select2Input = $(element).siblings('div').find('a span.select2-chosen');
                     select2Input.text('');
                     $(element).val(undefined).trigger('change');
