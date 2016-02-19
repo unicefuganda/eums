@@ -43,6 +43,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.showAddContact = function () {
+            hideAdditionalInfo()
             $scope.$broadcast('add-contact');
         };
 
@@ -55,8 +56,16 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             if (!angular.equals(contact, $scope.currentContact)) {
                 angular.copy(contact, $scope.currentContact);
             }
+            showAdditionalInfo();
             $scope.$broadcast('edit-contact', $scope.currentContact);
         };
+
+        function showAdditionalInfo() {
+             $scope.isAddtionalInfoVisiable = true;
+        }
+        function hideAdditionalInfo() {
+             $scope.isAddtionalInfoVisiable = false;
+        }
 
         $scope.deleteSelectedContact = function () {
             ContactService.del($scope.currentContact).then(function () {
@@ -296,8 +305,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 };
 
                 scope.invalidContact = function (contact) {
-                    return !(contact.firstName && contact.lastName
-                    && contact.phone && contact.district && (contact.ips.length != 0));
+                    return !(contact.firstName && contact.lastName && contact.phone);
                 };
 
                 var emitEvent = function (contact) {
