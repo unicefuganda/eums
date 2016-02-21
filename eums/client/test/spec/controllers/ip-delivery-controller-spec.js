@@ -209,7 +209,7 @@ describe('IP Delivery Controller', function () {
             expect(mockLoaderService.showLoader.calls.count()).toBe(2);
             expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
             expect(scope.activeDelivery).toBe(delivery);
-            expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(delivery, 'answers');
+            expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(delivery, 'answers/');
             expect(mockFileUploadService.getImages).toHaveBeenCalledWith(delivery.id);
             expect(scope.answers).toBe(answers);
             expect(scope.uploadedImages).toBe(uploads.images);
