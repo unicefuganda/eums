@@ -65,7 +65,6 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$327.98');
 
         contactsPage.clickAddContact();
-
         expect(contactsPage.contactModal.isDisplayed()).toBeTruthy();
         contactsPage.closeContactModal();
         expect(contactsPage.contactModal.isDisplayed()).toBeFalsy();

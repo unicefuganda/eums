@@ -44,16 +44,17 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             $scope.activeDelivery = delivery;
             $scope.isInitContactEmpty = delivery.contactPersonId == null;
 
-            DeliveryService.getDetail(delivery, 'answers')
-                .then(function (answers) {
-                    $scope.activeDelivery = delivery;
-                    $scope.answers = answers;
-                    $scope.oringalAnswers = angular.copy(answers);
-                    $scope.selectedLocation.id = delivery.location;
-                    $scope.contact.id = delivery.contactPersonId;
-                    setLocationAndContactFields();
-                    getImages(delivery.id);
+            DeliveryService.getDetail(delivery, 'answers/').then(function (answers) {
+                $scope.answers = answers;
+                $scope.oringalAnswers = angular.copy(answers);
+                $scope.selectedLocation.id = delivery.location;
+                $scope.contact.id = delivery.contactPersonId;
+                setLocationAndContactFields();
+                getImages(delivery.id).then(function () {
+                    LoaderService.hideLoader();
+                    LoaderService.showModal('ip-acknowledgement-modal');
                 });
+            });
         };
 
         $scope.saveAnswers = function () {
@@ -160,11 +161,9 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         }
 
         function getImages(id) {
-            FileUploadService.getImages(id).then(function (response) {
+            return FileUploadService.getImages(id).then(function (response) {
                 $scope.uploadedImages = response.images;
                 imageUploader.queueLimit = response.images.length < 3 ? 3 - response.images.length : 0;
-                LoaderService.hideLoader();
-                LoaderService.showModal('ip-acknowledgement-modal');
             });
         }
 
