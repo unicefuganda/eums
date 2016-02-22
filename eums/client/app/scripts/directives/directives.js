@@ -433,51 +433,6 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             }
         }
     })
-    .directive('selectMultipleIps', function (ProgrammeService, DeliveryService, ConsigneeService) {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            link: function (scope, element, attrs, ngModel) {
-                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.allIps = displayedData.map(function (consignee) {
-                        return {id: consignee.id, text: consignee.name}
-                    });
-                    scope.displayIps = scope.allIps;
-                    scope.populateIpsSelect2(scope.displayIps);
-                });
-
-                scope.populateIpsSelect2 = function (displayIps) {
-                    $(element).select2({
-                        placeholder: 'All Implementing Partners',
-                        allowClear: true,
-                        multiple: 'multiple',
-                        data: _.sortBy(displayIps, function (ip) {
-                            return ip.text;
-                        })
-                    });
-                };
-
-                element.change(function () {
-                    var consignees = $(element).select2('data');
-                    var ids = consignees.map(function (consignee) {
-                        return consignee.id;
-                    });
-                    ngModel.$setViewValue(ids);
-                    scope.$apply();
-                });
-
-                scope.$on('clear-consignees', function () {
-                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    consigneeSelect2Input.text('');
-                    $(element).val(undefined).trigger('change');
-                });
-
-                scope.$on('set-consignees', function (_, ids) {
-                    $(element).val(ids).trigger('change');
-                });
-            }
-        }
-    })
     .directive('onlyDigits', function () {
         return {
             require: 'ngModel',
@@ -554,6 +509,52 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 elem.change(function () {
                     var option = $(elem).select2('data');
                     ngModel.$setViewValue(option && option.text);
+                    scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectMultipleIps', function (ProgrammeService, DeliveryService, ConsigneeService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
+                    scope.allIps = displayedData.map(function (consignee) {
+                        return {id: consignee.id, text: consignee.name}
+                    });
+                    scope.displayIps = scope.allIps;
+                    populateIpsSelect2(scope.displayIps);
+                });
+
+                function populateIpsSelect2(displayIps) {
+                    $(element).select2({
+                        placeholder: attrs.placeholder || 'All Implementing Partners',
+                        allowClear: true,
+                        multiple: 'multiple',
+                        data: _.sortBy(displayIps, function (ip) {
+                            return ip.text;
+                        })
+                    });
+                }
+
+                scope.clearMultipleIps = function () {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text('');
+                    $(element).val(undefined).trigger('change');
+                };
+
+                scope.setMultipleIps = function (ids) {
+                    $(element).val(ids).trigger('change');
+                };
+
+                element.change(function () {
+                    var consignees = $(element).select2('data');
+                    var ids = consignees.map(function (consignee) {
+                        return consignee.id;
+                    });
+                    ngModel.$setViewValue(ids);
                     scope.$apply();
                 });
             }

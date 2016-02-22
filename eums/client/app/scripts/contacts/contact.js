@@ -252,6 +252,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         return {
             restrict: 'E',
             templateUrl: templateUrl,
+            replace: true,
             link: function (scope) {
                 scope.contact = {};
                 var contactInput = $('#contact-phone'), isEdit = false;
@@ -286,7 +287,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         scope.object = object;
                         scope.objectIndex = objectIndex;
                         contactInput.val('');
-                        scope.$broadcast('clear-consignees');
+                        scope.clearMultipleIps();
                         scope.$broadcast('clear-list');
                         $('#model-name').text('Add Contact');
                         $('#add-contact-modal').modal();
@@ -297,12 +298,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     scope.contact = contact;
                     isEdit = true;
                     contactInput.intlTelInput('setNumber', contact.phone);
-                    if (!contact.district) {
-                        scope.$broadcast('clear-location');
-                    } else {
+                    if (contact.district) {
                         scope.$broadcast('set-location', {id: contact.district, name: contact.district});
+                    } else {
+                        scope.$broadcast('clear-location');
                     }
-                    scope.$broadcast('set-consignees', contact.ips);
+                    scope.setMultipleIps(contact.ips);
                     $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
                 });
