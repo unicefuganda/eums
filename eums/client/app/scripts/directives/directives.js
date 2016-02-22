@@ -555,8 +555,51 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                         return consignee.id;
                     });
                     ngModel.$setViewValue(ids);
-                    scope.$apply();
                 });
             }
         }
+    })
+    .directive('selectMultipleDistricts', function (IPService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                IPService.loadAllDistricts().then(function (response) {
+                    var districts = response.data.map(function (district) {
+                        return {id: district, text: district};
+                    });
+                    populateDistrictsSelect2(districts);
+                });
+
+                function populateDistrictsSelect2(displayDistricts) {
+                    $(element).select2({
+                        placeholder: attrs.placeholder || 'All Districts',
+                        allowClear: true,
+                        multiple: 'multiple',
+                        data: _.sortBy(displayDistricts, function (district) {
+                            return district.text;
+                        })
+                    });
+                }
+
+                scope.clearMultipleDistricts = function () {
+                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    districtSelect2Input.text('');
+                    $(element).val(undefined).trigger('change');
+                };
+
+                scope.setMultipleDistricts = function (ids) {
+                    $(element).val(ids).trigger('change');
+                };
+
+                element.change(function () {
+                    var district = $(element).select2('data');
+                    var ids = district.map(function (district) {
+                        return district.id;
+                    });
+                    ngModel.$setViewValue(ids);
+                });
+            }
+        };
     });

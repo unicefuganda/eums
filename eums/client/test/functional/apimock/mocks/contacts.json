@@ -4,7 +4,7 @@
     "firstName": "John",
     "lastName": "Doe",
     "phone": "+256771234567",
-    "district": "kampala",
+    "districts": ["kampala"],
     "ips": [
       1
     ],
@@ -15,7 +15,7 @@
     "firstName": "Jade",
     "lastName": "Sam",
     "phone": "+256771234568",
-    "district": "wakiso",
+    "districts": ["wakiso"],
     "ips": [
       1,
       2
@@ -27,7 +27,7 @@
     "firstName": "Ming",
     "lastName": "Xiao",
     "phone": "+256771234568",
-    "district": "kampala",
+    "districts": ["kampala"],
     "ips": [
       1
     ],

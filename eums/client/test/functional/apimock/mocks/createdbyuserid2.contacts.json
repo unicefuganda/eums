@@ -5,7 +5,7 @@
     "lastName": "Doe",
     "phone": "+256771234567",
     "createdByUserId": 2,
-    "district": "kampala",
+    "districts": ["kampala"],
     "ips": [
       1
     ]
@@ -16,7 +16,7 @@
     "lastName": "Sam",
     "phone": "+256771234568",
     "createdByUserId": 2,
-    "district": "kampala",
+    "districts": ["kampala"],
     "ips": [
       1
     ]

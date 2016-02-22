@@ -31,7 +31,7 @@ ContactsPage.prototype = Object.create({}, {
 
     contactDistricts: {
         get: function () {
-            return element.all(by.repeater('contact in contacts').column('contact.district')).getText();
+            return element.all(by.id('contact.districts')).getText();
         }
     },
 

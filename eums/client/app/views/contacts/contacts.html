@@ -39,7 +39,9 @@
                         <td class="text-left">{{ contact.firstName }}</td>
                         <td class="text-left">{{ contact.lastName }}</td>
                         <td class="text-left">{{ contact.phone }}</td>
-                        <td class="text-left">{{ contact.district }}</td>
+                        <td class="text-left" id="contact.districts">
+                            <div ng-repeat="district in contact.districts | orderBy: 'toString()'">{{ district }}</div>
+                        </td>
                         <td class="text-left" id="contact.ipNames">
                             <div ng-repeat="ipName in contact.ipNames | orderBy: 'toString()'">{{ ipName }}</div>
                         </td>

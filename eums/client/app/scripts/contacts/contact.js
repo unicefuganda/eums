@@ -38,8 +38,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.invalidContact = function (contact) {
-            return !(contact.firstName && contact.lastName && contact.phone
-            && contact.district && (contact.ips.length != 0));
+            return !(contact.firstName && contact.lastName && contact.phone);
         };
 
         $scope.showAddContact = function () {
@@ -288,7 +287,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         scope.objectIndex = objectIndex;
                         contactInput.val('');
                         scope.clearMultipleIps();
-                        scope.$broadcast('clear-list');
+                        scope.clearMultipleDistricts();
                         $('#model-name').text('Add Contact');
                         $('#add-contact-modal').modal();
                     });
@@ -298,11 +297,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     scope.contact = contact;
                     isEdit = true;
                     contactInput.intlTelInput('setNumber', contact.phone);
-                    if (contact.district) {
-                        scope.$broadcast('set-location', {id: contact.district, name: contact.district});
-                    } else {
-                        scope.$broadcast('clear-location');
-                    }
+                    scope.setMultipleDistricts(contact.districts);
                     scope.setMultipleIps(contact.ips);
                     $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
@@ -322,7 +317,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 };
 
                 function buildPayload(contact) {
-                    contact.district = contact.district ? contact.district : '';
+                    contact.districts = contact.districts ? contact.districts : '';
                     contact.ips = contact.ips ? contact.ips : [];
                 }
 

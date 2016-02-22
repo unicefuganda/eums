@@ -224,7 +224,7 @@ describe('ContactController', function () {
                 firstName: 'Dudette',
                 lastName: 'Awesome',
                 phone: '+256782555444',
-                district: 'wakiso',
+                district: ['wakiso'],
                 ips: [1, 2]
             };
             scope.$apply();

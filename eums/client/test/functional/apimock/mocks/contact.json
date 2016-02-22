@@ -3,7 +3,7 @@
   "firstName": "John",
   "lastName": "Doe",
   "phone": "+256771234567",
-  "district": "kampala",
+  "districts": ["kampala"],
   "ips": [
    1
   ]
