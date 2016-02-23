@@ -100,6 +100,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             $q.all(saveNodePromises).then(function (savedNodes) {
                 $scope.distributionPlanNodes = savedNodes;
                 createToast('Delivery Saved!', 'success');
+                loadPurchaseOrderItemById();
             }).catch(function () {
                 createToast('Save failed', 'danger');
             }).finally(function () {
@@ -236,6 +237,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 track: uiPlanNode.track,
                 distribution_plan: uiPlanNode.distributionPlan
             };
+
+            console.log(node)
 
             if (uiPlanNode.track && (uiPlanNode.id == null || uiPlanNode.trackedDate == null)) {
                 uiPlanNode.trackedDate = new Date();
