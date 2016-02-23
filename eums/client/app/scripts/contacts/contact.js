@@ -139,12 +139,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 });
             }
 
-            promise.catch(function () {
-                    ngToast.create({content: 'Failed to load consignees', class: 'danger'});
-                })
-                .finally(function () {
-                    LoaderService.hideLoader();
-                });
+            promise.finally(function () {
+                LoaderService.hideLoader();
+            });
         }
 
         function convertIdToName(contacts) {
