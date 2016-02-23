@@ -39,11 +39,15 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         });
 
         $scope.confirm = function (delivery) {
+            if (!delivery) {
+                return;
+            }
+
             clearContactAndLocation();
-            LoaderService.showLoader();
             $scope.activeDelivery = delivery;
             $scope.isInitContactEmpty = delivery.contactPersonId == null;
 
+            LoaderService.showLoader();
             DeliveryService.getDetail(delivery, 'answers/').then(function (answers) {
                 $scope.answers = answers;
                 $scope.oringalAnswers = angular.copy(answers);
@@ -54,6 +58,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     LoaderService.hideLoader();
                     LoaderService.showModal('ip-acknowledgement-modal');
                 });
+            }).catch(function () {
+                LoaderService.hideLoader();
             });
         };
 
