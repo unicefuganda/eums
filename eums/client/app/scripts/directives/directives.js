@@ -602,4 +602,90 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 });
             }
         };
+    })
+    .directive('selectMultipleTypes', function () {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                var types = [{id: 'IMPLEMENTING_PARTNER', text: 'IP'},
+                    {id: 'MIDDLE_MAN', text: 'Sub-consignee'},
+                    {id: 'END_USER', text: 'End-user'}];
+                populateTypesSelect2(types);
+
+                function populateTypesSelect2(displayTypes) {
+                    $(element).select2({
+                        placeholder: attrs.placeholder,
+                        allowClear: true,
+                        multiple: 'multiple',
+                        data: _.sortBy(displayTypes, function (district) {
+                            return district.text;
+                        })
+                    });
+                }
+
+                scope.clearMultipleTypes = function () {
+                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    districtSelect2Input.text('');
+                    $(element).val(undefined).trigger('change');
+                };
+
+                scope.setMultipleTypes = function (ids) {
+                    $(element).val(ids).trigger('change');
+                };
+
+                element.change(function () {
+                    var types = $(element).select2('data');
+                    var ids = types.map(function (type) {
+                        return type.id;
+                    });
+                    ngModel.$setViewValue(ids);
+                });
+            }
+        };
+    })
+    .directive('selectMultipleOutcomes', function (ProgrammeService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ProgrammeService.programmesWithIps().then(function (response) {
+                    scope.allProgrammes = response.map(function (programe) {
+                        return {id: programe.id, text: programe.name}
+                    });
+                    populateOutcomesSelect2(scope.allProgrammes);
+                })
+
+                function populateOutcomesSelect2(displayProgrammes) {
+                    $(element).select2({
+                        placeholder: attrs.placeholder,
+                        allowClear: true,
+                        multiple: 'multiple',
+                        data: _.sortBy(displayProgrammes, function (district) {
+                            return district.text;
+                        })
+                    });
+                };
+
+                $(element).change(function () {
+                    var outcomes = $(element).select2('data');
+                    var ids = outcomes.map(function (outcome) {
+                        return outcome.id;
+                    });
+                    ngModel.$setViewValue(ids);
+                });
+
+                scope.clearMultipleOutcomes = function () {
+                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    districtSelect2Input.text('');
+                    $(element).val(undefined).trigger('change');
+                };
+
+                scope.setMultipleOutcomes = function (ids) {
+                    $(element).val(ids).trigger('change');
+                };
+            }
+        };
     });

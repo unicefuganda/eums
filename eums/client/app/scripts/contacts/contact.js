@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable',
+angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'SysUtils',
         'ui.bootstrap', 'ngToast', 'Loader', 'Consignee', 'SystemSettingsService'])
     .controller('ContactController', function ($scope, $q, $sorter, ngToast, UserService, ContactService, LoaderService,
-                                               ConsigneeService, SystemSettingsService) {
+                                               ConsigneeService, SystemSettingsService, SysUtilsService) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
@@ -58,6 +58,10 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
             showAdditionalInfo();
             $scope.$broadcast('edit-contact', $scope.currentContact);
+        };
+
+        $scope.formatDate = function (date) {
+            return SysUtilsService.formatDate(date)
         };
 
         function showAdditionalInfo() {
@@ -285,6 +289,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         contactInput.val('');
                         scope.clearMultipleIps();
                         scope.clearMultipleDistricts();
+                        scope.clearMultipleTypes();
+                        scope.clearMultipleOutcomes();
                         $('#model-name').text('Add Contact');
                         $('#add-contact-modal').modal();
                     });
@@ -296,6 +302,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     contactInput.intlTelInput('setNumber', contact.phone);
                     scope.setMultipleDistricts(contact.districts);
                     scope.setMultipleIps(contact.ips);
+                    scope.setMultipleTypes(contact.types);
+                    scope.setMultipleOutcomes(contact.outcomes);
                     $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
                 });
@@ -313,14 +321,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     $('#add-contact-modal').modal('hide');
                 };
 
-                function buildPayload(contact) {
-                    contact.districts = contact.districts ? contact.districts : '';
-                    contact.ips = contact.ips ? contact.ips : [];
-                }
-
                 scope.saveContact = function (contact) {
-                    buildPayload(contact);
-
                     if (isEdit) {
                         ContactService.update(contact)
                             .then(function (createdContact) {

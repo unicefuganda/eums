@@ -21,13 +21,21 @@
                                required>
                     </div>
                     <div class="form-group" ng-show="isAddtionalInfoVisiable && can_view_all">
-                        <input id="select-district" class="form-control" type="hidden"
-                               placeholder="{{ systemSettings.district_label }}"
-                               select-multiple-districts ng-model="contact.districts" required>
+                         <input id="select-multiple-types" class="form-control" type="hidden" placeholder="Types"
+                               select-multiple-types ng-model="contact.types" required/>
                     </div>
                     <div class="form-group" ng-show="isAddtionalInfoVisiable && can_view_all">
                         <input id="select-multiple-ips" class="form-control" type="hidden" placeholder="IP"
                                select-multiple-ips ng-model="contact.ips" required/>
+                    </div>
+                    <div class="form-group" ng-show="isAddtionalInfoVisiable && can_view_all">
+                        <input id="select-multiple-outcomes" class="form-control" type="hidden" placeholder="Outcomes"
+                               select-multiple-outcomes ng-model="contact.outcomes" required/>
+                    </div>
+                     <div class="form-group" ng-show="isAddtionalInfoVisiable && can_view_all">
+                        <input id="select-district" class="form-control" type="hidden"
+                               placeholder="{{ systemSettings.district_label }}"
+                               select-multiple-districts ng-model="contact.districts" required>
                     </div>
                 </form>
             </div>

@@ -30,7 +30,11 @@
                         <th><a sort-by="phone">Phone</a></th>
                         <th><a sort-by="district">{{ systemSettings.district_label }}</a></th>
                         <th><a sort-by="ips">Ip / Consignee</a></th>
+                        <th><a sort-by="types">Type</a></th>
+                        <th><a sort-by="outcomes">Outcome</a></th>
+
                         <th ng-show="can_view_users"><a sort-by="createdBy">Created By</a></th>
+                        <th><a sort-by="createdOn">Created Date</a></th>
                         <th ng-show="can_change" class="width-160"></th>
                     </tr>
                     </thead>
@@ -45,7 +49,14 @@
                         <td class="text-left" id="contact.ipNames">
                             <div ng-repeat="ipName in contact.ipNames | orderBy: 'toString()'">{{ ipName }}</div>
                         </td>
+                        <td class="text-left" id="contact.types">
+                            <div ng-repeat="type in contact.types | orderBy: 'toString()'">{{ type }}</div>
+                        </td>
+                        <td class="text-left" id="contact.ipNames">
+                            <div ng-repeat="outcome in contact.outcomes | orderBy: 'toString()'">{{ outcome }}</div>
+                        </td>
                         <td class="text-left" ng-show="can_view_users">{{ contact.createdByUserName }}</td>
+                        <td class="text-left">{{ formatDate(contact.createdOn) }}</td>
                         <td ng-show="can_change">
                             <button class="btn btn-primary"
                                     ng-show="can_change"
