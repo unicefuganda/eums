@@ -163,4 +163,30 @@ angular.module('StockReport', [
                 return $http.get(url);
             }
         };
-    });
+    })
+    .filter('concatArray', function () {
+        return function (array) {
+            var str = "";
+            for (var i = 0; i < array.length; i++) {
+                str += '<span class="pull-left">' + array[i] + '</span>';
+            }
+            return str;
+        };
+    })
+    .directive('concatArray', ['$compile', function ($compile) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope.$watch(function () {
+                    return scope.$eval(attrs.concatArray);
+                }, function (array) {
+                    var value = "";
+                    for (var i = 0; i < array.length; i++) {
+                        value += '<div>' + array[i] + '</div>';
+                    }
+                    element.html(value);
+                    $compile(element.contents())(scope);
+                });
+            }
+        };
+    }]);

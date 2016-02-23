@@ -43,6 +43,7 @@ class StockReportExporterTest(TestCase):
                 'date_delivered': '2014-09-25',
                 'date_confirmed': '',
                 'quantity_lost': 3,
+                'remark_lost': 'stolen',
                 'balance': -10,
                 'quantity_confirmed': 0,
                 'consignee': u'Consignee 62',
@@ -78,6 +79,7 @@ class StockReportExporterTest(TestCase):
             item.get('date_confirmed'),
             item.get('quantity_dispatched'),
             item.get('quantity_lost'),
+            item.get('remark_lost'),
             item.get('balance')
         ]
         assembled_data = csv_exporter.assemble_csv_data(stocks)

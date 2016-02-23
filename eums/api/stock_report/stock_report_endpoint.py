@@ -85,6 +85,7 @@ def _get_report_details_for_node(node):
     total_value_received = quantity_received * node.item.unit_value()
     quantity_lost = node.total_amount_lost()
     total_value_lost = quantity_lost * node.item.unit_value()
+    remark_lost = node.total_lost_remark()
     quantity_dispensed = node.quantity_out()
     value_dispensed = quantity_dispensed * node.item.unit_value()
     ip_delivery = DistributionPlan.objects.get(pk=node.distribution_plan.id)
@@ -108,6 +109,7 @@ def _get_report_details_for_node(node):
                    'date_confirmed': str(ip_delivery.received_date()),
                    'quantity_dispatched': quantity_dispensed,
                    'quantity_lost': quantity_lost,
+                   'remark_lost': remark_lost,
                    'balance': quantity_received - quantity_dispensed - quantity_lost}]
     }
 

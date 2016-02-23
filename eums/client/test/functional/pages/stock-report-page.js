@@ -43,6 +43,7 @@ StockReportPage.prototype = Object.create({}, {
     itemConfirmedQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_confirmed')).getText(); }},
     itemDeliveryDate: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.date_delivered')).getText(); }},
     itemLostQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_lost')).getText(); }},
+    itemLostRemark: { get: function () { return element.all(by.css('.remark_lost')).getText(); }},
     itemBalances: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.balance')).getText(); }},
     sortBy: {
         value: function(className, order) {

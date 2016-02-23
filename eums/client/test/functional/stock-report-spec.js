@@ -5,7 +5,7 @@ var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-describe('Stock Report', function () {
+fdescribe('Stock Report', function () {
 
     it('should show the report with IP filtering', function () {
         loginPage.visit();
@@ -49,6 +49,7 @@ describe('Stock Report', function () {
         expect(stockReportPage.itemConfirmedQty).toContain('500');
         expect(stockReportPage.itemDeliveryDate).toContain('11-Jul-2015');
         expect(stockReportPage.itemLostQty).toContain('6');
+        expect(stockReportPage.itemLostRemark).toContain('');
         expect(stockReportPage.itemBalances).toContain('74');
         expect(stockReportPage.itemBalances).toContain('500');
     });

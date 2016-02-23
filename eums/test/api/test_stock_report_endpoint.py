@@ -25,7 +25,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 ENDPOINT_URL = BACKEND_URL + 'stock-report'
 
 
@@ -58,6 +57,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-03',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         }]},
             {'document_number': self.po_one.order_number,
@@ -75,6 +75,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-02',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         },
                        {'code': unicode(self.po_item_one.item.material_code),
@@ -87,6 +88,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-01',
                         'quantity_dispatched': 2,
                         'quantity_lost': 3,
+                        'remark_lost': ['some bad thing'],
                         'balance': 9
                         }
                        ]}]
@@ -115,6 +117,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-03',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         }]},
             {'document_number': self.po_one.order_number,
@@ -132,6 +135,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-02',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         },
                        {'code': unicode(self.po_item_one.item.material_code),
@@ -144,6 +148,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-01',
                         'quantity_dispatched': 2,
                         'quantity_lost': 3,
+                        'remark_lost': ['some bad thing'],
                         'balance': 9
                         }]
              },
@@ -197,6 +202,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-02',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         },
                        {'code': unicode(self.po_item_one.item.material_code),
@@ -209,6 +215,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-01',
                         'quantity_dispatched': 2,
                         'quantity_lost': 3,
+                        'remark_lost': ['some bad thing'],
                         'balance': 9
                         }
                        ]}]
@@ -244,6 +251,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-03',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         }]
              }
@@ -289,6 +297,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'quantity_confirmed': 2,
                         'date_confirmed': '2014-01-03',
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'quantity_dispatched': 2,
                         'balance': 0
                         }]},
@@ -308,6 +317,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'quantity_confirmed': 2,
                         'date_confirmed': '2014-01-02',
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'quantity_dispatched': 2,
                         'balance': 0
                         },
@@ -320,6 +330,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'quantity_confirmed': 14,
                         'date_confirmed': '2014-01-01',
                         'quantity_lost': 3,
+                        'remark_lost': ['some bad thing'],
                         'quantity_dispatched': 2,
                         'balance': 9
                         }]
@@ -371,6 +382,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-02',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 0
                         },
                        {'code': unicode(po_item.item.material_code),
@@ -383,6 +395,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '2014-01-01',
                         'quantity_dispatched': 2,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 2
                         }]
              }]
@@ -537,6 +550,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '',
                         'quantity_dispatched': 20,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 10
                         },
                        {'code': unicode(po_item.item.material_code),
@@ -549,6 +563,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': '',
                         'quantity_dispatched': 35,
                         'quantity_lost': 0,
+                        'remark_lost': [],
                         'balance': 5
                         }]
              }

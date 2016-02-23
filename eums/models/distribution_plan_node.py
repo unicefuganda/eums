@@ -1,8 +1,12 @@
+import logging
+
 from django.db import models
 from django.db.models import Q, Sum
 from eums.models.flow import Flow
 from eums.models import Runnable, Arc, Programme
 from eums.models.delivery_node_manager import DeliveryNodeManager
+
+logger = logging.getLogger(__name__)
 
 positions = ((Flow.Label.MIDDLE_MAN, 'Middleman'), (Flow.Label.END_USER, 'End User'),
              (Flow.Label.IMPLEMENTING_PARTNER, 'Implementing Partner'))
@@ -152,6 +156,13 @@ class DistributionPlanNode(Runnable):
     def total_amount_lost(self):
         total_amount_lost = self.losses.aggregate(Sum('quantity'))['quantity__sum']
         return 0 if total_amount_lost is None else total_amount_lost
+
+    def total_lost_remark(self):
+        remarks = []
+        losses = self.losses.iterator()
+        for loss in losses:
+            remarks.append(loss.remark)
+        return remarks
 
     @staticmethod
     def _update_parent_balances(parents):
