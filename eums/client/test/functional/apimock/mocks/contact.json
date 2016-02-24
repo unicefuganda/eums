@@ -3,8 +3,17 @@
   "firstName": "John",
   "lastName": "Doe",
   "phone": "+256771234567",
-  "districts": ["kampala"],
+  "districts": [
+    "kampala"
+  ],
   "ips": [
-   1
+    "KAMPALA DHO",
+    "WAKISO DHO"
+  ],
+  "types": [
+    "End-user"
+  ],
+  "outcomes": [
+    "YI101 - PCR 1 KEEP CHILDREN LEARNING"
   ]
 }

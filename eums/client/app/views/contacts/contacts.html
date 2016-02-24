@@ -46,13 +46,13 @@
                         <td class="text-left" id="contact.districts">
                             <div ng-repeat="district in contact.districts | orderBy: 'toString()'">{{ district }}</div>
                         </td>
-                        <td class="text-left" id="contact.ipNames">
-                            <div ng-repeat="ipName in contact.ipNames | orderBy: 'toString()'">{{ ipName }}</div>
+                        <td class="text-left" id="contact.ips">
+                            <div ng-repeat="ip in contact.ips | orderBy: 'toString()'">{{ ip }}</div>
                         </td>
                         <td class="text-left" id="contact.types">
                             <div ng-repeat="type in contact.types | orderBy: 'toString()'">{{ type }}</div>
                         </td>
-                        <td class="text-left" id="contact.ipNames">
+                        <td class="text-left" id="contact.outcomes">
                             <div ng-repeat="outcome in contact.outcomes | orderBy: 'toString()'">{{ outcome }}</div>
                         </td>
                         <td class="text-left" ng-show="can_view_users">{{ contact.createdByUserName }}</td>

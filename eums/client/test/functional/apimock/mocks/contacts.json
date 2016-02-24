@@ -4,9 +4,17 @@
     "firstName": "John",
     "lastName": "Doe",
     "phone": "+256771234567",
-    "districts": ["kampala"],
+    "districts": [
+      "kampala"
+    ],
     "ips": [
-      1
+      "WAKISO DHO"
+    ],
+    "types": [
+      "END_USER"
+    ],
+    "outcomes": [
+      "YI101 - PCR 1 KEEP CHILDREN LEARNING"
     ],
     "createdByUserId": 2
   },
@@ -15,10 +23,18 @@
     "firstName": "Jade",
     "lastName": "Sam",
     "phone": "+256771234568",
-    "districts": ["wakiso"],
+    "districts": [
+      "wakiso"
+    ],
     "ips": [
-      1,
-      2
+      "KAMPALA DHO",
+      "WAKISO DHO"
+    ],
+    "types": [
+      "End-user"
+    ],
+    "outcomes": [
+      "YI101 - PCR 1 KEEP CHILDREN LEARNING"
     ],
     "createdByUserId": 2
   },
@@ -27,9 +43,18 @@
     "firstName": "Ming",
     "lastName": "Xiao",
     "phone": "+256771234568",
-    "districts": ["kampala"],
+    "districts": [
+      "kampala"
+    ],
     "ips": [
-      1
+      "KAMPALA DHO",
+      "WAKISO DHO"
+    ],
+    "types": [
+      "End-user"
+    ],
+    "outcomes": [
+      "YI101 - PCR 1 KEEP CHILDREN LEARNING"
     ],
     "createdByUserId": 1
   }

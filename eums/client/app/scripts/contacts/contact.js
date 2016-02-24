@@ -149,22 +149,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         }
 
         function convertIdToName(contacts) {
-            convertIpIdToName(contacts);
             if ($scope.can_view_users) {
                 convertUserIdToName(contacts);
             }
-        }
-
-        function convertIpIdToName(contacts) {
-            contacts.forEach(function (contact) {
-                var ipNames = [];
-                contact.ips.forEach(function (id) {
-                    ConsigneeService.get(id).then(function (ip) {
-                        ipNames.push(ip.name);
-                    })
-                });
-                contact.ipNames = ipNames;
-            })
         }
 
         function convertUserIdToName(contacts) {

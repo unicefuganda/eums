@@ -5,10 +5,19 @@
     "lastName": "Doe",
     "phone": "+256771234567",
     "createdByUserId": 2,
-    "districts": ["kampala"],
+    "districts": [
+      "kampala"
+    ],
+    "outcomes": [
+      "YI101 - PCR 1 KEEP CHILDREN LEARNING"
+    ],
     "ips": [
-      1
-    ]
+      "KAMPALA DHO",
+      "WAKISO DHO"
+    ],
+    "types": [
+      "End-user"
+    ],
   },
   {
     "_id": "559281d40c42914aad3d6007",
@@ -16,9 +25,18 @@
     "lastName": "Sam",
     "phone": "+256771234568",
     "createdByUserId": 2,
-    "districts": ["kampala"],
+    "districts": [
+      "kampala"
+    ],
+    "outcomes": [
+      "YI101 - PCR 1 KEEP CHILDREN LEARNING"
+    ],
     "ips": [
-      1
-    ]
+      "KAMPALA DHO",
+      "WAKISO DHO"
+    ],
+    "types": [
+      "End-user"
+    ],
   }
 ]

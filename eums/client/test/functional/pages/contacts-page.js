@@ -35,9 +35,21 @@ ContactsPage.prototype = Object.create({}, {
         }
     },
 
-    contactIpNames: {
+    contactIps: {
         get: function () {
-            return element.all(by.id('contact.ipNames')).getText();
+            return element.all(by.id('contact.ips')).getText();
+        }
+    },
+
+    contactTypes: {
+        get: function () {
+            return element.all(by.id('contact.types')).getText();
+        }
+    },
+
+    contactOutcomes: {
+        get: function () {
+            return element.all(by.id('contact.outcomes')).getText();
         }
     },
 

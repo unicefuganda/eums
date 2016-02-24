@@ -522,7 +522,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             link: function (scope, element, attrs, ngModel) {
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
                     scope.allIps = displayedData.map(function (consignee) {
-                        return {id: consignee.id, text: consignee.name}
+                        return {id: consignee.name, text: consignee.name}
                     });
                     scope.displayIps = scope.allIps;
                     populateIpsSelect2(scope.displayIps);
@@ -653,7 +653,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             link: function (scope, element, attrs, ngModel) {
                 ProgrammeService.programmesWithIps().then(function (response) {
                     scope.allProgrammes = response.map(function (programe) {
-                        return {id: programe.id, text: programe.name}
+                        return {id: programe.name, text: programe.name}
                     });
                     populateOutcomesSelect2(scope.allProgrammes);
                 })
@@ -663,8 +663,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                         placeholder: attrs.placeholder,
                         allowClear: true,
                         multiple: 'multiple',
-                        data: _.sortBy(displayProgrammes, function (district) {
-                            return district.text;
+                        data: _.sortBy(displayProgrammes, function (outcome) {
+                            return outcome.text;
                         })
                     });
                 };
@@ -672,7 +672,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 $(element).change(function () {
                     var outcomes = $(element).select2('data');
                     var ids = outcomes.map(function (outcome) {
-                        return outcome.id;
+                        return outcome.text;
                     });
                     ngModel.$setViewValue(ids);
                 });

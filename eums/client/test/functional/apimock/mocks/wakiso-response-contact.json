@@ -3,8 +3,14 @@
   "firstName": "William",
   "lastName": "Shatner",
   "phone": "+256777666555",
-  "districts": ["kampala"],
+  "districts": [
+    "kampala"
+  ],
   "ips": [
-    1
-  ]
+    "KAMPALA DHO",
+    "WAKISO DHO"
+  ],
+  "types": [
+    "End-user"
+  ],
 }
