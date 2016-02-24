@@ -135,6 +135,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                             query.callback(data);
                         });
                     },
+
                     initSelection: function (element, callback) {
                         $timeout(function () {
                             var modelValue = ngModel.$modelValue;
@@ -532,7 +533,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     $(element).select2({
                         placeholder: attrs.placeholder || 'All Implementing Partners',
                         allowClear: true,
-                        multiple: 'multiple',
+                        multiple: true,
                         data: _.sortBy(displayIps, function (ip) {
                             return ip.text;
                         })

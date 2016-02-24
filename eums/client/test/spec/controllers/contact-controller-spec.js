@@ -34,6 +34,7 @@ describe('ContactController', function () {
             firstName: 'John',
             lastName: 'Doe',
             phone: '+234778945676',
+            createdByUserGroup:"UNICEF",
             ips: []
         }
     ];
@@ -157,7 +158,6 @@ describe('ContactController', function () {
         expect(scope.contacts[0].createdByUserGroup).toEqual('UNICEF');
         expect(scope.contacts[1].createdByUserGroup).toEqual('UNICEF');
         expect(scope.contacts[1].ips).toEqual(['WAKISO DHO']);
-        expect(scope.contacts[2].createdByUserGroup).toEqual('');
         expect(scope.contacts[2].ips).toEqual([]);
 
     });
