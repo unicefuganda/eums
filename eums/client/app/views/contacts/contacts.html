@@ -55,7 +55,7 @@
                         <td class="text-left" id="contact.outcomes">
                             <div ng-repeat="outcome in contact.outcomes | orderBy: 'toString()'">{{ outcome }}</div>
                         </td>
-                        <td class="text-left" ng-show="can_view_users">{{ contact.createdByUserName }}</td>
+                        <td class="text-left" ng-show="can_view_users">{{ contact.createdByUserGroup }}</td>
                         <td class="text-left">{{ formatDate(contact.createdOn) }}</td>
                         <td ng-show="can_change">
                             <button class="btn btn-primary"

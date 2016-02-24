@@ -134,44 +134,16 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             if ($scope.can_view_all) {
                 promise = ContactService.all().then(function (resultContacts) {
                     $scope.contacts = resultContacts.sort();
-                    convertIdToName($scope.contacts);
                 });
             } else {
                 promise = ContactService.findContacts($scope.currentUser.userid).then(function (resultContacts) {
                     $scope.contacts = resultContacts.sort();
-                    convertIdToName($scope.contacts);
                 });
             }
 
             promise.finally(function () {
                 LoaderService.hideLoader();
             });
-        }
-
-        function convertIdToName(contacts) {
-            if ($scope.can_view_users) {
-                convertUserIdToName(contacts);
-            }
-        }
-
-        function convertUserIdToName(contacts) {
-            contacts.forEach(function (contact) {
-                if (!contact.createdByUserId) {
-                    contact.createdByUserName = '';
-                } else {
-                    UserService.getUserById(contact.createdByUserId).then(function (user) {
-                        contact.createdByUserName = getEntityName(user.groups[0]);
-                    })
-                }
-            });
-        }
-
-        function getEntityName(group) {
-
-            if (group.startsWith('UNICEF')) {
-                return 'UNICEF';
-            }
-            return 'IP';
         }
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {
@@ -266,11 +238,19 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     }
                 };
 
+                function getEntityName(group) {
+                    if (group.startsWith('UNICEF')) {
+                        return 'UNICEF';
+                    }
+                    return 'IP';
+                }
+
                 scope.$on('add-contact', function (_, object, objectIndex) {
                     UserService.getCurrentUser().then(function (user) {
                         isEdit = false;
                         scope.contact = {};
                         scope.contact.createdByUserId = user.userid;
+                        scope.contact.createdByUserGroup = getEntityName(user.group);
                         scope.object = object;
                         scope.objectIndex = objectIndex;
                         contactInput.val('');
