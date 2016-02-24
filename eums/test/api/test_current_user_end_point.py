@@ -1,18 +1,19 @@
 import json
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from django.test import Client, TestCase
 
+from eums.auth import GROUP_IP_EDITOR
 from eums.models import UserProfile
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
-
 
 ENDPOINT_URL = BACKEND_URL + 'current-user'
 
 
-class CurrentUserEndpointTest(TestCase):
+class CurrentUserEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         self.client = Client()
         self.data = {
@@ -20,9 +21,10 @@ class CurrentUserEndpointTest(TestCase):
             "password": "password",
             "email": "haha@ha.ha",
             "first_name": "john",
-            "last_name": "Bukoto"
+            "last_name": "Bukoto",
         }
         self.user = User.objects.create_user(**self.data)
+        self.user.groups = [Group.objects.get(name=GROUP_IP_EDITOR)]
         self.client.login(username=self.data['username'], password=self.data['password'])
 
     def test_should_get_current_user(self):
@@ -36,6 +38,7 @@ class CurrentUserEndpointTest(TestCase):
         expected_data.pop('password')
         expected_data['consignee_id'] = consignee_id
         expected_data['userid'] = self.user.id
+        expected_data['group'] = GROUP_IP_EDITOR
 
         response_data = json.loads(response.content)
         self.assertEqual(response_data, expected_data)
@@ -50,6 +53,7 @@ class CurrentUserEndpointTest(TestCase):
         expected_data.pop('password')
         expected_data['consignee_id'] = None
         expected_data['userid'] = self.user.id
+        expected_data['group'] = GROUP_IP_EDITOR
 
         response_data = json.loads(response.content)
         self.assertEqual(response_data, expected_data)
