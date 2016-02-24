@@ -30,7 +30,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         $scope.sortBy = function (sortField) {
             if (_.include(SUPPORTED_FIELD, sortField)) {
-                console.log($scope.sortTerm);
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
             }

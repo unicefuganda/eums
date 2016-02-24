@@ -238,8 +238,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 distribution_plan: uiPlanNode.distributionPlan
             };
 
-            console.log(node)
-
             if (uiPlanNode.track && (uiPlanNode.id == null || uiPlanNode.trackedDate == null)) {
                 uiPlanNode.trackedDate = new Date();
             }
