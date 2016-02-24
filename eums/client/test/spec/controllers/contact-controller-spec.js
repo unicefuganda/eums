@@ -17,7 +17,7 @@ describe('ContactController', function () {
             lastName: 'Mukiza',
             phone: '+234778945674',
             createdByUserId: 1,
-            ips: [8]
+            ips: ['WAKISO DHO']
         },
         {
             _id: 2,
@@ -25,7 +25,7 @@ describe('ContactController', function () {
             lastName: 'Oloo',
             phone: '+234778945675',
             createdByUserId: 5,
-            ips: [1]
+            ips: ['WAKISO DHO']
         },
         {
             _id: 3,
@@ -153,11 +153,10 @@ describe('ContactController', function () {
 
         expect(scope.contacts).toEqual(stubContacts);
         expect(scope.contacts[0].createdByUserName).toEqual('UNICEF');
-        expect(scope.contacts[0].ipNames).toEqual(['WAKISO DHO']);
         expect(scope.contacts[1].createdByUserName).toEqual('UNICEF');
-        expect(scope.contacts[1].ipNames).toEqual(['WAKISO DHO']);
+        expect(scope.contacts[1].ips).toEqual(['WAKISO DHO']);
         expect(scope.contacts[2].createdByUserName).toEqual('');
-        expect(scope.contacts[2].ipNames).toEqual([]);
+        expect(scope.contacts[2].ips).toEqual([]);
 
     });
 

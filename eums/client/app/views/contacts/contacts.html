@@ -28,7 +28,7 @@
                         <th><a sort-by="firstName" sort-init="asc">First Name</a></th>
                         <th><a sort-by="lastName">First Name</a></th>
                         <th><a sort-by="phone">Phone</a></th>
-                        <th><a sort-by="district">{{ systemSettings.district_label }}</a></th>
+                        <th><a sort-by="district" ng-bind="systemSettings.district_label || 'District' "></a></th>
                         <th><a sort-by="ips">Ip / Consignee</a></th>
                         <th><a sort-by="types">Type</a></th>
                         <th><a sort-by="outcomes">Outcome</a></th>

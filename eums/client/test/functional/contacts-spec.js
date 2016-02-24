@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 
-fdescribe('Contacts', function () {
+describe('Contacts', function () {
 
     beforeAll(function () {
         loginPage.visit();
