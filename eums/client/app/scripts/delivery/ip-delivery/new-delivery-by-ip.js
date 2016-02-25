@@ -1,58 +1,33 @@
 'use strict';
 
-angular.module('NewDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsService'])
+angular.module('NewDeliveryByIp', ['eums.config', 'eums.service-factory', 'ngToast', 'SystemSettingsService', 'SysUtils',
+        'DeliveryNode'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams, $location,
-                                                       DeliveryNode, ngToast, LoaderService, $q, ItemService,
-                                                       ConsigneeItemService, SystemSettingsService) {
-        var loadPromises = [];
+    .controller('NewDeliveryByIpController', function ($scope, $q, $routeParams, $location, ngToast, DeliveryNodeService,
+                                                       DeliveryNode, IPService, LoaderService, ItemService, UserService,
+                                                       ConsigneeItemService, SystemSettingsService, SysUtilsService) {
         var itemId = $routeParams.itemId;
 
-        $scope.districts = [];
+        $scope.currentUser = {};
         $scope.errors = false;
+        $scope.districts = [];
+        $scope.isAssigningItemsToSelf = $routeParams.deliveryMode === 'self';
         $scope.newDelivery = new DeliveryNode({
-            track: true
+            track: true,
+            treePosition: 'END_USER',
+            isAssignToSelf: $scope.isAssigningItemsToSelf
         });
 
         init();
 
-        LoaderService.showLoader();
-        loadPromises.push(IPService.loadAllDistricts().then(function (response) {
-            $scope.districts = response.data.map(function (districtName) {
-                return {id: districtName, name: districtName};
-            });
-            $scope.districtsLoaded = true;
-        }));
-
-        loadPromises.push(ItemService.get(itemId).then(function (item) {
-            $scope.item = item;
-        }));
-
-        loadPromises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
-            $scope.quantityAvailable = response.results.first().availableBalance;
-        }));
-
-        loadPromises.push(DeliveryNodeService.filter({
-            item__item: $routeParams.itemId,
-            is_distributable: true
-        }).then(function (nodes) {
-            $scope.deliveryGroups = [];
-            $scope.selectedOrderNumber = "";
-            nodes.forEach(function (node) {
-                updateDeliveryGroups(node, nodes);
-            });
-            $scope.allDeliveries = nodes;
-            $scope.selectedOrderNumber = $scope.deliveryGroups.first().orderNumber;
-        }));
-
-        $q.all(loadPromises).catch(function () {
-            createToast('failed to load deliveries', 'danger');
-        }).finally(LoaderService.hideLoader);
-
         $scope.addContact = function () {
             $scope.$broadcast('add-contact');
+        };
+
+        $scope.addConsignee = function () {
+            $scope.$broadcast('add-consignee');
         };
 
         $scope.$on('contact-saved', function (event, contact) {
@@ -65,10 +40,6 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsServ
 
             event.stopPropagation();
         });
-
-        $scope.addConsignee = function () {
-            $scope.$broadcast('add-consignee');
-        };
 
         $scope.$on('consignee-saved', function (event, consignee) {
             $scope.newDelivery.consignee = consignee;
@@ -93,14 +64,9 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsServ
             }
         }, true);
 
-        $scope.$watch('newDelivery.deliveryDate', function (val) {
-            if (val) {
-                var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
-                $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
-            }
-        });
-
         $scope.save = function () {
+            $scope.newDelivery.deliveryDate = SysUtilsService.formatDateToYMD($scope.newDelivery.deliveryDate);
+
             var parentDeliveries = $scope.selectedDeliveries.filter(function (delivery) {
                 return delivery.quantityShipped > 0;
             });
@@ -133,9 +99,52 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsServ
 
         function init() {
             var promises = [];
+            promises.push(loadCurrentUser());
             promises.push(SystemSettingsService.getSettingsWithDefault());
             $q.all(promises).then(function (returns) {
-                $scope.systemSettings = returns[0];
+                $scope.systemSettings = returns[1];
+                $scope.newDelivery.consignee = $scope.isAssigningItemsToSelf ? $scope.currentUser.consignee_id : null;
+            });
+
+            var loadPromises = [];
+            LoaderService.showLoader();
+            loadPromises.push(IPService.loadAllDistricts().then(function (response) {
+                $scope.districts = response.data.map(function (districtName) {
+                    return {id: districtName, name: districtName};
+                });
+                $scope.districtsLoaded = true;
+            }));
+
+            loadPromises.push(ItemService.get(itemId).then(function (item) {
+                $scope.item = item;
+            }));
+
+            loadPromises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
+                $scope.quantityAvailable = response.results.first().availableBalance;
+            }));
+
+            loadPromises.push(DeliveryNodeService.filter({
+                item__item: $routeParams.itemId,
+                is_distributable: true
+            }).then(function (nodes) {
+                $scope.deliveryGroups = [];
+                $scope.selectedOrderNumber = "";
+                nodes.forEach(function (node) {
+                    updateDeliveryGroups(node, nodes);
+                });
+                $scope.allDeliveries = nodes;
+                $scope.deliveryGroups = _.sortBy($scope.deliveryGroups, "orderNumber");
+                $scope.selectedOrderNumber = $scope.deliveryGroups.first().orderNumber;
+            }));
+
+            $q.all(loadPromises).catch(function () {
+                createToast('failed to load deliveries', 'danger');
+            }).finally(LoaderService.hideLoader);
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.currentUser = user;
             });
         }
 

@@ -275,6 +275,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                     }
                 }
             })
+            .when('/deliveries-by-ip/:itemId/new/:deliveryMode', {
+                templateUrl: '/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html',
+                controller: 'NewDeliveryByIpController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('eums.add_distributionplannode');
+                    }
+                }
+            })
             .when('/deliveries-by-ip/:itemId/report-loss', {
                 templateUrl: '/static/app/views/delivery/ip-delivery/delivery-by-ip-report-loss.html',
                 controller: 'DeliveryByIpReportLossController',

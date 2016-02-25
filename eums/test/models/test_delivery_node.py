@@ -624,3 +624,11 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(delivery_node.losses.first().remark, 'building fire')
         self.assertEqual(delivery_node.losses.last().quantity, 5)
         self.assertEqual(delivery_node.losses.last().remark, 'building down')
+
+    def test_should_update_track_status_if_assign_to_self(self):
+        parent_one = DeliveryNodeFactory(quantity=100)
+        node = DeliveryNodeFactory(parents=[(parent_one, 88)], track=True)
+        node.save()
+        is_assign_to_self = True
+        node.update_tracked_status(is_assign_to_self)
+        self.assertFalse(node.track)

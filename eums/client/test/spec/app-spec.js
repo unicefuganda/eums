@@ -107,8 +107,15 @@ describe('Route Provider', function () {
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/deliveries-by-ip.html');
     });
 
-    it('should have new delivery by ip route', function () {
+    it('should have new delivery to others by ip route', function () {
         var route = '/deliveries-by-ip/:itemId/new';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('NewDeliveryByIpController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html');
+    });
+
+    it('should have new delivery to self by ip route', function () {
+        var route = '/deliveries-by-ip/:itemId/new/:deliveryMode';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('NewDeliveryByIpController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html');

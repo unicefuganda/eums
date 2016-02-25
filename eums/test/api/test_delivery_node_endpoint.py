@@ -7,8 +7,8 @@ from rest_framework.status import HTTP_200_OK
 
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeViewSet
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, DeliveryNodeLoss, \
-    DistributionPlanNode, UserProfile
-from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
+    DistributionPlanNode, Runnable
+from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase, IP_EDITOR
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -89,6 +89,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data[0]['additional_remarks'], node.additional_remarks)
 
     def test_should_create_delivery_node_without_parents_with_quantity(self):
+        self.log_ip_editor_in()
         self.node_details['quantity'] = 100
 
         response = self.client.post(ENDPOINT_URL, data=self.node_details)
@@ -98,6 +99,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertTrue(node.quantity_in(), 100)
 
     def test_should_create_delivery_node_with_parents(self):
+        self.log_ip_editor_in()
         node_one = DeliveryNodeFactory()
         node_two = DeliveryNodeFactory()
         self.node_details['parents'] = [{'id': node_one.id, 'quantity': 5}, {'id': node_two.id, 'quantity': 6}]
@@ -109,6 +111,23 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertTrue(node.quantity_in(), 11)
         self.assertTrue(node_one.quantity_out(), 5)
         self.assertTrue(node_two.quantity_out(), 6)
+
+    def test_should_create_and_assign_delivery_node_to_self_with_parents(self):
+        self.log_ip_editor_in()
+        delivery = DeliveryFactory(track=True)
+        root_node = DeliveryNodeFactory(distribution_plan=delivery)
+        child_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[(root_node, 8)])
+        self.node_details['parents'] = [{'id': child_node.id, 'quantity': 5}]
+        self.node_details['quantity'] = 2
+        self.node_details['tree_position'] = self.END_USER_POSITION
+        self.node_details['is_assign_to_self'] = True
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(self.node_details), content_type='application/json')
+        node = Runnable.objects.get(pk=response.data['id'])
+        logger.info(node.__dict__)
+
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(response.data['track'])
 
     def test_should_update_delivery_node_parents(self):
         node_one = DeliveryNodeFactory()
@@ -298,7 +317,8 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         node_one = DeliveryNodeFactory(acknowledged=100, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         loss = {'quantity': 15, 'justification': 'stolen'}
 
-        response = self.client.patch(ENDPOINT_URL + str(node_one.id) + '/report_loss/', data=json.dumps(loss), content_type='application/json')
+        response = self.client.patch(ENDPOINT_URL + str(node_one.id) + '/report_loss/', data=json.dumps(loss),
+                                     content_type='application/json')
 
         node = DeliveryNodeLoss.objects.first().delivery_node
 
@@ -317,21 +337,21 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)
 
     def test_unicef_admin_should_have_permission_to_view_delivery_nodes(self):
-        self.log_and_assert_permission(self.log_unicef_admin_in, HTTP_200_OK)
+        self.__log_and_assert_permission(self.log_unicef_admin_in, HTTP_200_OK)
 
     def test_unicef_editor_should_have_permission_to_view_delivery_nodes(self):
-        self.log_and_assert_permission(self.log_unicef_editor_in, HTTP_200_OK)
+        self.__log_and_assert_permission(self.log_unicef_editor_in, HTTP_200_OK)
 
     def test_unicef_viewer_should_have_permission_to_view_delivery_nodes(self):
-        self.log_and_assert_permission(self.log_unicef_viewer_in, HTTP_200_OK)
+        self.__log_and_assert_permission(self.log_unicef_viewer_in, HTTP_200_OK)
 
     def test_ip_editor_should_have_permission_to_view_delivery_nodes(self):
-        self.log_and_assert_permission(self.log_ip_editor_in, HTTP_200_OK)
+        self.__log_and_assert_permission(self.log_ip_editor_in, HTTP_200_OK)
 
     def test_ip_viewer_should_have_permission_to_view_delivery_nodes(self):
-        self.log_and_assert_permission(self.log_ip_viewer_in, HTTP_200_OK)
+        self.__log_and_assert_permission(self.log_ip_viewer_in, HTTP_200_OK)
 
-    def log_and_assert_permission(self, log_func, status_code):
+    def __log_and_assert_permission(self, log_func, status_code):
         self.logout()
         log_func()
         self.assertEqual(self.client.get(ENDPOINT_URL).status_code, status_code)

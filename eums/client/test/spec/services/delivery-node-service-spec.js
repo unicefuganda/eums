@@ -65,6 +65,7 @@ describe('Delivery Node Service', function () {
             'location': 'Adjumani'
         }
     ];
+
     beforeEach(function () {
         module('DeliveryNode');
 
@@ -104,13 +105,37 @@ describe('Delivery Node Service', function () {
             quantity: 10, quantityIn: 0,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
-            track: true, trackSubmitted: true
+            track: true,
+            trackSubmitted: true,
+            isAssignToSelf: false
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
         planNodeService.create({
             distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
-            quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition',
-            track: true
+            quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition', track: true
+        }).then(function (createdNode) {
+            expect(JSON.parse(JSON.stringify(createdNode))).toEqual(JSON.parse(JSON.stringify(stubCreatedNode)));
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should create node by assigning item to self', function (done) {
+        var planId = 1, consigneeId = 1;
+        var stubCreatedNode = {
+            id: 1, parent: null, distributionPlan: planId, consignee: consigneeId,
+            treePosition: 'END_USER', item: itemId,
+            quantity: 10, quantityIn: 0,
+            deliveryDate: '2014-02-23',
+            remark: 'In bad condition',
+            track: false,
+            trackSubmitted: false,
+            isAssignToSelf: true
+        };
+        mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
+        planNodeService.create({
+            distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
+            quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition', track: true, isAssignToSelf: true
         }).then(function (createdNode) {
             expect(JSON.parse(JSON.stringify(createdNode))).toEqual(JSON.parse(JSON.stringify(stubCreatedNode)));
             done();
@@ -126,7 +151,9 @@ describe('Delivery Node Service', function () {
             quantity: 10, quantityIn: 0,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
-            track: true, trackSubmitted: true
+            track: true,
+            trackSubmitted: true,
+            isAssignToSelf: false
         };
         var stubNewNode = {
             distributionPlan: planId, consignee: consigneeId, tree_position: 'END_USER',

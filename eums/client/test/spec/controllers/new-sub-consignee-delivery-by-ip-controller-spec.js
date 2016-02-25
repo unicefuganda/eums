@@ -223,12 +223,6 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.errors).toBeFalsy();
         });
 
-        it('it should format new delivery date correctly on change', function () {
-            scope.newDelivery.deliveryDate = '2015-08-26T08:00:00.000Z';
-            scope.$apply();
-            expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
-        });
-
         it('should save new delivery and camel case the returned response', function () {
             var newDelivery = setupNewDelivery();
 

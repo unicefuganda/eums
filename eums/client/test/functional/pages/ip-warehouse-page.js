@@ -16,6 +16,12 @@ IpWarehousePage.prototype = Object.create({}, {
         }
     },
 
+    pageHeaderText: {
+        get: function () {
+            return element(by.id('page-header-text')).getText();
+        }
+    },
+
     searchBar: {
         get: function () {
             return element(by.id('filter'));
@@ -72,6 +78,12 @@ IpWarehousePage.prototype = Object.create({}, {
             waitForPageToLoad();
         }
     },
+    createNewDeliveryToSelf: {
+        value: function () {
+            element.all(by.css('.assign-items-to-self')).get(0).click();
+            waitForPageToLoad();
+        }
+    },
 
     itemName: {
         get: function () {
@@ -110,9 +122,14 @@ IpWarehousePage.prototype = Object.create({}, {
             fillSelect2Chosen('input-location', input);
         }
     },
-    markAsEndUser: {
+    markAsNotEndUser: {
         value: function () {
             element(by.id('end-user-check')).click();
+        }
+    },
+    isEndUserChecked: {
+        get: function () {
+            return element(by.id('end-user-check')).getAttribute('value');
         }
     },
 

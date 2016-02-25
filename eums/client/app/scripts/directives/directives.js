@@ -224,6 +224,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
 
         return {
             restrict: 'A',
+            scope: true,
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 var filters = Object.has(attrs, 'onlyIps') ? {imported_from_vision: 'True'} : {};
@@ -265,6 +266,12 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     ngModel.$setViewValue(consignee && consignee.id);
                     $(element).siblings("div").attr('title', consignee && consignee.text);
                     scope.$apply();
+                });
+
+                scope.$watch(function () {
+                    return scope.$parent.$eval(attrs.ngModel);
+                }, function (newValue, oldValue) {
+                    $(element).select2('val', newValue ? newValue : '');
                 });
 
                 scope.$on('clear-consignee', function () {

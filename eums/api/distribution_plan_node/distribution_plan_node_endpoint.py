@@ -67,6 +67,9 @@ class DistributionPlanNodeViewSet(ModelViewSet):
             self.paginator.page_size = 0
         return super(DistributionPlanNodeViewSet, self).list(request, *args, **kwargs)
 
+    def perform_create(self, serializer):
+        serializer.save(is_assign_to_self=self.request.data.get('is_assign_to_self', False))
+
     @detail_route()
     def lineage(self, request, pk=None):
         node = self.get_object()
@@ -79,7 +82,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         justification = request.data['justification']
         node = self.get_object()
         node.losses.create(quantity=quantity_lost, remark=justification)
-        node.save() # for updating the balance on the node - DO NOT REMOVE
+        node.save()  # for updating the balance on the node - DO NOT REMOVE
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

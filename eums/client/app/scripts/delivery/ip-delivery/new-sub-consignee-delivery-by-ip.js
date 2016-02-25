@@ -1,12 +1,13 @@
 'use strict';
 
-angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsService'])
+angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast', 'SystemSettingsService', 'SysUtils'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('NewSubConsigneeDeliveryByIpController', function ($scope, $q, IPService, DeliveryNodeService, $routeParams,
                                                                    DeliveryNode, ngToast, LoaderService, $window, $timeout,
-                                                                   ItemService, ContactService, SystemSettingsService) {
+                                                                   ItemService, ContactService, SystemSettingsService,
+                                                                   SysUtilsService) {
         var loadPromises = [];
 
         $scope.newDelivery = new DeliveryNode({track: true});
@@ -49,13 +50,6 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast', 'System
             }
         });
 
-        $scope.$watch('newDelivery.deliveryDate', function (val) {
-            if (val) {
-                var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
-                $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
-            }
-        });
-
         $scope.$on('contact-saved', function (event, contact) {
             var contactInput = angular.element('#contact-select');
             var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
@@ -79,6 +73,8 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast', 'System
         };
 
         $scope.createNewDelivery = function () {
+            $scope.newDelivery.deliveryDate = SysUtilsService.formatDateToYMD($scope.newDelivery.deliveryDate);
+
             if (scopeDataIsValid()) {
                 save();
             }

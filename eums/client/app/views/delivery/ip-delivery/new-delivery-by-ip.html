@@ -1,7 +1,8 @@
 <ng-toast></ng-toast>
 <div class="container-fluid" id="new-delivery-by-ip-page">
     <div class="eums page-header row">
-        <div class="pull-left pad-top-10">Report a New Distribution</div>
+        <div class="pull-left pad-top-10" id="page-header-text">
+            {{ isAssigningItemsToSelf ? 'Assign Items to Self' : 'Report a New Distribution' }}</div>
         <div class="pull-right">
             <a href="#/deliveries-by-ip/{{ item.id }}" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
@@ -59,9 +60,11 @@
                     <div id="input-consignee" class="col-md-12 pad-small"
                          ng-class="{'has-error': !newDelivery.consignee && errors}">
                         <div class="pad-small col-md-10">
-                            <input type="hidden" search-consignees
-                                   ng-model="newDelivery.consignee"
+                            <input type="hidden"
+                                   search-consignees
+                                   ng-disabled="isAssigningItemsToSelf"
                                    ng-attr-id="{{ 'ip-select' }}"
+                                   ng-model="newDelivery.consignee"
                                    value="{{ consignee }}">
                         </div>
                         <div class="col-md-2 pad-small">
@@ -80,7 +83,7 @@
                             <input type="hidden"
                                    search-contacts
                                    required="required"
-                                   value="{{ contact_person_id }}"
+                                   value="{{ newDelivery.contact_person_id }}"
                                    ng-model="newDelivery.contact_person_id"
                                    ng-attr-id="{{ 'contact-select' }}">
                         </div>
@@ -123,8 +126,9 @@
                         <div class="pad-small">
                             <input id="end-user-check"
                                    type="checkbox" class="end-user-checkbox"
-                                   value="{{ isEndUser }}"
-                                   ng-model="newDelivery.isEndUser">
+                                   ng-disabled="isAssigningItemsToSelf"
+                                   ng-model="newDelivery.isEndUser"
+                                   value="{{ newDelivery.isEndUser }}">
                         </div>
                     </div>
                 </div>
@@ -201,7 +205,8 @@
                 </button>
             </div>
 
-            <div class="rounded-border notification-warning">
+            <div class="rounded-border notification-warning"
+                 ng-hide="isAssigningItemsToSelf">
                 <span class="glyphicon glyphicon-warning-sign text-warning pad-right-5"></span>
                 Notifications will be sent to the recipient upon saving.
             </div>

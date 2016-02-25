@@ -56,12 +56,12 @@ describe('IP Deliveries', function () {
 
         expect(ipWarehousePage.notificationWarning.isDisplayed()).toBeTruthy();
 
-        ipWarehousePage.specifyShipmentDate('1');
+        ipWarehousePage.specifyShipmentDate('01-Jan-2001');
         ipWarehousePage.specifyConsignee('Buikwe DHO');
         ipWarehousePage.specifyContact('John');
         ipWarehousePage.specifyLocation('Buikwe');
         ipWarehousePage.specifyQuantity('200');
-
+        ipWarehousePage.markAsNotEndUser();
         ipWarehousePage.saveDelivery();
 
         expect(ipWarehousePage.deliveryCount).toBe(1);
@@ -83,20 +83,16 @@ describe('IP Deliveries', function () {
         ipWarehousePage.discardDelivery();
 
         ipWarehousePage.viewSubconsignees();
-
         expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 200');
 
         ipWarehousePage.addSubconsignee();
-
         expect(ipWarehousePage.notificationWarning.isDisplayed()).toBeTruthy();
 
         ipWarehousePage.specifyQuantity('150');
-        ipWarehousePage.specifyShipmentDate('1');
+        ipWarehousePage.specifyShipmentDate('01-Jan-2001');
         ipWarehousePage.specifyConsignee('Agago DHO');
         ipWarehousePage.specifyContact('John');
         ipWarehousePage.specifyLocation('Agago');
-        ipWarehousePage.markAsEndUser();
-
         ipWarehousePage.saveDelivery();
         expect(directDeliveryPage.toastMessage).toContain('Delivery Successfully Created');
 
@@ -106,6 +102,36 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.subDeliveryConsignees).toContain('AGAGO DHO');
         expect(ipWarehousePage.subDeliveryContacts).toContain('John Doe');
         expect(ipWarehousePage.subDeliveryLocations).toContain('Agago');
+    });
+
+    it('should create a new delivery to self', function () {
+        loginPage.visit();
+        loginPage.loginAs('wakiso', 'wakiso');
+        ipWarehousePage.visit();
+
+        ipWarehousePage.searchForItem('Three-pronged power cables');
+        ipWarehousePage.createNewDeliveryToSelf();
+
+        expect(ipWarehousePage.itemName).toBe('Item Name: Three-pronged power cables');
+        expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 60');
+        expect(ipWarehousePage.notificationWarning.isDisplayed()).toBeFalsy();
+
+        expect(browser.getCurrentUrl()).toContain('new/self');
+        expect(ipWarehousePage.pageHeaderText).toBe('Assign Items to Self');
+        expect(ipWarehousePage.isEndUserChecked).toBeTruthy();
+
+        ipWarehousePage.specifyShipmentDate('04-Feb-2016');
+        ipWarehousePage.specifyContact('John');
+        ipWarehousePage.specifyLocation('Buikwe');
+        ipWarehousePage.specifyQuantity('20');
+        ipWarehousePage.saveDelivery();
+
+        expect(ipWarehousePage.deliveryCount).toBe(1);
+        expect(ipWarehousePage.deliveryQuantities).toContain('20');
+        expect(ipWarehousePage.deliveryDates).toContain('04-Feb-2016');
+        expect(ipWarehousePage.deliveryConsignees).toContain('WAKISO DHO');
+        expect(ipWarehousePage.deliveryContacts).toContain('John Doe');
+        expect(ipWarehousePage.deliveryLocations).toContain('Buikwe');
     });
 
     it('Search for IP Delivery by To and From Date', function () {
@@ -131,13 +157,12 @@ describe('IP Deliveries', function () {
         ipWarehousePage.addSubconsignee();
 
         ipWarehousePage.specifyQuantity('20');
-        ipWarehousePage.specifyShipmentDate('1');
+        ipWarehousePage.specifyShipmentDate('01-Jan-2001');
         ipWarehousePage.specifyConsignee('ADJUMANI DHO');
         ipWarehousePage.specifyContact('John');
         ipWarehousePage.specifyLocation('Adjumani');
-
         ipWarehousePage.saveDelivery();
-        ftUtils.wait(10000);
+        ftUtils.wait(1000);
 
         ipWarehousePage.searchForItem('Adjumani');
         ipWarehousePage.viewFirstSubconsignee();
@@ -150,5 +175,4 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.breadCrumbs.get(2).getText()).toBe('ADJUMANI DHO');
         expect(ipWarehousePage.breadCrumbs.get(2).element(by.css('span')).getText()).toBe('ADJUMANI DHO');
     });
-
 });

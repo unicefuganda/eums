@@ -139,9 +139,12 @@ class DistributionPlanNode(Runnable):
 
         return not self.arcs_in.first().source
 
-    def update_tracked_status(self):
+    def update_tracked_status(self, is_assign_to_self=False):
         if not self.is_root():
-            self.track = self.arcs_in.filter(source__track=True).exists()
+            if is_assign_to_self:
+                self.track = False
+            else:
+                self.track = self.arcs_in.filter(source__track=True).exists()
             self.save()
 
     def update_balance(self):

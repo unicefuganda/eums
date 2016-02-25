@@ -15,8 +15,8 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             });
 
             Object.defineProperty(this, 'isEndUser', {
-                set: function (isEndUser) {
-                    if (isEndUser) {
+                set: function (newValue) {
+                    if (newValue) {
                         this.treePosition = 'END_USER';
                     }
                     else {
@@ -53,6 +53,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.timeLimitationOnDistribution = json.timeLimitationOnDistribution;
             this.trackedDate = json.trackedDate;
             this.additionalRemarks = json.additionalRemarks;
+            this.isAssignToSelf = json.isAssignToSelf || false;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
@@ -80,10 +81,10 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                         return response.data;
                     });
                 },
-                getLineage: function(node) {
+                getLineage: function (node) {
                     return this.getDetail(node, 'lineage/');
                 },
-                reportLoss: function(nodeLosses) {
+                reportLoss: function (nodeLosses) {
                     var lossPromises = [];
                     nodeLosses.each(function (loss) {
                         lossPromises.push($http.patch(

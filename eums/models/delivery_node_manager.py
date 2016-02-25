@@ -1,11 +1,16 @@
+import logging
+
 from polymorphic import PolymorphicManager
 from django.db import IntegrityError
 from eums.models import Arc
+
+logger = logging.getLogger(__name__)
 
 
 class DeliveryNodeManager(PolymorphicManager):
     def create(self, **kwargs):
         is_tracked, parents, quantity = self._get_node_attrs(kwargs)
+        is_assign_to_self = kwargs.pop('is_assign_to_self', False)
 
         if not parents and not quantity >= 0:
             raise IntegrityError('both parents and quantity cannot be null')
@@ -15,7 +20,7 @@ class DeliveryNodeManager(PolymorphicManager):
         if quantity_is_non_zero or (quantity_is_zero and not is_tracked):
             node = super(DeliveryNodeManager, self).create(**kwargs)
             self._create_arcs(node, parents, quantity)
-            node.update_tracked_status()
+            node.update_tracked_status(is_assign_to_self)
             node.assign_ip()
             node.update_balance()
             return node
