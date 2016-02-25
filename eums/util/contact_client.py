@@ -9,7 +9,7 @@ from eums import settings
 logger = logging.getLogger(__name__)
 
 
-class RemoteContactUtils(object):
+class ContactClient(object):
     @staticmethod
     def get(contact_person_id):
         default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': ''}

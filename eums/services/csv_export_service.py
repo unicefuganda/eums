@@ -9,7 +9,7 @@ from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 from eums.services.exporter.stock_report_csv_exporter import StockReportExporter
-from eums.util.remote_contact_utils import RemoteContactUtils
+from eums.util.contact_client import ContactClient
 
 
 class CSVExportService(object):
@@ -71,7 +71,7 @@ def generate_stock_feedback_report(user, host_name, stocks):
 
 
 def set_remote_contact_to_report_item(report_item):
-    contact = RemoteContactUtils.get(report_item.get('contactPersonId', report_item.get('contact_person_id')))
+    contact = ContactClient.get(report_item.get('contactPersonId', report_item.get('contact_person_id')))
     report_item['contactName'] = '%s %s' % (contact.get('firstName'), contact.get('lastName'))
     report_item['contactPhone'] = contact.get('phone')
     return report_item
