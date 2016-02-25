@@ -59,8 +59,8 @@ class ExportServiceTest(TestCase):
 
         mock_send_email.assert_called_once_with(subject, expected_message, DEFAULT_FROM_EMAIL, [email])
 
-    @patch('eums.util.remote_contact_utils.RemoteContactUtils.load_remote_contact_in_json')
-    def test_set_remote_contact_to_report_item(self, load_remote_contact_in_json):
+    @patch('eums.util.remote_contact_utils.RemoteContactUtils.get')
+    def test_set_remote_contact_to_report_item(self, get_contact):
         contact_id = '5694bdd328c0edad08b0f020'
 
         first_name = 'Shenjian'
@@ -69,7 +69,7 @@ class ExportServiceTest(TestCase):
         contact_name = '%s %s' % (first_name, last_name)
 
         contact = {'firstName': first_name, 'lastName': last_name, 'phone': phone}
-        load_remote_contact_in_json.return_value = contact
+        get_contact.return_value = contact
 
         report_item = {'contact_person_id': contact_id}
 
@@ -77,7 +77,7 @@ class ExportServiceTest(TestCase):
 
         self.assertEqual(report_item['contactName'], contact_name)
         self.assertTrue(report_item['contactPhone'], phone)
-        load_remote_contact_in_json.assert_called_once_with(contact_id)
+        get_contact.assert_called_once_with(contact_id)
 
     def _read_csv(self, filename):
         file_ = open(filename, 'r')

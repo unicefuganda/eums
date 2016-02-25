@@ -71,7 +71,7 @@ def generate_stock_feedback_report(user, host_name, stocks):
 
 
 def set_remote_contact_to_report_item(report_item):
-    contact = RemoteContactUtils.load_remote_contact_in_json(report_item.get('contactPersonId', report_item.get('contact_person_id')))
+    contact = RemoteContactUtils.get(report_item.get('contactPersonId', report_item.get('contact_person_id')))
     report_item['contactName'] = '%s %s' % (contact.get('firstName'), contact.get('lastName'))
     report_item['contactPhone'] = contact.get('phone')
     return report_item

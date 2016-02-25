@@ -136,6 +136,7 @@ class DistributionPlanNode(Runnable):
     def is_root(self):
         if not self.arcs_in.exists():
             return True
+
         return not self.arcs_in.first().source
 
     def update_tracked_status(self):
