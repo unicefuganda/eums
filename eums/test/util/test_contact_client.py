@@ -6,7 +6,7 @@ from mock import MagicMock
 from eums.util.contact_client import ContactClient
 
 
-class RemoteContactUtilsTest(TestCase):
+class ContactClientTest(TestCase):
     def test_should_get_contact(self):
         contact = {
             '_id': 'contact_person_id',
