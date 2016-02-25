@@ -15,7 +15,7 @@ describe('IP Report Loss Damage', function () {
         ipReportLossPage.visit(reportLossItemId);
 
         expect(ipReportLossPage.itemDescription).toBe('Item Name: Three-pronged power cables');
-        expect(ipReportLossPage.quantityAvailable).toBe('Quantity Available: 60');
+        expect(ipReportLossPage.quantityAvailable).toBe('Quantity Available: 40');
         expect(ipReportLossPage.totalSelectedQuantity).toBe('0');
 
         ipReportLossPage.selectQuantityLost('10');
@@ -26,6 +26,6 @@ describe('IP Report Loss Damage', function () {
 
         var savedItem = ipWarehousePage.firstItem;
         expect(savedItem.description).toBe('Three-pronged power cables');
-        expect(savedItem.balance).toBe('50');
+        expect(savedItem.balance).toBe('30');
     });
 });

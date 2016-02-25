@@ -34,7 +34,7 @@ describe('Item Feedback Report', function () {
         it('should search the Item report by recipient type', function () {
             itemFeedbackReport.searchByRecipientType('Sub-consignee');
             expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
-            expect(itemFeedbackReport.resultsCount).toEqual(3);
+            expect(itemFeedbackReport.resultsCount).toEqual(4);
         });
 
         it('should search the Item report by product received', function () {
