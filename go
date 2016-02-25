@@ -120,6 +120,7 @@ function resetdb {
     echo "drop database eums; create database eums;" | psql -h localhost -U postgres
     python manage.py migrate
     python manage.py setup_permissions
+    python manage.py shell_plus < eums/fixtures/cleanup_questions.py
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
     python manage.py shell_plus < eums/fixtures/init_basic_data.py
 
