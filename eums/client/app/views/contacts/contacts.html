@@ -50,7 +50,7 @@
                             <div ng-repeat="ip in contact.ips | orderBy: 'toString()'">{{ ip }}</div>
                         </td>
                         <td class="text-left" id="contact.types">
-                            <div ng-repeat="type in contact.types | orderBy: 'toString()'">{{ type }}</div>
+                            <div ng-repeat="type in contact.types | orderBy: 'toString()'">{{ type | treePositionFilter}}</div>
                         </td>
                         <td class="text-left" id="contact.outcomes">
                             <div ng-repeat="outcome in contact.outcomes | orderBy: 'toString()'">{{ outcome }}</div>

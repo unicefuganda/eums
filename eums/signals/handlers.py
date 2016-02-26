@@ -4,8 +4,9 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from eums.celery import app
-from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings
+from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow, Programme
 from eums.services.flow_scheduler import schedule_run_for
+from eums.util.contact_client import ContactClient
 from eums.vision.sync_runner import sync
 
 logger = get_task_logger(__name__)
@@ -18,6 +19,13 @@ def on_post_save_node(sender, **kwargs):
     if node.track and not node.is_root():
         schedule_run_for(node)
 
+    if node.get_programme() and node.tree_position != Flow.Label.IMPLEMENTING_PARTNER:
+        ContactClient.update_after_delivery_creation(node.contact_person_id,
+                                                     node.tree_position,
+                                                     node.get_programme().name,
+                                                     node.location,
+                                                     node.consignee.name)
+
 
 @receiver(post_save, sender=DistributionPlan)
 def on_post_save_delivery(sender, **kwargs):
@@ -25,6 +33,13 @@ def on_post_save_delivery(sender, **kwargs):
     _resolve_alert_if_possible(delivery)
     if delivery.track and (not delivery.has_existing_run()):
         schedule_run_for(delivery)
+
+    if kwargs['created']:
+        ContactClient.update_after_delivery_creation(delivery.contact_person_id,
+                                                     Flow.Label.IMPLEMENTING_PARTNER,
+                                                     delivery.programme.name,
+                                                     delivery.location,
+                                                     delivery.consignee.name)
 
 
 @receiver(pre_save, sender=SystemSettings)
