@@ -22,6 +22,8 @@ describe('Warehouse Delivery', function () {
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-danger');
         warehouseDeliveryPage.selectWaybillByNumber(WAYBILL_NUMBER);
 
+        ftUtils.wait(1500);
+
         warehouseDeliveryPage.selectContact('John Doe');
         warehouseDeliveryPage.selectLocation('Wakiso');
         warehouseDeliveryPage.enableTracking();

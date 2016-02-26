@@ -1,10 +1,11 @@
 import datetime
+
 from celery.utils.log import get_task_logger
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from eums.celery import app
-from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow, Programme
+from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow
 from eums.services.flow_scheduler import schedule_run_for
 from eums.util.contact_client import ContactClient
 from eums.vision.sync_runner import sync
@@ -20,11 +21,7 @@ def on_post_save_node(sender, **kwargs):
         schedule_run_for(node)
 
     if node.get_programme() and node.tree_position != Flow.Label.IMPLEMENTING_PARTNER:
-        ContactClient.update_after_delivery_creation(node.contact_person_id,
-                                                     node.tree_position,
-                                                     node.get_programme().name,
-                                                     node.location,
-                                                     node.consignee.name)
+        update_contact.apply_async(args=[node])
 
 
 @receiver(post_save, sender=DistributionPlan)
@@ -35,11 +32,7 @@ def on_post_save_delivery(sender, **kwargs):
         schedule_run_for(delivery)
 
     if kwargs['created']:
-        ContactClient.update_after_delivery_creation(delivery.contact_person_id,
-                                                     Flow.Label.IMPLEMENTING_PARTNER,
-                                                     delivery.programme.name,
-                                                     delivery.location,
-                                                     delivery.consignee.name)
+        update_contact.apply_async(args=[delivery])
 
 
 @receiver(pre_save, sender=SystemSettings)
@@ -59,6 +52,16 @@ def on_pre_save_system_settings(sender, **kwargs):
 @app.task
 def run(start_date, end_date):
     sync(start_date, end_date)
+
+
+@app.task
+def update_contact(runnable):
+    tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
+    ContactClient.update_after_delivery_creation(runnable.contact_person_id,
+                                                 tree_position,
+                                                 runnable.programme.name,
+                                                 runnable.location,
+                                                 runnable.consignee.name)
 
 
 def _resolve_alert_if_possible(delivery):
