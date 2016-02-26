@@ -119,6 +119,8 @@ RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT':
 # WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
 RAPIDPRO_LIVE = False
 
+CELERY_LIVE = True
+
 VISION_USER = os.getenv('VISION_USER', 'invalid_vision_user')
 VISION_PASSWORD = os.getenv('VISION_PASSWORD', 'invalid_vision_password')
 VISION_URL = 'https://devapis.unicef.org/BIService/BIWebService.svc/'

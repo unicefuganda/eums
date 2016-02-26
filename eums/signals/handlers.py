@@ -3,7 +3,7 @@ import datetime
 from celery.utils.log import get_task_logger
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
+from django.conf import settings
 from eums.celery import app
 from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow
 from eums.services.flow_scheduler import schedule_run_for
@@ -20,7 +20,7 @@ def on_post_save_node(sender, **kwargs):
     if node.track and not node.is_root():
         schedule_run_for(node)
 
-    if node.get_programme() and node.tree_position != Flow.Label.IMPLEMENTING_PARTNER:
+    if settings.CELERY_LIVE and node.get_programme() and node.tree_position != Flow.Label.IMPLEMENTING_PARTNER:
         update_contact.apply_async(args=[node])
 
 
@@ -31,7 +31,7 @@ def on_post_save_delivery(sender, **kwargs):
     if delivery.track and (not delivery.has_existing_run()):
         schedule_run_for(delivery)
 
-    if kwargs['created']:
+    if settings.CELERY_LIVE and kwargs['created']:
         update_contact.apply_async(args=[delivery])
 
 
