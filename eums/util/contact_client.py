@@ -48,7 +48,7 @@ class ContactClient(object):
 
     @staticmethod
     def _append_if_not_exist(val, value_list=[]):
-        if val not in value_list:
+        if val and (val not in value_list):
             value_list.append(val)
 
     @staticmethod
