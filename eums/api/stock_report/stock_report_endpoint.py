@@ -145,11 +145,13 @@ def _reduce_stock_report(stock_report):
 def _compute_totals(stock_report):
     total_received = reduce(lambda total, report_item: total + report_item['total_value_received'], stock_report, 0)
     total_dispensed = reduce(lambda total, report_item: total + report_item['total_value_dispensed'], stock_report, 0)
+    total_lost = reduce(lambda total, report_item: total + report_item['total_value_lost'], stock_report, 0)
 
     return {
         'total_received': total_received,
         'total_dispensed': total_dispensed,
-        'balance': total_received - total_dispensed
+        'total_lost': total_lost,
+        'balance': total_received - total_dispensed - total_lost
     }
 
 

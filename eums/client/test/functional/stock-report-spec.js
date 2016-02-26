@@ -31,7 +31,8 @@ describe('Stock Report', function () {
 
         expect(stockReportPage.totalReceived).toContain('$87.14');
         expect(stockReportPage.totalDispensed).toContain('$0.00');
-        expect(stockReportPage.totalBalance).toContain('$87.14');
+        expect(stockReportPage.totalLost).toContain('$6.00');
+        expect(stockReportPage.totalBalance).toContain('$81.14');
 
         expect(stockReportPage.stockDocumentNumbers).toContain('12345');
         expect(stockReportPage.stockReceivedValues).toContain('$87.14');

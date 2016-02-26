@@ -27,6 +27,7 @@ StockReportPage.prototype = Object.create({}, {
 
     totalReceived: { get: function () { return element(by.id('total_received')).getText(); }},
     totalDispensed: { get: function () { return element(by.id('total_dispensed')).getText(); }},
+    totalLost: { get: function () { return element(by.id('total_lost')).getText(); }},
     totalBalance: { get: function () { return element(by.id('total_balance')).getText(); }},
 
     stockDocumentNumbers: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.document_number')).getText(); }},

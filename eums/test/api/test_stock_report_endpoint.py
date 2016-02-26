@@ -173,7 +173,6 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
             }]
 
         response = self.client.get(ENDPOINT_URL)
-
         self.assertEqual(len(response.data['results']), 3)
 
         self.assert_api_response(response, expected_data)
@@ -273,7 +272,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         expected_totals = {
             'total_received': Decimal('580'),
             'total_dispensed': Decimal('360'),
-            'balance': Decimal('220')
+            'total_lost': Decimal('30'),
+            'balance': Decimal('190')
         }
         self.assertDictEqual(totals, expected_totals)
 
@@ -465,7 +465,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                 stock_in_response = \
                     filter(lambda stock_: stock_['document_number'] == stock['document_number'],
                            response.data['results'])[0]
-                for key in ['total_value_received', 'total_value_dispensed', 'balance']:
+                for key in ['total_value_received', 'total_value_dispensed', 'total_value_lost', 'balance']:
                     self.assertEquals(stock_in_response[key], stock[key])
                 for item in stock['items']:
                     self.assertIn(item, stock_in_response['items'])
@@ -476,7 +476,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                 filter(lambda stock_: stock_['document_number'] == stock['document_number']
                                       and stock_['programme'] == stock['programme'], response.data['results'])[0]
 
-            for key in ['total_value_received', 'total_value_dispensed', 'balance']:
+            for key in ['total_value_received', 'total_value_dispensed', 'total_value_lost', 'balance']:
                 self.assertEquals(stock_in_response[key], stock[key])
 
             for item in stock['items']:

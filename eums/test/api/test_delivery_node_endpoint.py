@@ -113,18 +113,13 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertTrue(node_two.quantity_out(), 6)
 
     def test_should_create_and_assign_delivery_node_to_self_with_parents(self):
-        self.log_ip_editor_in()
         delivery = DeliveryFactory(track=True)
         root_node = DeliveryNodeFactory(distribution_plan=delivery)
-        child_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[(root_node, 8)])
-        self.node_details['parents'] = [{'id': child_node.id, 'quantity': 5}]
-        self.node_details['quantity'] = 2
+        self.node_details['parents'] = [{'id': root_node.id, 'quantity': 7}]
         self.node_details['tree_position'] = self.END_USER_POSITION
         self.node_details['is_assign_to_self'] = True
 
         response = self.client.post(ENDPOINT_URL, data=json.dumps(self.node_details), content_type='application/json')
-        node = Runnable.objects.get(pk=response.data['id'])
-        logger.info(node.__dict__)
 
         self.assertEqual(response.status_code, 201)
         self.assertFalse(response.data['track'])
