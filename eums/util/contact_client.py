@@ -10,20 +10,11 @@ from eums import settings
 logger = logging.getLogger(__name__)
 
 
-def append_if_not_exist(val, value_list=[]):
-    if val in value_list:
-        return True
-
-    value_list.append(val)
-    return False
-
-
 class ContactClient(object):
     @staticmethod
     def get(contact_person_id):
-        default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '', 'types': [], 'outcomes': [],
-                           'ips': [],
-                           'districts': []}
+        default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
+                           'types': [], 'outcomes': [], 'ips': [], 'districts': []}
         try:
             response = requests.get(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
             if response.status_code is HTTP_200_OK:
@@ -47,16 +38,25 @@ class ContactClient(object):
     @staticmethod
     def update_after_delivery_creation(contact_id, type, outcome, district, ip):
         try:
-            contact = copy.deepcopy(ContactClient.get(contact_id))
-            exist_type = append_if_not_exist(type, contact['types'])
-            exist_outcome = append_if_not_exist(outcome, contact['outcomes'])
-            exist_ip = append_if_not_exist(ip, contact['ips'])
-            exist_district = append_if_not_exist(district, contact['districts'])
+            origin_contact = ContactClient.get(contact_id)
+            updated_contact = ContactClient._update_contact(origin_contact, type, outcome, district, ip)
 
-            if exist_district and exist_ip and exist_outcome and exist_type:
-                return
-
-            ContactClient.update(contact)
-
+            if origin_contact != updated_contact:
+                ContactClient.update(updated_contact)
         except Exception, e:
             logger.error(e)
+
+    @staticmethod
+    def _append_if_not_exist(val, value_list=[]):
+        if val not in value_list:
+            value_list.append(val)
+
+    @staticmethod
+    def _update_contact(origin_contact, type, outcome, district, ip):
+        updated_contact = copy.deepcopy(origin_contact)
+        ContactClient._append_if_not_exist(type, updated_contact['types'])
+        ContactClient._append_if_not_exist(outcome, updated_contact['outcomes'])
+        ContactClient._append_if_not_exist(ip, updated_contact['ips'])
+        ContactClient._append_if_not_exist(district, updated_contact['districts'])
+
+        return updated_contact
