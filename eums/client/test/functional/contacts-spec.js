@@ -18,7 +18,7 @@ describe('Contacts', function () {
         expect(contactsPage.contactPhoneNumbers).toContain('+256771234567');
         expect(contactsPage.contactDistricts).toContain('wakiso');
         expect(contactsPage.contactIps).toContain('WAKISO DHO');
-        expect(contactsPage.contactTypes).toContain('END_USER');
+        expect(contactsPage.contactTypes).toContain('End user');
         expect(contactsPage.contactOutcomes).toContain('YI101 - PCR 1 KEEP CHILDREN LEARNING');
     });
 
