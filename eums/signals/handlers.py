@@ -57,11 +57,12 @@ def run(start_date, end_date):
 @app.task
 def update_contact(runnable):
     tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
-    ContactClient.update_after_delivery_creation(runnable.contact_person_id,
-                                                 tree_position,
-                                                 runnable.programme.name,
-                                                 runnable.location,
-                                                 runnable.consignee.name)
+    if runnable.track:
+        ContactClient.update_after_delivery_creation(runnable.contact_person_id,
+                                                     tree_position,
+                                                     runnable.programme.name,
+                                                     runnable.location,
+                                                     runnable.consignee.name)
 
 
 def _resolve_alert_if_possible(delivery):
