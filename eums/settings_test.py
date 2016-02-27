@@ -22,5 +22,3 @@ ELASTIC_SEARCH = _es_settings(
     '%s/delivery_node/_search' % _base_url,
     '%s/_bulk' % _base_url,
     )
-
-CELERY_LIVE = False

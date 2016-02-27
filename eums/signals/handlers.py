@@ -20,8 +20,8 @@ def on_post_save_node(sender, **kwargs):
     if node.track and not node.is_root():
         schedule_run_for(node)
 
-    # if settings.CELERY_LIVE and node.get_programme() and node.tree_position != Flow.Label.IMPLEMENTING_PARTNER:
-    #     update_contact.apply_async(args=[node])
+    if settings.CELERY_LIVE and node.get_programme() and node.tree_position != Flow.Label.IMPLEMENTING_PARTNER:
+        update_contact.apply_async(args=[node])
 
 
 @receiver(post_save, sender=DistributionPlan)
@@ -31,8 +31,8 @@ def on_post_save_delivery(sender, **kwargs):
     if delivery.track and (not delivery.has_existing_run()):
         schedule_run_for(delivery)
 
-    # if settings.CELERY_LIVE and kwargs['created']:
-    #     update_contact.apply_async(args=[delivery])
+    if settings.CELERY_LIVE and kwargs['created']:
+        update_contact.apply_async(args=[delivery])
 
 
 @receiver(pre_save, sender=SystemSettings)
@@ -56,8 +56,8 @@ def run(start_date, end_date):
 
 @app.task
 def update_contact(runnable):
-    tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
     if runnable.track:
+        tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
         ContactClient.update_after_delivery_creation(runnable.contact_person_id,
                                                      tree_position,
                                                      runnable.programme.name,
