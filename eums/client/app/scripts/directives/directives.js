@@ -529,11 +529,10 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.allIps = displayedData.map(function (consignee) {
-                        return {id: consignee.name.hashCode(), text: consignee.name}
+                    var allIps = displayedData.map(function (ip) {
+                        return {id: ip.name.hashCode(), text: ip.name}
                     });
-                    scope.displayIps = scope.allIps;
-                    populateIpsSelect2(scope.displayIps);
+                    populateIpsSelect2(allIps);
                 });
 
                 function populateIpsSelect2(displayIps) {
@@ -548,8 +547,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 }
 
                 scope.clearMultipleIps = function () {
-                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    consigneeSelect2Input.text('');
+                    var select2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    select2Input.text('');
                     $(element).val(undefined).trigger('change');
                 };
 
@@ -557,15 +556,15 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var ids = names.map(function (name) {
                        return name.hashCode();
                     });
-                    $(element).val(ids).trigger('change');
+                    $(element).val(ids).trigger('change', names);
                 };
 
-                element.change(function () {
-                    var consignees = $(element).select2('data');
-                    var ids = consignees.map(function (consignee) {
-                        return consignee.text;
+                element.change(function (_, names) {
+                    var ips = $(element).select2('data');
+                    var texts = ips.map(function (ip) {
+                        return ip.text;
                     });
-                    ngModel.$setViewValue(ids);
+                    ngModel.$setViewValue(names || texts);
                 });
             }
         }
@@ -595,8 +594,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 }
 
                 scope.clearMultipleDistricts = function () {
-                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    districtSelect2Input.text('');
+                    var select2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    select2Input.text('');
                     $(element).val(undefined).trigger('change');
                 };
 
@@ -604,15 +603,15 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var ids = names.map(function (name) {
                        return name.hashCode();
                     });
-                    $(element).val(ids).trigger('change');
+                    $(element).val(ids).trigger('change', names);
                 };
 
-                element.change(function () {
+                element.change(function (_, names) {
                     var district = $(element).select2('data');
-                    var ids = district.map(function (district) {
+                    var texts = district.map(function (district) {
                         return district.text;
                     });
-                    ngModel.$setViewValue(ids);
+                    ngModel.$setViewValue(names || texts);
                 });
             }
         };
@@ -666,26 +665,26 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 ProgrammeService.programmesWithIps().then(function (response) {
-                    scope.allProgrammes = response.map(function (programe) {
-                        return {id: programe.name.hashCode(), text: programe.name}
+                    var allOutcomes = response.map(function (outcome) {
+                        return {id: outcome.name.hashCode(), text: outcome.name}
                     });
-                    populateOutcomesSelect2(scope.allProgrammes);
+                    populateOutcomesSelect2(allOutcomes);
                 });
 
-                function populateOutcomesSelect2(displayProgrammes) {
+                function populateOutcomesSelect2(displayOutcomes) {
                     $(element).select2({
                         placeholder: attrs.placeholder,
                         allowClear: true,
                         multiple: 'multiple',
-                        data: _.sortBy(displayProgrammes, function (outcome) {
+                        data: _.sortBy(displayOutcomes, function (outcome) {
                             return outcome.text;
                         })
                     });
                 }
 
                 scope.clearMultipleOutcomes = function () {
-                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    districtSelect2Input.text('');
+                    var select2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    select2Input.text('');
                     $(element).val(undefined).trigger('change');
                 };
 
@@ -693,15 +692,15 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var ids = names.map(function (name) {
                        return name.hashCode();
                     });
-                    $(element).val(ids).trigger('change');
+                    $(element).val(ids).trigger('change', names);
                 };
 
-                $(element).change(function () {
+                $(element).change(function (_, names) {
                     var outcomes = $(element).select2('data');
-                    var ids = outcomes.map(function (outcome) {
+                    var texts = outcomes.map(function (outcome) {
                         return outcome.text;
                     });
-                    ngModel.$setViewValue(ids);
+                    ngModel.$setViewValue(names || texts);
                 });
             }
         };
