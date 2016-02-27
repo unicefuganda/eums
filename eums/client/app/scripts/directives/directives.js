@@ -530,7 +530,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             link: function (scope, element, attrs, ngModel) {
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
                     scope.allIps = displayedData.map(function (consignee) {
-                        return {id: consignee.name, text: consignee.name}
+                        return {id: consignee.name.hashCode(), text: consignee.name}
                     });
                     scope.displayIps = scope.allIps;
                     populateIpsSelect2(scope.displayIps);
@@ -553,14 +553,17 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     $(element).val(undefined).trigger('change');
                 };
 
-                scope.setMultipleIps = function (ids) {
+                scope.setMultipleIps = function (names) {
+                    var ids = names.map(function (name) {
+                       return name.hashCode();
+                    });
                     $(element).val(ids).trigger('change');
                 };
 
                 element.change(function () {
                     var consignees = $(element).select2('data');
                     var ids = consignees.map(function (consignee) {
-                        return consignee.id;
+                        return consignee.text;
                     });
                     ngModel.$setViewValue(ids);
                 });
@@ -575,7 +578,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             link: function (scope, element, attrs, ngModel) {
                 IPService.loadAllDistricts().then(function (response) {
                     var districts = response.data.map(function (district) {
-                        return {id: district, text: district};
+                        return {id: district.hashCode(), text: district};
                     });
                     populateDistrictsSelect2(districts);
                 });
@@ -597,14 +600,17 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     $(element).val(undefined).trigger('change');
                 };
 
-                scope.setMultipleDistricts = function (ids) {
+                scope.setMultipleDistricts = function (names) {
+                    var ids = names.map(function (name) {
+                       return name.hashCode();
+                    });
                     $(element).val(ids).trigger('change');
                 };
 
                 element.change(function () {
                     var district = $(element).select2('data');
                     var ids = district.map(function (district) {
-                        return district.id;
+                        return district.text;
                     });
                     ngModel.$setViewValue(ids);
                 });
@@ -661,10 +667,10 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
             link: function (scope, element, attrs, ngModel) {
                 ProgrammeService.programmesWithIps().then(function (response) {
                     scope.allProgrammes = response.map(function (programe) {
-                        return {id: programe.name, text: programe.name}
+                        return {id: programe.name.hashCode(), text: programe.name}
                     });
                     populateOutcomesSelect2(scope.allProgrammes);
-                })
+                });
 
                 function populateOutcomesSelect2(displayProgrammes) {
                     $(element).select2({
@@ -675,6 +681,19 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                             return outcome.text;
                         })
                     });
+                }
+
+                scope.clearMultipleOutcomes = function () {
+                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    districtSelect2Input.text('');
+                    $(element).val(undefined).trigger('change');
+                };
+
+                scope.setMultipleOutcomes = function (names) {
+                    var ids = names.map(function (name) {
+                       return name.hashCode();
+                    });
+                    $(element).val(ids).trigger('change');
                 };
 
                 $(element).change(function () {
@@ -684,16 +703,6 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     });
                     ngModel.$setViewValue(ids);
                 });
-
-                scope.clearMultipleOutcomes = function () {
-                    var districtSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    districtSelect2Input.text('');
-                    $(element).val(undefined).trigger('change');
-                };
-
-                scope.setMultipleOutcomes = function (ids) {
-                    $(element).val(ids).trigger('change');
-                };
             }
         };
     });
