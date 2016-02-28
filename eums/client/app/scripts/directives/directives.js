@@ -554,17 +554,24 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
 
                 scope.setMultipleIps = function (names) {
                     var ids = names.map(function (name) {
-                       return name.hashCode();
+                        return name.hashCode();
                     });
                     $(element).val(ids).trigger('change', names);
                 };
 
-                element.change(function (_, names) {
-                    var ips = $(element).select2('data');
-                    var texts = ips.map(function (ip) {
-                        return ip.text;
-                    });
-                    ngModel.$setViewValue(names || texts);
+                element.change(function () {
+                    var aArguments = [].slice.apply(arguments);
+                    var names = aArguments.slice(1);
+
+                    if (names.length > 0) {
+                        ngModel.$setViewValue(names);
+                    } else {
+                        var ips = $(element).select2('data');
+                        var texts = ips.map(function (ip) {
+                            return ip.text;
+                        });
+                        ngModel.$setViewValue(texts);
+                    }
                 });
             }
         }
@@ -601,17 +608,24 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
 
                 scope.setMultipleDistricts = function (names) {
                     var ids = names.map(function (name) {
-                       return name.hashCode();
+                        return name.hashCode();
                     });
                     $(element).val(ids).trigger('change', names);
                 };
 
-                element.change(function (_, names) {
-                    var district = $(element).select2('data');
-                    var texts = district.map(function (district) {
-                        return district.text;
-                    });
-                    ngModel.$setViewValue(names || texts);
+                element.change(function () {
+                    var aArguments = [].slice.apply(arguments);
+                    var names = aArguments.slice(1);
+
+                    if (names.length > 0) {
+                        ngModel.$setViewValue(names);
+                    } else {
+                        var district = $(element).select2('data');
+                        var texts = district.map(function (district) {
+                            return district.text;
+                        });
+                        ngModel.$setViewValue(texts);
+                    }
                 });
             }
         };
@@ -690,17 +704,24 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
 
                 scope.setMultipleOutcomes = function (names) {
                     var ids = names.map(function (name) {
-                       return name.hashCode();
+                        return name.hashCode();
                     });
                     $(element).val(ids).trigger('change', names);
                 };
 
-                $(element).change(function (_, names) {
-                    var outcomes = $(element).select2('data');
-                    var texts = outcomes.map(function (outcome) {
-                        return outcome.text;
-                    });
-                    ngModel.$setViewValue(names || texts);
+                $(element).change(function () {
+                    var aArguments = [].slice.apply(arguments);
+                    var names = aArguments.slice(1);
+
+                    if (names.length > 0) {
+                        ngModel.$setViewValue(names);
+                    } else {
+                        var outcomes = $(element).select2('data');
+                        var texts = outcomes.map(function (outcome) {
+                            return outcome.text;
+                        });
+                        ngModel.$setViewValue(texts);
+                    }
                 });
             }
         };
