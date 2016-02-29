@@ -128,8 +128,11 @@ GROUP_PERMISSIONS = {
     ],
     GROUP_IP_EDITOR: [
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,
+        PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN,
+
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
+
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_PATCH_DISTRIBUTION_PLAN_NODE,
         PermissionCode.CAN_VIEW_DASH_BOARD,

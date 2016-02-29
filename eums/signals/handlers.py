@@ -31,7 +31,7 @@ def on_post_save_delivery(sender, **kwargs):
     if delivery.track and (not delivery.has_existing_run()):
         schedule_run_for(delivery)
 
-    if settings.CELERY_LIVE and kwargs['created']:
+    if settings.CELERY_LIVE and (delivery.track or delivery.is_auto_track_confirmed):
         update_contact.apply_async(args=[delivery])
 
 
@@ -56,13 +56,12 @@ def run(start_date, end_date):
 
 @app.task
 def update_contact(runnable):
-    if runnable.track:
-        tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
-        ContactClient.update_after_delivery_creation(runnable.contact_person_id,
-                                                     tree_position,
-                                                     runnable.programme.name,
-                                                     runnable.location,
-                                                     runnable.consignee.name)
+    tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
+    ContactClient.update_after_delivery_creation(runnable.contact_person_id,
+                                                 tree_position,
+                                                 runnable.programme.name,
+                                                 runnable.location,
+                                                 runnable.consignee.name)
 
 
 def _resolve_alert_if_possible(delivery):
