@@ -567,11 +567,11 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
     def test_unicef_editor_should_have_permission_to_track_delivery(self):
         self.log_and_assert_track_delivery_permission(self.log_unicef_editor_in, HTTP_200_OK)
 
+    def test_ip_editors_should_have_permission_to_track_delivery(self):
+        self.log_and_assert_track_delivery_permission(self.log_ip_editor_in, HTTP_200_OK)
+
     def test_unicef_viewer_should_not_have_permission_to_track_delivery(self):
         self.log_and_assert_track_delivery_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
-
-    def test_ip_editors_should_not_have_permission_to_track_delivery(self):
-        self.log_and_assert_track_delivery_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
 
     def test_ip_viewers_should_not_have_permission_to_track_delivery(self):
         self.log_and_assert_track_delivery_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
