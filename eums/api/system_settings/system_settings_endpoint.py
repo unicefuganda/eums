@@ -9,7 +9,7 @@ from eums.permissions.system_settings_permissions import SystemSettingsPermissio
 class SystemSettingsSerialiser(serializers.ModelSerializer):
     class Meta:
         model = SystemSettings
-        fields = ('id', 'auto_track', 'sync_start_date', 'notification_message', 'district_label')
+        fields = ('id', 'auto_track', 'sync_start_date', 'notification_message', 'district_label', 'country_label')
 
 
 class SystemSettingsViewSet(ModelViewSet):

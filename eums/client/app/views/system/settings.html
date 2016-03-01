@@ -3,7 +3,17 @@
         <h4 class="eums page-header">System Configuration</h4>
 
         <div class="container-fluid width-min-600 width-max-700">
-            <div class="row row-spaced">
+            <div class="row row-spaced pad-bottom-20">
+                <div class="col-xs-5">
+                    <label class="pull-right" for="country_label">Country Name</label>
+                </div>
+                <div class="col-xs-7">
+                    <form name="countryLabelSettingsForm" novalidate>
+                        <input class="form-control" id="country_label" name="country_label" ng-model="countryLabel"/>
+                    </form>
+                </div>
+            </div>
+            <div class="row pad-top-5">
                 <div class="col-xs-5">
                     <label class="pull-right" for="district_label">Subdivision Name</label>
                 </div>

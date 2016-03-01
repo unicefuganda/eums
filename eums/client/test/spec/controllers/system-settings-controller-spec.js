@@ -143,7 +143,7 @@ describe('SystemSettingsController', function () {
             scope.$apply();
 
             expect(scope.cancelMessages).toHaveBeenCalled();
-            expect(scope.notificationMessage).toEqual(scope.currentNotificationMessage);
+            expect(scope.districtLabel).toEqual('original district');
         });
 
         it('should save subdivision-name', function () {
@@ -212,6 +212,47 @@ describe('SystemSettingsController', function () {
 
             expect(scope.saveMessages).toHaveBeenCalledWith(formValid);
             expect(scope.currentNotificationMessage).toBe('original message');
+            expect(mockToast.create).toHaveBeenCalled();
+        });
+    });
+
+    describe('For country name', function () {
+        it('should cancel country name', function () {
+            scope.countryLabel = 'uganda';
+            scope.currentCountryLabel = 'somalia';
+            spyOn(scope, 'cancelMessages').and.callThrough();
+            scope.cancelMessages();
+            scope.$apply();
+
+            expect(scope.cancelMessages).toHaveBeenCalled();
+            expect(scope.countryLabel).toEqual('somalia');
+        });
+
+        it('should save country name', function () {
+            scope.countryLabel = 'uganda';
+            scope.currentCountryLabel = 'somalia';
+            var formValid = true;
+            deferUpdateSettings.resolve({'country_label': scope.countryLabel});
+            spyOn(scope, 'saveMessages').and.callThrough(formValid);
+            scope.saveMessages(formValid);
+            scope.$apply();
+
+            expect(mockSystemSettingsService.updateSettings).toHaveBeenCalled();
+            expect(scope.saveMessages).toHaveBeenCalledWith(formValid);
+            expect(scope.currentCountryLabel).toEqual('uganda');
+            expect(mockToast.create).toHaveBeenCalled();
+        });
+
+        it('should not save country when form is invalid', function () {
+            scope.countryLabel = 'uganda';
+            scope.currentCountryLabel = 'somalia';
+            var formValid = false;
+            spyOn(scope, 'saveMessages').and.callThrough(formValid);
+            scope.saveMessages(formValid);
+            scope.$apply();
+
+            expect(scope.saveMessages).toHaveBeenCalledWith(formValid);
+            expect(scope.currentCountryLabel).toBe('somalia');
             expect(mockToast.create).toHaveBeenCalled();
         });
     });

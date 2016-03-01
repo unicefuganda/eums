@@ -27,6 +27,7 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         $scope.isAllowSync = false;
         $scope.currentNotificationMessage = '';
         $scope.currentDistrictLabel = '';
+        $scope.currentCountryLabel = '';
         $scope.notificationMessage = '';
 
         init();
@@ -61,14 +62,13 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 return;
             }
 
-            if ($scope.notificationMessage != $scope.currentNotificationMessage ||
-                $scope.districtLabel != $scope.currentDistrictLabel) {
+            if (checkSettings()) {
                 SystemSettingsService.updateSettings({
                     notification_message: $scope.notificationMessage,
-                    district_label: $scope.districtLabel
+                    district_label: $scope.districtLabel,
+                    country_label: $scope.countryLabel
                 }).then(function (response) {
-                    $scope.currentNotificationMessage = $scope.notificationMessage;
-                    $scope.currentDistrictLabel = $scope.districtLabel;
+                    updateSettings();
                     ngToast.create({content: "Settings saved successfully", class: 'success'});
                 });
             } else {
@@ -77,8 +77,7 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         };
 
         $scope.cancelMessages = function () {
-            $scope.notificationMessage = $scope.currentNotificationMessage;
-            $scope.districtLabel = $scope.currentDistrictLabel;
+            resetSettings();
         };
 
         $scope.clickSyncBtn = function () {
@@ -117,5 +116,23 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         function allowToSync() {
             return $scope.currectStartDate == null
                 || new Date($scope.settings.syncStartDate) < new Date($scope.currectStartDate)
+        }
+
+        function updateSettings() {
+            $scope.currentNotificationMessage = $scope.notificationMessage;
+            $scope.currentDistrictLabel = $scope.districtLabel;
+            $scope.currentCountryLabel = $scope.countryLabel;
+        }
+
+        function resetSettings() {
+            $scope.notificationMessage = $scope.currentNotificationMessage;
+            $scope.districtLabel = $scope.currentDistrictLabel;
+            $scope.countryLabel = $scope.currentCountryLabel;
+        }
+
+        function checkSettings() {
+            return $scope.notificationMessage != $scope.currentNotificationMessage ||
+                $scope.districtLabel != $scope.currentDistrictLabel ||
+                $scope.countryLabel != $scope.currentCountryLabel;
         }
     });

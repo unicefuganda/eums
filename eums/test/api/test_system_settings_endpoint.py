@@ -46,3 +46,9 @@ class SystemSettingsTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL + str(system_settings.id) + '/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get('district_label'), "District")
+
+    def test_get_country_name_should_return_country_name(self):
+        system_settings = SystemSettingsFactory(country_label="Uganda")
+        response = self.client.get(ENDPOINT_URL + str(system_settings.id) + '/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('country_label'), "Uganda")
