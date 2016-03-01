@@ -102,6 +102,10 @@ def build_answers_for_nodes(nodes, response):
         node_plan_responses = node.distribution_plan.responses() if node.distribution_plan else {}
         answer_list = _build_answer_list(node_responses)
         plan_answer_list = _build_answer_list(node_plan_responses)
+        is_item_received = answer_list.get('productReceived', {}).get('value') == 'Yes' or answer_list.get(
+                'itemReceived', {}).get('value') == 'Yes'
+        temp_merged_date_of_receipt = answer_list.get('dateOfReceipt', {}).get('value') if answer_list.get(
+                'dateOfReceipt') else plan_answer_list.get('dateOfReceipt', {}).get('value')
         delivery_node = {
             'item_description': node.item.item.description,
             'programme': {'id': node.programme.id, 'name': node.programme.name},
@@ -116,8 +120,7 @@ def build_answers_for_nodes(nodes, response):
             'additional_remarks': node.additional_remarks,
             'tree_position': node.tree_position,
             'contact_person_id': node.contact_person_id,
-            'mergedDateOfReceipt': answer_list.get('dateOfReceipt', {}).get('value') if answer_list.get(
-                    'dateOfReceipt') else plan_answer_list.get('dateOfReceipt', {}).get('value')
+            'mergedDateOfReceipt': temp_merged_date_of_receipt if is_item_received else None
         }
         response.append(delivery_node)
 
