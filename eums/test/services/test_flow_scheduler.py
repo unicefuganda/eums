@@ -135,14 +135,14 @@ class FlowSchedulerTest(TestCase):
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         with patch('eums.services.flow_scheduler.datetime') as mock_datetime:
-            mock_datetime.datetime.now.return_value = FakeDatetime.now()
+            mock_datetime.date.today.return_value = FakeDate.today()
             mock_datetime.datetime.combine.side_effect = datetime.datetime.combine
             mock_datetime.datetime.min.time.side_effect = datetime.datetime.min.time
             mock_datetime.timedelta.side_effect = datetime.timedelta
 
             self.flow_scheduler.schedule_run_for(self.node)
 
-            self.assertEqual(self.mock_celery.invoked_after, 604800.0)
+            self.assertEqual(self.mock_celery.invoked_after, 637200.0)
 
     def test_should_schedule_flow_to_start_after_buffer_when_calculated_send_time_is_in_past(self):
         some_date = FakeDate.today() - datetime.timedelta(days=10)
@@ -220,7 +220,7 @@ class FlowSchedulerTest(TestCase):
 
         mock_expire_overdue_runs()
 
-        MockPeriodicTask.assert_called_with(crontab(minute=0, hour=0))
+        MockPeriodicTask.assert_called_with(crontab(minute=0, hour=9))
 
     def test_is_distribution_expired_alert_not_raised_should_return_true(self):
         alert = AlertFactory(issue=Alert.ISSUE_TYPES.not_received)

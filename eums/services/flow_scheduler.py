@@ -1,17 +1,21 @@
 from __future__ import absolute_import
+
 import datetime
 import logging
+
 from celery.schedules import crontab
 from celery.task import periodic_task
 from django.conf import settings
 from django.db.models import Q
+
 from eums.celery import app
 from eums.models import Run, RunQueue, Runnable, DistributionPlan, DistributionPlanNode, Flow
+from eums.models.alert import Alert
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.services.delivery_run_message import DeliveryRunMessage
-from eums.models.alert import Alert
 
 logger = logging.getLogger(__name__)
+HOUR_TO_SEND_SMS = 9
 
 
 def schedule_run_for(runnable):
@@ -43,10 +47,13 @@ def _schedule_run(runnable_id):
 
 
 def _calculate_delay(runnable):
-    expected_delivery_date = datetime.datetime.combine(runnable.delivery_date,
-                                                       datetime.datetime.min.time())
-    when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
-    delay_in_seconds = (when_to_send_message - datetime.datetime.now()).total_seconds()
+    expected_delivery_date = datetime.datetime.combine(runnable.delivery_date, datetime.datetime.min.time())
+    when_to_send_message = expected_delivery_date \
+        + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY, hours=HOUR_TO_SEND_SMS)
+
+    today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
+    delay_in_seconds = (when_to_send_message - today).total_seconds()
+
     return delay_in_seconds if delay_in_seconds > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
 
 
@@ -61,7 +68,7 @@ def _cancel(run):
     run.update_status(Run.STATUS.cancelled)
 
 
-@periodic_task(run_every=crontab(minute=0, hour=0))
+@periodic_task(run_every=crontab(minute=0, hour=HOUR_TO_SEND_SMS))
 def expire_overdue_runs():
     overdue_runs = Run.overdue_runs()
     for overdue_run in overdue_runs:
