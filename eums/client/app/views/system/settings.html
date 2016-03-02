@@ -56,10 +56,10 @@
                 <div class="col-xs-5">
                 </div>
                 <div class="col-xs-7">
-                    <button class="btn btn-eums-danger" ng-click="cancelMessages()"><i
-                            class="glyphicon glyphicon-remove"></i> Cancel
+                    <button class="btn btn-eums-danger" id="cancel-settings" ng-click="cancelMessages()">
+                        <i class="glyphicon glyphicon-remove"></i> Cancel
                     </button>
-                    <button class="btn btn-eums-success"
+                    <button class="btn btn-eums-success" id="save-settings"
                             ng-click="saveMessages(settingsForm.$valid && districtLabelSettingsForm.$valid)">
                         <i class="glyphicon glyphicon-floppy-disk"></i> Save
                     </button>

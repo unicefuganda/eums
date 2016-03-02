@@ -35,6 +35,26 @@ SystemSettingsPage.prototype = Object.create({}, {
         value: function () {
             $('#auto-track-confirm-modal button.btn-default').click();
         }
+    },
+    changeCountryName: {
+        value: function (input) {
+            element(by.id("country_label")).clear().sendKeys(input);
+        }
+    },
+    saveChanges: {
+        value: function () {
+            element(by.id("save-settings")).click();
+        }
+    },
+    cancelChanges: {
+        value: function () {
+            element(by.id("cancel-settings")).click();
+        }
+    },
+    countryName: {
+        get: function () {
+            return element(by.id("country_label")).getAttribute('value');
+        }
     }
 });
 

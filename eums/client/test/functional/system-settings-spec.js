@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var systemSettingsPage = require('./pages/system-settings-page.js');
 
-xdescribe('SystemSettings', function () {
+describe('SystemSettings', function () {
 
     beforeEach(function () {
         loginPage.visit();
@@ -33,12 +33,23 @@ xdescribe('SystemSettings', function () {
         systemSettingsPage.confirmAutoTrack();
     });
 
-    it('should click save button to change country name', function () {
-        var countryName = systemSettingsPage.getCountryName();
-        systemSettingsPage.changeCountryName('uganda');
-        systemSettingsPage.saveChanges();
-        var changedCountryName = systemSettingsPage.getCountryName();
+    it('should not change country name by clicking cancel button', function () {
+        var countryName = systemSettingsPage.countryName;
+        systemSettingsPage.changeCountryName('somalia');
+        systemSettingsPage.cancelChanges();
+        var changedCountryName = systemSettingsPage.countryName;
 
         expect(countryName).toEqual(changedCountryName);
+        expect(changedCountryName).not.toEqual('somalia');
+    });
+
+    it('should change country name by clicking save button', function () {
+        var countryName = systemSettingsPage.countryName;
+        systemSettingsPage.changeCountryName('somalia');
+        systemSettingsPage.saveChanges();
+        var changedCountryName = systemSettingsPage.countryName;
+
+        expect(countryName).not.toEqual(changedCountryName);
+        expect(changedCountryName).toEqual('somalia');
     });
 });

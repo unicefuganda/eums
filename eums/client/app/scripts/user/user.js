@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('User', ['eums.config', 'NavigationTabs'])
+angular.module('User', ['eums.config', 'NavigationTabs', 'EumsLogin'])
     .factory('UserService', function ($http, $q, EumsConfig) {
         var currentUser;
         return {
