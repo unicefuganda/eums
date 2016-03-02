@@ -14,9 +14,9 @@ class SystemSettings(models.Model):
     def __unicode__(self):
         return 'SystemSettings = ' \
                '{id : %s, auto_track : %s, sync_start_date : %s, notification_message : %s, district_label : %s, \
-                country_lable : %s}' % (str(self.id), str(self.auto_track), str(self.sync_start_date),
+                country_label : %s}' % (str(self.id), str(self.auto_track), str(self.sync_start_date),
                                         str(self.notification_message), str(self.district_label),
-                                        str(self.country_lable))
+                                        str(self.country_label))
 
     @staticmethod
     def get_sync_start_date():
