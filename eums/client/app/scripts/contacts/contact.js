@@ -42,7 +42,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.showAddContact = function () {
-            hideAdditionalInfo()
+            hideAdditionalInfo();
             $scope.$broadcast('add-contact');
         };
 
@@ -254,10 +254,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         scope.object = object;
                         scope.objectIndex = objectIndex;
                         contactInput.val('');
-                        scope.clearMultipleIps();
-                        scope.clearMultipleDistricts();
-                        scope.clearMultipleTypes();
-                        scope.clearMultipleOutcomes();
                         $('#model-name').text('Add Contact');
                         $('#add-contact-modal').modal();
                     });
