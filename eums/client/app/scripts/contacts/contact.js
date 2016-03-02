@@ -299,7 +299,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                                 createToast('Contact Saved!', 'success');
                                 emitEvent(createdContact);
                             }, function (response) {
-                                createToast(response.error, 'danger');
+                                createToast(response.data.error, 'danger');
                             });
                     }
                 };

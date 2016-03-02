@@ -23,8 +23,8 @@ class RapidProService(object):
     def rapid_pro_label(flow_label):
         if flow_label in RapidProService.rapid_pro_label_map:
             return RapidProService.rapid_pro_label_map[flow_label]
-        else:
-            return None
+
+        return None
 
     @staticmethod
     def internal_flow_label(label):
