@@ -1,9 +1,9 @@
-<nav class="navbar navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-fixed-top" role="navigation" ng-controller="EumsLoginController">
     <div class="container">
         <div class="navbar-header">
             <a href="/#/">
                 <img src="/static/app/media/unicef-logo-white.png" class="navbar-brand">
-                <span class="navbar-brand white">Supply End User Monitoring System</span>
+                <span class="navbar-brand white">Supply End User Monitoring System<span ng-if="$root.countryLabel" ng-bind="$root.countryLabel"></span></span>
             </a>
         </div>
 

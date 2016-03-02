@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html ng-app>
+<html>
 <head>
     <title>SEUMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +7,10 @@
     <link rel="icon" href="{{ STATIC_URL }}app/media/favicon.ico">
 </head>
 
-<body class="eums-form">
+<body class="eums-form" ng-app="EumsLogin" ng-controller="EumsLoginController">
 <div class="row col-md-offset-1 col-md-10">
     <div class="col-md-5 logo">
-        <img src="/static/app/media/unicef-logo-white.png">
+        <img src="{{ STATIC_URL }}app/media/unicef-logo-white.png">
     </div>
     <div class="col-md-7 form-container">
         <form class="form-horizontal" role="form" method="post"
@@ -18,7 +18,7 @@
 
             <div class="form-group">
                 <div class="col-md-10 col-sm-offset-1 center slogan">
-                    <h3>Welcome to the Supply End User Monitoring System</h3>
+                    <h3>Welcome to the Supply End User Monitoring System<span ng-if="countryLabel" ng-bind="countryLabel"></span></h3>
                 </div>
             </div>
 
@@ -64,5 +64,10 @@
         </form>
     </div>
 </div>
+
+<script src="{{ STATIC_URL }}bower_components/jquery/dist/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}bower_components/angular/angular.min.js"></script>
+<script src="{{ STATIC_URL }}app/scripts/login/login.js"></script>
+<script src="{{ STATIC_URL }}app/scripts/config/config.js"></script>
 </body>
 </html>

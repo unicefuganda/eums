@@ -1,6 +1,6 @@
 describe('SystemSettingsController', function () {
 
-    var scope;
+    var scope, rootScope;
     var mockSystemSettingsService, deferGetSettings, deferUpdateSettings, mockToast, mockLoaderService, q;
 
     beforeEach(function () {
@@ -11,6 +11,7 @@ describe('SystemSettingsController', function () {
 
         inject(function ($controller, $rootScope, $q, ngToast) {
             scope = $rootScope.$new();
+            rootScope = $rootScope;
             q = $q;
             deferGetSettings = $q.defer();
             deferUpdateSettings = $q.defer();
@@ -21,6 +22,7 @@ describe('SystemSettingsController', function () {
 
             $controller('SystemSettingsController', {
                 $scope: scope,
+                $rootScope: rootScope,
                 LoaderService: mockLoaderService,
                 SystemSettingsService: mockSystemSettingsService
             });
@@ -220,17 +222,20 @@ describe('SystemSettingsController', function () {
         it('should cancel country name', function () {
             scope.countryLabel = 'uganda';
             scope.currentCountryLabel = 'somalia';
+            rootScope.countryLabel = 'somalia';
             spyOn(scope, 'cancelMessages').and.callThrough();
             scope.cancelMessages();
             scope.$apply();
 
             expect(scope.cancelMessages).toHaveBeenCalled();
             expect(scope.countryLabel).toEqual('somalia');
+            expect(rootScope.countryLabel).toContain('somalia');
         });
 
         it('should save country name', function () {
             scope.countryLabel = 'uganda';
             scope.currentCountryLabel = 'somalia';
+            rootScope.countryLabel = 'somalia';
             var formValid = true;
             deferUpdateSettings.resolve({'country_label': scope.countryLabel});
             spyOn(scope, 'saveMessages').and.callThrough(formValid);
@@ -240,12 +245,14 @@ describe('SystemSettingsController', function () {
             expect(mockSystemSettingsService.updateSettings).toHaveBeenCalled();
             expect(scope.saveMessages).toHaveBeenCalledWith(formValid);
             expect(scope.currentCountryLabel).toEqual('uganda');
+            expect(rootScope.countryLabel).toContain('uganda');
             expect(mockToast.create).toHaveBeenCalled();
         });
 
         it('should not save country when form is invalid', function () {
             scope.countryLabel = 'uganda';
             scope.currentCountryLabel = 'somalia';
+            rootScope.countryLabel = 'somalia';
             var formValid = false;
             spyOn(scope, 'saveMessages').and.callThrough(formValid);
             scope.saveMessages(formValid);
@@ -253,6 +260,7 @@ describe('SystemSettingsController', function () {
 
             expect(scope.saveMessages).toHaveBeenCalledWith(formValid);
             expect(scope.currentCountryLabel).toBe('somalia');
+            expect(rootScope.countryLabel).toContain('somalia');
             expect(mockToast.create).toHaveBeenCalled();
         });
     });

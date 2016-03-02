@@ -5,7 +5,7 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService,
+    .controller('SystemSettingsController', function ($rootScope, $scope, $timeout, UserService, SystemSettingsService,
                                                       LoaderService, ngToast, SysUtilsService) {
         var isCancelledOrInitUpdated = false;
 
@@ -104,6 +104,8 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                 $scope.currectStartDate = $scope.settings.syncStartDate;
                 $scope.notificationMessage = $scope.currentNotificationMessage = settings.notification_message;
                 $scope.districtLabel = $scope.currentDistrictLabel = settings.district_label;
+                $scope.countryLabel = $scope.currentCountryLabel = settings.country_label;
+                $rootScope.countryLabel = $scope.countryLabel ? ' | ' + $scope.countryLabel : $scope.countryLabel;
                 isCancelledOrInitUpdated = $scope.isSelected = settings.auto_track;
             });
         }
@@ -122,6 +124,7 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             $scope.currentNotificationMessage = $scope.notificationMessage;
             $scope.currentDistrictLabel = $scope.districtLabel;
             $scope.currentCountryLabel = $scope.countryLabel;
+            $rootScope.countryLabel = $scope.countryLabel ? ' | ' + $scope.countryLabel : $scope.countryLabel;
         }
 
         function resetSettings() {
