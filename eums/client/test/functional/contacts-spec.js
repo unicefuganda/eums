@@ -30,7 +30,7 @@ describe('Contacts', function () {
         expect(contactsPage.contactCount).toEqual(1);
     });
 
-    it('Searching for contacts by district should show only relevant results', function () {
+    fit('Searching for contacts by district should show only relevant results', function () {
         contactsPage.searchByDistrict('wakiso');
         expect(contactsPage.contactCount).toEqual(1);
     });
