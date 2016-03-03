@@ -135,7 +135,7 @@ class FlowSchedulerTest(TestCase):
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         with patch('eums.services.flow_scheduler.datetime') as mock_datetime:
-            mock_datetime.date.today.return_value = FakeDate.today()
+            mock_datetime.datetime.now.return_value = FakeDatetime.now()
             mock_datetime.datetime.combine.side_effect = datetime.datetime.combine
             mock_datetime.datetime.min.time.side_effect = datetime.datetime.min.time
             mock_datetime.timedelta.side_effect = datetime.timedelta
