@@ -166,6 +166,7 @@ function testfunctional {
     grunt functional
   fi
 
+  grunt build
   cd -
 }
 

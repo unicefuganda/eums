@@ -1,3 +1,5 @@
+var functionalTestUtils = require('./../functional-test-utils.js');
+
 var ContactsPage = function () {
 };
 
@@ -70,6 +72,22 @@ ContactsPage.prototype = Object.create({}, {
         }
     },
 
+    searchByDistrict: {
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-district-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
+        }
+    },
+
+    searchByIp: {
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-ip-container', searchTerm);
+            functionalTestUtils.waitForPageToLoad();
+        }
+    },
+
     clickAddContact: {
         value: function () {
             element(by.css('#input-contact button')).click();
@@ -108,3 +126,9 @@ var waitForContactModalCondition = function (conditionFunction) {
     var modalCondition = conditionFunction(EC, contactModal);
     browser.wait(modalCondition, 5000, "Timeout exceeded while waiting for modal condition");
 };
+
+function fillSelect2Chosen(id, input) {
+    element(by.id(id)).click();
+    element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
+    element(by.css('.select2-results li')).click();
+}

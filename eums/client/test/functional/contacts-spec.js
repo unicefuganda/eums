@@ -22,11 +22,16 @@ describe('Contacts', function () {
         expect(contactsPage.contactOutcomes).toContain('YI101 - PCR 1 KEEP CHILDREN LEARNING');
     });
 
-    it('Searching for contacts should show only relevant results', function () {
+    it('Searching for contacts by first or last name should show only relevant results', function () {
         contactsPage.searchForThisContact('Non-existent Contact');
         expect(contactsPage.contactCount).toEqual(0);
 
         contactsPage.searchForThisContact('John');
+        expect(contactsPage.contactCount).toEqual(1);
+    });
+
+    it('Searching for contacts by district should show only relevant results', function () {
+        contactsPage.searchByDistrict('wakiso');
         expect(contactsPage.contactCount).toEqual(1);
     });
 });

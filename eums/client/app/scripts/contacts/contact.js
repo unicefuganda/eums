@@ -191,6 +191,35 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             return results;
         };
     })
+    .filter('districtFilter', function () {
+        return function (contacts, districtName) {
+            if (!districtName) {
+                return contacts;
+            }
+
+            var result = [];
+            contacts.forEach(function (contact) {
+                if (_.include(contact.districts, districtName)) {
+                    result.push(contact);
+                }
+            });
+            return result;
+        };
+    })
+    .filter('ipFilter', function () {
+        return function (contacts, selectedConsignee) {
+            if (!selectedConsignee) {
+                return contacts;
+            }
+            var result = [];
+            contacts.forEach(function (contact) {
+                if (_.include(contact.ips, selectedConsignee.name)) {
+                    result.push(contact);
+                }
+            });
+            return result;
+        };
+    })
     .factory('$sorter', function () {
         return function (field) {
             this.sort = this.sort || {};
