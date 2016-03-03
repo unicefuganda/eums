@@ -40,7 +40,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                 $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 $scope.goToPage(1);
-                loadIpFeedbackReportByDelivery()
+                loadIpFeedbackReportByDelivery();
             }
         };
 
@@ -50,16 +50,16 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
 
         $scope.goToPage = function (page) {
             $scope.pagination.page = page;
-            loadIpFeedbackReportByDelivery()
+            loadIpFeedbackReportByDelivery();
         };
 
         $scope.showRemarks = function (index) {
             var remarksModalId = 'remarks-modal-' + index;
-            LoaderService.showModal(remarksModalId)
+            LoaderService.showModal(remarksModalId);
         };
 
         $scope.formatDate = function (date) {
-            return SysUtilsService.formatDate(date)
+            return SysUtilsService.formatDate(date);
         };
 
         $scope.exportToCSV = function () {
@@ -68,7 +68,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
                 ngToast.create({content: response.message, class: 'info'});
             }, function () {
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
-                ngToast.create({content: errorMessage, class: 'danger'})
+                ngToast.create({content: errorMessage, class: 'danger'});
             });
         };
 
@@ -85,7 +85,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
-                setContactToReports($scope.report)
+                setContactToReports($scope.report);
                 updateProgrammes(response.programmeIds);
             }, function () {
                 ErrorMessageService.showError();
@@ -146,7 +146,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
             var statusValue = {
                 "Complete": "completed",
                 "Incomplete": "expired,scheduled"
-            }
+            };
             return statusValue[status];
         }
 

@@ -6,7 +6,7 @@ angular.module('StockReport', [
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('StockReportController', function ($scope, $q, StockReportService, ConsigneeService, SortByService,
+    .controller('StockReportController', function ($scope, $q, $compile, StockReportService, ConsigneeService, SortByService,
                                                    ReportService, IPService, LoaderService, UserService, ErrorMessageService,
                                                    SortService, SortArrowService, SysUtilsService, ngToast, SystemSettingsService) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'total_value_lost', 'balance'];
@@ -81,6 +81,7 @@ angular.module('StockReport', [
         };
 
         function init() {
+            bindModalEvent();
             loadDistricts();
             loadSystemSettings();
             UserService.getCurrentUser().then(function (user) {
@@ -152,6 +153,13 @@ angular.module('StockReport', [
         function getSearchTerm() {
             return $scope.reportParams;
         }
+
+        function bindModalEvent() {
+            $('#stock-report-lost-remarks-modal').on('show.bs.modal', function (event) {
+                $scope.lostRemarks = $(event.relatedTarget).data('lost-remark');
+                $scope.$apply();
+            });
+        }
     })
     .factory('StockReportService', function ($http, EumsConfig) {
         return {
@@ -164,25 +172,18 @@ angular.module('StockReport', [
             }
         };
     })
-    .filter('concatArray', function () {
-        return function (array) {
-            var str = "";
-            for (var i = 0; i < array.length; i++) {
-                str += '<span class="pull-left">' + array[i] + '</span>';
-            }
-            return str;
-        };
-    })
     .directive('concatArray', ['$compile', function ($compile) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
                 scope.$watch(function () {
-                    return scope.$eval(attrs.concatArray);
-                }, function (array) {
+                    return attrs.concatArray;
+                }, function (content) {
+                    if(!content) return;
                     var value = "";
+                    var array = scope.$eval(content);
                     for (var i = 0; i < array.length; i++) {
-                        value += '<div>' + array[i] + '</div>';
+                        value += '<div><h4>' + array[i] + '</h4></div>';
                     }
                     element.html(value);
                     $compile(element.contents())(scope);
