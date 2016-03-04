@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 
-describe('Contacts', function () {
+fdescribe('Contacts', function () {
 
     beforeAll(function () {
         loginPage.visit();
@@ -16,7 +16,7 @@ describe('Contacts', function () {
         expect(contactsPage.contactFirstNames).toContain('John');
         expect(contactsPage.contactLastNames).toContain('Doe');
         expect(contactsPage.contactPhoneNumbers).toContain('+256771234567');
-        expect(contactsPage.contactDistricts).toContain('wakiso');
+        expect(contactsPage.contactDistricts).toContain('Wakiso');
         expect(contactsPage.contactIps).toContain('WAKISO DHO');
         expect(contactsPage.contactTypes).toContain('End user');
         expect(contactsPage.contactOutcomes).toContain('YI101 - PCR 1 KEEP CHILDREN LEARNING');
@@ -30,9 +30,14 @@ describe('Contacts', function () {
         expect(contactsPage.contactCount).toEqual(1);
     });
 
-    fit('Searching for contacts by district should show only relevant results', function () {
-        contactsPage.searchByDistrict('wakiso');
+    it('Searching for contacts by district should show only relevant results', function () {
+        contactsPage.searchByDistrict('Wakiso');
         expect(contactsPage.contactCount).toEqual(1);
+    });
+
+    it('Searching for contacts by ip should show only relevant results', function () {
+        contactsPage.searchByDistrict('AGAGO DHO');
+        expect(contactsPage.contactCount).toEqual(2);
     });
 });
 

@@ -24,10 +24,10 @@
     "lastName": "Sam",
     "phone": "+256771234568",
     "districts": [
-      "wakiso"
+      "Wakiso"
     ],
     "ips": [
-      "KAMPALA DHO",
+      "AGAGO DHO",
       "WAKISO DHO"
     ],
     "types": [
@@ -47,7 +47,7 @@
       "kampala"
     ],
     "ips": [
-      "KAMPALA DHO",
+      "AGAGO DHO",
       "WAKISO DHO"
     ],
     "types": [

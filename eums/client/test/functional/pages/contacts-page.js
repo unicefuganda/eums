@@ -81,9 +81,8 @@ ContactsPage.prototype = Object.create({}, {
 
     searchByIp: {
         value: function (searchTerm) {
-            functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-ip-container', searchTerm);
-            functionalTestUtils.waitForPageToLoad();
+            functionalTestUtils.wait(1000);
         }
     },
 
@@ -129,5 +128,5 @@ var waitForContactModalCondition = function (conditionFunction) {
 function fillSelect2Chosen(id, input) {
     element(by.id(id)).click();
     element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
-    element(by.css('.select2-results li')).click();
+    element(by.id('select2-drop')).element(by.css('.select2-results li')).click();
 }
