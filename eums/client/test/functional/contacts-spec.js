@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 
-fdescribe('Contacts', function () {
+describe('Contacts', function () {
 
     beforeAll(function () {
         loginPage.visit();
@@ -36,7 +36,7 @@ fdescribe('Contacts', function () {
     });
 
     it('Searching for contacts by ip should show only relevant results', function () {
-        contactsPage.searchByDistrict('AGAGO DHO');
+        contactsPage.searchByIp('AGAGO DHO');
         expect(contactsPage.contactCount).toEqual(2);
     });
 });
