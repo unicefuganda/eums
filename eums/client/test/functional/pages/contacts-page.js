@@ -74,9 +74,8 @@ ContactsPage.prototype = Object.create({}, {
 
     searchByDistrict: {
         value: function (searchTerm) {
-            functionalTestUtils.wait(3000);
             fillSelect2Chosen('filter-district-container', searchTerm);
-            functionalTestUtils.waitForPageToLoad();
+            functionalTestUtils.wait(1000);
         }
     },
 

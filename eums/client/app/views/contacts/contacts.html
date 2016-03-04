@@ -85,10 +85,13 @@
                         </td>
                     </tr>
                     </tfoot>
-                <span class="information message"
-                      ng-show="contacts.length > 0 && (contacts | contactsFilter: query).length == 0">
+                    <div class="align-center">
+                        <span class="font-size-large bold"
+                              ng-show="contacts.length > 0 && (contacts | contactsFilter: query | districtFilter: districtQuery | ipFilter:selectedConsignee).length == 0">
                 There are no matches to your search criteria.
                 </span>
+                    </div>
+
                 </table>
 
             </div>
