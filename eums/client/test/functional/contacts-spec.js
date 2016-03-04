@@ -5,7 +5,7 @@ var contactsPage = require('./pages/contacts-page.js');
 
 describe('Contacts', function () {
 
-    beforeAll(function () {
+    beforeEach(function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         contactsPage.visit();
@@ -43,7 +43,7 @@ describe('Contacts', function () {
 
 describe('Contacts', function () {
 
-    beforeAll(function () {
+    beforeEach(function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         contactsPage.visit();
