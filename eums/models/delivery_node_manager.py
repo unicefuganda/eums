@@ -23,6 +23,8 @@ class DeliveryNodeManager(PolymorphicManager):
             node.update_tracked_status(is_assign_to_self)
             node.assign_ip()
             node.update_balance()
+            if is_assign_to_self:
+                node.append_positive_answers()
             return node
         return self.model(**kwargs)
 

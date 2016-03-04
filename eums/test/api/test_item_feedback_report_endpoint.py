@@ -49,7 +49,6 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertFieldExists({'tree_position': node_one.tree_position}, results)
         self.assertFieldExists({'additional_remarks': node_one.additional_remarks}, results)
         self.assertGreaterEqual(len(results[0]['answers']), 3)
-        print results[0]
         self.assertEqual(results[0]['answers'].get('amountReceived').get('remark'), 'Some remark 2')
 
     def test_should_return_paginated_items_and_all_their_answers(self):

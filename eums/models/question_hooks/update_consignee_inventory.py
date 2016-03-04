@@ -1,4 +1,4 @@
-from eums.models import ConsigneeItem
+from eums.models.consignee_item import ConsigneeItem
 
 
 class UpdateConsigneeInventory:

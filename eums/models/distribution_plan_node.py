@@ -3,7 +3,8 @@ import logging
 from django.db import models
 from django.db.models import Q, Sum
 from eums.models.flow import Flow
-from eums.models import Runnable, Arc, Programme
+from eums.models import Runnable, Arc, Programme, Run
+from eums.models.answers import MultipleChoiceAnswer, TextAnswer, NumericAnswer
 from eums.models.delivery_node_manager import DeliveryNodeManager
 
 logger = logging.getLogger(__name__)
@@ -229,3 +230,32 @@ class DistributionPlanNode(Runnable):
             parents = DistributionPlanNode.objects.filter(pk__in=source_ids)
             for parent in parents:
                 return self._get_parent_lineage(parent, parent_list)
+
+    def append_positive_answers(self):
+        import eums.fixtures.end_user_questions as end_user_questions
+
+        run = Run.objects.create(scheduled_message_task_id='ip_assign_to_self',
+                                 runnable=self,
+                                 status=Run.STATUS.completed,
+                                 phone=self.contact.phone)
+
+        MultipleChoiceAnswer.objects.create(run=run,
+                                            question=end_user_questions.WAS_PRODUCT_RECEIVED,
+                                            value=end_user_questions.PRODUCT_WAS_RECEIVED)
+
+        TextAnswer.objects.create(run=run,
+                                  question=end_user_questions.EU_DATE_RECEIVED,
+                                  value=self.delivery_date)
+
+        NumericAnswer.objects.create(run=run,
+                                     question=end_user_questions.EU_AMOUNT_RECEIVED,
+                                     value=self.balance)
+
+        MultipleChoiceAnswer.objects.create(run=run,
+                                            question=end_user_questions.EU_QUALITY_OF_PRODUCT,
+                                            value=end_user_questions.EU_OPT_GOOD)
+
+        MultipleChoiceAnswer.objects.create(run=run,
+                                            question=end_user_questions.EU_SATISFACTION,
+                                            value=end_user_questions.EU_OPT_SATISFIED)
+
