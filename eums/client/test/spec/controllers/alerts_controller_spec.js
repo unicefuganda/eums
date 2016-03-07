@@ -5,7 +5,7 @@ describe('AlertsController', function () {
         mockSortArrowService, mockSystemSettingsService;
     var userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var type = 'delivery';
-    var deferredAlerts,
+    var deferredAlerts, deferredExportedAlerts,
         expectedAlerts = [
             {
                 "orderType": "Waybill",
@@ -111,7 +111,7 @@ describe('AlertsController', function () {
     beforeEach(function () {
         module('Alerts');
 
-        mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
+        mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get', 'export']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['retriggerDelivery']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
@@ -124,6 +124,7 @@ describe('AlertsController', function () {
             q = $q;
             deferred = $q.defer();
             deferredAlerts = $q.defer();
+            deferredExportedAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
             mockToast = ngToast;
             userHasPermissionToPromise = $q.defer();
@@ -131,6 +132,7 @@ describe('AlertsController', function () {
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
             mockAlertsService.get.and.returnValue($q.when({'total': 4, 'unresolved': 2}));
             mockAlertsService.update.and.returnValue($q.when({}));
+            mockAlertsService.export.and.returnValue(deferredExportedAlerts.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
             mockSystemSettingsService.getSettings.and.returnValue(q.when(stubSettings));
@@ -298,6 +300,47 @@ describe('AlertsController', function () {
             expect(scope.isRetriggerBtnAvailable(scope.alerts[0])).toBe(true);
             expect(scope.isRetriggerBtnAvailable(scope.alerts[1])).toBe(false);
             expect(scope.isRetriggerBtnAvailable(scope.alerts[2])).toBe(false);
+        });
+    });
+
+    describe('Export to CSV', function () {
+        it('should export all alerts to CSV', function () {
+            scope.exportToCSV();
+            expect(mockAlertsService.export).toHaveBeenCalledWith('delivery', '');
+
+            scope.type = 'item';
+            scope.exportToCSV();
+            expect(mockAlertsService.export).toHaveBeenCalledWith('item', '');
+        });
+
+        it('should export filtered alerts to CSV', function () {
+            var waybill = '81020737';
+            scope.query = waybill;
+            scope.exportToCSV();
+            expect(mockAlertsService.export).toHaveBeenCalledWith('delivery', waybill);
+        });
+
+        it('should show toast with success message', function () {
+            var message = 'Generating CSV, you will be notified via email once it is done.';
+            deferredExportedAlerts.resolve({data: {message: message}, status: 200});
+
+            scope.exportToCSV();
+            scope.$apply();
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: message,
+                class: 'info'
+            });
+        });
+
+        it('should show toast with error message', function () {
+            deferredExportedAlerts.reject({status: 500});
+
+            scope.exportToCSV();
+            scope.$apply();
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: "Error while generating CSV. Please contact the system's admin.",
+                class: 'danger'
+            });
         });
     });
 });

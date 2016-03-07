@@ -1,5 +1,15 @@
 <div class="container-fluid">
-    <div class="eums page-header">Your Alerts</div>
+    <div class="eums page-header">
+        <div class="pull-left">Your Alerts</div>
+        <div class="content">
+            <ul class="nav nav-pills">
+                <li class="pull-right active">
+                    <a ng-click="exportToCSV()" class="btn btn-default blue-border-button"><i
+                            class="glyphicon glyphicon-log-out"></i> Export to CSV</a>
+                </li>
+            </ul>
+        </div>
+    </div>
     <div class="content pad-top-15">
         <ul class="nav nav-pills col-md-6">
             <li role="presentation" id="delivery-alerts-button"

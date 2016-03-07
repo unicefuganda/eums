@@ -5,9 +5,17 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1});
     }])
-    .factory('AlertsService', function (EumsConfig, ServiceFactory) {
+    .factory('AlertsService', function (EumsConfig, ServiceFactory, $http) {
         return ServiceFactory.create({
-            uri: EumsConfig.BACKEND_URLS.ALERTS
+            uri: EumsConfig.BACKEND_URLS.ALERTS,
+            methods: {
+                export: function(type, query) {
+                    var params = _({type: type, po_waybill: query}).omit(_.isEmpty).omit(_.isUndefined).value();
+                    var searchParams = jQuery.param(params);
+                    return $http.get(EumsConfig.BACKEND_URLS.ALERT_EXPORTS
+                        + searchParams ? '?' + searchParams : '');
+                }
+            }
         });
     })
     .controller('AlertsController', function ($scope, $rootScope, $q, AlertsService, LoaderService, ngToast, DeliveryService,
@@ -19,6 +27,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.constant_type_item = 'item';
         $scope.constant_type_distribution = 'distribution';
         $scope.remarks = '';
+        $scope.query = '';
         $scope.type = $scope.constant_type_delivery;
         $scope.sortTerm = {field: 'alertDate', order: 'desc'};
 
@@ -96,6 +105,15 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                     });
                     initialize();
                 })
+        };
+
+        $scope.exportToCSV = function () {
+            AlertsService.export($scope.type, $scope.query).then(function (response) {
+                ngToast.create({content: response.data.message, class: 'info'});
+            }, function () {
+                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                ngToast.create({content: errorMessage, class: 'danger'})
+            });
         };
 
         function initialize() {

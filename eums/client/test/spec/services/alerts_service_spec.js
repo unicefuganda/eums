@@ -19,7 +19,8 @@ describe('AlertsService', function () {
 
     it('should delegate down to service factory with correct url', function () {
         expect(mockServiceFactory.create).toHaveBeenCalledWith({
-            uri: config.BACKEND_URLS.ALERTS
+            uri: config.BACKEND_URLS.ALERTS,
+            methods: jasmine.any(Object)
         });
     });
 });

@@ -51,6 +51,7 @@
     "DELIVERIES_FEEDBACK_REPORT_EXPORTS": "/exports/deliveries-feedback-report",
     "ITEM_FEEDBACK_REPORT_EXPORTS": "/exports/items-feedback-report",
     "STOCK_REPORT_EXPORTS": "/exports/stocks-report",
+    "ALERT_EXPORTS": "/exports/alerts",
     "DELIVERY_STATS_DETAILS": "/api/delivery-stats/details/",
     "MAP_DELIVERY_STATS": "/api/delivery-stats/map/",
     "LATEST_DELIVERIES": "/api/latest-deliveries/",
