@@ -12,8 +12,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                 export: function(type, query) {
                     var params = _({type: type, po_waybill: query}).omit(_.isEmpty).omit(_.isUndefined).value();
                     var searchParams = jQuery.param(params);
-                    return $http.get(EumsConfig.BACKEND_URLS.ALERT_EXPORTS
-                        + searchParams ? '?' + searchParams : '');
+                    return $http.get(EumsConfig.BACKEND_URLS.ALERT_EXPORTS + (searchParams ? '/?' + searchParams : ''));
                 }
             }
         });
