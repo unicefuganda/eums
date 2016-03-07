@@ -18,7 +18,7 @@ class PurchaseOrderItem(OrderItem):
         return self.quantity - self.quantity_shipped()
 
     def quantity_shipped(self):
-        nodes = DistributionPlanNode.objects.filter(item=self, track=True, arcs_in__source__isnull=True)
+        nodes = DistributionPlanNode.objects.filter(item=self, arcs_in__source__isnull=True)
         return reduce(lambda total, node: total + node.quantity_in(), nodes, 0)
 
     def unit_value(self):
