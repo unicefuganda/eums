@@ -18,6 +18,17 @@
                     by Distribution</a>
             </li>
         </ul>
+        <div class="col-xs-3 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon glyphicon-search"></i>
+                <input type="text"
+                       id="filter"
+                       class="form-control"
+                       name="filter"
+                       ng-model="query"
+                       placeholder="Search by PO or Waybill"/>
+            </div>
+        </div>
     </div>
     <div class="content alerts-sub-header" ng-hide="alerts.length">
         There are currently no alerts.
@@ -62,7 +73,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="($index, alert) in alerts">
+            <tr ng-repeat="($index, alert) in alerts | alertsFilter: query">
                 <td ng-hide="isActiveAlertType(constant_type_distribution)">
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>

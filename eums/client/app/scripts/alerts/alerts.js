@@ -37,6 +37,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         $scope.changeAlertType = function (type) {
             $scope.type = type;
+            $scope.query = "";
             initialize();
         };
 
@@ -153,4 +154,10 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             }
             return urlArgs
         }
+    })
+    .filter('alertsFilter', function ($filter) {
+        return function (alerts, query) {
+            var results = $filter('filter')(alerts, {orderNumber: query});
+            return results;
+        };
     });

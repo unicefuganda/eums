@@ -14,7 +14,12 @@ describe('Alerts', function () {
         alertsPage.visit();
     });
 
-    it('should show, resolve and retrigger alerts', function () {
+    it('should show, filter, resolve and retrigger alerts', function () {
+        alertsPage.filterAlertByPOorWaybill('12345');
+        expect(alertsPage.getFilteredAlters.count()).toEqual(1);
+        alertsPage.filterAlertByPOorWaybill('');
+        expect(alertsPage.getFilteredAlters.count()).toEqual(2);
+
         expect(alertsPage.retriggerBtns.count()).toEqual(1);
 
         alertsPage.retrigger();

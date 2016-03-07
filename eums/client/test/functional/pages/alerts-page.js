@@ -1,50 +1,128 @@
-var AlertsPage = function () {};
+var AlertsPage = function () {
+};
 var EC = protractor.ExpectedConditions;
 
 AlertsPage.prototype = Object.create({}, {
-    url: { get: function () { return '/#/alerts'; }},
+    url: {
+        get: function () {
+            return '/#/alerts';
+        }
+    },
 
-    visit: { value: function () {
-        browser.get(this.url);
-        waitForPageToLoad();
-    }},
+    visit: {
+        value: function () {
+            browser.get(this.url);
+            waitForPageToLoad();
+        }
+    },
 
-    firstAlert: { get: function () { return element.all(by.repeater('($index, alert) in alerts')).get(0).getText(); }},
-    secondAlert: { get: function () { return element.all(by.repeater('($index, alert) in alerts')).get(1).getText(); }},
+    firstAlert: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts')).get(0).getText();
+        }
+    },
+    secondAlert: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts')).get(1).getText();
+        }
+    },
 
-    alertStatuses: { get: function () { return element.all(by.css('.alerts-issue')).getText(); }},
-    alertOrderNumbers: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.orderNumber')).getText(); }},
-    alertItems: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.itemDescription')).getText(); }},
-    alertOrderDate: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.dateShipped')).getText(); }},
-    alertOrderValue: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.totalValue')).getText(); }},
-    alertReporter: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.contact.contactName')).getText(); }},
-    alertIP: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.consigneeName')).getText(); }},
-    alertLocation: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.location')).getText(); }},
+    alertStatuses: {
+        get: function () {
+            return element.all(by.css('.alerts-issue')).getText();
+        }
+    },
+    alertOrderNumbers: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.orderNumber')).getText();
+        }
+    },
+    alertItems: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.itemDescription')).getText();
+        }
+    },
+    alertOrderDate: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.dateShipped')).getText();
+        }
+    },
+    alertOrderValue: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.totalValue')).getText();
+        }
+    },
+    alertReporter: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.contact.contactName')).getText();
+        }
+    },
+    alertIP: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.consigneeName')).getText();
+        }
+    },
+    alertLocation: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.location')).getText();
+        }
+    },
 
-    retriggerBtns: { get: function() { return element.all(by.css('.retrigger-btn')); }},
+    retriggerBtns: {
+        get: function () {
+            return element.all(by.css('.retrigger-btn'));
+        }
+    },
 
-    retrigger: { value: function () {
-        element.all(by.css('.retrigger-btn')).get(0).click();
-    }},
+    retrigger: {
+        value: function () {
+            element.all(by.css('.retrigger-btn')).get(0).click();
+        }
+    },
 
-    resolveAlert: { value: function () {
-        element.all(by.css('.resolve-alert-button')).get(0).click();
-        waitForModalToLoad(0);
-        element.all(by.css('.btn btn-primary resolve')).click();
-    }},
+    resolveAlert: {
+        value: function () {
+            element.all(by.css('.resolve-alert-button')).get(0).click();
+            waitForModalToLoad(0);
+            element.all(by.css('.btn btn-primary resolve')).click();
+        }
+    },
 
-    viewResolutionDetails: { value: function () {
-        element(by.id('resolved-alert-link-1')).click();
-        waitForModalToLoad(1);
-    }},
+    viewResolutionDetails: {
+        value: function () {
+            element(by.id('resolved-alert-link-1')).click();
+            waitForModalToLoad(1);
+        }
+    },
 
-    alertResolutionRemarks: { get: function () {
-        return element.all(by.repeater('($index, alert) in alerts').column('alert.remarks')).getText();
-    }},
+    alertResolutionRemarks: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts').column('alert.remarks')).getText();
+        }
+    },
 
-    goToItemAlerts: {value: function() {
-        element(by.id('item-alerts-button')).click();
-    }}
+    goToItemAlerts: {
+        value: function () {
+            element(by.id('item-alerts-button')).click();
+        }
+    },
+
+    filterAlertByPOorWaybill: {
+        value: function (input) {
+            var ele = element(by.id('filter'));
+            if (!input) {
+                ele.clear();
+            } else {
+                ele.sendKeys(input);
+            }
+        }
+    },
+
+    getFilteredAlters: {
+        get: function () {
+            return element.all(by.repeater('($index, alert) in alerts'));
+        }
+    }
 });
 
 module.exports = new AlertsPage;
