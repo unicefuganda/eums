@@ -18,10 +18,6 @@ class PurchaseOrderItemTest(TestCase):
 
         delivery = DeliveryFactory()
         NodeFactory(item=purchase_order_item, quantity=200, distribution_plan=delivery)
-        self.assertEquals(purchase_order_item.available_balance(), 500)
-
-        delivery.track = True
-        delivery.save()
         self.assertEquals(purchase_order_item.available_balance(), 300)
 
         NodeFactory(item=purchase_order_item, quantity=120, distribution_plan=delivery)
