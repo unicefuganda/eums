@@ -183,7 +183,7 @@ angular.module('StockReport', [
                     var value = "";
                     var array = scope.$eval(content);
                     for (var i = 0; i < array.length; i++) {
-                        value += '<div><h4>' + array[i] + '</h4></div>';
+                        value += '<div>' + array[i] + '</div>';
                     }
                     element.html(value);
                     $compile(element.contents())(scope);
