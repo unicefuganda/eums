@@ -17,7 +17,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'eums.service-factory', 'ngToa
         $scope.newDelivery = new DeliveryNode({
             track: true,
             treePosition: 'END_USER',
-            isAssignToSelf: $scope.isAssigningItemsToSelf
+            isAssignedToSelf: $scope.isAssigningItemsToSelf
         });
 
         init();

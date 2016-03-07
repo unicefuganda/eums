@@ -23,7 +23,8 @@ class DistributionPlan(Runnable):
 
     def save(self, *args, **kwargs):
         super(DistributionPlan, self).save(*args, **kwargs)
-        DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
+        DistributionPlanNode.objects.filter(Q(distribution_plan=self), ~Q(is_assigned_to_self__exact=True)) \
+            .update(track=self.track)
         if self.track:
             self.update_purchase_order()
             self.update_release_order()

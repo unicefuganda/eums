@@ -20,6 +20,7 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     is_retriggered = models.BooleanField(default=False)
     total_value = models.DecimalField(max_digits=12, decimal_places=2, null=False, default=0)
     is_auto_track_confirmed = models.NullBooleanField(null=True)
+    is_assigned_to_self = models.NullBooleanField(null=True)
 
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     WEB = 'WEB'

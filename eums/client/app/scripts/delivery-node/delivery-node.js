@@ -53,7 +53,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.timeLimitationOnDistribution = json.timeLimitationOnDistribution;
             this.trackedDate = json.trackedDate;
             this.additionalRemarks = json.additionalRemarks;
-            this.isAssignToSelf = json.isAssignToSelf || false;
+            this.isAssignedToSelf = json.isAssignedToSelf || false;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;

@@ -157,7 +157,9 @@ def _filter_answers_by_id(answers, node_id):
 
 def _filter_track_and_confirmed_auto_track_nodes(request):
     nodes = DistributionPlanNode.objects.filter(
-            Q(track=True) | (Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True)))
+            Q(track=True) |
+            (Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True)) |
+            (Q(track=False) & Q(is_assigned_to_self=True)))
     kwargs = {}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
     status_value = params.get("status")

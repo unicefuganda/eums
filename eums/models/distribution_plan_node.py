@@ -20,10 +20,11 @@ class DistributionPlanNode(Runnable):
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)
     acknowledged = models.IntegerField(null=True, blank=True, default=0)
+    additional_remarks = models.TextField(null=True, blank=True)
+
+    objects = DeliveryNodeManager()
     parents = None
     quantity = None
-    additional_remarks = models.TextField(null=True, blank=True)
-    objects = DeliveryNodeManager()
 
     def save(self, *args, **kwargs):
         _is_root = self.is_root()
@@ -140,9 +141,9 @@ class DistributionPlanNode(Runnable):
 
         return not self.arcs_in.first().source
 
-    def update_tracked_status(self, is_assign_to_self=False):
+    def update_tracked_status(self):
         if not self.is_root():
-            if is_assign_to_self:
+            if self.is_assigned_to_self:
                 self.track = False
             else:
                 self.track = self.arcs_in.filter(source__track=True).exists()
@@ -239,23 +240,18 @@ class DistributionPlanNode(Runnable):
                                  status=Run.STATUS.completed,
                                  phone=self.contact.phone)
 
-        MultipleChoiceAnswer.objects.create(run=run,
-                                            question=end_user_questions.WAS_PRODUCT_RECEIVED,
-                                            value=end_user_questions.PRODUCT_WAS_RECEIVED)
+        MultipleChoiceAnswer.objects \
+            .create(run=run, question=end_user_questions.WAS_PRODUCT_RECEIVED,
+                    value=end_user_questions.PRODUCT_WAS_RECEIVED)
 
-        TextAnswer.objects.create(run=run,
-                                  question=end_user_questions.EU_DATE_RECEIVED,
-                                  value=self.delivery_date)
+        TextAnswer.objects \
+            .create(run=run, question=end_user_questions.EU_DATE_RECEIVED, value=self.delivery_date)
 
-        NumericAnswer.objects.create(run=run,
-                                     question=end_user_questions.EU_AMOUNT_RECEIVED,
-                                     value=self.balance)
+        NumericAnswer.objects \
+            .create(run=run, question=end_user_questions.EU_AMOUNT_RECEIVED, value=self.balance)
 
-        MultipleChoiceAnswer.objects.create(run=run,
-                                            question=end_user_questions.EU_QUALITY_OF_PRODUCT,
-                                            value=end_user_questions.EU_OPT_GOOD)
+        MultipleChoiceAnswer.objects \
+            .create(run=run, question=end_user_questions.EU_QUALITY_OF_PRODUCT, value=end_user_questions.EU_OPT_GOOD)
 
-        MultipleChoiceAnswer.objects.create(run=run,
-                                            question=end_user_questions.EU_SATISFACTION,
-                                            value=end_user_questions.EU_OPT_SATISFIED)
-
+        MultipleChoiceAnswer.objects \
+            .create(run=run, question=end_user_questions.EU_SATISFACTION, value=end_user_questions.EU_OPT_SATISFIED)

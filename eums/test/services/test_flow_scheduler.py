@@ -101,8 +101,7 @@ class FlowSchedulerTest(TestCase):
 
         self.flow_scheduler.schedule_run_for(delivery)
 
-        self.mocked_create_run.assert_called_with(self.contact, self.ip_flow,
-                                                  ANY, ANY)
+        self.mocked_create_run.assert_called_with(self.contact, self.ip_flow, ANY, ANY)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         self.node.build_contact = MagicMock(return_value=self.contact)

@@ -107,7 +107,7 @@ describe('Delivery Node Service', function () {
             remark: 'In bad condition',
             track: true,
             trackSubmitted: true,
-            isAssignToSelf: false
+            isAssignedToSelf: false
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
         planNodeService.create({
@@ -130,12 +130,12 @@ describe('Delivery Node Service', function () {
             remark: 'In bad condition',
             track: false,
             trackSubmitted: false,
-            isAssignToSelf: true
+            isAssignedToSelf: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
         planNodeService.create({
             distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
-            quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition', track: true, isAssignToSelf: true
+            quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition', track: true, isAssignedToSelf: true
         }).then(function (createdNode) {
             expect(JSON.parse(JSON.stringify(createdNode))).toEqual(JSON.parse(JSON.stringify(stubCreatedNode)));
             done();
@@ -153,7 +153,7 @@ describe('Delivery Node Service', function () {
             remark: 'In bad condition',
             track: true,
             trackSubmitted: true,
-            isAssignToSelf: false
+            isAssignedToSelf: false
         };
         var stubNewNode = {
             distributionPlan: planId, consignee: consigneeId, tree_position: 'END_USER',

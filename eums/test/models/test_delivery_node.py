@@ -2,7 +2,7 @@ from datetime import datetime
 from unittest import TestCase
 
 from django.db import IntegrityError
-from mock import patch
+from mock import patch, MagicMock
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
     Item, Consignee, Alert, Flow
@@ -343,13 +343,6 @@ class DeliveryNodeTest(TestCase):
         node_one.confirm()
         self.assertTrue(delivery.confirmed)
 
-    def clean_up(self):
-        DistributionPlan.objects.all().delete()
-        SalesOrder.objects.all().delete()
-        Item.objects.all().delete()
-        Consignee.objects.all().delete()
-        Flow.objects.all().delete()
-
     def test_should_return_node_with_order_number(self):
         po = PurchaseOrderFactory(order_number=123456)
         po_item = PurchaseOrderItemFactory(purchase_order=po)
@@ -626,9 +619,19 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(delivery_node.losses.last().remark, 'building down')
 
     def test_should_update_track_status_if_assign_to_self(self):
-        parent_one = DeliveryNodeFactory(quantity=100)
-        node = DeliveryNodeFactory(parents=[(parent_one, 88)], track=True)
-        node.save()
-        is_assign_to_self = True
-        node.update_tracked_status(is_assign_to_self)
+        DeliveryNode.append_positive_answers = MagicMock(return_value=None)
+        distribution_plan = DeliveryFactory(track=True)
+        parent_one = DeliveryNodeFactory(distribution_plan=distribution_plan, quantity=100)
+        node = DeliveryNodeFactory(distribution_plan=distribution_plan, parents=[(parent_one, 88)],
+                                   is_assigned_to_self=True)
+
+        self.assertTrue(distribution_plan.track)
         self.assertFalse(node.track)
+
+    def clean_up(self):
+        SalesOrder.objects.all().delete()
+        Item.objects.all().delete()
+        Consignee.objects.all().delete()
+        Flow.objects.all().delete()
+        DistributionPlan.objects.all().delete()
+        DeliveryNode.objects.all().delete()

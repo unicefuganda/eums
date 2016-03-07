@@ -24,7 +24,7 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
         fields = ('id', 'distribution_plan', 'location', 'consignee', 'tree_position', 'parents', 'quantity_in',
                   'contact_person_id', 'item', 'delivery_date', 'remark', 'track', 'quantity', 'quantity_out',
                   'balance', 'has_children', 'consignee_name', 'item_description', 'order_number', 'order_type',
-                  'time_limitation_on_distribution', 'additional_remarks')
+                  'time_limitation_on_distribution', 'additional_remarks', 'is_assigned_to_self')
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):
@@ -68,7 +68,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         return super(DistributionPlanNodeViewSet, self).list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(is_assign_to_self=self.request.data.get('is_assign_to_self', False))
+        serializer.save()
 
     @detail_route()
     def lineage(self, request, pk=None):
