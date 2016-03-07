@@ -82,7 +82,7 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('11 deliveries');
+                expect(homePage.numberSent).toEqual('10 deliveries');
                 expect(homePage.numberDelivered).toEqual('5 responses');
                 expect(homePage.numberNotDelivered).toEqual('2 responses');
                 expect(homePage.numberNonResponse).toEqual('3 non-responses');

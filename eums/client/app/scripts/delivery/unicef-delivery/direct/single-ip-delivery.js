@@ -190,7 +190,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
         }
 
         function setItemQuantityShipped(item) {
-            var quantityShipped = item.node ? item.node.quantityIn : item.availableBalance;
+            var quantityShipped = item.availableBalance;
             return Object.merge(item, {quantityShipped: quantityShipped})
         }
 
