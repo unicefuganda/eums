@@ -1,6 +1,7 @@
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
-from eums.models import Flow, Consignee
+from mock import MagicMock
+from eums.models import Flow, Consignee, DistributionPlanNode
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
@@ -31,13 +32,13 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_should_return_items_and_all_their_answers(self):
-        node_one, purchase_order_item, _, node_two, _, _ = self.setup_nodes_with_answers()
+        node_one, purchase_order_item, _, node_two, _, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?field=answers.amountReceived.value&order=desc',
                                    content_type='application/json')
         results = response.data['results']
 
-        self.assertEqual(len(response.data['results']), 6)
+        self.assertEqual(len(response.data['results']), 8)
         self.assertFieldExists({'item_description': purchase_order_item.item.description}, results)
         self.assertFieldExists({'programme': {'id': node_one.programme.id, 'name': node_one.programme.name}}, results)
         self.assertFieldExists({'consignee': node_one.consignee.name}, results)
@@ -50,6 +51,27 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertFieldExists({'additional_remarks': node_one.additional_remarks}, results)
         self.assertGreaterEqual(len(results[0]['answers']), 3)
         self.assertEqual(results[0]['answers'].get('amountReceived').get('remark'), 'Some remark 2')
+
+    def test_should_return_assigned_to_self_items_and_all_their_answers(self):
+        node_one, purchase_order_item, _, node_two, _, _, assign_to_self_node = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?field=answers.amountReceived.value&order=desc',
+                                   content_type='application/json')
+        results = response.data['results']
+
+        self.assertEqual(len(response.data['results']), 8)
+        self.assertFieldExists({'item_description': purchase_order_item.item.description}, results)
+        self.assertFieldExists(
+                {'programme': {'id': assign_to_self_node.programme.id, 'name': assign_to_self_node.programme.name}},
+                results)
+        self.assertFieldExists({'consignee': assign_to_self_node.consignee.name}, results)
+        self.assertFieldExists({'implementing_partner': assign_to_self_node.ip.name}, results)
+        self.assertFieldExists({'contact_person_id': assign_to_self_node.contact_person_id}, results)
+        self.assertFieldExists({'order_number': purchase_order_item.purchase_order.order_number}, results)
+        self.assertFieldExists({'quantity_shipped': assign_to_self_node.quantity_in()}, results)
+        self.assertFieldExists({'value': assign_to_self_node.total_value}, results)
+        self.assertFieldExists({'tree_position': assign_to_self_node.tree_position}, results)
+        self.assertFieldExists({'additional_remarks': assign_to_self_node.additional_remarks}, results)
 
     def test_should_return_paginated_items_and_all_their_answers(self):
         total_number_of_items = 20
@@ -72,7 +94,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data['pageSize'], 10)
 
     def test_should_filter_answers_by_item_description(self):
-        node_one, _, release_order_item, node_two, _, _ = self.setup_nodes_with_answers()
+        node_one, _, release_order_item, node_two, _, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?item_description=baba', content_type='application/json')
 
@@ -81,7 +103,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'item_description': release_order_item.item.description}, results[0])
 
     def test_should_filter_answers_by_location(self):
-        node_one, _, release_order_item, node_two, _, _ = self.setup_nodes_with_answers()
+        node_one, _, release_order_item, node_two, _, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?location=Fort portal', content_type='application/json')
 
@@ -90,7 +112,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'location': 'Fort portal'}, results[0])
 
     def test_should_filter_answers_by_programme(self):
-        node_one, _, _, node_two, _, _ = self.setup_nodes_with_answers()
+        node_one, _, _, node_two, _, _, assign_to_self_node = self.setup_nodes_with_answers()
         response = self.client.get(ENDPOINT_URL + '?programme_id=%s' % node_one.programme.id,
                                    content_type='application/json')
 
@@ -100,25 +122,25 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
                                       results[0])
 
     def test_should_filter_answers_by_implementing_partner(self):
-        node_one, _, _, node_two, _, ip = self.setup_nodes_with_answers()
+        node_one, _, _, node_two, _, ip, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?ip_id=%s' % ip.id,
                                    content_type='application/json')
 
         results = response.data['results']
-        self.assertEqual(len(results), 6)
+        self.assertEqual(len(results), 8)
 
     def test_should_filter_answers_by_purchase_order_number(self):
-        node_one, _, _, node_two, _, _ = self.setup_nodes_with_answers()
+        node_one, _, _, node_two, _, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?po_waybill=329', content_type='application/json')
 
         results = response.data['results']
-        self.assertEqual(len(results), 4)
+        self.assertEqual(len(results), 6)
         self.assertDictContainsSubset({'order_number': node_one.item.number()}, results[0])
 
     def test_should_filter_answers_by_waybill(self):
-        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+        node_one, _, _, _, ip_node_two, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?po_waybill=5540', content_type='application/json')
 
@@ -127,17 +149,17 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'order_number': ip_node_two.item.number()}, results[0])
 
     def test_should_filter_answers_by_tree_position_implementing_partner(self):
-        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+        node_one, _, _, _, ip_node_two, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?tree_position=IMPLEMENTING_PARTNER',
                                    content_type='application/json')
 
         results = response.data['results']
-        self.assertEqual(len(results), 3)
+        self.assertEqual(len(results), 4)
         self.assertDictContainsSubset({'consignee': ip_node_two.consignee.name}, results[0])
 
     def test_should_filter_answers_by_tree_position_middle_man(self):
-        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+        node_one, _, _, _, ip_node_two, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?tree_position=MIDDLE_MAN', content_type='application/json')
 
@@ -148,28 +170,28 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results['answers']), 3)
 
     def test_should_filter_by_received(self):
-        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+        node_one, _, _, _, ip_node_two, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?received=No', content_type='application/json')
         self.assertEqual(len(response.data['results']), 1)
 
         response = self.client.get(ENDPOINT_URL + '?received=Yes', content_type='application/json')
-        self.assertEqual(len(response.data['results']), 5)
+        self.assertEqual(len(response.data['results']), 6)
 
     def test_should_filter_by_satisfied(self):
-        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+        node_one, _, _, _, ip_node_two, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?satisfied=No', content_type='application/json')
         self.assertEqual(len(response.data['results']), 1)
 
         response = self.client.get(ENDPOINT_URL + '?satisfied=Yes', content_type='application/json')
-        self.assertEqual(len(response.data['results']), 3)
+        self.assertEqual(len(response.data['results']), 4)
 
     def test_should_filter_by_quality(self):
-        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+        node_one, _, _, _, ip_node_two, _, assign_to_self_node = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?quality=Good', content_type='application/json')
-        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(len(response.data['results']), 2)
 
         response = self.client.get(ENDPOINT_URL + '?quality=Damaged', content_type='application/json')
         self.assertEqual(len(response.data['results']), 3)
@@ -190,12 +212,14 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.log_and_assert_view_item_feedback_report_permission(self.log_ip_viewer_in, HTTP_200_OK)
 
     def setup_nodes_with_answers(self):
+        DistributionPlanNode.append_positive_answers = MagicMock(return_value=None)
         ip = ConsigneeFactory(name='ip one')
         middle_man = ConsigneeFactory(name='middle man one', type=Consignee.TYPES.middle_man)
         end_user_one = ConsigneeFactory(name='consignee one', type=Consignee.TYPES.end_user)
         end_user_two = ConsigneeFactory(name='consignee two', type=Consignee.TYPES.end_user)
         programme_one = ProgrammeFactory(name='my first programme')
         programme_two = ProgrammeFactory(name='my second programme')
+        programme_three = ProgrammeFactory(name='my third programme')
         purchase_order_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'),
                                                        purchase_order=PurchaseOrderFactory(order_number=329293))
         release_order_item = ReleaseOrderItemFactory(item=ItemFactory(description='Baba bla bla'),
@@ -211,6 +235,10 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         ip_node_three = DeliveryNodeFactory(consignee=ip, item=release_order_item, quantity=100,
                                             distribution_plan=DeliveryFactory(track=True), programme=programme_two,
                                             location='Gulu', tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True)
+        ip_node_four = DeliveryNodeFactory(consignee=ip, item=purchase_order_item, quantity=100,
+                                           distribution_plan=DeliveryFactory(track=True), programme=programme_three,
+                                           location='Gulu', tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True)
+
         middle_man_node = DeliveryNodeFactory(consignee=middle_man, item=purchase_order_item,
                                               programme=programme_one, location='Wakiso', track=True,
                                               tree_position=Flow.Label.MIDDLE_MAN, parents=[(ip_node_one, 1500)],
@@ -222,6 +250,10 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         end_user_node_two = DeliveryNodeFactory(consignee=end_user_two, item=purchase_order_item, track=True,
                                                 parents=[(middle_man_node, 500)], programme=programme_one,
                                                 distribution_plan=None)
+        assign_to_self_node = DeliveryNodeFactory(consignee=ip, item=purchase_order_item,
+                                                  tree_position=Flow.Label.END_USER, parents=[(ip_node_four, 93)],
+                                                  programme=programme_three, distribution_plan=None,
+                                                  is_assigned_to_self=True)
 
         # IP_ITEM Flow and Questions
         ip_item_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
@@ -263,6 +295,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         eu_question_3 = MultipleChoiceQuestionFactory(text='What is the quality of the product?',
                                                       label='qualityOfProduct', flow=end_user_flow, position=3)
         eu_option_3 = OptionFactory(text='Damaged', question=eu_question_3)
+        eu_option_3_1 = OptionFactory(text='Good', question=eu_question_3)
         eu_question_4 = MultipleChoiceQuestionFactory(text='Are you satisfied with the product?',
                                                       label='satisfiedWithProduct', flow=end_user_flow, position=4)
         eu_option_4 = OptionFactory(text='Yes', question=eu_question_4)
@@ -301,8 +334,16 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         NumericAnswerFactory(question=eu_question_2, run=end_user_run_two, value=500)
         MultipleChoiceAnswerFactory(question=eu_question_3, run=end_user_run_two, value=eu_option_3)
         MultipleChoiceAnswerFactory(question=eu_question_4, run=end_user_run_two, value=eu_option_4)
-        TextAnswerFactory(run=end_user_run_two, question=eu_question_5, value='2013-12-12')
-        return end_user_node_one, purchase_order_item, release_order_item, end_user_node_two, ip_node_two, ip
+        TextAnswerFactory(question=eu_question_5, run=end_user_run_two, value='2013-12-12')
+
+        assign_to_self_run = RunFactory(runnable=assign_to_self_node)
+        MultipleChoiceAnswerFactory(question=eu_question_1, run=assign_to_self_run, value=eu_option_1)
+        NumericAnswerFactory(question=eu_question_2, run=assign_to_self_run, value=500)
+        TextAnswerFactory(question=eu_question_5, run=assign_to_self_run, value='2013-12-14')
+        MultipleChoiceAnswerFactory(question=eu_question_3, run=assign_to_self_run, value=eu_option_3_1)
+        MultipleChoiceAnswerFactory(question=eu_question_4, run=assign_to_self_run, value=eu_option_4)
+
+        return end_user_node_one, purchase_order_item, release_order_item, end_user_node_two, ip_node_two, ip, assign_to_self_node
 
     def setup_multiple_nodes_with_answers(self, number_of_nodes):
         consignee_one = ConsigneeFactory(name='consignee one')
