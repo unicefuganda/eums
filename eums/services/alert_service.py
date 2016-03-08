@@ -17,11 +17,16 @@ def __filter_po_waybill(po_waybill):
 
 def __get_alerts_by_type(alert_type, queryset):
     types = {
-        'item': queryset.filter(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode)),
-        'delivery': queryset.filter(Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
-                                    ~Q(issue=Alert.ISSUE_TYPES.distribution_expired)),
-        'distribution': queryset.filter(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan),
-                                        issue=Alert.ISSUE_TYPES.distribution_expired)
+        Alert.ITEM: queryset.filter(
+            runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode)),
+
+        Alert.DELIVERY: queryset.filter(
+            Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
+            ~Q(issue=Alert.ISSUE_TYPES.distribution_expired)),
+
+        Alert.DISTRIBUTION: queryset.filter(
+            runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan),
+            issue=Alert.ISSUE_TYPES.distribution_expired)
     }
 
     return types.get(alert_type, None)

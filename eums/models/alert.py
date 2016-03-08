@@ -11,6 +11,10 @@ class Alert(models.Model):
     class Meta:
         ordering = ['is_resolved', 'runnable__is_retriggered', '-created_on']
 
+    ITEM = 'item'
+    DELIVERY = 'delivery'
+    DISTRIBUTION = 'distribution'
+
     ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
     ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'),
                           ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'),
