@@ -12,6 +12,7 @@ from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.answer.web_answers_endpoint import WebAnswerEndpoint
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
+from eums.api.csv.export_alert_endpoint import ExportAlertViewSet
 from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet
 from eums.api.csv.export_delivery_feedback_report_endpoint import ExportDeliveryFeedbackReportViewSet
 from eums.api.csv.export_item_feedback_report_endpoint import ExportItemFeedbackReportViewSet
@@ -129,5 +130,7 @@ urlpatterns = patterns(
     url(r'^exports/items-feedback-report/', ExportItemFeedbackReportViewSet.as_view(),
         name='items_feedback_report_csv'),
     url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
-        name='stocks_feedback_report_csv')
+        name='stocks_feedback_report_csv'),
+    url(r'^exports/alerts/', ExportAlertViewSet.as_view(), name='alerts_csv')
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

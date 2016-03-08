@@ -5,6 +5,7 @@ from django.core import mail
 
 from eums import settings_export
 from eums.celery import app
+from eums.services.exporter.alert_exporter import AlertExporter
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
@@ -68,6 +69,11 @@ def generate_stock_feedback_report(user, host_name, stocks):
                               csv_export_service.get_export_csv_file_name())
 
     CSVExportService.notify(user, *csv_export_service.notification_details())
+
+
+@app.task
+def generate_alert_export_csv(user, host_name, alerts):
+    pass
 
 
 def set_remote_contact_to_report_item(report_item):
