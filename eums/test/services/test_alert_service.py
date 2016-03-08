@@ -1,4 +1,4 @@
-from unittest import TestCase
+from django.test import TestCase
 
 from eums.models import Alert
 from eums.services.alert_service import get_queryset
