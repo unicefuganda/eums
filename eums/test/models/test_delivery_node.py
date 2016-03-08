@@ -619,6 +619,7 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(delivery_node.losses.last().remark, 'building down')
 
     def test_should_update_track_status_if_assign_to_self(self):
+        original_method = DeliveryNode.append_positive_answers
         DeliveryNode.append_positive_answers = MagicMock(return_value=None)
         distribution_plan = DeliveryFactory(track=True)
         parent_one = DeliveryNodeFactory(distribution_plan=distribution_plan, quantity=100)
@@ -627,6 +628,7 @@ class DeliveryNodeTest(TestCase):
 
         self.assertTrue(distribution_plan.track)
         self.assertFalse(node.track)
+        DeliveryNode.append_positive_answers = original_method
 
     def clean_up(self):
         SalesOrder.objects.all().delete()
