@@ -9,14 +9,13 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 
 class AlertServiceTest(TestCase):
     def setUp(self):
+        Alert.objects.all().delete()
+
         self.item_alert_1 = AlertFactory(order_number=81020737, runnable=DeliveryNodeFactory())
         self.item_alert_2 = AlertFactory(order_number=81035556, runnable=DeliveryNodeFactory())
         self.delivery_alert = AlertFactory(order_number=81025778, runnable=DeliveryFactory())
         self.distribution_alert = AlertFactory(order_number=81034568, runnable=DeliveryFactory(),
                                                issue=Alert.ISSUE_TYPES.distribution_expired)
-
-    def tearDown(self):
-        Alert.objects.all().delete()
 
     def test_should_get_all_alerts_by_type(self):
         alert_type = 'item'
