@@ -57,7 +57,7 @@ describe('Item Feedback Report', function () {
 
         it('should search the Item report by district', function () {
             itemFeedbackReport.searchByDistrict('Wakiso');
-            expect(itemFeedbackReport.resultsCount).toEqual(7);
+            expect(itemFeedbackReport.resultsCount).toEqual(10);
         });
 
         it('should sort by value', function () {
