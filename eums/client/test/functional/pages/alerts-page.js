@@ -115,6 +115,7 @@ AlertsPage.prototype = Object.create({}, {
             } else {
                 ele.sendKeys(input);
             }
+            browser.sleep(3000);
         }
     },
 

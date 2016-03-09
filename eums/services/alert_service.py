@@ -29,4 +29,4 @@ def __get_alerts_by_type(alert_type, queryset):
             issue=Alert.ISSUE_TYPES.distribution_expired)
     }
 
-    return types.get(alert_type, None)
+    return types.get(alert_type, Alert.objects.none())

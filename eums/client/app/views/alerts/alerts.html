@@ -35,7 +35,7 @@
                        id="filter"
                        class="form-control"
                        name="filter"
-                       ng-model="query"
+                       ng-model="searchTerm"
                        placeholder="Search by PO or Waybill"/>
             </div>
         </div>
@@ -83,7 +83,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="($index, alert) in alerts | alertsFilter: query">
+            <tr ng-repeat="($index, alert) in alerts">
                 <td ng-hide="isActiveAlertType(constant_type_distribution)">
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
@@ -120,7 +120,7 @@
                 </td>
                 <td>
                     <span class="glyphicon glyphicon-comment glyphicon-comment-color
-                                 glyphicon-size-17 glyphicon-top-5" ng-click="remark($index)"></span>
+                                 glyphicon-size-17 glyphicon-top-5 clickable" ng-click="remark($index)"></span>
                     <div class="modal fade text-left" id="resolve-alert-modal-{{$index}}">
                         <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">

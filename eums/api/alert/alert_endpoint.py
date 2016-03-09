@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, Max
 from rest_framework import serializers
 from rest_framework import status
@@ -9,8 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from eums.api.standard_pagination import StandardResultsSetPagination
-from eums.models import Alert, DistributionPlanNode, DistributionPlan
+from eums.models import Alert
 from eums.permissions.alert_permissions import AlertPermissions
+from eums.services.alert_service import get_queryset
 
 
 class AlertSerializer(serializers.ModelSerializer):
@@ -46,19 +46,10 @@ class AlertViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         type = self.request.GET.get('type', None)
-        if type == 'item':
-            return Alert.objects.filter(
-                    runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
-        elif type == 'delivery':
-            return Alert.objects.filter(
-                    Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
-                    ~Q(issue=Alert.ISSUE_TYPES.distribution_expired))
-        elif type == 'distribution':
-            return Alert.objects.filter(
-                    Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
-                    Q(issue=Alert.ISSUE_TYPES.distribution_expired))
-        else:
-            return self.queryset._clone()
+        po_waybill = self.request.GET.get('po_waybill', None)
+
+        return get_queryset(type, po_waybill)
+
 
     def patch(self, request, *args, **kwargs):
         try:

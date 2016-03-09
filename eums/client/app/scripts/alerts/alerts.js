@@ -9,7 +9,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.ALERTS,
             methods: {
-                export: function(type, query) {
+                export: function (type, query) {
                     var params = _({type: type, po_waybill: query}).omit(_.isEmpty).omit(_.isUndefined).value();
                     var searchParams = jQuery.param(params);
                     return $http.get(EumsConfig.BACKEND_URLS.ALERT_EXPORTS + (searchParams ? '/?' + searchParams : ''));
@@ -21,6 +21,13 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                                               SortService, SortArrowService, UserService, SystemSettingsService) {
 
         var SUPPORTED_FIELD = ['status', 'alertDate', 'dateShipped', 'dateReceived', 'value'];
+        var debouncedLoadAlert = _.debounce(function () {
+            if ($scope.currentSearchTerm != $scope.searchTerm) {
+                $scope.currentSearchTerm = $scope.searchTerm;
+                loadAlerts(angular.extend({page: 1}, changedFilters()));
+            }
+        }, 800);
+        var initialized = false;
 
         $scope.constant_type_delivery = 'delivery';
         $scope.constant_type_item = 'item';
@@ -29,8 +36,18 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.query = '';
         $scope.type = $scope.constant_type_delivery;
         $scope.sortTerm = {field: 'alertDate', order: 'desc'};
+        $scope.currentSearchTerm = "";
+        $scope.searchTerm = "";
 
-        initialize();
+
+        $scope.$watch('searchTerm', function (oldSearchTerm, newSearchTerm) {
+            if (!initialized) {
+                initialized = true;
+                initialize();
+            } else {
+                debouncedLoadAlert();
+            }
+        });
 
         $scope.sortArrowClass = function (criteria) {
             return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
@@ -45,13 +62,13 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
 
         $scope.changeAlertType = function (type) {
             $scope.type = type;
-            $scope.query = "";
+            $scope.searchTerm = "";
             initialize();
         };
 
         $scope.goToPage = function (page) {
             LoaderService.showLoader();
-            loadInitialAlerts(angular.extend({page: page}, changedFilters()));
+            loadAlerts(angular.extend({page: page}, changedFilters()));
         };
 
         $scope.setResolve = function (index) {
@@ -122,7 +139,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             $q.all(promises).then(function (returns) {
                 $scope.systemSettings = returns[1];
                 LoaderService.showLoader();
-                loadInitialAlerts(angular.extend({page: 1}, changedFilters()));
+                loadAlerts(angular.extend({page: 1}, changedFilters()));
             });
         }
 
@@ -138,13 +155,13 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             });
         }
 
-        function loadInitialAlerts(urlArgs) {
+        function loadAlerts(urlArgs) {
             $scope.currentPage = urlArgs.page;
             LoaderService.showLoader();
             AlertsService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
             }).finally(function () {
-                LoaderService.hideLoader()
+                LoaderService.hideLoader();
             });
         }
 
@@ -169,12 +186,9 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             if ($scope.type) {
                 urlArgs.type = $scope.type;
             }
-            return urlArgs
+            if ($scope.searchTerm) {
+                urlArgs.po_waybill = $scope.searchTerm;
+            }
+            return urlArgs;
         }
-    })
-    .filter('alertsFilter', function ($filter) {
-        return function (alerts, query) {
-            var results = $filter('filter')(alerts, {orderNumber: query});
-            return results;
-        };
     });

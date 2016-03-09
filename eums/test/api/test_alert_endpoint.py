@@ -26,7 +26,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_return_information_on_an_alert(self):
         contact_id = '54335c56b3ae9d92f038abb0'
-        runnable = RunnableFactory(contact_person_id=contact_id)
+        runnable = DeliveryFactory(contact_person_id=contact_id)
         AlertFactory(
             order_type=ReleaseOrderItem.WAYBILL,
             order_number=123456,
@@ -40,7 +40,9 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         fake_contact = {'firstName': "test", 'lastName': "user1", 'phone': "+256 782 443439", '_id': contact_id}
         response = MagicMock(json=MagicMock(return_value=fake_contact), status_code=200)
         requests.get = MagicMock(return_value=response)
-        response = self.client.get(ENDPOINT_URL)
+
+        response = self.client.get('%s?type=delivery' % ENDPOINT_URL)
+
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -61,7 +63,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         AlertFactory()
         AlertFactory()
 
-        response = self.client.get(ENDPOINT_URL)
+        response = self.client.get('%s?type=delivery' % ENDPOINT_URL)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 3)
@@ -69,7 +71,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_paginate_alert_list_on_request(self):
         AlertFactory()
         AlertFactory()
-        response = self.client.get('%s?paginate=true' % ENDPOINT_URL)
+        response = self.client.get('%s?paginate=true&type=delivery' % ENDPOINT_URL)
         self.assertIn('results', response.data)
         self.assertIn('count', response.data)
         self.assertIn('next', response.data)

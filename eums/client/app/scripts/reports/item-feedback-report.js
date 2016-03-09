@@ -216,7 +216,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             var statusValue = {
                 "Complete": "completed",
                 "Incomplete": "expired,scheduled"
-            }
+            };
             return statusValue[status];
         }
 
