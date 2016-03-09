@@ -7,7 +7,6 @@ from eums.models import OrderItem
 
 
 class PurchaseOrderItem(OrderItem):
-
     PURCHASE_ORDER = "Purchase Order"
 
     purchase_order = models.ForeignKey('PurchaseOrder')

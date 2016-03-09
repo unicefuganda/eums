@@ -5,6 +5,7 @@ var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var alertsPage = require('./pages/alerts-page.js');
+var ftUtils = require('./functional-test-utils.js');
 
 describe('Direct Delivery', function () {
 
@@ -42,7 +43,6 @@ describe('Direct Delivery', function () {
         directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
         directDeliveryPage.selectItem('How Business Affects Us');
         expect(directDeliveryPage.timeLimitationOnDistribution).toContain(10);
-
     });
 
     it('Admin should be able to create a direct delivery to a single IP', function () {

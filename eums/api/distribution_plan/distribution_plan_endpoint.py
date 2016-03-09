@@ -110,9 +110,9 @@ class DistributionPlanViewSet(ModelViewSet, RequestFilterMixin):
     @staticmethod
     def __filter_distribution_plans_depends_on_auto_track():
         if SystemSettings.objects.first().auto_track:
-            return DistributionPlan.objects.filter(
-                    Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(
-                            track=True)).distinct()
+            return DistributionPlan.objects \
+                .filter(Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(track=True)) \
+                .distinct()
         return DistributionPlan.objects.filter(Q(track=True) | (Q(track=False) & Q(is_auto_track_confirmed=True)))
 
     @staticmethod

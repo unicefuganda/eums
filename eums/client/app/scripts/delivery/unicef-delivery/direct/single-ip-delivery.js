@@ -147,7 +147,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
             );
 
             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
-                    return item.isInvalid(item.quantityShipped);
+                    return item.isInvalid(item.quantityShipped, item.node);
                 }) || !isTimeLimitationValid();
 
             return !someInputsAreEmpty && !someItemsAreInvalid;
@@ -190,7 +190,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
         }
 
         function setItemQuantityShipped(item) {
-            var quantityShipped = item.availableBalance;
+            var quantityShipped = item.node ? item.node.quantityIn : item.availableBalance;
             return Object.merge(item, {quantityShipped: quantityShipped})
         }
 

@@ -42,36 +42,36 @@ describe('Purchase Order Item Model', function () {
         expect(purchaseOrderItem.quantityLeft(nodes)).toBe(60);
     });
 
-    it('should calculate delivery value based on quantity to be shipped', function() {
+    it('should calculate delivery value based on quantity to be shipped', function () {
         var attrs = {quantity: 100, availableBalance: 50, value: 1200.00};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(50)).toBe('600.00');
     });
 
-    it('should calculate delivery value based on quantity to be shipped with decimals', function() {
+    it('should calculate delivery value based on quantity to be shipped with decimals', function () {
         var attrs = {quantity: 100, availableBalance: 37, value: 1222.00};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(37)).toBe('452.14');
     });
 
-    it('should zero delivery value when quantity to be shipped is zero', function() {
+    it('should zero delivery value when quantity to be shipped is zero', function () {
         var attrs = {quantity: 100, availableBalance: 37, value: 1222.00};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(0)).toBe('0.00');
     });
 
-    it('should be invalid if quantityShipped is greater than availableBalance', function() {
+    it('should be invalid if quantityShipped is greater than availableBalance', function () {
         var attrs = {availableBalance: 37};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
-        expect(purchaseOrderItem.isInvalid(100)).toBe(true);
+        expect(purchaseOrderItem.isInvalid(100, null)).toBe(true);
     });
 
-    it('should be valid if quantityShipped is less or equal to availableBalance', function() {
-        var attrs = {availableBalance: 37};
+    it('should be valid if quantityShipped is less or equal to availableBalance', function () {
+        var attrs = {availableBalance: 37, node: {quantityIn: 13}};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
-
-        expect(purchaseOrderItem.isInvalid(20)).toBeFalsy();
-
-        expect(purchaseOrderItem.isInvalid(37)).toBeFalsy();
+        expect(purchaseOrderItem.isInvalid(20, attrs.node)).toBeFalsy();
+        expect(purchaseOrderItem.isInvalid(37, attrs.node)).toBeFalsy();
+        expect(purchaseOrderItem.isInvalid(50, attrs.node)).toBeFalsy();
+        expect(purchaseOrderItem.isInvalid(51, attrs.node)).toBeTruthy();
     });
 });

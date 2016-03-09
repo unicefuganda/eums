@@ -26,8 +26,8 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Ite
                 return (unitValue * quantityShipped).toFixed(2);
             }.bind(this);
 
-            this.isInvalid = function (quantityShipped) {
-                return quantityShipped > this.availableBalance;
+            this.isInvalid = function (quantityShipped, itemNode) {
+                return this.availableBalance + (itemNode ? itemNode.quantityIn : 0) < quantityShipped;
             }.bind(this);
         };
     })

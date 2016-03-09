@@ -216,12 +216,13 @@
                                 <td>{{ item.item.description }}</td>
                                 <td class="align-right pad-right-20">{{ item.quantity }}</td>
                                 <td class="align-right pad-right-20">{{ item.value | currency }}</td>
-                                <td class="align-right pad-right-20">{{ item.availableBalance }}</td>
+                                <td class="align-right pad-right-20">
+                                    {{ item.availableBalance + (item.node ? item.node.quantityIn : 0) }}</td>
                                 <td class="table-row-input-column">
                                     <input type="text" id="quantity-shipped" class="form-control"
                                            ng-model="item.quantityShipped" only-digits
                                            ng-disabled="!can_add_distributionplan"
-                                           ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
+                                           ng-class="{'border-red': item.isInvalid(item.quantityShipped, item.node) && errors}">
                                 </td>
                                 <td class="align-right pad-right-20">{{ item.deliveryValue(item.quantityShipped) |
                                         currency }}

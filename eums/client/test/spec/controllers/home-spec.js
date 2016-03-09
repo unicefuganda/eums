@@ -154,7 +154,6 @@ describe('Module: Home', function () {
             expect(scope.tmp.mapReceivedAll).toBe(true);
         });
 
-
         it('should set deliveryStatus all received to false if either received with and/or without issues are false', function () {
             scope.tmp.mapReceivedAll = true;
             scope.$apply();
