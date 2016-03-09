@@ -40,13 +40,13 @@ class AlertCSVExporter(AbstractCSVExporter):
 
     def _init_header(self):
         headers = {Alert.ITEM: ['STATUS', 'ALERT DATE', 'PO/WAYBILL', 'DATE SHIPPED', 'QTY', 'VALUE', 'ITEM',
-                                'REPORTED BY', 'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS', 'RESOLVE'],
+                                'REPORTED BY', 'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS', 'RESOLVED'],
 
                    Alert.DELIVERY: ['STATUS', 'ALERT DATE', 'PO/WAYBILL', 'DATE SHIPPED', 'VALUE', 'REPORTED BY',
-                                    'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS', 'RESOLVE', 'RETRIGGER'],
+                                    'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS', 'RESOLVED', 'RETRIGGERED'],
 
                    Alert.DISTRIBUTION: ['DISTRIBUTION DEADLINE', 'PO/WAYBILL', 'DATE SHIPPED', 'DATE RECEIVED',
                                         'VALUE', 'REPORTED BY', 'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS',
-                                        'RESOLVE']}
+                                        'RESOLVED']}
 
         return headers.get(self.alert_type, [])
