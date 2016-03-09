@@ -1,11 +1,16 @@
 import copy
+import json
 import logging
+from urllib import urlencode
 
 import requests
+from django.conf import settings
+
 from rest_framework.status import HTTP_200_OK, HTTP_504_GATEWAY_TIMEOUT
 from urllib3.connection import ConnectionError
 
-from eums import settings
+from eums.celery import app
+from eums.rapid_pro.rapid_pro_service import HEADER
 
 logger = logging.getLogger(__name__)
 
@@ -60,3 +65,62 @@ class ContactClient(object):
         ContactClient._append_if_not_exist(district, updated_contact['districts'])
 
         return updated_contact
+
+    @staticmethod
+    def add_or_update_rapid_pro_contact(contact):
+        if settings.RAPIDPRO_LIVE:
+            rapid_pro_contact = ContactClient.build_rapid_pro_contact(contact)
+            response = requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(rapid_pro_contact),
+                                     headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+            return response
+
+    @staticmethod
+    def get_rapid_pro_contact(phone):
+        if settings.RAPIDPRO_LIVE:
+            url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
+                'urns': 'tel:%s' % phone
+            }))
+            response = requests.get(url_add_rapid_pro_contact, headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+            return response
+
+    @staticmethod
+    def delete_rapid_pro_contact(phone):
+        if settings.RAPIDPRO_LIVE:
+            url_delete_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
+                'urns': 'tel:%s' % phone
+            }))
+            response = requests.delete(url_delete_rapid_pro_contact, headers=HEADER,
+                                       verify=settings.RAPIDPRO_SSL_VERIFY)
+            return response
+
+    @staticmethod
+    def build_rapid_pro_contact(contact):
+        return {
+            'name': '%(firstName)s %(lastName)s' % contact,
+            'groups': ['EUMS'],
+            'urns': ['tel:%(phone)s' % contact],
+            'fields': ContactClient.build_rapid_pro_contact_fields(contact)
+        }
+
+    @staticmethod
+    def build_rapid_pro_contact_fields(contact):
+        return {
+            'firstname': contact.get('firstName'),
+            'lastname': contact.get('lastName'),
+            'districts': ','.join(contact.get('districts')) if contact.get('districts') else ',',
+            'ips': ','.join(contact.get('ips')) if contact.get('ips') else ',',
+            'types': ','.join(contact.get('types')) if contact.get('types') else ',',
+            'outcomes': ','.join(contact.get('outcomes')) if contact.get('outcomes') else ',',
+        }
+
+
+@app.task
+def execute_rapid_pro_contact_update(contact):
+    logger.info('%s%s%s' % ('*' * 10, 'update rapid pro contact', '*' * 10))
+    ContactClient.add_or_update_rapid_pro_contact(contact)
+
+
+@app.task
+def execute_rapid_pro_contact_delete(phone):
+    logger.info('%s%s%s' % ('*' * 10, 'delete rapid pro contact', '*' * 10))
+    ContactClient.delete_rapid_pro_contact(phone)

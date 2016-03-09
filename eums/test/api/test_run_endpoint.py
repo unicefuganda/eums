@@ -1,8 +1,9 @@
+from django.test import override_settings
+
 from eums.test.api.api_test_helpers import create_run
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-
 
 ENDPOINT_URL = BACKEND_URL + 'run/'
 
@@ -12,8 +13,8 @@ class RunTest(AuthenticatedAPITestCase):
         node = DeliveryNodeFactory()
 
         run_details = {'scheduled_message_task_id': '33hd762',
-                                      'runnable': node.id,
-                                      'status': "completed", 'phone': '+256783123456'}
+                       'runnable': node.id,
+                       'status': "completed", 'phone': '+256783123456'}
 
         created_run = create_run(self, run_details)
 

@@ -156,7 +156,7 @@ function testfunctional {
 
   if [ "$1" = "--headless" ]; then
     grunt prep-test-env
-    python ../../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
+    python ../../manage.py runserver 9000 --settings=eums.settings_test &> /dev/null &
     grunt functional-headless
   elif [ "$1" = "--nomigrations" ]; then
     grunt functional-nomigrations
@@ -188,7 +188,7 @@ function runserver {
   pip install -r requirements.txt
   ./manage.py migrate
   ./manage.py setup_permissions
-  ./manage.py runserver
+  ./manage.py runserver --settings=eums.settings_dev
 }
 
 function seed {

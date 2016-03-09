@@ -74,10 +74,13 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         $scope.deleteSelectedContact = function () {
             ContactService.del($scope.currentContact).then(function () {
+                ContactService.deleteRapidProContact($scope.currentContact.phone);
+
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
                 ngToast.create({content: 'Contact deleted', class: 'success'});
+
             }).catch(function (reason) {
                 ngToast.create({content: reason, class: 'danger'})
             }).finally(function () {
@@ -174,7 +177,20 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         return response.data;
                     });
                 },
+                addOrUpdateRapidProContact: function (contact) {
+                    return $http.post(EumsConfig.BACKEND_URLS.CONTACTS, contact).then(function (response) {
+                        return response.data;
+                    });
+                },
+
+                deleteRapidProContact: function (phone) {
+                    return $http.delete(EumsConfig.BACKEND_URLS.CONTACTS + '?phone=' + encodeURIComponent(phone)).then(function (response) {
+                        return response.data;
+                    });
+                },
+
                 del: function (contact) {
+
                     var nodeFilterUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contact._id;
                     return $http.get(nodeFilterUrl).then(function (response) {
                         return response.data.length ? $q.reject('Cannot delete contact that has deliveries') : this._del(contact);
@@ -331,6 +347,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                                 createToast(response.data.error, 'danger');
                             });
                     }
+                    ContactService.addOrUpdateRapidProContact(contact);
                 };
             }
         };

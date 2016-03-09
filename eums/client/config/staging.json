@@ -57,7 +57,8 @@
     "LATEST_DELIVERIES": "/api/latest-deliveries/",
     "SYSTEM_SETTINGS": "/api/system-settings",
     "UPLOAD_IMAGE": "/api/upload-image/",
-    "LOGIN_DATA": "/api/login_data"
+    "LOGIN_DATA": "/api/login_data",
+    "CONTACTS": "/api/contacts"
   },
   "CONTACT_SERVICE_URL": "http://localhost/contacts/",
   "ELASTIC_SEARCH_URL": "http://localhost/elasticsearch/eums/delivery_node/",

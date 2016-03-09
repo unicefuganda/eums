@@ -44,7 +44,8 @@ class RapidProService(object):
                                               contact_name="%s %s" % (contact['firstName'], contact['lastName']))
 
         if settings.RAPIDPRO_LIVE:
-            response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER)
+            response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER,
+                                     verify=settings.RAPIDPRO_SSL_VERIFY)
             logger.info("Response from RapidPro: %s, %s" % (response.status_code, response.json()))
 
     def flow(self, flow_id):
@@ -78,7 +79,7 @@ class RapidProService(object):
             self.__sync()
 
     def __sync(self):
-        response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER)
+        response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
         if response.status_code == 200:
             self.cache.invalidate()
             flows = response.json()['results']

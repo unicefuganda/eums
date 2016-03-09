@@ -17,7 +17,7 @@ describe('ContactController', function () {
             lastName: 'Mukiza',
             phone: '+234778945674',
             createdByUserId: 1,
-            createdByUserGroup:"UNICEF",
+            createdByUserGroup: "UNICEF",
             ips: ['WAKISO DHO']
         },
         {
@@ -26,7 +26,7 @@ describe('ContactController', function () {
             lastName: 'Oloo',
             phone: '+234778945675',
             createdByUserId: 5,
-            createdByUserGroup:"UNICEF",
+            createdByUserGroup: "UNICEF",
             ips: ['WAKISO DHO']
         },
         {
@@ -34,7 +34,7 @@ describe('ContactController', function () {
             firstName: 'John',
             lastName: 'Doe',
             phone: '+234778945676',
-            createdByUserGroup:"UNICEF",
+            createdByUserGroup: "UNICEF",
             ips: []
         }
     ];
@@ -71,7 +71,7 @@ describe('ContactController', function () {
         module('ngTable');
         module('siTable');
 
-        mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'findContacts', 'create', 'update', 'del', 'deleteRapidProContact']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'getCurrentUser', 'getUserById', 'retrieveUserPermissions'])
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
@@ -96,6 +96,7 @@ describe('ContactController', function () {
             mockContactService.create.and.returnValue(stubContactPromise.promise);
             mockContactService.update.and.returnValue(deferred.promise);
             mockContactService.del.and.returnValue(deferred.promise);
+            mockContactService.deleteRapidProContact.and.returnValue(deferred.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(userGetCurrentUserPromise.promise);

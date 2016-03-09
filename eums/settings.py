@@ -57,6 +57,11 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.SearchFilter')
+}
+
 RAVEN_CONFIG = {
     'dsn': SENTRY_DSN,
     'release': GIT_SHA,
@@ -107,19 +112,23 @@ DELIVERY_BUFFER_IN_SECONDS = 10
 # Contacts service settings
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
+
 # RapidPro settings
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
 RAPIDPRO_URL = 'https://app.rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
-    'RUNS': "%sruns.json" % RAPIDPRO_URL
+    'RUNS': "%sruns.json" % RAPIDPRO_URL,
+    'CONTACTS': "%scontacts.json" % RAPIDPRO_URL,
 }
 RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}
 
 # WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
 RAPIDPRO_LIVE = False
+RAPIDPRO_SSL_VERIFY = True
 
 CELERY_LIVE = False
+
 
 VISION_USER = os.getenv('VISION_USER', 'invalid_vision_user')
 VISION_PASSWORD = os.getenv('VISION_PASSWORD', 'invalid_vision_password')
@@ -134,11 +143,6 @@ NON_RESPONSE_PERCENTAGE_THRESHOLD = 70
 LOGIN_REDIRECT_URL = "/"
 
 LOGIN_URL = "/login"
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
-    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.SearchFilter')
-}
 
 _es_settings = namedtuple('ES_SETTINGS', ['INDEX', 'NODE_TYPE', 'HOST', 'MAPPING', 'NODE_SEARCH', 'BULK'])
 _base_url = 'http://localhost:9200/'
