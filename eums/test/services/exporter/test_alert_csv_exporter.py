@@ -51,17 +51,20 @@ class AlertCSVExporterTest(TestCase):
             self.assertEqual(alert_by_item_csv, expected_csv)
 
     def test_should_assemble_csv_data_for_delivery_alert(self):
-        with patch('eums.models.alert.Alert.contact', new_callable=PropertyMock) as mock_contact:
-            mock_contact.return_value = {'contact_name': 'Stephen Curry', 'contact_phone': '+256777654321'}
-            exporter = AlertCSVExporter('host_name', 'delivery')
-            alert_by_delivery_csv = exporter.assemble_csv_data([self.delivery_alert])
-            expected_csv = [
-                ['STATUS', 'ALERT DATE', 'PO/WAYBILL', 'DATE SHIPPED', 'VALUE', 'REPORTED BY', 'IMPLEMENTING PARTNER',
-                 'DISTRICT', 'UNICEF REMARKS', 'RESOLVED', 'RETRIGGERED'],
-                ['Damaged', datetime.date(2016, 3, 9), 81025778, datetime.date(2016, 3, 9), 0,
-                 'Stephen Curry\n+256777654321', 'MUBENDE DHO', 'Kampala', 'Goods', False, False]]
+        with patch('eums.models.alert.Alert.date_received', new_callable=PropertyMock) as mock_date_received:
+            mock_date_received.return_value = FakeDate.today()
 
-            self.assertEqual(alert_by_delivery_csv, expected_csv)
+            with patch('eums.models.alert.Alert.contact', new_callable=PropertyMock) as mock_contact:
+                mock_contact.return_value = {'contact_name': 'Stephen Curry', 'contact_phone': '+256777654321'}
+                exporter = AlertCSVExporter('host_name', 'delivery')
+                alert_by_delivery_csv = exporter.assemble_csv_data([self.delivery_alert])
+                expected_csv = [
+                    ['STATUS', 'ALERT DATE', 'PO/WAYBILL', 'DATE SHIPPED', 'VALUE', 'REPORTED BY', 'IMPLEMENTING PARTNER',
+                     'DISTRICT', 'UNICEF REMARKS', 'RESOLVED', 'RETRIGGERED'],
+                    ['Damaged', datetime.date(2016, 3, 9), 81025778, datetime.date(2016, 3, 9), 0,
+                     'Stephen Curry\n+256777654321', 'MUBENDE DHO', 'Kampala', 'Goods', False, False]]
+
+                self.assertEqual(alert_by_delivery_csv, expected_csv)
 
     def test_should_assemble_csv_data_for_distribution_alert(self):
         with patch('eums.models.alert.Alert.date_received', new_callable=PropertyMock) as mock_date_received:

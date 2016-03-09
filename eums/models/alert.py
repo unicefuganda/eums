@@ -53,7 +53,7 @@ class Alert(models.Model):
     @property
     def date_received(self):
         distribution_plan = DistributionPlan.objects.filter(id=self.runnable.id).first()
-        return distribution_plan.received_date if distribution_plan else ''
+        return distribution_plan.received_date() if distribution_plan else ''
 
     def runnable_id(self):
         return self.runnable.id
