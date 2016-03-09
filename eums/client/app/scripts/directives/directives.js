@@ -265,7 +265,6 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
                     $(element).siblings("div").attr('title', consignee && consignee.text);
-                    scope.$apply();
                 });
 
                 scope.$watch(function () {
@@ -356,7 +355,6 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
                     scope.selectedConsignee = consignee;
-
                     $(element).siblings("div").attr('title', consignee && consignee.text);
                     scope.$apply();
                 });
