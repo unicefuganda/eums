@@ -1,6 +1,16 @@
 <div class="container-fluid" id="stock-report">
     <div class="content">
-        <h4 class="eums page-header">Supply Efficiency Report</h4>
+        <div class="eums page-header">
+            <div class="pull-left">Supply Efficiency Report</div>
+            <div class="content">
+                <ul class="nav nav-pills" ng-controller="NavigationTabsController">
+                    <li class="pull-right active">
+                        <a ng-click="exportToCSV()" class="btn btn-default blue-border-button"><i
+                                class="glyphicon glyphicon-log-out"></i> Export to CSV</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <ng-toast></ng-toast>
         <div class="col-lg-2 border-right pad-bottom-20">
             <ng-include

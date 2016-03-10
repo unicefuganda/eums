@@ -4,23 +4,23 @@ angular.module('ReportService', ['eums.config'])
     .factory('ReportService', function ($http, $q, EumsConfig) {
 
         function buildIPDeliveryReportUrlParams(params, pageNo) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT, params, pageNo)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT, params, pageNo);
         }
 
         function buildItemReportUrlParams(params, pageNo) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY, params, pageNo)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY, params, pageNo);
         }
 
         function buildDeliverFeedbackReportExportUrlParams(params) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS, params)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS, params);
         }
 
         function buildItemFeedbackReportExportUrlParams(params) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params);
         }
 
         function buildStockReportExportUrlParams(params) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.STOCK_REPORT_EXPORTS, params)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.STOCK_REPORT_EXPORTS, params);
         }
 
         function assembleQueryUrl(baseUrl, params, pageNo) {
@@ -71,7 +71,7 @@ angular.module('ReportService', ['eums.config'])
                 }, function () {
                     result.reject();
                 });
-                return result.promise
+                return result.promise;
             },
 
             ipFeedbackReport: function (params, pageNo) {
@@ -83,7 +83,7 @@ angular.module('ReportService', ['eums.config'])
                     }, function () {
                         result.reject();
                     });
-                return result.promise
+                return result.promise;
             },
 
             ipFeedbackReportByDelivery: function (params, pageNo) {
@@ -95,8 +95,7 @@ angular.module('ReportService', ['eums.config'])
                     }, function () {
                         result.reject();
                     });
-
-                return result.promise
+                return result.promise;
             },
 
             itemFeedbackReport: function (params, pageNo) {
@@ -108,8 +107,7 @@ angular.module('ReportService', ['eums.config'])
                     }, function () {
                         result.reject();
                     });
-
-                return result.promise
+                return result.promise;
             },
 
             exportDeliveriesFeedbackReport: function (params) {
@@ -121,7 +119,7 @@ angular.module('ReportService', ['eums.config'])
                     }, function () {
                         result.reject();
                     });
-                return result.promise
+                return result.promise;
             },
 
             exportItemFeedbackReport: function (params) {
@@ -133,7 +131,7 @@ angular.module('ReportService', ['eums.config'])
                     }, function () {
                         result.reject();
                     });
-                return result.promise
+                return result.promise;
             },
 
             exportStockReport: function (params) {
@@ -145,7 +143,19 @@ angular.module('ReportService', ['eums.config'])
                     }, function () {
                         result.reject();
                     });
-                return result.promise
+                return result.promise;
+            },
+
+            exportSupplyEfficiencyReport: function (params) {
+                var result = $q.defer();
+                var url = EumsConfig.BACKEND_URLS.SUPPLY_EFFICIENCY_REPORT_EXPORTS;
+                $http.post(url, params)
+                    .then(function (response) {
+                        result.resolve(response.data);
+                    }, function () {
+                        result.reject();
+                    });
+                return result.promise;
             }
         };
     });

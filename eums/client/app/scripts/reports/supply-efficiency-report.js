@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives',
-        'SupplyEfficiencyQueries', 'SysUtils', 'SystemSettingsService'])
-    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService,
-                                                              SysUtilsService, $location, SystemSettingsService) {
+angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', 'siTable', 'eums.ip', 'Consignee', 'Directives',
+        'SupplyEfficiencyQueries', 'SysUtils', 'SystemSettingsService', 'ReportService'])
+    .controller('SupplyEfficiencyReportController', function ($scope, ngToast, LoaderService, SupplyEfficiencyReportService,
+                                                              SysUtilsService, $location, SystemSettingsService, ReportService) {
         $scope.views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
         $scope.totals = {};
@@ -31,6 +31,16 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'siTable', '
             return SysUtilsService.formatDate(date);
         };
 
+        $scope.exportToCSV = function () {
+            var esQuery = SupplyEfficiencyReportService.getEsQueryParams($scope.view, $scope.filters);
+            ReportService.exportSupplyEfficiencyReport(esQuery).then(function (response) {
+                ngToast.create({content: response.message, class: 'info'});
+            }, function () {
+                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                ngToast.create({content: errorMessage, class: 'danger'})
+            });
+        };
+
         function init() {
             loadSystemSettings();
         }
@@ -46,8 +56,7 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'siTable', '
             SupplyEfficiencyReportService.generate($scope.view, $scope.filters).then(function (report) {
                 $scope.report = report;
                 setTotals();
-                LoaderService.hideLoader();
-            });
+            }).finally(LoaderService.hideLoader);
         }
 
         function setTotals() {
@@ -70,17 +79,21 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'siTable', '
             DELIVERY: 'distribution_plan_id',
             ITEM: 'order_item.item.id',
             OUTCOME: 'programme.id',
-            LOCATION: 'location',
+            DOCUMENT: 'order_item.order.order_number',
             IP: 'ip.id',
-            DOCUMENT: 'order_item.order.order_number'
+            LOCATION: 'location'
         };
         var url = EumsConfig.ELASTIC_SEARCH_URL + '_search?search_type=count';
+
         return {
             generate: function (bucket, filters) {
                 var query = Queries.makeQuery(bucket, generateFilters(filters, bucket));
                 return $http.post(url, query).then(function (response) {
                     return parseReport(response.data);
                 });
+            },
+            getEsQueryParams: function (bucket, filters) {
+                return Queries.makeQuery(bucket, generateFilters(filters, bucket));
             },
             VIEWS: BUCKETS
         };

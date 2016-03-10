@@ -18,6 +18,7 @@ from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet
 from eums.api.csv.export_delivery_feedback_report_endpoint import ExportDeliveryFeedbackReportViewSet
 from eums.api.csv.export_item_feedback_report_endpoint import ExportItemFeedbackReportViewSet
 from eums.api.csv.export_stock_report_endpoint import ExportStockReportViewSet
+from eums.api.csv.export_supply_efficiency_report_endpoint import ExportSupplyEfficiencyReportViewSet
 from eums.api.delivery_stats.delivery_stats_details_endpoint import DeliveryStatsDetailsEndpoint
 from eums.api.delivery_stats.latest_deliveries import LatestDeliveriesEndpoint
 from eums.api.delivery_stats.delivery_stats_map_endpoint import DeliveryStatsMapEndpoint
@@ -96,10 +97,6 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 
-    url(r'^password_change/$', 'django.contrib.auth.views.password_change',
-        {'password_change_form': UserPasswordChangeForm}),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        'django.contrib.auth.views.password_reset_confirm', {'set_password_form': UserPasswordSetForm}),
     url(r'^reset/done/$', RedirectView.as_view(url='/login')),
     url('', include('password_reset.urls')),
     url('', include('django.contrib.auth.urls')),
@@ -130,6 +127,7 @@ urlpatterns = patterns(
     url(r'^api/', include(system_settings_routers.urls)),
     url(r'^api/upload-image/', 'eums.api.import_data.upload_image_endpoint.upload_image',
         name='upload_image'),
+    url(r'^api/contacts', ContactEndpoint.as_view(), name='contacts'),
 
     url(r'^exports/deliveries/', ExportDeliveryViewSet.as_view(), name='warehouse_deliveries_csv'),
     url(r'^exports/deliveries-feedback-report/', ExportDeliveryFeedbackReportViewSet.as_view(),
@@ -139,6 +137,12 @@ urlpatterns = patterns(
     url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
         name='stocks_feedback_report_csv'),
     url(r'^exports/alerts/', ExportAlertViewSet.as_view(), name='alerts_csv'),
-    url(r'^api/contacts', ContactEndpoint.as_view(), name='contacts')
+    url(r'^exports/supply-efficiency-report/', ExportSupplyEfficiencyReportViewSet.as_view(),
+        name='supply_efficiency_report_csv'),
+
+    url(r'^change_password/$', 'django.contrib.auth.views.password_change',
+        {'password_change_form': UserPasswordChangeForm}),
+    url(r'^reset/(?P<token>[\w:-]+)/$', 'django.contrib.auth.views.password_reset_confirm',
+        {'set_password_form': UserPasswordSetForm})
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
