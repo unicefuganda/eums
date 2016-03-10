@@ -18,29 +18,25 @@ class AlertServiceTest(TestCase):
                                                issue=Alert.ISSUE_TYPES.distribution_expired)
 
     def test_should_get_all_alerts_by_type(self):
-        alert_type = Alert.ITEM
-        alerts = get_queryset(alert_type, None)
+        alerts = get_queryset(Alert.ITEM, None)
         self.assertEqual(alerts.count(), 2)
 
-        alert_type = Alert.DELIVERY
-        alerts = get_queryset(alert_type, None)
+        alerts = get_queryset(Alert.DELIVERY, None)
         self.assertEqual(alerts.count(), 1)
         self.assertEqual(alerts.first().order_number, self.delivery_alert.order_number)
 
-        alert_type = Alert.DISTRIBUTION
-        alerts = get_queryset(alert_type, None)
+        alerts = get_queryset(Alert.DISTRIBUTION, None)
         self.assertEqual(alerts.count(), 1)
         self.assertEqual(alerts.first().order_number, self.distribution_alert.order_number)
 
     def test_should_get_filtered_alerts(self):
-        alert_type = Alert.ITEM
-        alerts = get_queryset(alert_type, self.item_alert_1.order_number)
+        alerts = get_queryset(Alert.ITEM, self.item_alert_1.order_number)
         self.assertEqual(alerts.count(), 1)
         self.assertEqual(alerts.first().order_number, self.item_alert_1.order_number)
 
-        alerts = get_queryset(alert_type, self.item_alert_2.order_number)
+        alerts = get_queryset(Alert.ITEM, self.item_alert_2.order_number)
         self.assertEqual(alerts.count(), 1)
         self.assertEqual(alerts.first().order_number, self.item_alert_2.order_number)
 
-        alerts = get_queryset(alert_type, 100000)
+        alerts = get_queryset(Alert.ITEM, 100000)
         self.assertEqual(alerts.count(), 0)
