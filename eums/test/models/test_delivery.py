@@ -521,7 +521,6 @@ class DeliveryTest(TestCase):
     def pair_tracked_date_on_updated(self, pre_purchase_order_tracked_date=None, delivery_tracked_date=None):
         purchase_order = PurchaseOrderFactory(tracked_date=pre_purchase_order_tracked_date)
         po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
-        logger.info(purchase_order.tracked_date)
         delivery = DeliveryFactory(track=True, tracked_date=delivery_tracked_date)
         DeliveryNodeFactory(distribution_plan=delivery, item=po_item)
         delivery.save()

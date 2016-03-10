@@ -50,9 +50,6 @@ class DirectDeliveryExporterTest(TestCase):
 
         csv_exporter = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', self.HOSTNAME)
 
-        logger.info(expected_data)
-        logger.info(csv_exporter.assemble_csv_data())
-
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')

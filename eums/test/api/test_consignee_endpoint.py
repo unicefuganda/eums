@@ -181,7 +181,6 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
             'name': 'Other Children NGO',
             'remarks': 'modified remarks'
         }
-        logger.info(ENDPOINT_URL + str(consignee.id))
         self.assertEqual(self.client.put(ENDPOINT_URL + str(consignee.id) + '/', request_body).status_code,
                          status_code)
 
@@ -204,6 +203,5 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         log_func()
         consignee = ConsigneeFactory(location='Some Village',
                                      created_by_user=User.objects.filter(id=1).first())
-        logger.info(ENDPOINT_URL + str(consignee.id))
         self.assertEqual(self.client.delete(ENDPOINT_URL + str(consignee.id) + '/').status_code,
                          status_code)

@@ -247,7 +247,6 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?is_distributable=true' % ENDPOINT_URL)
 
         node_ids = [node['id'] for node in response.data]
-        logger.info(response.data)
         self.assertEqual(len(response.data), 1)
         self.assertIn(distributable_confirmed_parent.id, node_ids)
         self.assertNotIn(distributable_parent.id, node_ids)
