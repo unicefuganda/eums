@@ -41,6 +41,8 @@ from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRo
 from eums.api.stock_report.stock_report_endpoint import StockReport
 from eums.api.system_settings.system_settings_endpoint import system_settings_routers
 from eums.api.user.user_endpoint import userRouter
+from eums.forms.user_password_change import UserPasswordChangeForm
+from eums.forms.user_password_reset import UserPasswordSetForm
 from eums.views.home import Home
 from eums.views.users import UsersList, CreateUser, EditUser
 
@@ -133,8 +135,10 @@ urlpatterns = patterns(
     url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
         name='stocks_feedback_report_csv'),
     url(r'^exports/alerts/', ExportAlertViewSet.as_view(), name='alerts_csv'),
-
-    url(r'^api/contacts', ContactEndpoint.as_view(),
-        name='contacts'),
+    url(r'^api/contacts', ContactEndpoint.as_view(), name='contacts'),
+    url(r'^change_password/$', 'django.contrib.auth.views.password_change',
+        {'password_change_form': UserPasswordChangeForm}),
+    url(r'^reset/(?P<token>[\w:-]+)/$', 'django.contrib.auth.views.password_reset_confirm',
+        {'set_password_form': UserPasswordSetForm})
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

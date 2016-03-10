@@ -1,9 +1,10 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
-from django import forms
 from django.forms import ModelForm
 
 from eums.models import UserProfile, Consignee
+from eums.util.user_password_checker import UserPasswordChecker
 
 
 class UserProfileForm(UserCreationForm):
@@ -54,6 +55,11 @@ class UserProfileForm(UserCreationForm):
     def clean_username(self):
         username = self.cleaned_data['username']
         return self._clean_attribute(User, username=username)
+
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        UserPasswordChecker(password).check()
+        return password
 
     def _clean_attribute(self, _class, **kwargs):
         attribute_name = kwargs.keys()[0]
