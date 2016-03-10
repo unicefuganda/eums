@@ -44,7 +44,7 @@ class AlertCSVExporterTest(TestCase):
             expected_csv = [
                 ['STATUS', 'ALERT DATE', 'PO/WAYBILL', 'DATE SHIPPED', 'QTY', 'VALUE', 'ITEM', 'REPORTED BY',
                  'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS', 'RESOLVED'],
-                ['Not Received', datetime.date(2016, 3, 9), 81020737, FakeDate(2014, 9, 25), 10, Decimal('100'),
+                ['Not Received', datetime.date.today(), 81020737, FakeDate(2014, 9, 25), 10, Decimal('100'),
                  'Microsoft windows 7 Proefessional OLP NL F', 'James Harden\n+256771234567', 'WAKISO DHO', 'Kampala',
                  'Operating system', False]]
 
@@ -61,7 +61,7 @@ class AlertCSVExporterTest(TestCase):
                 expected_csv = [
                     ['STATUS', 'ALERT DATE', 'PO/WAYBILL', 'DATE SHIPPED', 'VALUE', 'REPORTED BY', 'IMPLEMENTING PARTNER',
                      'DISTRICT', 'UNICEF REMARKS', 'RESOLVED', 'RETRIGGERED'],
-                    ['Damaged', datetime.date(2016, 3, 9), 81025778, datetime.date(2016, 3, 9), 0,
+                    ['Damaged', datetime.date.today(), 81025778, datetime.date.today(), 0,
                      'Stephen Curry\n+256777654321', 'MUBENDE DHO', 'Kampala', 'Goods', False, False]]
 
                 self.assertEqual(alert_by_delivery_csv, expected_csv)
@@ -78,7 +78,7 @@ class AlertCSVExporterTest(TestCase):
                 expected_csv = [
                     ['DISTRIBUTION DEADLINE', 'PO/WAYBILL', 'DATE SHIPPED', 'DATE RECEIVED', 'VALUE', 'REPORTED BY',
                      'IMPLEMENTING PARTNER', 'DISTRICT', 'UNICEF REMARKS', 'RESOLVED'],
-                    [datetime.date(2016, 3, 9), 81034568, datetime.date(2016, 3, 9), FakeDate(2014, 9, 25), 0,
+                    [datetime.date.today(), 81034568, datetime.date.today(), FakeDate(2014, 9, 25), 0,
                      'Lebron James\n+256776666666', 'NAPAK DHO', 'Kampala', 'Medicine', False]]
 
                 self.assertEqual(alert_by_distribution_csv, expected_csv)
