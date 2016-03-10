@@ -31,8 +31,8 @@ class UsersViewTest(AuthenticatedAPITestCase):
 
         self.form_data = {
             'username': 'rajni',
-            'password1': 'kant',
-            'password2': 'kant',
+            'password1': 'kant123456',
+            'password2': 'kant123456',
             'email': 'raj@ni.kant',
             'groups': self.global_admin.id,
         }

@@ -3,7 +3,7 @@ from django import forms
 
 
 class UserPasswordChecker(object):
-    PASSWORD_TOO_SHORT = 'Password is too short.'
+    PASSWORD_TOO_SHORT = 'Password must be at least 8 characters.'
     PASSWORD_WITHOUT_NUMBER = 'Password must contain at least one number'
     PASSWORD_WITHOUT_CHARACTER = 'Password must contain at least one character'
 
