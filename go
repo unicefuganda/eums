@@ -29,6 +29,15 @@ function main {
         resetdb
       fi;;
 
+    "pushcontacts2rapidpro" )
+      if [ "$2" = "--prod" ]; then
+        pushcontacts2rapidpro prod
+      elif [ "$2" = "--stag" ]; then
+        pushcontacts2rapidpro stag
+      else
+        pushcontacts2rapidpro dev
+      fi;;
+
     "seed" )
       seed;;
 
@@ -121,6 +130,16 @@ function resetdb {
         python manage.py loaddata eums/client/test/functional/fixtures/user.json
     fi
   fi
+}
+
+function pushcontacts2rapidpro {
+    if [ "$1" = "prod" ]; then
+        python manage.py shell_plus < eums/rapid_pro/sync_eums_contacts.py --setting=eums.settings_production
+    elif [ "$1" = "stag" ];then
+        python manage.py shell_plus < eums/rapid_pro/sync_eums_contacts.py --setting=eums.settings_staging
+    else
+        python manage.py shell_plus < eums/rapid_pro/sync_eums_contacts.py --setting=eums.settings_dev
+    fi
 }
 
 function testbackend {

@@ -32,6 +32,21 @@ class ContactClient(object):
             return default_contact
 
     @staticmethod
+    def get_all():
+        contacts = [{'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
+                     'types': [], 'outcomes': [], 'ips': [], 'districts': []}]
+        try:
+            response = requests.get(url='%s' % settings.CONTACTS_SERVICE_URL)
+            if response.status_code is HTTP_200_OK:
+                return response.json()
+
+            logger.error('Contact not found')
+            return contacts
+        except ConnectionError, error:
+            logger.error(error)
+            return contacts
+
+    @staticmethod
     def update(contact):
         try:
             response = requests.put(settings.CONTACTS_SERVICE_URL, contact)
@@ -68,10 +83,16 @@ class ContactClient(object):
 
     @staticmethod
     def add_or_update_rapid_pro_contact(contact):
+        logger.info('rapid pro live = %s' % settings.RAPIDPRO_LIVE)
+
         if settings.RAPIDPRO_LIVE:
             rapid_pro_contact = ContactClient.build_rapid_pro_contact(contact)
+            logger.info('rapid pro contact = %s' % rapid_pro_contact)
+            logger.info('url = %s' % settings.RAPIDPRO_URLS.get('CONTACTS'))
+
             response = requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(rapid_pro_contact),
                                      headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+            logger.info('add or update rapid pro contact response = [%s]' % response)
             return response
 
     @staticmethod
@@ -95,6 +116,7 @@ class ContactClient(object):
 
     @staticmethod
     def build_rapid_pro_contact(contact):
+        logger.info(contact)
         return {
             'name': '%(firstName)s %(lastName)s' % contact,
             'groups': ['EUMS'],

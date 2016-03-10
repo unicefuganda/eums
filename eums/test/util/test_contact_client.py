@@ -157,6 +157,19 @@ class ContactClientTest(TestCase):
         ContactClient.update.assert_called_once_with(contact)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
+    def test_should_delete_rapid_pro_contact(self):
+        phone = '+8618192235667'
+        url_delete_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
+            'urns': 'tel:%s' % phone
+        }))
+        requests.delete = MagicMock(return_value=MagicMock(status_code=HTTP_204_NO_CONTENT))
+        response = ContactClient.delete_rapid_pro_contact(phone)
+
+        requests.delete.assert_called_once_with(url_delete_rapid_pro_contact, headers=HEADER,
+                                                verify=settings.RAPIDPRO_SSL_VERIFY)
+        self.assertEqual(response.status_code, HTTP_204_NO_CONTENT)
+
+    @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_get_rapid_pro_contact(self):
         first_name = "Jack"
         last_name = "Bob"
@@ -192,20 +205,7 @@ class ContactClientTest(TestCase):
         self.assertEqual(fields.get('ips'), ','.join(ips))
         self.assertEqual(fields.get('types'), ','.join(types))
 
-    @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
-    def test_should_delete_rapid_pro_contact(self):
-        phone = '+8618192235667'
-        url_delete_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
-            'urns': 'tel:%s' % phone
-        }))
-        requests.delete = MagicMock(return_value=MagicMock(status_code=HTTP_204_NO_CONTENT))
-        response = ContactClient.delete_rapid_pro_contact(phone)
-
-        requests.delete.assert_called_once_with(url_delete_rapid_pro_contact, headers=HEADER,
-                                                verify=settings.RAPIDPRO_SSL_VERIFY)
-        self.assertEqual(response.status_code, HTTP_204_NO_CONTENT)
-
-    @override_settings(RAPIDPRO_LIVE=True)
+    @override_settings(RAPIDPRO_LIVE=True,RAPIDPRO_SSL_VERIFY=False)
     def test_should_add_rapid_pro_contact(self):
         first_name = "Jack"
         last_name = "Bob"
