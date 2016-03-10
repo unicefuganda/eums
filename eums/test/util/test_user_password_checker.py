@@ -26,7 +26,7 @@ class UserPasswordCheckerTest(TestCase):
         password_without_character = '12345678'
         password_checker = UserPasswordChecker(password_without_character)
 
-        with self.assertRaisesRegexp(forms.ValidationError, UserPasswordChecker.PASSWORD_WITHOU_CHARACTER):
+        with self.assertRaisesRegexp(forms.ValidationError, UserPasswordChecker.PASSWORD_WITHOUT_CHARACTER):
             password_checker.check()
 
     def test_should_not_raise_exception_when_password_meets_requirement(self):
