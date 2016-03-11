@@ -36,28 +36,28 @@ class StockReportExporterTest(TestCase):
         balance = '-200'
         programme = u'AAASpecial Programme'
         item = {
-                'quantity_dispatched':  7,
-                'code': u'Code 296',
-                'quantity_delivered': 10,
-                'description': u'Another Funny Item',
-                'date_delivered': '2014-09-25',
-                'date_confirmed': '',
-                'quantity_lost': 3,
-                'remark_lost': 'stolen',
-                'balance': -10,
-                'quantity_confirmed': 0,
-                'consignee': u'Consignee 62',
-                'location': u'Kampala'}
-        stocks = [{'total_value_received': total_value_received,
-                   'document_number': document_number,
-                   'last_received_date': last_received_date,
-                   'total_value_dispensed': total_value_dispensed,
-                   'last_shipment_date': last_shipment_date,
-                   'total_value_lost': total_value_lost,
-                   'balance': balance,
-                   'programme': programme,
-                   'item': item}, ]
-
+            'quantity_dispatched': 7,
+            'code': u'Code 296',
+            'quantity_delivered': 10,
+            'description': u'Another Funny Item',
+            'date_delivered': '2014-09-25',
+            'date_confirmed': '',
+            'quantity_lost': 3,
+            'remark_lost': 'stolen',
+            'balance': -10,
+            'quantity_confirmed': 0,
+            'consignee': u'Consignee 62',
+            'location': u'Kampala'}
+        stocks = [{
+            'total_value_received': total_value_received,
+            'document_number': document_number,
+            'last_received_date': last_received_date,
+            'total_value_dispensed': total_value_dispensed,
+            'last_shipment_date': last_shipment_date,
+            'total_value_lost': total_value_lost,
+            'balance': balance,
+            'programme': programme,
+            'item': item}, ]
 
         csv_exporter = StockReportExporter(self.HOSTNAME)
         row_value = [

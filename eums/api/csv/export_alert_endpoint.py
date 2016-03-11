@@ -7,7 +7,6 @@ from eums.services.csv_export_service import generate_alert_export_csv
 
 
 class ExportAlertViewSet(APIView):
-
     def get(self, request, *args, **kwargs):
         host_name = request.build_absolute_uri(reverse('home'))
         alert_type = request.GET.get('type', None)

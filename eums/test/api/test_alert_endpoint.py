@@ -28,21 +28,20 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         contact_id = '54335c56b3ae9d92f038abb0'
         runnable = DeliveryFactory(contact_person_id=contact_id)
         AlertFactory(
-            order_type=ReleaseOrderItem.WAYBILL,
-            order_number=123456,
-            issue=Alert.ISSUE_TYPES.not_received,
-            is_resolved=False,
-            remarks='some remarks',
-            consignee_name='wakiso',
-            item_description="some description",
-            runnable=runnable)
+                order_type=ReleaseOrderItem.WAYBILL,
+                order_number=123456,
+                issue=Alert.ISSUE_TYPES.not_received,
+                is_resolved=False,
+                remarks='some remarks',
+                consignee_name='wakiso',
+                item_description="some description",
+                runnable=runnable)
 
         fake_contact = {'firstName': "test", 'lastName': "user1", 'phone': "+256 782 443439", '_id': contact_id}
         response = MagicMock(json=MagicMock(return_value=fake_contact), status_code=200)
         requests.get = MagicMock(return_value=response)
 
         response = self.client.get('%s?type=delivery' % ENDPOINT_URL)
-
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)

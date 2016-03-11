@@ -8,19 +8,19 @@ SUPPLY_EFFICIENCY_REPORT_TYPES = Choices("delivery", "item", "outcome", "po_wayb
 
 class SupplyEfficiencyReportCSVExporter(ReportExporter):
     def __init__(self, host_name, supply_efficiency_report_type):
-        localized_report_type = supply_efficiency_report_type \
-            if supply_efficiency_report_type != SUPPLY_EFFICIENCY_REPORT_TYPES.location \
-            else self.__system_settings.district_label
         self.__supply_efficiency_report_type = supply_efficiency_report_type
         self.__system_settings = SystemSettingsService.get_system_settings()
         self.export_category = 'report/supply_efficiency'
         self.export_label = 'Supply Efficiency Report'
+        localized_report_type = supply_efficiency_report_type \
+            if supply_efficiency_report_type != SUPPLY_EFFICIENCY_REPORT_TYPES.location \
+            else self.__system_settings.district_label
         self.file_name = 'supply_efficiency_report_(%s)' % localized_report_type.lower()
         super(SupplyEfficiencyReportCSVExporter, self).__init__(host_name)
 
     def config_headers(self):
         if self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.delivery:
-            result = ["Delivery\nDate", "Delivery\nIP", ("Delivery\n" % self.__system_settings.district_label)]
+            result = ["Delivery\nDate", "Delivery\nIP", ("Delivery\n%s" % self.__system_settings.district_label)]
         elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.item:
             result = ["Item\nDescription", "Item\nMaterial Code"]
         elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.outcome:
