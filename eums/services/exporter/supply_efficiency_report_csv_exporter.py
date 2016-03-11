@@ -1,32 +1,36 @@
 from model_utils import Choices
 
 from eums.services.exporter.report_csv_exporter import ReportExporter
+from eums.services.system_settings_service import SystemSettingsService
 
 SUPPLY_EFFICIENCY_REPORT_TYPES = Choices("delivery", "item", "outcome", "po_waybill", "ip", "location")
 
 
-class SupplyEfficiencyReportExporter(ReportExporter):
+class SupplyEfficiencyReportCSVExporter(ReportExporter):
     def __init__(self, host_name, supply_efficiency_report_type):
-        self.supply_efficiency_report_type = supply_efficiency_report_type
+        localized_report_type = supply_efficiency_report_type \
+            if supply_efficiency_report_type != SUPPLY_EFFICIENCY_REPORT_TYPES.location \
+            else self.__system_settings.district_label
+        self.__supply_efficiency_report_type = supply_efficiency_report_type
+        self.__system_settings = SystemSettingsService.get_system_settings()
         self.export_category = 'report/supply_efficiency'
         self.export_label = 'Supply Efficiency Report'
-        self.file_name = 'supply_efficiency_report_(%s)' % self.supply_efficiency_report_type
-        super(SupplyEfficiencyReportExporter, self).__init__(host_name)
+        self.file_name = 'supply_efficiency_report_(%s)' % localized_report_type.lower()
+        super(SupplyEfficiencyReportCSVExporter, self).__init__(host_name)
 
     def config_headers(self):
-        result = []
-        if self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.delivery:
-            result = ["Delivery\nDate", "Delivery\nIP", "Delivery\nDistrict"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.item:
+        if self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.delivery:
+            result = ["Delivery\nDate", "Delivery\nIP", ("Delivery\n" % self.__system_settings.district_label)]
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.item:
             result = ["Item\nDescription", "Item\nMaterial Code"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.outcome:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.outcome:
             result = ["Outcome\nOutcome Name"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.po_waybill:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.po_waybill:
             result = ["PO / Waybill\nDoc. Number", "PO / Waybill\nType"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.ip:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.ip:
             result = ["Implementing Partner\nName"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.location:
-            result = ["District\nDistrict Name"]
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.location:
+            result = ["%s\n%s Name" % (self.__system_settings.district_label, self.__system_settings.district_label)]
         else:
             raise Exception("Invalid supply efficiency report type")
 
@@ -41,18 +45,17 @@ class SupplyEfficiencyReportExporter(ReportExporter):
                          'END USER RECEIPT\nTransit (days)']
 
     def config_dic_date_keys(self):
-        result = []
-        if self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.delivery:
+        if self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.delivery:
             result = ["identifier.delivery.delivery_date", "identifier.ip.name", "identifier.delivery.location"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.item:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.item:
             result = ["identifier.order_item.item.description", "identifier.order_item.item.material_code"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.outcome:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.outcome:
             result = ["identifier.programme.name"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.po_waybill:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.po_waybill:
             result = ["identifier.order_item.order.order_number", "identifier.order_item.order.order_type"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.ip:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.ip:
             result = ["identifier.ip.name"]
-        elif self.supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.location:
+        elif self.__supply_efficiency_report_type == SUPPLY_EFFICIENCY_REPORT_TYPES.location:
             result = ["identifier.location"]
         else:
             raise Exception("Invalid supply efficiency report type")

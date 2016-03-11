@@ -10,7 +10,7 @@ from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 from eums.services.exporter.stock_report_csv_exporter import StockReportExporter
-from eums.services.exporter.supply_efficiency_report_csv_exporter import SupplyEfficiencyReportExporter
+from eums.services.exporter.supply_efficiency_report_csv_exporter import SupplyEfficiencyReportCSVExporter
 from eums.util.contact_client import ContactClient
 
 
@@ -84,7 +84,7 @@ def generate_alert_export_csv(user, host_name, alerts, alert_type):
 
 @app.task
 def generate_supply_efficiency_report(user, host_name, supply_efficiency_items, supply_efficiency_type):
-    csv_export_service = SupplyEfficiencyReportExporter(host_name, supply_efficiency_type)
+    csv_export_service = SupplyEfficiencyReportCSVExporter(host_name, supply_efficiency_type)
     CSVExportService.generate(csv_export_service.assemble_csv_data(supply_efficiency_items),
                               csv_export_service.export_category,
                               csv_export_service.get_export_csv_file_name())

@@ -32,8 +32,8 @@ class ExportSupplyEfficiencyReportViewSet(APIView):
             'location': SUPPLY_EFFICIENCY_REPORT_TYPES.location
         }
 
-        results = self._search_from_es_using_http_client(es_query)
-        report_items = self._parse_report(results)
+        results = self.__search_from_es_using_http_client(es_query)
+        report_items = self.__parse_report(results)
         report_type = report_types_map[es_query.get('aggs', {}).get('deliveries', {}).get('terms', {}).get('field')]
         generate_supply_efficiency_report(request.user, host_name, report_items, report_type)
         # generate_item_feedback_report.delay(request.user, host_name, items_feedback)
@@ -41,7 +41,7 @@ class ExportSupplyEfficiencyReportViewSet(APIView):
         return Response(message, status=200)
 
     @staticmethod
-    def _search_from_es(query):
+    def __search_from_es(query):
         es = Elasticsearch([ES_SETTINGS.HOST])
         scan_results = helpers.scan(client=es, query=query, index=ES_SETTINGS.INDEX, doc_type=ES_SETTINGS.NODE_TYPE,
                                     scroll="10m", timeout="10m")
@@ -49,7 +49,7 @@ class ExportSupplyEfficiencyReportViewSet(APIView):
             print "+++>: ", item
 
     @staticmethod
-    def _search_from_es_using_http_client(query):
+    def __search_from_es_using_http_client(query):
         es_search_url = "%s%s/%s/%s" % (ES_SETTINGS.HOST, ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE,
                                         '_search?search_type=count')
         response = requests.post(es_search_url, data=json.dumps(query), headers=HEADER)
@@ -58,37 +58,32 @@ class ExportSupplyEfficiencyReportViewSet(APIView):
         return results
 
     @staticmethod
-    def _pre_process_for_reporting(items):
-        result_items = items
-        return result_items
-
-    @staticmethod
-    def _parse_report(response):
+    def __parse_report(response):
         buckets = response.get('aggregations', {}).get('deliveries', {}).get('buckets')
 
-        def _round_aggregate(x):
+        def __round_aggregate(x):
             if x:
                 return int(math.floor(x))
             return 0
 
-        def _format_and_update_delivery_date(value_identifier):
+        def __format_and_update_delivery_date(value_identifier):
             original_delivery_date = value_identifier.get("delivery", {}).get("delivery_date")
             if original_delivery_date:
                 formatted_date = datetime.datetime.strptime(original_delivery_date, "%Y-%m-%d").strftime("%d-%b-%Y")
                 value_identifier.get("delivery", {}).update(delivery_date=formatted_date)
             return value_identifier
 
-        def _format_and_update_order_type(value_identifier):
+        def __format_and_update_order_type(value_identifier):
             original_order_type = value_identifier.get("order_item", {}).get("order", {}).get("order_type")
             if original_order_type:
                 formatted_order_type = ("PO" if original_order_type == "purchase_order" else "WB")
                 value_identifier.get("order_item", {}).get("order", {}).update(order_type=formatted_order_type)
             return value_identifier
 
-        def map_bucket(bucket):
+        def __map_bucket(bucket):
             value_identifier = bucket.get('identifier', {}).get('hits', {}).get('hits', {})[0].get("_source")
-            value_identifier = _format_and_update_delivery_date(value_identifier)
-            value_identifier = _format_and_update_order_type(value_identifier)
+            value_identifier = __format_and_update_delivery_date(value_identifier)
+            value_identifier = __format_and_update_order_type(value_identifier)
 
             stages = bucket.get('delivery_stages', {}).get('buckets')
             value_delivered_to_ip = stages.get('ip', {}).get('total_value_delivered', {}).get('value')
@@ -100,26 +95,26 @@ class ExportSupplyEfficiencyReportViewSet(APIView):
                 "identifier": value_identifier,
                 "delivery_stages": {
                     "unicef": {
-                        "total_value": _round_aggregate(value_delivered_to_ip)
+                        "total_value": __round_aggregate(value_delivered_to_ip)
                     },
                     "ip_receipt": {
-                        "total_value_received": _round_aggregate(value_received_by_ip),
-                        "confirmed": _round_aggregate((0 if value_delivered_to_ip == 0 else
-                                                       value_received_by_ip / value_delivered_to_ip) * 100),
-                        "average_delay": _round_aggregate(stages.get('ip', {}).get('average_delay', {}).get('value'))
+                        "total_value_received": __round_aggregate(value_received_by_ip),
+                        "confirmed": __round_aggregate((0 if value_delivered_to_ip == 0 else
+                                                        value_received_by_ip / value_delivered_to_ip) * 100),
+                        "average_delay": __round_aggregate(stages.get('ip', {}).get('average_delay', {}).get('value'))
                     },
                     "ip_distribution": {
-                        "total_value_distributed": _round_aggregate(value_distributed_by_ip),
-                        "balance": _round_aggregate(value_received_by_ip - value_distributed_by_ip)
+                        "total_value_distributed": __round_aggregate(value_distributed_by_ip),
+                        "balance": __round_aggregate(value_received_by_ip - value_distributed_by_ip)
                     },
                     "end_user": {
-                        "total_value_received": _round_aggregate(value_delivered_to_end_users),
-                        "confirmed": _round_aggregate((0 if value_delivered_to_ip == 0 else
-                                                       value_delivered_to_end_users / value_delivered_to_ip) * 100),
-                        "average_delay": _round_aggregate(
+                        "total_value_received": __round_aggregate(value_delivered_to_end_users),
+                        "confirmed": __round_aggregate((0 if value_delivered_to_ip == 0 else
+                                                        value_delivered_to_end_users / value_delivered_to_ip) * 100),
+                        "average_delay": __round_aggregate(
                                 stages.get('end_users', {}).get('average_delay', {}).get('value'))
                     }
                 }
             }
 
-        return map(map_bucket, buckets)
+        return map(__map_bucket, buckets)
