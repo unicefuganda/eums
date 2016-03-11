@@ -96,7 +96,7 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 
-    url(r'^change_password/$', 'django.contrib.auth.views.password_change',
+    url(r'^password_change/$', 'django.contrib.auth.views.password_change',
         {'password_change_form': UserPasswordChangeForm}),
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         'django.contrib.auth.views.password_reset_confirm', {'set_password_form': UserPasswordSetForm}),
