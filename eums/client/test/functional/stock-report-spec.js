@@ -40,6 +40,7 @@ describe('Stock Report', function () {
         expect(stockReportPage.stockBalances).toContain('$81.14');
 
         stockReportPage.selectFirstPO();
+        ftUtils.waitForPageToLoad();
         expect(stockReportPage.itemCodes).toContain('S0060240');
         expect(stockReportPage.itemCodes).toContain('S0145620');
         expect(stockReportPage.itemDescriptions).toContain('Therapeutic spread,sachet 92g/CAR-150');
