@@ -96,6 +96,10 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 
+    url(r'^change_password/$', 'django.contrib.auth.views.password_change',
+        {'password_change_form': UserPasswordChangeForm}),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        'django.contrib.auth.views.password_reset_confirm', {'set_password_form': UserPasswordSetForm}),
     url(r'^reset/done/$', RedirectView.as_view(url='/login')),
     url('', include('password_reset.urls')),
     url('', include('django.contrib.auth.urls')),
@@ -135,10 +139,6 @@ urlpatterns = patterns(
     url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
         name='stocks_feedback_report_csv'),
     url(r'^exports/alerts/', ExportAlertViewSet.as_view(), name='alerts_csv'),
-    url(r'^api/contacts', ContactEndpoint.as_view(), name='contacts'),
-    url(r'^change_password/$', 'django.contrib.auth.views.password_change',
-        {'password_change_form': UserPasswordChangeForm}),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        'django.contrib.auth.views.password_reset_confirm', {'set_password_form': UserPasswordSetForm})
+    url(r'^api/contacts', ContactEndpoint.as_view(), name='contacts')
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
