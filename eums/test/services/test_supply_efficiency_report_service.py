@@ -7,6 +7,20 @@ from eums.services.supply_efficiency_report_service import SupplyEfficiencyRepor
 
 class SupplyEfficiencyReportServiceTest(TestCase):
     def setUp(self):
+        self.__setup_stub_variables()
+
+    @requests_mock.mock()
+    def test_should_get_reports_from_es(self, m):
+        m.post(SupplyEfficiencyReportService.es_service_url(), text=json.dumps(self.stub_es_response_data))
+        results = SupplyEfficiencyReportService.search_reports({})
+        print("RES: %s" % results)
+        self.assertEqual(len(results), 1)
+
+    def test_should_parse_report_type_from_request(self):
+        report_type = SupplyEfficiencyReportService.parse_report_type(self.stub_es_request)
+        self.assertEqual(report_type, "delivery")
+
+    def __setup_stub_variables(self):
         self.stub_es_request = {
             "query": {
                 "filtered": {
@@ -46,7 +60,6 @@ class SupplyEfficiencyReportServiceTest(TestCase):
                 }
             }
         }
-
         self.stub_es_response_data = {
             "took": 1,
             "timed_out": False,
@@ -151,14 +164,3 @@ class SupplyEfficiencyReportServiceTest(TestCase):
                 }
             }
         }
-
-    @requests_mock.mock()
-    def test_should_get_reports_from_es(self, m):
-        m.post(SupplyEfficiencyReportService.es_service_url(), text=json.dumps(self.stub_es_response_data))
-        results = SupplyEfficiencyReportService.search_reports({})
-        print("RES: %s" % results)
-        self.assertEqual(len(results), 1)
-
-    def test_should_parse_report_type_from_request(self):
-        report_type = SupplyEfficiencyReportService.parse_report_type(self.stub_es_request)
-        self.assertEqual(report_type, "delivery")

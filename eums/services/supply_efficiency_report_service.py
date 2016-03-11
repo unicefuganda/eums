@@ -19,8 +19,7 @@ class SupplyEfficiencyReportService(object):
     @staticmethod
     def search_reports(query):
         response = requests.post(SupplyEfficiencyReportService.es_service_url(), data=json.dumps(query), headers=HEADER)
-        results = json.loads(response.text)
-        return SupplyEfficiencyReportService.__parse_reports(results)
+        return SupplyEfficiencyReportService.__parse_reports(response.json())
 
     @staticmethod
     def parse_report_type(query):
