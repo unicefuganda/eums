@@ -557,6 +557,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var ids = names.map(function (name) {
                         return name.hashCode();
                     });
+                    // prevent empty array, append a empty string as placeholder
+                    names.push('');
                     $(element).val(ids).trigger('change', names);
                 };
 
@@ -565,6 +567,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var names = aArguments.slice(1);
 
                     if (names.length > 0) {
+                        // delete the last value which is placeholder
+                        names.pop();
                         ngModel.$setViewValue(names);
                     } else {
                         var ips = $(element).select2('data');
@@ -611,6 +615,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var ids = names.map(function (name) {
                         return name.hashCode();
                     });
+                    // prevent empty array, append a empty string as placeholder
+                    names.push('');
                     $(element).val(ids).trigger('change', names);
                 };
 
@@ -619,6 +625,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var names = aArguments.slice(1);
 
                     if (names.length > 0) {
+                        // delete the last value which is placeholder
+                        names.pop();
                         ngModel.$setViewValue(names);
                     } else {
                         var district = $(element).select2('data');
@@ -707,6 +715,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var ids = names.map(function (name) {
                         return name.hashCode();
                     });
+                    // prevent empty array, append a empty string as placeholder
+                    names.push('');
                     $(element).val(ids).trigger('change', names);
                 };
 
@@ -715,6 +725,8 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     var names = aArguments.slice(1);
 
                     if (names.length > 0) {
+                        // delete the last value which is placeholder
+                        names.pop();
                         ngModel.$setViewValue(names);
                     } else {
                         var outcomes = $(element).select2('data');
