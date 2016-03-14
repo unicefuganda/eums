@@ -74,6 +74,7 @@ describe('Single IP Direct Delivery Controller', function () {
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
+        spyOn(_, 'debounce').and.callFake(function(cb) { return function() { cb(); } });
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             DeliveryNodeModel = DeliveryNode;
