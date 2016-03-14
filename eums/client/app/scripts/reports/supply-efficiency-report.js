@@ -83,13 +83,12 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
             IP: 'ip.id',
             LOCATION: 'location'
         };
-        var url = EumsConfig.ELASTIC_SEARCH_URL + '_search?search_type=count';
 
         return {
             generate: function (bucket, filters) {
                 var query = Queries.makeQuery(bucket, generateFilters(filters, bucket));
-                return $http.post(url, query).then(function (response) {
-                    return parseReport(response.data);
+                return $http.post(EumsConfig.BACKEND_URLS.SUPPLY_EFFICIENCY_REPORT, query).then(function (response) {
+                    return response.data;
                 });
             },
             getEsQueryParams: function (bucket, filters) {
@@ -147,42 +146,5 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
             });
 
             return fieldFilters;
-        }
-
-        function parseReport(response_data) {
-            var buckets = response_data.aggregations.deliveries.buckets;
-            return buckets.map(function (bucket) {
-                var stages = bucket.delivery_stages.buckets;
-                var value_delivered_to_ip = stages.ip.total_value_delivered.value;
-                var value_received_by_ip = value_delivered_to_ip - stages.ip.total_loss.value;
-                var value_distributed_by_ip = stages.distributed_by_ip.total_value_delivered.value;
-
-                return {
-                    identifier: bucket.identifier.hits.hits.first()._source,
-                    delivery_stages: {
-                        unicef: {
-                            total_value: roundAggregate(value_delivered_to_ip)
-                        },
-                        ip_receipt: {
-                            total_value_received: roundAggregate(value_received_by_ip),
-                            confirmed: roundAggregate((value_received_by_ip / value_delivered_to_ip) * 100),
-                            average_delay: roundAggregate(stages.ip.average_delay.value)
-                        },
-                        ip_distribution: {
-                            total_value_distributed: roundAggregate(value_distributed_by_ip),
-                            balance: roundAggregate(value_received_by_ip - value_distributed_by_ip)
-                        },
-                        end_user: {
-                            total_value_received: roundAggregate(stages.end_users.total_value_delivered.value),
-                            confirmed: roundAggregate((stages.end_users.total_value_delivered.value / value_delivered_to_ip) * 100),
-                            average_delay: roundAggregate(stages.end_users.average_delay.value)
-                        }
-                    }
-                }
-            });
-
-            function roundAggregate(aggregate) {
-                return parseInt(aggregate) || 0;
-            }
         }
     });

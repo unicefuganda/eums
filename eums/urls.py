@@ -40,6 +40,7 @@ from eums.api.run.run import runRouter
 from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
 from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter, soItemPOItem
 from eums.api.stock_report.stock_report_endpoint import StockReport
+from eums.api.supply_efficiency_report.supply_efficiency_report_endpoint import SupplyEfficiencyReportEndpoint
 from eums.api.system_settings.system_settings_endpoint import system_settings_routers
 from eums.api.user.user_endpoint import userRouter
 from eums.forms.user_password_change import UserPasswordChangeForm
@@ -83,6 +84,7 @@ urlpatterns = patterns(
         soItemPOItem.as_view(), name='so_item_po_item'),
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report', StockReport.as_view(), name='stock_report'),
+    url(r'^api/supply-efficiency-report/', SupplyEfficiencyReportEndpoint.as_view(), name='supply_efficiency_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
     url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),

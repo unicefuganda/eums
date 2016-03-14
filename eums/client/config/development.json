@@ -28,6 +28,7 @@
     "IP_FEEDBACK_REPORT_BY_DELIVERY": "/api/ip-feedback-report-by-delivery",
     "NODE_RESPONSES": "/api/node-responses/",
     "STOCK_REPORT": "/api/stock-report",
+    "SUPPLY_EFFICIENCY_REPORT": "/api/supply-efficiency-report/",
     "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
     "DATE_ANSWERS": "/api/date-answers/",
     "TEXT_ANSWERS": "/api/text-answers/",
@@ -62,7 +63,6 @@
     "CONTACTS": "/api/contacts"
   },
   "CONTACT_SERVICE_URL": "http://localhost:8005/api/contacts/",
-  "ELASTIC_SEARCH_URL": "http://localhost:9200/eums/delivery_node/",
   "DISTRICTGEOJSONURL": "static/app/data/districts.json",
   "DISTRICTJSONURL": "static/app/data/district_name.json",
   "districtLayerStyle": {

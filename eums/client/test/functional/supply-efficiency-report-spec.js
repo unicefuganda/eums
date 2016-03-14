@@ -83,7 +83,6 @@ describe('Supply Efficiency Report', function () {
                 supplyEfficiencyReportPage.filterBy('outcome', 'YI107 - PCR 3 KEEP CHILDREN SAFE');
 
                 expect(supplyEfficiencyReportPage.reportsCount).toEqual(2);
-
                 expect(supplyEfficiencyReportPage.deliveryDates.get(1).getText()).toEqual('11-Jul-2015');
                 expect(supplyEfficiencyReportPage.ipNames.get(1).getText()).toEqual('WAKISO DHO');
                 expect(supplyEfficiencyReportPage.districts.get(1).getText()).toEqual('Bukomansimbi');
@@ -102,7 +101,6 @@ describe('Supply Efficiency Report', function () {
                 supplyEfficiencyReportPage.filterBy('item', 'Safety box f.used syrgs/ndls 5lt/BOX-25');
 
                 expect(supplyEfficiencyReportPage.reportsCount).toEqual(1);
-
                 expect(supplyEfficiencyReportPage.deliveryDates.get(0).getText()).toEqual('11-Jul-2015');
                 expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('WAKISO DHO');
                 expect(supplyEfficiencyReportPage.districts.get(0).getText()).toEqual('Bukomansimbi');

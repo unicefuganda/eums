@@ -13,8 +13,8 @@ class SupplyEfficiencyReportServiceTest(TestCase):
     def test_should_get_reports_from_es(self, m):
         m.post(SupplyEfficiencyReportService.es_service_url(), text=json.dumps(self.stub_es_response_data))
         results = SupplyEfficiencyReportService.search_reports({})
-        print("RES: %s" % results)
         self.assertEqual(len(results), 1)
+        self.assertEqual(results, self.stub_es_parsed_response_data)
 
     def test_should_parse_report_type_from_request(self):
         report_type = SupplyEfficiencyReportService.parse_report_type(self.stub_es_request)
@@ -164,3 +164,51 @@ class SupplyEfficiencyReportServiceTest(TestCase):
                 }
             }
         }
+
+        self.stub_es_parsed_response_data = [
+            {
+                "delivery_stages": {
+                    "end_user": {
+                        "average_delay": 0,
+                        "confirmed": 0,
+                        "total_value_received": 0
+                    },
+                    "ip_receipt": {
+                        "average_delay": 6,
+                        "confirmed": 100,
+                        "total_value_received": 4
+                    },
+                    "unicef": {
+                        "total_value": 4
+                    },
+                    "ip_distribution": {
+                        "total_value_distributed": 0,
+                        "balance": 4
+                    }
+                },
+                "identifier": {
+                    "ip": {
+                        "name": "WAKISO DHO"
+                    },
+                    "delivery": {
+                        "location": "Agago",
+                        "delivery_date": "29-Nov-2015"
+                    },
+                    "location": "Agago",
+                    "order_item": {
+                        "item": {
+                            "material_code": "S9906623",
+                            "description": "IEHK2006,kit,suppl.1-drugs"
+                        },
+                        "order": {
+                            "order_number": 201443,
+                            "order_type": "PO"
+                        }
+                    },
+                    "delivery_date": "2015-11-29",
+                    "programme": {
+                        "name": "YI106 - PCR 2 KEEP CHILDREN LEARNING"
+                    }
+                }
+            }
+        ]
