@@ -4,7 +4,6 @@ from django.test import override_settings
 from mock import patch, MagicMock
 from eums.services.csv_export_service import CSVExportService, set_remote_contact_to_report_item
 
-
 DEFAULT_FROM_EMAIL = "hoho@ha.ha"
 
 
@@ -22,7 +21,7 @@ class ExportServiceTest(TestCase):
         first_row, written_data = self._read_csv(csv_filename)
         self.assertEqual(first_row, 'sep=,\n')
 
-        self.remove_csv_file(csv_filename)
+        self._remove_csv_file(csv_filename)
 
     def test_should_generate_csv_and_saves_in_static(self):
         header = [
@@ -57,7 +56,6 @@ class ExportServiceTest(TestCase):
         CSVExportService.notify(user, subject, message)
 
         expected_message = "some manchester united message"
-
         mock_send_email.assert_called_once_with(subject, expected_message, DEFAULT_FROM_EMAIL, [email])
 
     @patch('eums.util.contact_client.ContactClient.get')
@@ -71,9 +69,7 @@ class ExportServiceTest(TestCase):
 
         contact = {'firstName': first_name, 'lastName': last_name, 'phone': phone}
         get_contact.return_value = contact
-
         report_item = {'contact_person_id': contact_id}
-
         set_remote_contact_to_report_item(report_item)
 
         self.assertEqual(report_item['contactName'], contact_name)
@@ -85,5 +81,5 @@ class ExportServiceTest(TestCase):
         lines = file_.readlines()
         return lines[0], [list(eval(line.strip())) for line in lines[1:]]
 
-    def remove_csv_file(self, filename):
+    def _remove_csv_file(self, filename):
         os.remove(filename)

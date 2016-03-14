@@ -37,3 +37,4 @@ flower
 elasticsearch==1.7.0
 python-dateutil==2.4.2
 raven==5.10.1
+unicodecsv==0.14.1

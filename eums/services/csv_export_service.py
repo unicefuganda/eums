@@ -1,5 +1,4 @@
-import csv
-
+import unicodecsv
 from django.conf import settings
 from django.core import mail
 
@@ -20,8 +19,8 @@ class CSVExportService(object):
         file_location = settings_export.EXPORTS_DIR + category + '/' + filename
         export_file = open(file_location, 'wb')
         export_file.write('sep=,\n')
-        wr = csv.writer(export_file, quoting=csv.QUOTE_ALL)
-        wr.writerows(data)
+        uwr = unicodecsv.writer(export_file, quoting=unicodecsv.QUOTE_ALL)
+        uwr.writerows(data)
 
     @classmethod
     def notify(cls, user, subject, message):
