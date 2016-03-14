@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+import datetime
+
 from eums.models import RunQueue
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -11,12 +13,14 @@ class RunQueueTest(TestCase):
 
     def test_can_deque_next_run_for_a_particular_contact_person(self):
         contact_person_id = 'id'
-        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started)
-        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started, run_delay=1000.0)
+        date_first = datetime.datetime(2016, 2, 1, 9, 0, 0, 0)
+        date_second = datetime.datetime(2016, 2, 2, 9, 0, 0, 0)
+        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started, start_time=date_second)
+        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started, start_time=date_first)
         run_queue = RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started,
-                                    run_delay=1500.0)
+                                    start_time=date_first)
 
-        self.assertEqual(RunQueue.dequeue(contact_person_id), run_queue)
+        self.assertEqual(RunQueue.dequeue(contact_person_id).start_time, run_queue.start_time)
 
     def test_deque_returns_none_when_contact_person_no_pending_runs(self):
         contact_person_id = 'id'

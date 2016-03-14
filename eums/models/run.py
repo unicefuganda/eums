@@ -47,16 +47,6 @@ class Run(TimeStampedModel):
         return Run.objects.filter(Q(status=Run.STATUS.scheduled) &
                                   Q(runnable__delivery_date__lt=latest_allowed_date))
 
-    # @classmethod
-    # def overdue_runs(cls):
-    #     Run.objects.filter(Q(status=Run.STATUS.schetuled) & Q())
-    #     date_received = datetime.timedelta(days=date_received)
-    #     days_needed_for_distribution = datetime.timedelta(days=days_needed_for_distribution)
-    #     today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
-    #
-    #     return Run.objects.filter(Q(status=Run.STATUS.scheduled) &
-    #                               Q(runnable__delivery_date__lt=today))
-
     @classmethod
     def has_scheduled_run(cls, contact_person_id):
         scheduled_runs = Run.objects.filter(Q(status=Run.STATUS.scheduled) &

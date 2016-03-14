@@ -108,6 +108,8 @@ MAX_ALLOWED_REPLY_PERIOD = 1
 
 # Buffer time in case run is scheduled for immediate delivery (due to node not being saved immediately on delivery)
 DELIVERY_BUFFER_IN_SECONDS = 10
+TEMP_DELIVERY_BUFFER_IN_SECONDS = 1800
+
 
 # Contacts service settings
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'

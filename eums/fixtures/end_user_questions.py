@@ -26,7 +26,9 @@ def seed_questions():
     global END_USER_FLOW
 
     END_USER_FLOW, _ = Flow.objects.get_or_create(label=Flow.Label.END_USER)
-    END_USER_FLOW.end_nodes = []
+    END_USER_FLOW.temp_end_nodes = []
+    END_USER_FLOW.final_end_nodes = []
+    END_USER_FLOW.optional_end_nodes = []
 
     WAS_PRODUCT_RECEIVED = Question.build_question(MultipleChoiceQuestion, text='Was product received?',
                                                    label='productReceived', flow=END_USER_FLOW, position=1)
@@ -40,7 +42,9 @@ def seed_questions():
                                                    label='informedOfDelay', flow=END_USER_FLOW, position=2)
     eu_informed_of_delay_yes = Option.build_option(text='Yes', question=EU_INFORMED_OF_DELAY)
     eu_informed_of_delay_no = Option.build_option(text='No', question=EU_INFORMED_OF_DELAY)
-    END_USER_FLOW.end_nodes.append([EU_INFORMED_OF_DELAY.id, eu_informed_of_delay_no.id])
+
+    END_USER_FLOW.final_end_nodes.append([EU_INFORMED_OF_DELAY.id, eu_informed_of_delay_no.id])
+
     END_USER_FLOW.save()
 
     EU_AMOUNT_RECEIVED = Question.build_question(NumericQuestion, text='How much was received?',
@@ -49,7 +53,7 @@ def seed_questions():
     EU_REVISED_DELIVERY_DATE = Question.build_question(TextQuestion,
                                                        text='What did the partner say is the revised delivery date?',
                                                        label='revisedDeliveryDate', flow=END_USER_FLOW, position=3)
-    END_USER_FLOW.end_nodes.append([EU_REVISED_DELIVERY_DATE.id, Flow.NO_OPTION])
+    END_USER_FLOW.final_end_nodes.append([EU_REVISED_DELIVERY_DATE.id, Flow.NO_OPTION])
     END_USER_FLOW.save()
 
     EU_QUALITY_OF_PRODUCT = Question.build_question(MultipleChoiceQuestion, text='What is the quality of the product?',
@@ -60,24 +64,30 @@ def seed_questions():
     EU_OPT_EXPIRED = Option.build_option(text='Expired', question=EU_QUALITY_OF_PRODUCT)
     EU_OPT_INCOMPLETE = Option.build_option(text='Incomplete', question=EU_QUALITY_OF_PRODUCT)
     EU_OPT_OTHER = Option.build_option(text='Other', question=EU_QUALITY_OF_PRODUCT)
-    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_DAMAGED.id])
-    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_SUBSTANDARD.id])
-    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_EXPIRED.id])
-    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_INCOMPLETE.id])
-    END_USER_FLOW.end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_OTHER.id])
+
+    END_USER_FLOW.temp_end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_DAMAGED.id])
+    END_USER_FLOW.temp_end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_SUBSTANDARD.id])
+    END_USER_FLOW.temp_end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_EXPIRED.id])
+    END_USER_FLOW.temp_end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_INCOMPLETE.id])
+    END_USER_FLOW.temp_end_nodes.append([EU_QUALITY_OF_PRODUCT.id, EU_OPT_OTHER.id])
+
     END_USER_FLOW.save()
 
     EU_SATISFACTION = Question.build_question(MultipleChoiceQuestion, text='Are you satisfied with the product?',
                                               label='satisfiedWithProduct', flow=END_USER_FLOW, position=5)
     EU_OPT_SATISFIED = Option.build_option(text='Yes', question=EU_SATISFACTION)
     EU_OPT_NOT_SATISFIED = Option.build_option(text='No', question=EU_SATISFACTION)
-    END_USER_FLOW.end_nodes.append([EU_SATISFACTION.id, EU_OPT_SATISFIED.id])
-    END_USER_FLOW.end_nodes.append([EU_SATISFACTION.id, EU_OPT_NOT_SATISFIED.id])
+    END_USER_FLOW.temp_end_nodes.append([EU_SATISFACTION.id, EU_OPT_SATISFIED.id])
+    END_USER_FLOW.temp_end_nodes.append([EU_SATISFACTION.id, EU_OPT_NOT_SATISFIED.id])
     END_USER_FLOW.save()
 
     EU_ADDITIONAL_REMARK = Question.build_question(TextQuestion, text='Additional Remarks',
                                                    label=Question.LABEL.additionalDeliveryComments,
                                                    flow=END_USER_FLOW, position=6)
+
+    END_USER_FLOW.optional_end_nodes.append([EU_ADDITIONAL_REMARK.id, Flow.NO_OPTION])
+
+    END_USER_FLOW.save()
 
     questions = {
         'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED,

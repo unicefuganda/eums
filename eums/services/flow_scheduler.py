@@ -18,16 +18,16 @@ logger = logging.getLogger(__name__)
 HOUR_TO_SEND_SMS = 9
 
 
-def schedule_run_for(runnable):
+def schedule_run_for(runnable, run_delay=0):
     if _should_schedule(runnable):
         _cancel_current_run(runnable)
-        run_delay = _calculate_delay(runnable)
-        schedule_run_directly_for(runnable, run_delay)
+        delay = _calculate_delay(runnable, run_delay)
+        schedule_run_directly_for(runnable, delay)
 
 
 def schedule_run_directly_for(runnable, run_delay):
     if Run.has_scheduled_run(runnable.contact_person_id):
-        RunQueue.enqueue(runnable, run_delay)
+        RunQueue.enqueue(runnable, settings.DELIVERY_STATUS_CHECK_DELAY)
     elif settings.RAPIDPRO_LIVE:
         task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
         Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
@@ -46,14 +46,15 @@ def _schedule_run(runnable_id):
                                  message.description(), message.sender_name())
 
 
-def _calculate_delay(runnable):
+def _calculate_delay(runnable, run_delay):
     expected_delivery_date = datetime.datetime.combine(runnable.delivery_date, datetime.datetime.min.time())
     when_to_send_message = expected_delivery_date \
         + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY, hours=HOUR_TO_SEND_SMS)
 
     delay_in_seconds = (when_to_send_message - datetime.datetime.now()).total_seconds()
 
-    return delay_in_seconds if delay_in_seconds > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
+    delay = run_delay if run_delay > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
+    return delay_in_seconds if delay_in_seconds > 0 else delay
 
 
 def _cancel_current_run(runnable):

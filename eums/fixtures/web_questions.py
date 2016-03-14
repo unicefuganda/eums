@@ -17,7 +17,8 @@ damaged = Option.build_option(text='Damaged', question=web_question_3)
 substandard = Option.build_option(text='Substandard', question=web_question_3)
 expired = Option.build_option(text='Expired', question=web_question_3)
 incomplete = Option.build_option(text='Incomplete', question=web_question_3)
-web_flow.end_nodes = [
+
+web_flow.final_end_nodes = [
     [web_question_3.id, damaged.id],
     [web_question_3.id, substandard.id],
     [web_question_3.id, expired.id],
@@ -29,10 +30,10 @@ web_question_4 = Question.build_question(MultipleChoiceQuestion, text='Are you s
                                          label='satisfiedWithProduct', flow=web_flow, position=4)
 yes_2 = Option.build_option(text='Yes', question=web_question_4)
 no_2 = Option.build_option(text='No', question=web_question_4)
-web_flow.end_nodes.append([web_question_4.id, yes_2.id])
+web_flow.final_end_nodes.append([web_question_4.id, yes_2.id])
 web_flow.save()
 
 web_question_5 = Question.build_question(TextQuestion, text='Remarks', label='additionalDeliveryComments',
                                          flow=web_flow, position=5)
-web_flow.end_nodes.append([web_question_5.id, Flow.NO_OPTION])
+web_flow.final_end_nodes.append([web_question_5.id, Flow.NO_OPTION])
 web_flow.save()

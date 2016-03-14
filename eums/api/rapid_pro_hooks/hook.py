@@ -4,6 +4,7 @@ from celery.utils.log import get_task_logger
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from eums import settings
 
 from eums.models import Run, RunQueue, Flow, Question
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service, RapidProService
@@ -20,16 +21,22 @@ def hook(request):
     logger.info("access webhook")
     try:
         params = request.POST
-        logger.info("params %s:" % params)
         flow = rapid_pro_service.flow(params['flow'])
         run = Run.objects.filter(Q(phone=params['phone']) & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
         answer = _save_answer(flow, params, run)
 
-        if flow.is_end(answer):
+        if flow.is_temp_ended(answer) or flow.is_final_ended(answer):
             run.update_status(Run.STATUS.completed)
-            _dequeue_next_run(run.runnable.contact_person_id)
+            run_delay = settings.TEMP_DELIVERY_BUFFER_IN_SECONDS if flow.is_temp_ended(answer) else \
+                settings.DELIVERY_BUFFER_IN_SECONDS
             _raise_alert(params, run.runnable)
+            _dequeue_next_run(run.runnable.contact_person_id, run_delay)
+
+        if flow.is_optional_ended(answer):
+            run_delay = settings.DELIVERY_BUFFER_IN_SECONDS
+            _reschedule_next_run(run.phone, run_delay)
+
         return HttpResponse(status=200)
 
     except StandardError, e:
@@ -50,12 +57,14 @@ def _raise_alert(params, runnable):
     handler.process()
 
 
-def _dequeue_next_run(contact_person_id):
+def _dequeue_next_run(contact_person_id, run_delay):
     next_run_queue = RunQueue.dequeue(contact_person_id=contact_person_id)
     if next_run_queue:
-        _schedule_next_run(next_run_queue.runnable)
+        schedule_run_for(next_run_queue.runnable, run_delay)
         next_run_queue.update_status(RunQueue.STATUS.started)
 
 
-def _schedule_next_run(runnable):
-    schedule_run_for(runnable)
+def _reschedule_next_run(phone, run_delay):
+    current_run = Run.objects.filter(Q(phone=phone) & Q(status='scheduled')).order_by('modified').first()
+    if current_run:
+        schedule_run_for(current_run.runnable, run_delay)

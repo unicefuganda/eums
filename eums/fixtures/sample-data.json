@@ -12016,7 +12016,9 @@
   },
   {
     "fields": {
-      "end_nodes": "[[3, 6], [5, -1], [6, 9], [6, 10], [6, 11], [6, 12], [6, 13], [7, 15], [7, 16]]",
+      "temp_end_nodes": "[[6, 9], [6, 10], [6, 11], [6, 12], [6, 13], [7, 15], [7, 16]]",
+      "optional_end_nodes": "[[8, -1]]",
+      "final_end_nodes":"[[3, 6], [5, -1]]",
       "label": "END_USER"
     },
     "model": "eums.flow",
@@ -12024,7 +12026,9 @@
   },
   {
     "fields": {
-      "end_nodes": "[[9, 19], [12, 24], [12, 25]]",
+      "temp_end_nodes": "[[12, 24], [12, 25]]",
+      "optional_end_nodes": "[[13, -1]]",
+      "final_end_nodes":"[9, 19]",
       "label": "IMPLEMENTING_PARTNER"
     },
     "model": "eums.flow",
@@ -12032,7 +12036,7 @@
   },
   {
     "fields": {
-      "end_nodes": "[[16, 31], [16, 32], [16, 33], [16, 34], [17, 36], [18, -1]]",
+      "final_end_nodes":"[[16, 31], [16, 32], [16, 33], [16, 34], [17, 36], [18, -1]]",
       "label": "WEB"
     },
     "model": "eums.flow",
@@ -12040,7 +12044,9 @@
   },
   {
     "fields": {
-      "end_nodes": "[[21, -1], [22, 43], [23, -1]]",
+      "temp_end_nodes": "[[22, 43], [23, -1]]",
+      "optional_end_nodes": "[[24, -1]]",
+      "final_end_nodes":"[[21, -1]]",
       "label": "MIDDLE_MAN"
     },
     "model": "eums.flow",

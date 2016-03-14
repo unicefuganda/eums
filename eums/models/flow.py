@@ -11,17 +11,32 @@ class Flow(models.Model):
         END_USER = 'END_USER'
 
     NO_OPTION = -1
-    end_nodes = IntegerArrayField(dimension=2)
+
+    temp_end_nodes = IntegerArrayField(dimension=2, null=True)
+    optional_end_nodes = IntegerArrayField(dimension=2, null=True)
+    final_end_nodes = IntegerArrayField(dimension=2, null=True)
+
     label = models.CharField(max_length=255,
                              choices=((Label.END_USER, 'End User'), (Label.MIDDLE_MAN, 'Middleman'),
                                       (Label.IMPLEMENTING_PARTNER, 'Implementing Partner'),
                                       (Label.WEB, 'Web')), unique=True)
 
-    def is_end(self, answer):
+    def is_temp_ended(self, answer):
+        return_value = self.temp_end_nodes and self._get_rapid_pro_end_node(answer) in self.temp_end_nodes
+        return return_value
+
+    def is_final_ended(self, answer):
+        return_value = self.final_end_nodes and self._get_rapid_pro_end_node(answer) in self.final_end_nodes
+        return return_value
+
+    def is_optional_ended(self, answer):
+        return_value = self.optional_end_nodes and self._get_rapid_pro_end_node(answer) in self.optional_end_nodes
+        return return_value
+
+    def _get_rapid_pro_end_node(self, answer):
         question_id = answer.question.id
         value_id = answer.value.id if type(answer.value) is Option else self.NO_OPTION
-        return_value = self.end_nodes and [question_id, value_id] in self.end_nodes
-        return return_value
+        return [question_id, value_id]
 
     def __unicode__(self):
         return '%s' % str(self.label)

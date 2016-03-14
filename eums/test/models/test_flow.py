@@ -10,27 +10,35 @@ class FlowTest(TestCase):
     def test_should_tell_if_question_answer_combination_ends_the_flow(self):
         answer_1 = MultipleChoiceAnswerFactory()
         answer_2 = MultipleChoiceAnswerFactory()
-        flow = Flow(end_nodes=[
+        flow = Flow(final_end_nodes=[
             [answer_1.question.id, answer_1.value.id],
             [answer_2.question.id, answer_2.value.id]
         ])
-        self.assertTrue(flow.is_end(answer_1))
-        self.assertTrue(flow.is_end(answer_2))
+        self.assertTrue(flow.is_final_ended(answer_1))
+        self.assertTrue(flow.is_final_ended(answer_2))
 
     def test_should_tell_if_question_answer_combination_does_not_end_the_flow(self):
         answer = MultipleChoiceAnswerFactory()
         flow = Flow()
-        self.assertFalse(flow.is_end(answer))
+        self.assertFalse(flow.is_final_ended(answer))
 
     def test_should_tell_if_text_question_ends_the_flow(self):
         answer = TextAnswerFactory()
-        flow = Flow(end_nodes=[[answer.question.id, Flow.NO_OPTION]])
-        self.assertTrue(flow.is_end(answer))
+        flow = Flow(final_end_nodes=[[answer.question.id, Flow.NO_OPTION]])
+        self.assertTrue(flow.is_final_ended(answer))
+
+    def test_should_tell_if_question_ends_the_flow_temporarily(self):
+        answer = TextAnswerFactory()
+        answer_optional = TextAnswerFactory()
+        flow = Flow(temp_end_nodes=[[answer.question.id, Flow.NO_OPTION]],
+                    optional_end_nodes=[[answer_optional.question.id, Flow.NO_OPTION]])
+        self.assertTrue(flow.is_temp_ended(answer))
+        self.assertTrue(flow.is_optional_ended(answer_optional))
 
     def test_should_tell_if_numeric_question_ends_the_flow(self):
         answer = NumericAnswerFactory()
-        flow = Flow(end_nodes=[[answer.question.id, Flow.NO_OPTION]])
-        self.assertTrue(flow.is_end(answer))
+        flow = Flow(final_end_nodes=[[answer.question.id, Flow.NO_OPTION]])
+        self.assertTrue(flow.is_final_ended(answer))
 
     def test_should_know_question_given_label(self):
         label = 'someLabel'
