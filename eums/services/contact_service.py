@@ -14,8 +14,11 @@ from eums.rapid_pro.rapid_pro_service import HEADER
 
 logger = logging.getLogger(__name__)
 
+HEADER_CONTACT = {"Content-Type": "application/json"}
 
-class ContactClient(object):
+
+
+class ContactService(object):
     @staticmethod
     def get(contact_person_id):
         default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
@@ -30,6 +33,15 @@ class ContactClient(object):
         except ConnectionError, error:
             logger.error(error)
             return default_contact
+
+    @staticmethod
+    def delete(contact_person_id):
+        try:
+            response = requests.delete(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
+            return response.status_code
+        except ConnectionError, error:
+            logger.error(error)
+            return HTTP_504_GATEWAY_TIMEOUT
 
     @staticmethod
     def get_all():
@@ -47,9 +59,35 @@ class ContactClient(object):
             return contacts
 
     @staticmethod
+    def search(param):
+        default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
+                           'types': [], 'outcomes': [], 'ips': [], 'districts': []}
+        try:
+            response = requests.get(url='%s?searchfield=%s' % (settings.CONTACTS_SERVICE_URL, param))
+            if response.status_code is HTTP_200_OK:
+                return response.json()
+
+            logger.error('Contact not found')
+            return default_contact
+        except ConnectionError, error:
+            logger.error(error)
+            return default_contact
+
+    @staticmethod
     def update(contact):
         try:
-            response = requests.put(settings.CONTACTS_SERVICE_URL, contact)
+            response = requests.put(settings.CONTACTS_SERVICE_URL, json.dumps(contact),
+                                    headers=HEADER_CONTACT)
+            return response.status_code
+        except ConnectionError, error:
+            logger.error(error)
+            return HTTP_504_GATEWAY_TIMEOUT
+
+    @staticmethod
+    def add(contact):
+        try:
+            response = requests.post(settings.CONTACTS_SERVICE_URL, json.dumps(contact),
+                                     headers=HEADER_CONTACT)
             return response.status_code
         except ConnectionError, error:
             logger.error(error)
@@ -58,11 +96,11 @@ class ContactClient(object):
     @staticmethod
     def update_after_delivery_creation(contact_id, type, outcome, district, ip):
         try:
-            origin_contact = ContactClient.get(contact_id)
-            updated_contact = ContactClient._update_contact(origin_contact, type, outcome, district, ip)
+            origin_contact = ContactService.get(contact_id)
+            updated_contact = ContactService._update_contact(origin_contact, type, outcome, district, ip)
 
             if origin_contact != updated_contact:
-                ContactClient.update(updated_contact)
+                ContactService.update(updated_contact)
         except Exception, e:
             logger.error(e)
 
@@ -74,10 +112,10 @@ class ContactClient(object):
     @staticmethod
     def _update_contact(origin_contact, type, outcome, district, ip):
         updated_contact = copy.deepcopy(origin_contact)
-        ContactClient._append_if_not_exist(type, updated_contact['types'])
-        ContactClient._append_if_not_exist(outcome, updated_contact['outcomes'])
-        ContactClient._append_if_not_exist(ip, updated_contact['ips'])
-        ContactClient._append_if_not_exist(district, updated_contact['districts'])
+        ContactService._append_if_not_exist(type, updated_contact['types'])
+        ContactService._append_if_not_exist(outcome, updated_contact['outcomes'])
+        ContactService._append_if_not_exist(ip, updated_contact['ips'])
+        ContactService._append_if_not_exist(district, updated_contact['districts'])
 
         return updated_contact
 
@@ -86,7 +124,7 @@ class ContactClient(object):
         logger.info('rapid pro live = %s' % settings.RAPIDPRO_LIVE)
 
         if settings.RAPIDPRO_LIVE:
-            rapid_pro_contact = ContactClient.build_rapid_pro_contact(contact)
+            rapid_pro_contact = ContactService.build_rapid_pro_contact(contact)
             logger.info('rapid pro contact = %s' % rapid_pro_contact)
             logger.info('url = %s' % settings.RAPIDPRO_URLS.get('CONTACTS'))
 
@@ -121,7 +159,7 @@ class ContactClient(object):
             'name': '%(firstName)s %(lastName)s' % contact,
             'groups': ['EUMS'],
             'urns': ['tel:%(phone)s' % contact],
-            'fields': ContactClient.build_rapid_pro_contact_fields(contact)
+            'fields': ContactService.build_rapid_pro_contact_fields(contact)
         }
 
     @staticmethod
@@ -139,10 +177,10 @@ class ContactClient(object):
 @app.task
 def execute_rapid_pro_contact_update(contact):
     logger.info('%s%s%s' % ('*' * 10, 'update rapid pro contact', '*' * 10))
-    ContactClient.add_or_update_rapid_pro_contact(contact)
+    ContactService.add_or_update_rapid_pro_contact(contact)
 
 
 @app.task
 def execute_rapid_pro_contact_delete(phone):
     logger.info('%s%s%s' % ('*' * 10, 'delete rapid pro contact', '*' * 10))
-    ContactClient.delete_rapid_pro_contact(phone)
+    ContactService.delete_rapid_pro_contact(phone)

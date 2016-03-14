@@ -4,13 +4,13 @@ from django.core import mail
 
 from eums import settings_export
 from eums.celery import app
+from eums.services.contact_service import ContactService
 from eums.services.exporter.alert_csv_exporter import AlertCSVExporter
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 from eums.services.exporter.stock_report_csv_exporter import StockReportExporter
 from eums.services.exporter.supply_efficiency_report_csv_exporter import SupplyEfficiencyReportCSVExporter
-from eums.util.contact_client import ContactClient
 
 
 class CSVExportService(object):
@@ -92,7 +92,7 @@ def generate_supply_efficiency_report(user, host_name, supply_efficiency_items, 
 
 
 def set_remote_contact_to_report_item(report_item):
-    contact = ContactClient.get(report_item.get('contactPersonId', report_item.get('contact_person_id')))
+    contact = ContactService.get(report_item.get('contactPersonId', report_item.get('contact_person_id')))
     report_item['contactName'] = '%s %s' % (contact.get('firstName'), contact.get('lastName'))
     report_item['contactPhone'] = contact.get('phone')
     return report_item

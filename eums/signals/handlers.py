@@ -1,13 +1,14 @@
 import datetime
 
 from celery.utils.log import get_task_logger
+from django.conf import settings
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.conf import settings
+
 from eums.celery import app
 from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow
+from eums.services.contact_service import ContactService
 from eums.services.flow_scheduler import schedule_run_for
-from eums.util.contact_client import ContactClient
 from eums.vision.sync_runner import sync
 
 logger = get_task_logger(__name__)
@@ -57,11 +58,11 @@ def run(start_date, end_date):
 @app.task
 def update_contact(runnable):
     tree_position = getattr(runnable, 'tree_position', Flow.Label.IMPLEMENTING_PARTNER)
-    ContactClient.update_after_delivery_creation(runnable.contact_person_id,
-                                                 tree_position,
-                                                 runnable.programme.name,
-                                                 runnable.location,
-                                                 runnable.consignee.name)
+    ContactService.update_after_delivery_creation(runnable.contact_person_id,
+                                                  tree_position,
+                                                  runnable.programme.name,
+                                                  runnable.location,
+                                                  runnable.consignee.name)
 
 
 def _resolve_alert_if_possible(delivery):

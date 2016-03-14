@@ -60,7 +60,7 @@
     "SYSTEM_SETTINGS": "/api/system-settings",
     "UPLOAD_IMAGE": "/api/upload-image/",
     "LOGIN_DATA": "/api/login_data",
-    "CONTACTS": "/api/contacts"
+    "CONTACTS": "/api/contacts/"
   },
   "CONTACT_SERVICE_URL": "http://localhost/contacts/",
   "DISTRICTGEOJSONURL": "static/app/data/districts.json",

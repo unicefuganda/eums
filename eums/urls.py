@@ -138,10 +138,12 @@ urlpatterns = patterns(
         name='items_feedback_report_csv'),
     url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
         name='stocks_feedback_report_csv'),
-    url(r'^exports/alerts/', ExportAlertViewSet.as_view(),
-        name='alerts_csv'),
+    url(r'^exports/alerts/', ExportAlertViewSet.as_view(), name='alerts_csv'),
     url(r'^exports/supply-efficiency-report/', ExportSupplyEfficiencyReportViewSet.as_view(),
         name='supply_efficiency_report_csv'),
+
+    url(r'^api/contacts/$', ContactEndpoint.as_view(), name='contacts'),
+    url(r'^api/contacts/(?P<pk>[\w]+)/$', ContactEndpoint.as_view(), name='contacts'),
 
     url(r'^change_password/$', 'django.contrib.auth.views.password_change',
         {'password_change_form': UserPasswordChangeForm}),

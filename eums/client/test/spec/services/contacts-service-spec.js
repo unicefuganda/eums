@@ -19,7 +19,7 @@ describe('Contacts Service', function () {
 
     it('should search for contacts by search string', function (done) {
         var searchString = expectedContact.firstName;
-        mockHttpBackend.whenGET(config.CONTACT_SERVICE_URL + '?searchfield=' + searchString).respond([expectedContact]);
+        mockHttpBackend.whenGET(config.BACKEND_URLS.CONTACTS + '?searchfield=' + searchString).respond([expectedContact]);
         contactService.search(searchString).then(function (contact) {
             expect(contact).toEqual([expectedContact]);
             done();
@@ -38,7 +38,7 @@ describe('Contacts Service', function () {
     });
 
     it('should edit an existing contact', function (done) {
-        mockHttpBackend.expectPUT(config.CONTACT_SERVICE_URL, expectedContact).respond(expectedContact);
+        mockHttpBackend.expectPUT(config.BACKEND_URLS.CONTACTS, expectedContact).respond(expectedContact);
         contactService.update(expectedContact).then(function (response) {
             expect(response).toEqual(expectedContact);
             done();
@@ -50,7 +50,7 @@ describe('Contacts Service', function () {
         var contactPersonId = 'FDFD86B7-47D1-46FC-B722-A22F5F14F06D';
         var contactDeliveriesUrl = config.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contactPersonId;
         mockHttpBackend.whenGET(contactDeliveriesUrl).respond([]);
-        mockHttpBackend.expectDELETE(config.CONTACT_SERVICE_URL + contactPersonId + '/').respond(201);
+        mockHttpBackend.expectDELETE(config.BACKEND_URLS.CONTACTS + contactPersonId + '/').respond(201);
         contactService.del({_id: contactPersonId}).then(done);
         mockHttpBackend.flush();
     });
@@ -85,7 +85,7 @@ describe('Contact Service', function () {
 
     it('should create itself with the right parameters', function () {
         expect(mockServiceFactory.create).toHaveBeenCalledWith({
-            uri: config.CONTACT_SERVICE_URL,
+            uri: config.BACKEND_URLS.CONTACTS,
             changeCase: false,
             idField: '_id',
             methods: jasmine.any(Object)

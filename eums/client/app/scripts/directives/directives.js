@@ -131,6 +131,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                     query: function (query) {
                         var data = {results: []};
                         ContactService.search(query.term).then(function (foundContacts) {
+                            console.log(query.item);
                             data.results = formatResponse(foundContacts);
                             query.callback(data);
                         });

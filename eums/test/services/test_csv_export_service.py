@@ -58,7 +58,7 @@ class ExportServiceTest(TestCase):
         expected_message = "some manchester united message"
         mock_send_email.assert_called_once_with(subject, expected_message, DEFAULT_FROM_EMAIL, [email])
 
-    @patch('eums.util.contact_client.ContactClient.get')
+    @patch('eums.services.contact_service.ContactService.get')
     def test_set_remote_contact_to_report_item(self, get_contact):
         contact_id = '5694bdd328c0edad08b0f020'
 
