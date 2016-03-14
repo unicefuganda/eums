@@ -40,7 +40,7 @@ class ExportServiceTest(TestCase):
         first_row, actual_data = self._read_csv(csv_filename)
         self.assertEqual(actual_data, expected_data)
 
-        self.remove_csv_file(csv_filename)
+        self._remove_csv_file(csv_filename)
 
     @override_settings(DEFAULT_FROM_EMAIL=DEFAULT_FROM_EMAIL)
     @patch('django.core.mail.send_mail')
