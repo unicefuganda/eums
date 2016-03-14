@@ -115,9 +115,11 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
                 if (oldSearchTerm.search != newSearchTerm.search) {
                     timer = $timeout(function () {
+                        $scope.pagination.page = 1;
                         loadConsignees()
                     }, 2000);
                 } else {
+                    $scope.pagination.page = 1;
                     loadConsignees();
                 }
             }
