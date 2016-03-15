@@ -29,7 +29,7 @@ describe('Contacts Service', function () {
 
     it('should search for contacts by creator-user-id', function (done) {
         var createdByUserId = expectedContact.createdByUserId;
-        mockHttpBackend.whenGET(config.CONTACT_SERVICE_URL + '?createdbyuserid=' + createdByUserId).respond([expectedContact]);
+        mockHttpBackend.whenGET(config.BACKEND_URLS.CONTACTS + '?createdbyuserid=' + createdByUserId).respond([expectedContact]);
         contactService.findContacts(createdByUserId).then(function (contact) {
             expect(contact).toEqual([expectedContact]);
             done();
