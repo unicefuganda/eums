@@ -142,6 +142,7 @@ DirectDeliveryPage.prototype = Object.create({bro: browser, ele: element}, {
     searchForThisPurchaseOrder: {
         value: function (searchTerm) {
             this.searchBar.clear().sendKeys(searchTerm);
+            waitForPageToLoad(this.bro, this.ele);
         }
     },
     firstPurchaseOrderAttributes: {

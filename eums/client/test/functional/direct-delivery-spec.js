@@ -189,5 +189,4 @@ describe('Direct Delivery', function () {
         directDeliveryPage.saveDelivery();
         expect(directDeliveryPage.toastMessage).toContain('Available balance has changed, please refresh page and try again!');
     });
-
 });

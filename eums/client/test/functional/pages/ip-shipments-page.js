@@ -1,5 +1,7 @@
 var IpShipmentsPage = function () {};
 var EC = protractor.ExpectedConditions;
+var ftUtils = require('./../functional-test-utils.js');
+
 
 IpShipmentsPage.prototype = Object.create({}, {
     url: { get: function () { return '/#/ip-deliveries'; }},
@@ -13,7 +15,8 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     searchForShipment: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
-        waitForPageToLoad();
+        ftUtils.waitForPageToLoad();
+        ftUtils.wait(500)
     }},
 
     viewDeliveryDetailsButton: { get: function () {
@@ -46,7 +49,7 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
-        waitForPageToLoad();
+        ftUtils.waitForPageToLoad();
     }},
 
     specifyItemReceived: { value: function (rowIndex, value) {
@@ -78,13 +81,12 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     saveItemConfirmation: { value: function () {
         element(by.id('saveBtn')).click();
-        waitForPageToLoad();
+        ftUtils.waitForPageToLoad();
     }},
     goBackToShipmentsPage: { value: function () {
         element(by.id('backToShipmentsBtn')).click();
-        waitForPageToLoad();
+        ftUtils.waitForPageToLoad();
     }},
-
 
     itemConditions: { get: function () {
         return element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(0).$(".itemCondition").getText();
@@ -96,7 +98,6 @@ IpShipmentsPage.prototype = Object.create({}, {
     deliveries: { get: function () {
         return element.all(by.repeater('delivery in deliveries'));
     }}
-
 });
 
 module.exports = new IpShipmentsPage;
