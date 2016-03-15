@@ -215,19 +215,19 @@ DirectDeliveryPage.prototype = Object.create({bro: browser, ele: element}, {
     saveDelivery: {
         value: function () {
             this.ele(by.id('directDeliverySaveBtn')).click();
-            this.bro.sleep(1500);
+            this.bro.sleep(2000);
         }
     },
     saveDraftDelivery: {
         value: function () {
             this.ele(by.id('save-draft')).click();
-            this.bro.sleep(1500);
+            this.bro.sleep(2000);
         }
     },
     saveAndTrackDelivery: {
         value: function () {
             this.ele(by.id('save-and-track')).click();
-            this.bro.sleep(1500);
+            this.bro.sleep(2000);
         }
     },
     toastMessage: {

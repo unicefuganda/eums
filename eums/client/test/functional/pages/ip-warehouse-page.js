@@ -142,6 +142,7 @@ IpWarehousePage.prototype = Object.create({}, {
     saveDelivery: {
         value: function () {
             element(by.id('save-delivery-report')).click();
+            browser.sleep(2000);
         }
     },
 
