@@ -254,7 +254,7 @@ describe('Supply Efficiency Report', function () {
 
         it('should show po or waybill details in rows', function () {
             expect(supplyEfficiencyReportPage.orderNumbers.get(0).getText()).toEqual('12345');
-            expect(supplyEfficiencyReportPage.orderTypes.get(0).getText()).toEqual('PO');
+            expect(supplyEfficiencyReportPage.orderTypes.get(0).getText()).toEqual('WB');
             expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('242');
             expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('242');
             expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');

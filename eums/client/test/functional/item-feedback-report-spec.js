@@ -4,7 +4,7 @@ var itemFeedbackReport = require('./pages/item-feedback-report-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-describe('Item Feedback Report', function () {
+fdescribe('Item Feedback Report', function () {
 
     describe('Accessed by unicef-admin', function () {
         beforeEach(function () {
@@ -34,7 +34,7 @@ describe('Item Feedback Report', function () {
         it('should search the Item report by recipient type', function () {
             itemFeedbackReport.searchByRecipientType('Sub-consignee');
             expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
-            expect(itemFeedbackReport.resultsCount).toEqual(4);
+            expect(itemFeedbackReport.resultsCount).toEqual(1);
         });
 
         it('should search the Item report by product received', function () {
@@ -52,12 +52,12 @@ describe('Item Feedback Report', function () {
         it('should search the Item report by quality of product', function () {
             itemFeedbackReport.searchByQuality('DAMAGED');
             expect(itemFeedbackReport.quality).not.toContain('GOOD');
-            expect(itemFeedbackReport.resultsCount).toEqual(2);
+            expect(itemFeedbackReport.resultsCount).toEqual(1);
         });
 
         it('should search the Item report by district', function () {
             itemFeedbackReport.searchByDistrict('Wakiso');
-            expect(itemFeedbackReport.resultsCount).toEqual(10);
+            expect(itemFeedbackReport.resultsCount).toEqual(1);
         });
 
         it('should sort by value', function () {
@@ -81,6 +81,7 @@ describe('Item Feedback Report', function () {
             itemFeedbackReport.setValueOfEditingAmountReceived(3001);
             itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 3001');
             itemFeedbackReport.saveButtonOfEditingAmountReceivedDialog().click();
+            ftUtils.wait(1000);
             expect(itemFeedbackReport.amountReceived).toContain('3001');
         });
     });
