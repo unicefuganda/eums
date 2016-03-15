@@ -55,10 +55,12 @@ class ContactEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
 
     @override_settings(CELERY_LIVE=True)
+    @patch('eums.services.contact_service.ContactService.delete')
     @patch('eums.services.contact_service.ContactService.get')
-    def test_should_delete_rapid_pro_contact(self, get):
+    def test_should_delete_rapid_pro_contact(self, get, delete):
         self.log_unicef_admin_in()
         get.return_value = CONTACT
+        delete.return_value = HTTP_200_OK
 
         execute_rapid_pro_contact_delete.delay = MagicMock()
 
@@ -66,6 +68,7 @@ class ContactEndpointTest(AuthenticatedAPITestCase):
         response = self.client.delete('%s%s/' % (ENDPOINT_URL, contact_id))
 
         ContactService.get.assert_called_once_with(contact_id)
+        ContactService.delete.assert_called_once_with(contact_id)
         execute_rapid_pro_contact_delete.delay.assert_called_once_with(CONTACT['phone'])
         self.assertEqual(response.status_code, HTTP_200_OK)
 

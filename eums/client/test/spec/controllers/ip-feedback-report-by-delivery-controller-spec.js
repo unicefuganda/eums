@@ -1,6 +1,6 @@
 describe('IpFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout,
-        route = {}, initController, mockEumsErrorMessageService, mockContactService, mockSystemSettingsService;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, getCurrentUserDeferedResult, getConsigneeDeferedResult,
+        route = {}, initController, mockEumsErrorMessageService, mockContactService, mockConsigneeService, mockUserService, mockSystemSettingsService;
     var stubSettings = {
         'notification_message': 'notification',
         'district_label': 'district'
@@ -11,17 +11,23 @@ describe('IpFeedbackReportController', function () {
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReportByDelivery']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['ContactService']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
         mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
+            getCurrentUserDeferedResult = $q.defer();
+            getConsigneeDeferedResult = $q.defer();
 
             scope = $rootScope.$new();
             location = $location;
             timeout = $timeout;
             mockReportService.ipFeedbackReportByDelivery.and.returnValue(deferredResult.promise);
+            mockConsigneeService.get.and.returnValue(getConsigneeDeferedResult.promise);
+            mockUserService.getCurrentUser.and.returnValue(getCurrentUserDeferedResult.promise);
             mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
             mockSystemSettingsService.getSettingsWithDefault.and.returnValue($q.when(stubSettings));
 
@@ -34,16 +40,24 @@ describe('IpFeedbackReportController', function () {
                     ContactService: mockContactService,
                     LoaderService: mockLoader,
                     SystemSettingsService: mockSystemSettingsService,
-                    ErrorMessageService: mockEumsErrorMessageService
+                    ErrorMessageService: mockEumsErrorMessageService,
+                    UserService: mockUserService,
+                    ConsigneeService: mockConsigneeService
                 });
             };
-
             initController(route);
+
+            getCurrentUserDeferedResult.resolve({consignee_id: 1});
+            getConsigneeDeferedResult.resolve({
+                id: 1,
+                name: 'WAKISO DHO'
+            });
         });
     });
 
     describe('on load', function () {
         it('should show the loader and hide it after the loading data', function () {
+
             deferredResult.resolve({results: [{}, {}]});
             scope.$apply();
 

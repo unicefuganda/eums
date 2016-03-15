@@ -8,7 +8,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams, ngToast,
                                                           ReportService, LoaderService, ErrorMessageService, SortService,
                                                           ContactService, SortArrowService, SysUtilsService,
-                                                          SystemSettingsService, AnswerService, UserService) {
+                                                          SystemSettingsService, AnswerService, UserService, ConsigneeService) {
 
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'mergedDateOfReceipt', 'answers.amountReceived.value'];
         var timer;
@@ -155,8 +155,11 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         }
 
         function loadItemFeedbackReport() {
+            fixIp();
+
             LoaderService.showLoader();
             var allFilters = angular.extend({}, getSearchTerm(), getSortTerm());
+
             ReportService.itemFeedbackReport(allFilters, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
@@ -168,6 +171,17 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
+            });
+        }
+
+        function fixIp() {
+            UserService.getCurrentUser().then(function (user) {
+                if (user && user.consignee_id) {
+                    $scope.isIpUser = true;
+                    ConsigneeService.get(user.consignee_id).then(function (ip) {
+                        $scope.$broadcast('set-consignee', ip);
+                    });
+                }
             });
         }
 

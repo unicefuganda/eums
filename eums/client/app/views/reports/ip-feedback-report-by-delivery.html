@@ -42,7 +42,7 @@
                     <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-consignee-container">
                         <input id="filter-by-consignee" type="hidden" select-i-p
                                ng-model="searchTerm.consigneeId"
-                               value="{{ item.consignee.id }}">
+                               value="{{ item.consignee.id }}" ng-readonly="isIpUser">
                     </div>
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Satisfied:</label>

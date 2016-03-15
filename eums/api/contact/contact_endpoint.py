@@ -30,8 +30,6 @@ class ContactEndpoint(APIView):
         return Response(status=HTTP_200_OK, data=ContactService.get_all())
 
     def delete(self, request, pk):
-        logger.info(request.data)
-
         current_contact = self.get_object(pk)
         response_code = ContactService.delete(pk)
         ContactEndpoint.__delete_rapid_pro_contact(current_contact.get('phone'))
@@ -39,10 +37,7 @@ class ContactEndpoint(APIView):
         return Response(status=response_code)
 
     def post(self, request):
-        logger.info(request.data)
-
         response_code = ContactService.add(request.data)
-
         ContactEndpoint.__add_or_update_rapid_pro_contact(request.data)
 
         return Response(status=response_code)

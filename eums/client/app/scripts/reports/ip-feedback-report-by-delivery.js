@@ -7,7 +7,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
     }])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService, ContactService,
                                                                   ErrorMessageService, SortService, SortArrowService,
-                                                                  SysUtilsService, ngToast, SystemSettingsService) {
+                                                                  SysUtilsService, ConsigneeService, UserService, ngToast, SystemSettingsService) {
         var SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
         var timer;
         var initializing = true;
@@ -79,8 +79,10 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
         }
 
         function loadIpFeedbackReportByDelivery() {
+            fixIp();
             LoaderService.showLoader();
             var allFilters = angular.extend({}, getSearchTerm(), getSortTerm());
+
             ReportService.ipFeedbackReportByDelivery(allFilters, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
@@ -92,6 +94,17 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'C
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
+            });
+        }
+
+        function fixIp() {
+            UserService.getCurrentUser().then(function (user) {
+                if (user && user.consignee_id) {
+                    $scope.isIpUser = true;
+                    ConsigneeService.get(user.consignee_id).then(function (ip) {
+                        $scope.$broadcast('set-consignee', ip);
+                    });
+                }
             });
         }
 

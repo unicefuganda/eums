@@ -1,7 +1,7 @@
 describe('ItemFeedbackReportController', function () {
-    var scope, location, mockReportService, mockLoader, timeout, initController, mockSystemSettingsService,
+    var scope, location, mockReportService, mockLoader, timeout, initController, mockSystemSettingsService, mockConsigneeService,
         mockAnswerService, mockUserService;
-    var deferredResult, deferredUpdateNumericAnswerResult, userHasPermissionToPromise, deferredPermissionsResultsPromise;
+    var deferredResult, deferredUpdateNumericAnswerResult, getCurrentUserDeferedResult, getConsigneeDeferedResult, userHasPermissionToPromise, deferredPermissionsResultsPromise;
     var stubSettings = {
         'notification_message': 'notification',
         'district_label': 'district'
@@ -118,10 +118,12 @@ describe('ItemFeedbackReportController', function () {
         module('ItemFeedbackReport');
 
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions', 'getCurrentUser']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockAnswerService = jasmine.createSpyObj('mockAnswerService', ['updateNumericAnswer']);
+
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             scope = $rootScope.$new();
@@ -131,9 +133,14 @@ describe('ItemFeedbackReportController', function () {
             deferredResult = $q.defer();
             deferredUpdateNumericAnswerResult = $q.defer();
             userHasPermissionToPromise = $q.defer();
+            getCurrentUserDeferedResult = $q.defer();
+            getConsigneeDeferedResult = $q.defer();
+
             deferredPermissionsResultsPromise = $q.defer();
+            mockUserService.getCurrentUser.and.returnValue(getCurrentUserDeferedResult.promise);
             mockReportService.itemFeedbackReport.and.returnValue(deferredResult.promise);
             mockAnswerService.updateNumericAnswer.and.returnValue(deferredUpdateNumericAnswerResult.promise);
+            mockConsigneeService.get.and.returnValue(getConsigneeDeferedResult.promise);
             mockUserService.hasPermission.and.returnValue(userHasPermissionToPromise.promise);
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResultsPromise.promise);
             mockSystemSettingsService.getSettings.and.returnValue($q.when(stubSettings));
