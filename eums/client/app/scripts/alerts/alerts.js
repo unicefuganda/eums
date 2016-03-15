@@ -33,7 +33,6 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.constant_type_item = 'item';
         $scope.constant_type_distribution = 'distribution';
         $scope.remarks = '';
-        $scope.query = '';
         $scope.type = $scope.constant_type_delivery;
         $scope.sortTerm = {field: 'alertDate', order: 'desc'};
         $scope.currentSearchTerm = "";
@@ -124,7 +123,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         };
 
         $scope.exportToCSV = function () {
-            AlertsService.export($scope.type, $scope.query).then(function (response) {
+            AlertsService.export($scope.type, $scope.searchTerm).then(function (response) {
                 ngToast.create({content: response.data.message, class: 'info'});
             }, function () {
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";

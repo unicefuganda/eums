@@ -315,7 +315,7 @@ describe('AlertsController', function () {
 
         it('should export filtered alerts to CSV', function () {
             var waybill = '81020737';
-            scope.query = waybill;
+            scope.searchTerm = waybill;
             scope.exportToCSV();
             expect(mockAlertsService.export).toHaveBeenCalledWith('delivery', waybill);
         });
