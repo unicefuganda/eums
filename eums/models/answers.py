@@ -66,7 +66,7 @@ class Answer(TimeStampedModel):
                 options.append(option.text) if option.text != 'UNCATEGORISED' else None
         except:
             pass
-        return options
+        return sorted(options)
 
 
 class TextAnswer(Answer):
