@@ -55,7 +55,9 @@ DATABASES = {
         'USER': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
-        'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE,
+        'OPTIONS': {
+            'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE,
+        },
     }
 }
 
@@ -112,10 +114,8 @@ MAX_ALLOWED_REPLY_PERIOD = 1
 DELIVERY_BUFFER_IN_SECONDS = 10
 TEMP_DELIVERY_BUFFER_IN_SECONDS = 1800
 
-
 # Contacts service settings
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
-
 
 # RapidPro settings
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
@@ -132,7 +132,6 @@ RAPIDPRO_LIVE = False
 RAPIDPRO_SSL_VERIFY = True
 
 CELERY_LIVE = False
-
 
 VISION_USER = os.getenv('VISION_USER', 'invalid_vision_user')
 VISION_PASSWORD = os.getenv('VISION_PASSWORD', 'invalid_vision_password')
@@ -151,12 +150,12 @@ LOGIN_URL = "/login"
 _es_settings = namedtuple('ES_SETTINGS', ['INDEX', 'NODE_TYPE', 'HOST', 'MAPPING', 'NODE_SEARCH', 'BULK'])
 _base_url = 'http://localhost:9200/'
 ELASTIC_SEARCH = _es_settings(
-        'eums',
-        'delivery_node',
-        _base_url,
-        '%s/_mapping' % _base_url,
-        '%s/delivery_node/_search' % _base_url,
-        '%s/_bulk' % _base_url,
+    'eums',
+    'delivery_node',
+    _base_url,
+    '%s/_mapping' % _base_url,
+    '%s/delivery_node/_search' % _base_url,
+    '%s/_bulk' % _base_url,
 )
 
 # EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
