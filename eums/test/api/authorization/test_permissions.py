@@ -152,8 +152,8 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test in self.unicef_admin_permissions)
         self.assertTrue(permission_to_test in self.unicef_editor_permissions)
         self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
-        self.assertTrue(permission_to_test not in self.ip_editor_permissions)
-        self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
+        self.assertTrue(permission_to_test in self.ip_editor_permissions)
+        self.assertTrue(permission_to_test in self.ip_viewer_permissions)
 
     def test_grant_correct_view_item_feedback_report_permission(self):
         permission_to_test = PermissionCode.CAN_VIEW_ITEM_FEEDBACK_REPORT

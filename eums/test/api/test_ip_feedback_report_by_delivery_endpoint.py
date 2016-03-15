@@ -501,11 +501,11 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
     def test_unicef_viewer_should_have_permission_to_view_delivery_feedback_report(self):
         self.log_and_assert_view_delivery_feedback_report_permission(self.log_unicef_viewer_in, HTTP_200_OK)
 
-    def test_ip_editor_should_not_have_permission_to_view_delivery_feedback_report(self):
-        self.log_and_assert_view_delivery_feedback_report_permission(self.log_ip_editor_in, HTTP_403_FORBIDDEN)
+    def test_ip_editor_should_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_ip_editor_in, HTTP_200_OK)
 
-    def test_ip_viewer_should_not_have_permission_to_view_delivery_feedback_report(self):
-        self.log_and_assert_view_delivery_feedback_report_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
+    def test_ip_viewer_should_have_permission_to_view_delivery_feedback_report(self):
+        self.log_and_assert_view_delivery_feedback_report_permission(self.log_ip_viewer_in, HTTP_200_OK)
 
     def log_and_assert_view_delivery_feedback_report_permission(self, log_func, status_code):
         log_func()
