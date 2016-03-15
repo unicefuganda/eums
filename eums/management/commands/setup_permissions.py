@@ -159,6 +159,7 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_STOCK_REPORT,
         PermissionCode.CAN_ADD_WEB_ANSWER,
         PermissionCode.CAN_VIEW_ITEM_FEEDBACK_REPORT,
+        PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
     ],
     GROUP_IP_VIEWER: [
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
@@ -171,6 +172,7 @@ GROUP_PERMISSIONS = {
 
         PermissionCode.CAN_VIEW_STOCK_REPORT,
         PermissionCode.CAN_VIEW_ITEM_FEEDBACK_REPORT,
+        PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
         PermissionCode.CAN_VIEW_ITEM,
     ]
 }

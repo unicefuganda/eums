@@ -39,6 +39,12 @@ class ContactServiceTest(TestCase):
 
         self.assertEqual(response, CONTACT)
 
+    def test_should_get_contact_by_user_id(self):
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(return_value=CONTACT)))
+        response = ContactService.get_by_user_id('17')
+
+        self.assertEqual(response, CONTACT)
+
     def test_should_search_contact_by_phone(self):
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(return_value=CONTACT)))
         response = ContactService.get(CONTACT['phone'])

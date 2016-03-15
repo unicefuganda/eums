@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 HEADER_CONTACT = {"Content-Type": "application/json"}
 
 
-
 class ContactService(object):
     @staticmethod
     def get(contact_person_id):
@@ -35,20 +34,26 @@ class ContactService(object):
             return default_contact
 
     @staticmethod
-    def delete(contact_person_id):
-        try:
-            response = requests.delete(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
-            return response.status_code
-        except ConnectionError, error:
-            logger.error(error)
-            return HTTP_504_GATEWAY_TIMEOUT
-
-    @staticmethod
     def get_all():
         contacts = [{'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
                      'types': [], 'outcomes': [], 'ips': [], 'districts': []}]
         try:
             response = requests.get(url='%s' % settings.CONTACTS_SERVICE_URL)
+            if response.status_code is HTTP_200_OK:
+                return response.json()
+
+            logger.error('Contact not found')
+            return contacts
+        except ConnectionError, error:
+            logger.error(error)
+            return contacts
+
+    @staticmethod
+    def get_by_user_id(created_by_user_id):
+        contacts = [{'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
+                     'types': [], 'outcomes': [], 'ips': [], 'districts': []}]
+        try:
+            response = requests.get('%s?createdbyuserid=%s' % (settings.CONTACTS_SERVICE_URL, created_by_user_id))
             if response.status_code is HTTP_200_OK:
                 return response.json()
 
@@ -72,6 +77,15 @@ class ContactService(object):
         except ConnectionError, error:
             logger.error(error)
             return default_contact
+
+    @staticmethod
+    def delete(contact_person_id):
+        try:
+            response = requests.delete(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
+            return response.status_code
+        except ConnectionError, error:
+            logger.error(error)
+            return HTTP_504_GATEWAY_TIMEOUT
 
     @staticmethod
     def update(contact):
@@ -167,10 +181,10 @@ class ContactService(object):
         return {
             'firstname': contact.get('firstName'),
             'lastname': contact.get('lastName'),
-            'districts': ','.join(contact.get('districts')) if contact.get('districts') else ',',
-            'ips': ','.join(contact.get('ips')) if contact.get('ips') else ',',
-            'types': ','.join(contact.get('types')) if contact.get('types') else ',',
-            'outcomes': ','.join(contact.get('outcomes')) if contact.get('outcomes') else ',',
+            'districts': ','.join(contact.get('districts')) if contact.get('districts') else str(None),
+            'ips': ','.join(contact.get('ips')) if contact.get('ips') else str(None),
+            'types': ','.join(contact.get('types')) if contact.get('types') else str(None),
+            'outcomes': ','.join(contact.get('outcomes')) if contact.get('outcomes') else str(None),
         }
 
 

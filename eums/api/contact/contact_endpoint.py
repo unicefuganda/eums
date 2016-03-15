@@ -12,16 +12,27 @@ logger = logging.getLogger(__name__)
 
 
 class ContactEndpoint(APIView):
-    def get(self, request):
-        searchfield = request.GET.get('searchfield')
-        if searchfield:
-            return Response(status=HTTP_200_OK, data=ContactService.search(searchfield))
+    def get_object(self, pk):
+        return ContactService.get(pk)
+
+    def get(self, request, pk=None):
+        if pk:
+            return Response(status=HTTP_200_OK, data=ContactService.get(pk))
+
+        created_by_user_id = request.GET.get('createdbyuserid')
+        if created_by_user_id:
+            return Response(status=HTTP_200_OK, data=ContactService.get_by_user_id(created_by_user_id))
+
+        search_field = request.GET.get('searchfield')
+        if search_field:
+            return Response(status=HTTP_200_OK, data=ContactService.search(search_field))
+
         return Response(status=HTTP_200_OK, data=ContactService.get_all())
 
     def delete(self, request, pk):
         logger.info(request.data)
 
-        current_contact = ContactService.get(pk)
+        current_contact = self.get_object(pk)
         response_code = ContactService.delete(pk)
         ContactEndpoint.__delete_rapid_pro_contact(current_contact.get('phone'))
 

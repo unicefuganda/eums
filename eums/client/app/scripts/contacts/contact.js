@@ -154,14 +154,14 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             idField: '_id',
             methods: {
                 get: function (id) {
-                    return $http.get(EumsConfig.BACKEND_URLS.CONTACTS).then(function (response) {
+                    return $http.get(EumsConfig.BACKEND_URLS.CONTACTS + id).then(function (response) {
                         return response.data;
                     }).catch(function () {
                         return undefined;
                     });
                 },
                 findContacts: function (currentUserId) {
-                    return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?createdbyuserid=' + currentUserId).then(function (response) {
+                    return $http.get(EumsConfig.BACKEND_URLS.CONTACTS + '?createdbyuserid=' + currentUserId).then(function (response) {
                         return response.data;
                     }).catch(function () {
                         return undefined;
