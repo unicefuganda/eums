@@ -185,15 +185,6 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                     }
                 }
             })
-            .when('/import-data', {
-                templateUrl: '/static/app/views/import-data/import-data.html',
-                controller: 'ImportDataController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_stock_report');
-                    }
-                }
-            })
             .when('/distribution-plan-responses', {
                 templateUrl: '/static/app/views/reports/responses.html',
                 controller: 'ResponsesController',
