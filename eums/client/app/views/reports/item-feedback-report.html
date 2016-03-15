@@ -46,7 +46,7 @@
                     </div>
                     <div class="col-xs-3 margin-bottom-10 pad-small" id="filter-ip-container">
                         <input id="filter-by-ip" type="hidden" select-i-p ng-model="searchTerm.ipId"
-                               value="{{ item.consignee.id }}">
+                               value="{{ item.consignee.id }}"  ng-readonly="isIpUser">
                     </div>
                     <div class="col-xs-2 filter-label">
                         <label class="control-label description-label">Received:</label>
