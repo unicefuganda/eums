@@ -4,7 +4,7 @@ var itemFeedbackReport = require('./pages/item-feedback-report-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-fdescribe('Item Feedback Report', function () {
+describe('Item Feedback Report', function () {
 
     describe('Accessed by unicef-admin', function () {
         beforeEach(function () {
