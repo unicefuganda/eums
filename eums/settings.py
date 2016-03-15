@@ -2,6 +2,7 @@ import logging.config
 import os
 from collections import namedtuple
 
+import psycopg2.extensions
 import raven
 from os.path import join, exists
 
@@ -53,7 +54,8 @@ DATABASES = {
         'NAME': 'eums',
         'USER': 'postgres',
         'HOST': 'localhost',
-        'PORT': '5432'
+        'PORT': '5432',
+        'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE,
     }
 }
 

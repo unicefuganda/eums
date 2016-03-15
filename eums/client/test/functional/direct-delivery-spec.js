@@ -147,4 +147,47 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertIP).toContain('WAKISO DHO');
         expect(alertsPage.alertLocation).toContain('Wakiso');
     });
+
+    it('Admin can not create direct deliveries to multiple IPs if avalable balance updated by another admin', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        directDeliveryPage.visit();
+        directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
+        directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
+        directDeliveryPage.selectItem("Investor Perspectives & Children's Right");
+
+        var browser2 = browser.forkNewDriverInstance();
+        loginPage.switchBrowser(browser2);
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        directDeliveryPage.switchBrowser(browser2);
+        directDeliveryPage.visit();
+        directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
+        directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
+        directDeliveryPage.selectItem("Investor Perspectives & Children's Right");
+        directDeliveryPage.addConsignee();
+        directDeliveryPage.setQuantity(100);
+        directDeliveryPage.setDeliveryDate('10/10/2021');
+        directDeliveryPage.setConsignee('WAKISO');
+        directDeliveryPage.setContact('John');
+        directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.setTimeLimitationOnDistribution(10);
+        directDeliveryPage.enableTracking();
+        directDeliveryPage.saveDelivery();
+        expect(directDeliveryPage.toastMessage).toContain('Delivery Saved!');
+
+        loginPage.switchBrowser();
+        directDeliveryPage.switchBrowser();
+        directDeliveryPage.addConsignee();
+        directDeliveryPage.setQuantity(50);
+        directDeliveryPage.setDeliveryDate('10/10/2021');
+        directDeliveryPage.setConsignee('WAKISO');
+        directDeliveryPage.setContact('John');
+        directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.setTimeLimitationOnDistribution(10);
+        directDeliveryPage.enableTracking();
+        directDeliveryPage.saveDelivery();
+        expect(directDeliveryPage.toastMessage).toContain('Available balance has changed, please refresh page and try again!');
+    });
+
 });

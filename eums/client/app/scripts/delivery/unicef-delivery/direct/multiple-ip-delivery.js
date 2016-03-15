@@ -85,10 +85,16 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         $scope.save = function () {
-            $scope.saveDeliveryNodes();
-            if ($scope.selectedPurchaseOrder.isSingleIp == null) {
-                updateDeliveryStatus();
-            }
+            isAvailableBalanceChanged().then(function (isChanged) {
+                if (isChanged) {
+                    createToast('Available balance has changed, please refresh page and try again!', 'danger');
+                    return;
+                }
+                $scope.saveDeliveryNodes();
+                if ($scope.selectedPurchaseOrder.isSingleIp == null) {
+                    updateDeliveryStatus();
+                }
+            });
         };
 
         $scope.saveDeliveryNodes = function () {
@@ -160,6 +166,12 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         function loadPurchaseOrderItemById() {
             return PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
+            });
+        }
+
+        function isAvailableBalanceChanged() {
+            return PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item']).then(function (purchaseOrderItem) {
+                return $scope.selectedPurchaseOrderItem.availableBalance != purchaseOrderItem.availableBalance;
             });
         }
 

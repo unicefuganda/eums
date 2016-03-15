@@ -101,7 +101,7 @@ describe('MultipleIpDirectDeliveryController', function () {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'update']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal', 'hideModal']);
@@ -428,14 +428,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             expect(scope.selectedPurchaseOrderItem).toEqual(stubPurchaseOrderItem);
         });
 
-        xit('should put a distribution plan on the scope if purchase order item has associated distribution plan nodes', function () {
-            deferred.resolve({distribution_plan_node: 1});
-            scope.selectedPurchaseOrderItem = {information: {distributionplannode_set: ['1']}};
-            scope.$apply();
-
-            expect(scope.distributionPlan).toEqual({id: 1, programme: 1});
-        });
-
         it('should get distribution plan nodes for nodes if nodes exist', function () {
             setUp({purchaseOrderId: 1, purchaseOrderItemId: 1});
             deferredPermissionsResultsPromise.resolve(adminPermissions);
@@ -509,16 +501,17 @@ describe('MultipleIpDirectDeliveryController', function () {
             distributionPlan = {id: 1};
             createPromise.resolve(distributionPlan);
             mockDeliveryService.create.and.returnValue(createPromise.promise);
+            deferredPurchaseOrderItem.resolve({availableBalance: 80});
 
             programmeId = 42;
             scope.selectedPurchaseOrder = {programme: programmeId};
-            scope.selectedPurchaseOrderItem = {quantity: 100, information: stubPurchaseOrderItem};
+            scope.selectedPurchaseOrderItem = {quantity: 100, information: stubPurchaseOrderItem, availableBalance: 80};
             scope.$apply();
         });
 
         describe('and the plan is successfully saved, ', function () {
             it('a toast confirming the save action should be created', function () {
-                scope.saveDeliveryNodes();
+                scope.save();
                 scope.$apply();
 
                 var expectedToastArguments = {
@@ -553,6 +546,24 @@ describe('MultipleIpDirectDeliveryController', function () {
                 scope.$apply();
 
                 expect(mockDeliveryService.create.calls.count()).toBe(2);
+            });
+        });
+
+        describe('and the plan is failed to save, ', function () {
+            it('a toast error should be created', function () {
+                scope.selectedPurchaseOrderItem.availableBalance = 70;
+                spyOn(scope, 'saveDeliveryNodes');
+                scope.save();
+                scope.$apply();
+
+                var expectedToastArguments = {
+                    content: 'Available balance has changed, please refresh page and try again!',
+                    class: 'danger',
+                    maxNumber: 1,
+                    dismissOnTimeout: true
+                };
+                expect(mockToastProvider.create).toHaveBeenCalledWith(expectedToastArguments);
+                expect(scope.saveDeliveryNodes).not.toHaveBeenCalled();
             });
         });
 
@@ -810,6 +821,8 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     describe('isSingleIp update', function () {
         it('Should update isSingleIp flag if it is not yet set on the purchase order', function () {
+            scope.selectedPurchaseOrderItem = {availableBalance: 10};
+            deferredPurchaseOrderItem.resolve({availableBalance: 10});
             deferredPurchaseOrder.resolve({id: 1, purchaseorderitemSet: [{id: 2, value: 50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
@@ -822,6 +835,8 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
 
         it('should not update isSingleIP flag on purchase order if flag is already set to single', function () {
+            scope.selectedPurchaseOrderItem = {availableBalance: 10};
+            deferredPurchaseOrderItem.resolve({availableBalance: 10});
             deferredPurchaseOrder.resolve({id: 1, isSingleIp: true, purchaseorderitemSet: [{id: 2, value: 50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
@@ -834,6 +849,8 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
 
         it('should not update isSingleIP flag on purchase order if flag is already set to multiple', function () {
+            scope.selectedPurchaseOrderItem = {availableBalance: 10};
+            deferredPurchaseOrderItem.resolve({availableBalance: 10});
             deferredPurchaseOrder.resolve({id: 1, isSingleIp: false, purchaseorderitemSet: [{id: 2, value: 50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();

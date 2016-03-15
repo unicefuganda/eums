@@ -1,44 +1,79 @@
 var LoginPage = function () {};
 
-LoginPage.prototype = Object.create({}, {
+LoginPage.prototype = Object.create({bro: browser, ele: element}, {
 
-    url: { get: function () { return '/login'; }},
+    url: {
+        get: function () {
+            return '/login';
+        }
+    },
 
-    visit: { value: function () {
-        browser.ignoreSynchronization = true;
-        browser.get(this.url);
-    }},
+    visit: {
+        value: function () {
+            this.bro.ignoreSynchronization = true;
+            this.bro.get(this.url);
+        }
+    },
 
-    logout: { value: function () {
-        browser.ignoreSynchronization = true;
-        browser.get('logout');
-    }},
+    switchBrowser: {
+        value: function (bro) {
+            this.bro = bro || browser;
+            this.ele = this.bro.element;
+        }
+    },
 
-    welcomeMessage: { get: function () { return element(by.css('.slogan')); }},
-    username: { get: function () { return element(by.id('username')); }},
-    password: { get: function () { return element(by.id('password')); }},
-    loginButton: { get: function () { return element(by.css('.btn-form')); }},
+    logout: {
+        value: function () {
+            this.bro.ignoreSynchronization = true;
+            this.bro.get('logout');
+        }
+    },
 
-    loginAs: { value: function (username, password) {
-        this.username.sendKeys(username);
-        this.password.sendKeys(password);
-        this.loginButton.click();
+    welcomeMessage: {
+        get: function () {
+            return this.ele(by.css('.slogan'));
+        }
+    },
+    username: {
+        get: function () {
+            return this.ele(by.id('username'));
+        }
+    },
+    password: {
+        get: function () {
+            return this.ele(by.id('password'));
+        }
+    },
+    loginButton: {
+        get: function () {
+            return this.ele(by.css('.btn-form'));
+        }
+    },
 
-        browser.ignoreSynchronization = false;
+    loginAs: {
+        value: function (username, password) {
+            this.username.sendKeys(username);
+            this.password.sendKeys(password);
+            this.loginButton.click();
 
-        var EC = protractor.ExpectedConditions;
-        var loadingModal = element(by.id('loading'));
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var mapHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
+            this.bro.ignoreSynchronization = false;
 
-        browser.wait(mapHasLoaded, 5000, "Timeout exceeded while loading map");
-    }},
+            var EC = protractor.ExpectedConditions;
+            var loadingModal = this.ele(by.id('loading'));
+            var fadingModal = this.ele(by.css('.modal-backdrop.fade'));
+            var mapHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
 
-    loginWithNoWaitAs: { value: function (username, password) {
-        this.username.sendKeys(username);
-        this.password.sendKeys(password);
-        this.loginButton.click();
-    }}
+            this.bro.wait(mapHasLoaded, 5000, "Timeout exceeded while loading map");
+        }
+    },
+
+    loginWithNoWaitAs: {
+        value: function (username, password) {
+            this.username.sendKeys(username);
+            this.password.sendKeys(password);
+            this.loginButton.click();
+        }
+    }
 
 });
 
