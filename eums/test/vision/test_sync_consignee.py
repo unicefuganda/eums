@@ -3,20 +3,13 @@ from unittest import TestCase
 from mock import MagicMock
 
 from eums.models import Consignee
+from eums.test.vision.data.consignees import downloaded_consignee
 from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
 
 
 class TestSyncConsignee(TestCase):
     def setUp(self):
-        self.downloaded_consignee = '[{"COUNTRY_CODE":"438",' \
-                                    '"COUNTRY_NAME":"Uganda",' \
-                                    '"CONSIGNEE_CODE":"L438001120",' \
-                                    '"CONSIGNEE_NAME":"PATHFINDER INTERNATIONAL"},' \
-                                    '{"COUNTRY_CODE":"438",' \
-                                    '"COUNTRY_NAME":"Uganda",' \
-                                    '"CONSIGNEE_CODE":"L438001121",' \
-                                    '"CONSIGNEE_NAME":"JACOB LONY ALERO HC III"}]'
-
+        self.downloaded_consignee = downloaded_consignee
         self.expected_consignee_1 = Consignee(customer_id='L438001120',
                                               name='PATHFINDER INTERNATIONAL',
                                               imported_from_vision=True)

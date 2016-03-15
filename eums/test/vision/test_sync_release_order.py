@@ -6,61 +6,16 @@ from mock import MagicMock
 
 from eums.models import Programme, SalesOrder, PurchaseOrderItem, PurchaseOrder, Item, OrderItem, \
     ReleaseOrder, ReleaseOrderItem, Consignee
+from eums.test.vision.data.release_orders import downloaded_release_orders, converted_release_orders, \
+    release_order_which_can_not_refer_to_sales_order, release_order_which_can_not_refer_to_purchase_order
 from eums.vision.release_order_synchronizer import ReleaseOrderSynchronizer
 
 
 class TestSyncReleaseOrder(TestCase):
     def setUp(self):
-        self.downloaded_release_orders = [{"RELEASE_ORDER_NUMBER": u"0054155912",
-                                           "RELEASE_ORDER_ITEM": 10,
-                                           "RELEASE_ORDER_TYPE": "ZLO",
-                                           "SALES_UNIT": "EA",
-                                           "PLANT": "5631",
-                                           "SHIP_TO_PARTY": "L626010384",
-                                           "WAREHOUSE_NUMBER": "492",
-                                           "CONSIGNEE": "L626010384",
-                                           "DOCUMENT_DATE": u"/Date(1447390800000)/",
-                                           "GOODS_ISSUE_DATE": u"/Date(1448254800000)/",
-                                           "MATERIAL_NUMBER": "S0141021",
-                                           "DELIVERY_QUANTITY": 55,
-                                           "VALUE": 15030.86,
-                                           "MOVING_AVG_PRICE": 273.29,
-                                           "SO_NUMBER": u"0020173918",
-                                           "PO_NUMBER": u"0045143984",
-                                           "PO_ITEM": 10,
-                                           "WBS_ELEMENT": "6260\/A0\/05\/401\/005\/001",
-                                           "WAYBILL_NUMBER": u"0072124798",
-                                           "FORWARDER_NO": None,
-                                           "SHIPMENT_END_DATE": u"/Date(1448254800000)/",
-                                           "ACTUAL_SHIPMENT_START_DATE": None,
-                                           "SHIPMENT_COMPLETION_DATE": None,
-                                           "RELEASE_ORDER_CREATE_DATE": u"/Date(1447390800000)/",
-                                           "RELEASE_ORDER_UPDATE_DATE": u"/Date(1447390800000)/"}]
-        self.converted_release_orders = [{"RELEASE_ORDER_NUMBER": 54155912,
-                                          "RELEASE_ORDER_ITEM": 10,
-                                          "RELEASE_ORDER_TYPE": "ZLO",
-                                          "SALES_UNIT": "EA",
-                                          "PLANT": "5631",
-                                          "SHIP_TO_PARTY": "L626010384",
-                                          "WAREHOUSE_NUMBER": "492",
-                                          "CONSIGNEE": "L626010384",
-                                          "DOCUMENT_DATE": datetime.datetime(2015, 11, 13, 8, 0),
-                                          "GOODS_ISSUE_DATE": datetime.datetime(2015, 11, 23, 8, 0),
-                                          "MATERIAL_NUMBER": "S0141021",
-                                          "DELIVERY_QUANTITY": 55,
-                                          "VALUE": 15030.86,
-                                          "MOVING_AVG_PRICE": 273.29,
-                                          "SO_NUMBER": 20173918,
-                                          "PO_NUMBER": 45143984,
-                                          "PO_ITEM": 10,
-                                          "WBS_ELEMENT": "6260\/A0\/05\/401\/005\/001",
-                                          "WAYBILL_NUMBER": 72124798,
-                                          "FORWARDER_NO": None,
-                                          "SHIPMENT_END_DATE": datetime.datetime(2015, 11, 23, 8, 0),
-                                          "ACTUAL_SHIPMENT_START_DATE": None,
-                                          "SHIPMENT_COMPLETION_DATE": None,
-                                          "RELEASE_ORDER_CREATE_DATE": datetime.datetime(2015, 11, 13, 8, 0),
-                                          "RELEASE_ORDER_UPDATE_DATE": datetime.datetime(2015, 11, 13, 8, 0)}]
+        self.downloaded_release_orders = downloaded_release_orders
+        self.converted_release_orders = converted_release_orders
+
         self._prepare_sales_and_purchase_order()
         consignee_1 = Consignee(customer_id='L626010384')
         self.expected_release_order_1 = ReleaseOrder(order_number=54155912,
@@ -76,32 +31,10 @@ class TestSyncReleaseOrder(TestCase):
                                                               item_number=10,
                                                               quantity=55,
                                                               value=Decimal('15030.86'))
-        self.release_order_which_can_not_refer_to_sales_order \
-            = [{'PO_ITEM': 10,
-                'MATERIAL_NUMBER': 'S0141021',
-                'RELEASE_ORDER_ITEM': 10,
-                'VALUE': 15030.86,
-                'DELIVERY_QUANTITY': 55,
-                'PO_NUMBER': 45143984,
-                'SHIPMENT_END_DATE': '/Date(1448254800000)/',
-                'WAYBILL_NUMBER': 72124798,
-                'CONSIGNEE': 'L626010384',
-                'SO_NUMBER': 20170001,
-                'RELEASE_ORDER_NUMBER': 54155912,
-                'RELEASE_ORDER_UPDATE_DATE': datetime.datetime(2015, 11, 13, 8, 0)}]
-        self.release_order_which_can_not_refer_to_purchase_order \
-            = [{'PO_ITEM': 10,
-                'MATERIAL_NUMBER': 'S0141021',
-                'RELEASE_ORDER_ITEM': 10,
-                'VALUE': 15030.86,
-                'DELIVERY_QUANTITY': 55,
-                'PO_NUMBER': 45140001,
-                'SHIPMENT_END_DATE': '/Date(1448254800000)/',
-                'WAYBILL_NUMBER': 72124798,
-                'CONSIGNEE': 'L626010384',
-                'SO_NUMBER': 20173918,
-                'RELEASE_ORDER_NUMBER': 54155912,
-                'RELEASE_ORDER_UPDATE_DATE': datetime.datetime(2015, 11, 13, 8, 0)}]
+        self.release_order_which_can_not_refer_to_sales_order = \
+            release_order_which_can_not_refer_to_sales_order
+        self.release_order_which_can_not_refer_to_purchase_order = \
+            release_order_which_can_not_refer_to_purchase_order
 
         start_date = '01122015'
         end_date = datetime.date.today().strftime('%d%m%Y')

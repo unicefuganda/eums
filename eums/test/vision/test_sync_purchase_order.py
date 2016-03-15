@@ -6,126 +6,23 @@ from mock import MagicMock
 
 from eums.models import SalesOrder, SalesOrderItem, OrderItem, Item, Programme, PurchaseOrder, PurchaseOrderItem, \
     DistributionPlan, DistributionPlanNode
+from eums.test.vision.data.purchase_orders import converted_purchase_orders, downloaded_purchase_orders, \
+    purchase_order_which_do_not_have_reference_to_sales_order, \
+    purchase_order_item_which_do_not_have_reference_to_sales_order_item, purchase_order_item_with_invalid_po_type
 from eums.vision.purchase_order_synchronizer import PurchaseOrderSynchronizer
 
 
 class TestSyncPurchaseOrder(TestCase):
     def setUp(self):
-        self.downloaded_purchase_orders = [{"PURCHASING_ORG_CODE": "1000",
-                                            "PURCHASING_GROUP_CODE": u"100",
-                                            "PURCHASING_GROUP_NAME": "IMMUNIZATION",
-                                            "PLANT_CODE": "1000",
-                                            "VENDOR_CODE": "1900000501",
-                                            "VENDOR_NAME": "P.T. BIO FARMA (PERSERO)",
-                                            "VENDOR_CTRY_NAME": "Indonesia",
-                                            "GRANT_REF": "XP154478",
-                                            "EXPIRY_DATE": u"/Date(1483160400000)/",
-                                            "DONOR_NAME": "Ministry of National Health",
-                                            "PREQ_NO": "0030344125",
-                                            "PREQ_ITEM": 80,
-                                            "PREQ_QTY": 51322.65,
-                                            "SO_NUMBER": u"0020173918",
-                                            "PO_NUMBER": u"0045143984",
-                                            "PO_ITEM": 10,
-                                            "PO_TYPE": "NB",
-                                            "PO_DATE": u"/Date(1448859600000)/",
-                                            "CREATE_DATE": u"/Date(1448859600000)/",
-                                            "UPDATE_DATE": u"/Date(1448859600000)/",
-                                            "PO_ITEM_QTY": 100,
-                                            "CURRENCY_CODE": "USD",
-                                            "AMOUNT_CURR": 51322.65,
-                                            "AMOUNT_USD": 51322.65,
-                                            "MATERIAL_CODE": "S0141021",
-                                            "MATERIAL_DESC": "Scale,electronic,mother/child,150kgx100g"},
-
-                                           {"PURCHASING_ORG_CODE": "1000",
-                                            "PURCHASING_GROUP_CODE": u"100",
-                                            "PURCHASING_GROUP_NAME": "IMMUNIZATION",
-                                            "PLANT_CODE": "1000",
-                                            "VENDOR_CODE": "1900000501",
-                                            "VENDOR_NAME": "P.T. BIO FARMA (PERSERO)",
-                                            "VENDOR_CTRY_NAME": "Indonesia",
-                                            "GRANT_REF": "XP154478",
-                                            "EXPIRY_DATE": u"/Date(1450069200000)/",
-                                            "DONOR_NAME": "Ministry of National Health",
-                                            "PREQ_NO": "0030344125",
-                                            "PREQ_ITEM": 10,
-                                            "PREQ_QTY": 2673,
-                                            "SO_NUMBER": u"0020174363",
-                                            "PO_NUMBER": u"0045144863",
-                                            "PO_ITEM": 20,
-                                            "PO_TYPE": "ZLC",
-                                            "PO_DATE": u"/Date(1450069200000)/",
-                                            "CREATE_DATE": u"/Date(1450069200000)/",
-                                            "UPDATE_DATE": u"/Date(1450069200000)/",
-                                            "PO_ITEM_QTY": 80,
-                                            "CURRENCY_CODE": "USD",
-                                            "AMOUNT_CURR": 2673,
-                                            "AMOUNT_USD": 2673,
-                                            "MATERIAL_CODE": "SL009100",
-                                            "MATERIAL_DESC": "Laundry soap, Carton, 25 bars, 800 grams"}]
-
-        self.converted_purchase_orders = [
-            {'AMOUNT_CURR': 51322.65, 'PURCHASING_GROUP_CODE': 100, 'PURCHASING_ORG_CODE': '1000',
-             'PREQ_NO': '0030344125',
-             'PLANT_CODE': '1000', 'MATERIAL_DESC': 'Scale,electronic,mother/child,150kgx100g',
-             'EXPIRY_DATE': datetime.datetime(2016, 12, 31, 8, 0), 'PO_ITEM_QTY': 100, 'PREQ_ITEM': 80,
-             'PURCHASING_GROUP_NAME': 'IMMUNIZATION', 'PO_ITEM': 10, 'PO_DATE': datetime.datetime(2015, 11, 30, 8, 0),
-             'CREATE_DATE': datetime.datetime(2015, 11, 30, 8, 0), 'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
-             'VENDOR_CTRY_NAME': 'Indonesia', 'DONOR_NAME': 'Ministry of National Health', 'PREQ_QTY': 51322.65,
-             'CURRENCY_CODE': 'USD', 'SO_NUMBER': 20173918, 'VENDOR_CODE': '1900000501', 'AMOUNT_USD': 51322.65,
-             'GRANT_REF': 'XP154478', 'PO_NUMBER': 45143984, 'MATERIAL_CODE': 'S0141021', 'PO_TYPE': 'NB',
-             'VENDOR_NAME': 'P.T. BIO FARMA (PERSERO)'},
-            {'AMOUNT_CURR': 2673, 'PURCHASING_GROUP_CODE': 100, 'PURCHASING_ORG_CODE': '1000',
-             'PREQ_NO': '0030344125',
-             'PLANT_CODE': '1000', 'MATERIAL_DESC': 'Laundry soap, Carton, 25 bars, 800 grams',
-             'EXPIRY_DATE': datetime.datetime(2015, 12, 14, 8, 0), 'PO_ITEM_QTY': 80, 'PREQ_ITEM': 10,
-             'PURCHASING_GROUP_NAME': 'IMMUNIZATION', 'PO_ITEM': 20, 'PO_DATE': datetime.datetime(2015, 12, 14, 8, 0),
-             'CREATE_DATE': datetime.datetime(2015, 12, 14, 8, 0), 'UPDATE_DATE': datetime.datetime(2015, 12, 14, 8, 0),
-             'VENDOR_CTRY_NAME': 'Indonesia', 'DONOR_NAME': 'Ministry of National Health', 'PREQ_QTY': 2673,
-             'CURRENCY_CODE': 'USD', 'SO_NUMBER': 20174363, 'VENDOR_CODE': '1900000501', 'AMOUNT_USD': 2673,
-             'GRANT_REF': 'XP154478', 'PO_NUMBER': 45144863, 'MATERIAL_CODE': 'SL009100', 'PO_TYPE': 'ZLC',
-             'VENDOR_NAME': 'P.T. BIO FARMA (PERSERO)'}]
+        self.downloaded_purchase_orders = downloaded_purchase_orders
+        self.converted_purchase_orders = converted_purchase_orders
 
         self.purchase_order_which_do_not_have_reference_to_sales_order = \
-            [{'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
-              'PURCHASING_GROUP_CODE': 100,
-              # This so number don't exists in Eums when import this po
-              'SO_NUMBER': 20170001,
-              'PO_NUMBER': 45143984,
-              'PO_TYPE': 'NB',
-              'PO_ITEM': 10,
-              'MATERIAL_DESC': 'Scale,electronic,mother/child,150kgx100g',
-              'AMOUNT_USD': 51322.65,
-              'MATERIAL_CODE': 'S0141021',
-              'PREQ_ITEM': 80,
-              'PO_ITEM_QTY': 100}]
+            purchase_order_which_do_not_have_reference_to_sales_order
         self.purchase_order_item_which_do_not_have_reference_to_sales_order_item = \
-            [{'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
-              'PURCHASING_GROUP_CODE': 100,
-              'SO_NUMBER': 20173918,
-              'PO_NUMBER': 45143984,
-              'PO_TYPE': 'NB',
-              'PO_ITEM': 10,
-              'MATERIAL_DESC': 'Scale,electronic,mother/child,150kgx100g',
-              'AMOUNT_USD': 51322.65,
-              'MATERIAL_CODE': 'S0141021',
-              # so item number in Eums is 80, but this one is 70, so this item can't refer to so item
-              'PREQ_ITEM': 70,
-              'PO_ITEM_QTY': 100}]
+            purchase_order_item_which_do_not_have_reference_to_sales_order_item
         self.purchase_order_item_with_invalid_po_type = \
-            [{'UPDATE_DATE': datetime.datetime(2015, 11, 30, 8, 0),
-              'PURCHASING_GROUP_CODE': 100,
-              'SO_NUMBER': 20173918,
-              'PO_NUMBER': 45143984,
-              # For now only NB, ZLC, ZUB, ZOC are supported by Eums
-              'PO_TYPE': 'ZAM',
-              'PO_ITEM': 10,
-              'MATERIAL_DESC': 'Scale,electronic,mother/child,150kgx100g',
-              'AMOUNT_USD': 51322.65,
-              'MATERIAL_CODE': 'S0141021',
-              'PREQ_ITEM': 80,
-              'PO_ITEM_QTY': 100}]
+            purchase_order_item_with_invalid_po_type
 
         self._prepare_sales_orders_and_items()
         self.expected_purchase_order_1 = PurchaseOrder(order_number=45143984,
