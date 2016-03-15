@@ -25,26 +25,16 @@ class TestSyncPurchaseOrder(TestCase):
             purchase_order_item_with_invalid_po_type
 
         self._prepare_sales_orders_and_items()
-        self.expected_purchase_order_1 = PurchaseOrder(order_number=45143984,
-                                                       sales_order=self.sales_order_1,
-                                                       date=datetime.date(2015, 11, 30),
-                                                       po_type='NB')
-        self.expected_purchase_order_2 = PurchaseOrder(order_number=45144863,
-                                                       sales_order=self.sales_order_2,
-                                                       date=datetime.date(2015, 12, 14),
-                                                       po_type='ZLC')
-        self.expected_purchase_order_item_1 = PurchaseOrderItem(purchase_order=self.expected_purchase_order_1,
-                                                                item=self.item_1,
-                                                                item_number=10,
-                                                                sales_order_item=self.sales_item_1,
-                                                                quantity=100.00,
-                                                                value=Decimal('51322.65'))
-        self.expected_purchase_order_item_2 = PurchaseOrderItem(purchase_order=self.expected_purchase_order_2,
-                                                                item=self.item_2,
-                                                                item_number=20,
-                                                                sales_order_item=self.sales_item_2,
-                                                                quantity=80.00,
-                                                                value=Decimal('2673'))
+        self.expected_purchase_order = PurchaseOrder(order_number=45143984,
+                                                     sales_order=self.sales_order_1,
+                                                     date=datetime.date(2015, 11, 30),
+                                                     po_type='NB')
+        self.expected_purchase_order_item = PurchaseOrderItem(purchase_order=self.expected_purchase_order,
+                                                              item=self.item_1,
+                                                              item_number=10,
+                                                              sales_order_item=self.sales_item_1,
+                                                              quantity=100.00,
+                                                              value=Decimal('51322.65'))
         start_date = '01122015'
         end_date = datetime.date.today().strftime('%d%m%Y')
         self.synchronizer = PurchaseOrderSynchronizer(start_date=start_date)
@@ -85,24 +75,18 @@ class TestSyncPurchaseOrder(TestCase):
 
     def test_should_save_purchase_orders(self):
         self._sync_purchase_order()
-        all_purchase_orders = PurchaseOrder.objects.all()
-        actual_purchase_order_1 = all_purchase_orders[0]
-        actual_purchase_order_2 = all_purchase_orders[1]
+        purchase_order = PurchaseOrder.objects.all().first()
 
-        self._assert_purchase_order_equal(actual_purchase_order_1, self.expected_purchase_order_1)
-        self._assert_purchase_order_equal(actual_purchase_order_2, self.expected_purchase_order_2)
+        self._assert_purchase_order_equal(purchase_order, self.expected_purchase_order)
 
     def test_should_save_purchase_order_items(self):
         self._sync_purchase_order()
 
-        expected_order_number_one = self.expected_purchase_order_1.order_number
-        expected_order_number_two = self.expected_purchase_order_2.order_number
+        expected_order_number_one = self.expected_purchase_order.order_number
 
-        actual_purchase_item_1 = PurchaseOrderItem.objects.get(purchase_order__order_number=expected_order_number_one)
-        actual_purchase_item_2 = PurchaseOrderItem.objects.get(purchase_order__order_number=expected_order_number_two)
+        actual_purchase_item = PurchaseOrderItem.objects.get(purchase_order__order_number=expected_order_number_one)
 
-        self._assert_purchase_order_item_equal(actual_purchase_item_1, self.expected_purchase_order_item_1)
-        self._assert_purchase_order_item_equal(actual_purchase_item_2, self.expected_purchase_order_item_2)
+        self._assert_purchase_order_item_equal(actual_purchase_item, self.expected_purchase_order_item)
 
     def test_should_NOT_import_purchase_order_which_can_not_refer_to_existing_sales_order(self):
         self.synchronizer._load_records = MagicMock()
@@ -122,7 +106,7 @@ class TestSyncPurchaseOrder(TestCase):
         purchase_order = PurchaseOrder.objects.all()[0]
         purchase_order_item = PurchaseOrderItem.objects.all()[0]
 
-        self._assert_purchase_order_equal(purchase_order, self.expected_purchase_order_1)
+        self._assert_purchase_order_equal(purchase_order, self.expected_purchase_order)
         self.assertEqual(purchase_order_item.sales_order_item, None)
 
     def test_should_NOT_import_purchase_order_with_invalid_po_type(self):

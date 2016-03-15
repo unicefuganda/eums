@@ -10,10 +10,8 @@ from eums.vision.programme_synchronizer import ProgrammeSynchronizer
 class TestSyncProgramme(TestCase):
     def setUp(self):
         self.downloaded_programme = downloaded_programme
-        self.expected_programme_1 = Programme(wbs_element_ex='4380/A0/04/105',
-                                              name='YI105 - PCR 1 KEEP CHILDREN AND MOTHERS')
-        self.expected_programme_2 = Programme(wbs_element_ex='4380/A0/05/113',
-                                              name='3: CHILD PROTECTION')
+        self.expected_programme = Programme(wbs_element_ex='4380/A0/04/105',
+                                            name='YI105 - PCR 1 KEEP CHILDREN AND MOTHERS')
 
         self.synchronizer = ProgrammeSynchronizer()
 
@@ -34,12 +32,9 @@ class TestSyncProgramme(TestCase):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_programme)
         self.synchronizer.sync()
 
-        all_programmes = Programme.objects.all()
-        actual_programme_1 = all_programmes[0]
-        actual_programme_2 = all_programmes[1]
+        programme = Programme.objects.all().first()
 
-        self._assert_programme_equal(actual_programme_1, self.expected_programme_1)
-        self._assert_programme_equal(actual_programme_2, self.expected_programme_2)
+        self._assert_programme_equal(programme, self.expected_programme)
 
     def _assert_programme_equal(self, actual_programme, expected_programme):
         self.assertEqual(actual_programme.name, expected_programme.name)

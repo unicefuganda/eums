@@ -10,12 +10,9 @@ from eums.vision.consignee_synchronizer import ConsigneeSynchronizer
 class TestSyncConsignee(TestCase):
     def setUp(self):
         self.downloaded_consignee = downloaded_consignee
-        self.expected_consignee_1 = Consignee(customer_id='L438001120',
-                                              name='PATHFINDER INTERNATIONAL',
-                                              imported_from_vision=True)
-        self.expected_consignee_2 = Consignee(customer_id='L438001121',
-                                              name='JACOB LONY ALERO HC III',
-                                              imported_from_vision=True)
+        self.expected_consignee = Consignee(customer_id='L438001120',
+                                            name='PATHFINDER INTERNATIONAL',
+                                            imported_from_vision=True)
 
         self.synchronizer = ConsigneeSynchronizer()
 
@@ -36,12 +33,9 @@ class TestSyncConsignee(TestCase):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_consignee)
         self.synchronizer.sync()
 
-        all_consignees = Consignee.objects.all()
-        actual_consignee_1 = all_consignees[0]
-        actual_consignee_2 = all_consignees[1]
+        consignee = Consignee.objects.all().first()
 
-        self._assert_consignee_equal(actual_consignee_1, self.expected_consignee_1)
-        self._assert_consignee_equal(actual_consignee_2, self.expected_consignee_2)
+        self._assert_consignee_equal(consignee, self.expected_consignee)
 
     def _assert_consignee_equal(self, actual_consignee, expected_consignee):
         self.assertEqual(actual_consignee.customer_id, expected_consignee.customer_id)

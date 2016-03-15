@@ -15,43 +15,20 @@ class TestSyncSalesOrder(TestCase):
         self.converted_sales_orders = converted_sales_orders
 
         Programme.objects.create(wbs_element_ex='0060/A0/07/883')
-        Programme.objects.create(wbs_element_ex='4380/A0/04/105')
 
-        self.expected_programme_1 = Programme(wbs_element_ex='0060/A0/07/883')
-        self.expected_programme_2 = Programme(wbs_element_ex='4380/A0/04/105')
-        self.expected_sales_order_1 = SalesOrder(programme=self.expected_programme_1,
-                                                 order_number=20173918,
-                                                 date=datetime.date(2015, 12, 6))
-        self.expected_sales_order_2 = SalesOrder(programme=self.expected_programme_2,
-                                                 order_number=20174363,
-                                                 date=datetime.date(2015, 12, 14))
-        self.expected_item_1 = Item(description='Scale,electronic,mother/child,150kgx100g',
-                                    material_code='S0141021')
-        self.expected_item_2 = Item(description='MUAC,Child 11.5 Red/PAC-50',
-                                    material_code='S0145620')
-        self.expected_item_3 = Item(description='Laundry soap, Carton, 25 bars, 800 grams',
-                                    material_code='SL009100')
-        self.expected_sales_order_item_1 = SalesOrderItem(sales_order=self.expected_sales_order_1,
-                                                          item=self.expected_item_1,
-                                                          net_price=0,
-                                                          net_value=Decimal('51322.6500'),
-                                                          issue_date=datetime.date(2015, 12, 6),
-                                                          delivery_date=datetime.date(2015, 12, 6),
-                                                          description='Scale,electronic,mother/child,150kgx100g')
-        self.expected_sales_order_item_2 = SalesOrderItem(sales_order=self.expected_sales_order_1,
-                                                          item=self.expected_item_2,
-                                                          net_price=0,
-                                                          net_value=Decimal('3655.16'),
-                                                          issue_date=datetime.date(2015, 12, 6),
-                                                          delivery_date=datetime.date(2015, 12, 6),
-                                                          description='MUAC,Child 11.5 Red/PAC-50')
-        self.expected_sales_order_item_3 = SalesOrderItem(sales_order=self.expected_sales_order_2,
-                                                          item=self.expected_item_3,
-                                                          net_price=0,
-                                                          net_value=Decimal('2673'),
-                                                          issue_date=datetime.date(2015, 12, 14),
-                                                          delivery_date=datetime.date(2015, 12, 14),
-                                                          description='Laundry soap, Carton, 25 bars, 800 grams')
+        self.expected_programme = Programme(wbs_element_ex='0060/A0/07/883')
+        self.expected_sales_order = SalesOrder(programme=self.expected_programme,
+                                               order_number=20173918,
+                                               date=datetime.date(2015, 12, 6))
+        self.expected_item = Item(description='Scale,electronic,mother/child,150kgx100g',
+                                  material_code='S0141021')
+        self.expected_sales_order_item = SalesOrderItem(sales_order=self.expected_sales_order,
+                                                        item=self.expected_item,
+                                                        net_price=0,
+                                                        net_value=Decimal('51322.6500'),
+                                                        issue_date=datetime.date(2015, 12, 6),
+                                                        delivery_date=datetime.date(2015, 12, 6),
+                                                        description='Scale,electronic,mother/child,150kgx100g')
         start_date = '01122015'
         end_date = datetime.date.today().strftime('%d%m%Y')
         self.synchronizer = SalesOrderSynchronizer(start_date=start_date)
@@ -89,23 +66,15 @@ class TestSyncSalesOrder(TestCase):
 
     def test_should_save_sales_orders(self):
         self._sync_sales_order()
-        all_sales_orders = SalesOrder.objects.all()
-        actual_sales_order_1 = all_sales_orders[0]
-        actual_sales_order_2 = all_sales_orders[1]
+        sales_order = SalesOrder.objects.all().first()
 
-        self._assert_sales_orders_equal(actual_sales_order_1, self.expected_sales_order_1)
-        self._assert_sales_orders_equal(actual_sales_order_2, self.expected_sales_order_2)
+        self._assert_sales_orders_equal(sales_order, self.expected_sales_order)
 
     def test_should_save_sales_order_items(self):
         self._sync_sales_order()
-        all_sales_order_items = SalesOrderItem.objects.all()
-        actual_sales_item_1 = all_sales_order_items[0]
-        actual_sales_item_2 = all_sales_order_items[1]
-        actual_sales_item_3 = all_sales_order_items[2]
+        sales_order_item = SalesOrderItem.objects.all().first()
 
-        self._assert_sales_order_item_equal(actual_sales_item_1, self.expected_sales_order_item_1)
-        self._assert_sales_order_item_equal(actual_sales_item_2, self.expected_sales_order_item_2)
-        self._assert_sales_order_item_equal(actual_sales_item_3, self.expected_sales_order_item_3)
+        self._assert_sales_order_item_equal(sales_order_item, self.expected_sales_order_item)
 
     def test_should_NOT_update_when_got_an_older_sales_order(self):
         self.synchronizer._load_records = MagicMock(return_value=self.downloaded_sales_orders)
