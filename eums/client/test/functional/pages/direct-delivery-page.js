@@ -215,6 +215,7 @@ DirectDeliveryPage.prototype = Object.create({bro: browser, ele: element}, {
     saveDelivery: {
         value: function () {
             this.ele(by.id('directDeliverySaveBtn')).click();
+            this.bro.sleep(1500);
         }
     },
     saveDraftDelivery: {
