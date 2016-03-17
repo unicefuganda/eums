@@ -167,7 +167,7 @@ ELASTIC_SEARCH = _es_settings(
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'unicef.eums@gmail.com'
+EMAIL_HOST_USER = 'do.not.reply.eums@gmail.com'
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', 'invalid_if_no_email')
 EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
