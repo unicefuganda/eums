@@ -106,14 +106,14 @@ describe('Direct Delivery', function () {
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
 
-        ipShipmentsPage.searchForShipment(PURCHASE_ORDER_NUMBER1);
+        ipShipmentsPage.searchForShipment(PURCHASE_ORDER_NUMBER1); // load 0
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
         ipShipmentsPage.specifyDeliveryReceiptDate('12/08/2015');
         ipShipmentsPage.specifyDeliveryConditionAsNotGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsYes();
         ipShipmentsPage.addRemarks('The delivery was awesome');
-        ipShipmentsPage.saveAndProceedToItemsInDelivery();
+        ipShipmentsPage.saveAndProceedToItemsInDelivery(); // load 1
 
         var itemRowIndex = 0;
         ipShipmentsPage.specifyItemReceived(itemRowIndex, 'Yes');
@@ -121,13 +121,12 @@ describe('Direct Delivery', function () {
         ipShipmentsPage.specifyItemCondition(itemRowIndex, 'Damaged');
         ipShipmentsPage.specifyItemSatisfaction(itemRowIndex, 'No');
         ipShipmentsPage.addItemRemark(itemRowIndex, 'All Good');
-
-        ipShipmentsPage.saveItemConfirmation();
+        ipShipmentsPage.saveItemConfirmation(); // load 2
 
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
-        alertsPage.visit();
+        alertsPage.visit(); // load 3
         expect(alertsPage.alertStatuses).toContain('IN BAD CONDITION');
         expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).not.toContain('How Business Affects Us');
