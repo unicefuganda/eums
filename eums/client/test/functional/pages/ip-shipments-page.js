@@ -15,8 +15,7 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     searchForShipment: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
-        ftUtils.waitForPageToLoad();
-        ftUtils.wait(500)
+        ftUtils.waitForPageToLoad(null, 0);
     }},
 
     viewDeliveryDetailsButton: { get: function () {
@@ -49,7 +48,7 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
-        ftUtils.waitForPageToLoad();
+        ftUtils.waitForPageToLoad(null, 1);
     }},
 
     specifyItemReceived: { value: function (rowIndex, value) {
@@ -81,7 +80,7 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     saveItemConfirmation: { value: function () {
         element(by.id('saveBtn')).click();
-        ftUtils.waitForPageToLoad();
+        ftUtils.waitForPageToLoad(null, 2);
     }},
     goBackToShipmentsPage: { value: function () {
         element(by.id('backToShipmentsBtn')).click();

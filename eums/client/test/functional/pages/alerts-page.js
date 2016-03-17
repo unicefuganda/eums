@@ -14,7 +14,7 @@ AlertsPage.prototype = Object.create({}, {
     visit: {
         value: function () {
             browser.get(this.url);
-            ftUtils.waitForPageToLoad();
+            ftUtils.waitForPageToLoad(null, 3);
         }
     },
 

@@ -74,7 +74,6 @@ LoginPage.prototype = Object.create({bro: browser, ele: element}, {
             this.loginButton.click();
         }
     }
-
 });
 
 module.exports = new LoginPage;
