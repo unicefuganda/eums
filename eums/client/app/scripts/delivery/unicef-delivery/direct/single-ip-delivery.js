@@ -59,7 +59,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
             }).finally(hideLoader);
         };
 
-        var saveDelivery = _.debounce(function () {
+        var saveDelivery = function () {
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
                 return item.quantityShipped || 0;
             });
@@ -85,7 +85,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
             else if (!totalQuantityShipped) {
                 createToast('Cannot save delivery with zero quantity shipped', 'danger');
             }
-        }, 500);
+        };
 
         function loadOrderData() {
             showLoader();
