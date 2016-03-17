@@ -145,7 +145,7 @@ class ContactServiceTest(TestCase):
                                                       ip='WAKISO DHO', district='Wakiso')
 
         CONTACT.update(
-            {'outcomes': ['YI105 - PCR 1 KEEP CHILDREN AND MOTHERS', 'YI101 - PCR 1 KEEP CHILDREN AND MOTHERS']})
+                {'outcomes': ['YI105 - PCR 1 KEEP CHILDREN AND MOTHERS', 'YI101 - PCR 1 KEEP CHILDREN AND MOTHERS']})
 
         ContactService.get.assert_called_once_with(CONTACT['_id'])
         ContactService.update.assert_called_once_with(CONTACT)
@@ -171,17 +171,15 @@ class ContactServiceTest(TestCase):
         outcomes = ["YI105 - PCR 1 KEEP CHILDREN AND MOTHERS"]
         districts = ["Kampala"]
         ips = ["KAMPALA DHO, WAKISO DHO"]
-        types = ["End-user, IP-consignee"]
+        types = ["END_USER", "IMPLEMENTING_PARTNER"]
 
         url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
             'urns': 'tel:%s' % phone
         }))
 
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
-
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
-            return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
-
+                return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
         response = ContactService.get_rapid_pro_contact(phone)
 
         requests.get.assert_called_once_with(url_add_rapid_pro_contact, headers=HEADER,
@@ -197,7 +195,7 @@ class ContactServiceTest(TestCase):
         self.assertEqual(fields.get('outcomes'), ','.join(outcomes))
         self.assertEqual(fields.get('districts'), ','.join(districts))
         self.assertEqual(fields.get('ips'), ','.join(ips))
-        self.assertEqual(fields.get('types'), ','.join(types))
+        self.assertEqual(fields.get('types'), ','.join(["End-user", "IP"]))
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_add_rapid_pro_contact(self):
@@ -207,11 +205,11 @@ class ContactServiceTest(TestCase):
         outcomes = ["YI105 - PCR 1 KEEP CHILDREN AND MOTHERS"]
         districts = ["Kampala"]
         ips = ["KAMPALA DHO, WAKISO DHO"]
-        types = ["End-user, IP-consignee"]
+        types = ["END_USER", "IMPLEMENTING_PARTNER"]
 
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
         requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
-            return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
+                return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
 
         response = ContactService.add_or_update_rapid_pro_contact(contact)
 
@@ -225,7 +223,7 @@ class ContactServiceTest(TestCase):
         self.assertEqual(fields.get('outcomes'), ','.join(outcomes))
         self.assertEqual(fields.get('districts'), ','.join(districts))
         self.assertEqual(fields.get('ips'), ','.join(ips))
-        self.assertEqual(fields.get('types'), ','.join(types))
+        self.assertEqual(fields.get('types'), ','.join(["End-user", "IP"]))
 
         requests.post.assert_called_once_with(settings.RAPIDPRO_URLS.get('CONTACTS'),
                                               data=json.dumps(ContactService.build_rapid_pro_contact(contact)),

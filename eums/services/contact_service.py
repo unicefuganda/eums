@@ -18,6 +18,13 @@ HEADER_CONTACT = {"Content-Type": "application/json"}
 
 
 class ContactService(object):
+
+    rapid_pro_contact_label_map = {
+        'IMPLEMENTING_PARTNER': 'IP',
+        'MIDDLE_MAN': 'Sub-consignee',
+        'END_USER': 'End-user'
+    }
+
     @staticmethod
     def get(contact_person_id):
         default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
@@ -187,12 +194,6 @@ class ContactService(object):
             'types': ','.join(contact_label) if contact_label else str(None),
             'outcomes': ','.join(contact.get('outcomes')) if contact.get('outcomes') else str(None),
         }
-
-    rapid_pro_contact_label_map = {
-        'IMPLEMENTING_PARTNER': 'IP',
-        'MIDDLE_MAN': 'Sub-consignee',
-        'END_USER': 'End-user'
-    }
 
     @staticmethod
     def rapid_pro_contact_label(contact_label_list):
