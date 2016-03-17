@@ -178,14 +178,32 @@ class ContactService(object):
 
     @staticmethod
     def build_rapid_pro_contact_fields(contact):
+        contact_label = ContactService.rapid_pro_contact_label(contact.get('types'))
         return {
             'firstname': contact.get('firstName'),
             'lastname': contact.get('lastName'),
             'districts': ','.join(contact.get('districts')) if contact.get('districts') else str(None),
             'ips': ','.join(contact.get('ips')) if contact.get('ips') else str(None),
-            'types': ','.join(contact.get('types')) if contact.get('types') else str(None),
+            'types': ','.join(contact_label) if contact_label else str(None),
             'outcomes': ','.join(contact.get('outcomes')) if contact.get('outcomes') else str(None),
         }
+
+    rapid_pro_contact_label_map = {
+        'IMPLEMENTING_PARTNER': 'IP',
+        'MIDDLE_MAN': 'Sub-consignee',
+        'END_USER': 'End-user'
+    }
+
+    @staticmethod
+    def rapid_pro_contact_label(contact_label_list):
+        if contact_label_list:
+            labels = []
+            for contact_label in contact_label_list:
+                if contact_label in ContactService.rapid_pro_contact_label_map:
+                    labels.append(ContactService.rapid_pro_contact_label_map[contact_label])
+            return labels
+
+        return None
 
 
 @app.task
