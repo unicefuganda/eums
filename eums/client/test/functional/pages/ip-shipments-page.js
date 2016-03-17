@@ -48,8 +48,8 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
-        ftUtils.wait(200);
-        ftUtils.waitForPageToLoad(null, 1);
+        ftUtils.wait(2000);
+        //ftUtils.waitForPageToLoad(null, 1);
     }},
 
     specifyItemReceived: { value: function (rowIndex, value) {
