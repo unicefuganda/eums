@@ -35,3 +35,7 @@ def get_index_of_particular_element_in_complex_list(data_list, filter_dict):
             return index
 
     return -1
+
+
+def format_date(date):
+    return date.strftime('%d%m%Y')

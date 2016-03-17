@@ -6,9 +6,10 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from eums.celery import app
-from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow
+from eums.models import DistributionPlanNode, DistributionPlan, Alert, SystemSettings, Flow, VisionSyncInfo
 from eums.services.contact_service import ContactService
 from eums.services.flow_scheduler import schedule_run_for
+from eums.utils import format_date
 from eums.vision.sync_runner import sync
 
 logger = get_task_logger(__name__)
@@ -38,21 +39,19 @@ def on_post_save_delivery(sender, **kwargs):
 
 @receiver(pre_save, sender=SystemSettings)
 def on_pre_save_system_settings(sender, **kwargs):
-    system_settings = SystemSettings.objects.first()
-    current_sync_date = system_settings.sync_start_date if system_settings else ''
+    start_date = VisionSyncInfo.get_manual_sync_start_date()
+    end_date = VisionSyncInfo.get_manual_sync_end_date()
     new_sync_date = kwargs['instance'].sync_start_date
 
-    if new_sync_date \
-            and new_sync_date < datetime.date.today() \
-            and (not current_sync_date or new_sync_date < current_sync_date):
-        start_date = new_sync_date.strftime('%d%m%Y')
-        end_date = current_sync_date.strftime('%d%m%Y') if current_sync_date else ''
-        run.apply_async(args=[start_date, end_date])
+    if new_sync_date and new_sync_date < datetime.date.today() and (not start_date or new_sync_date < start_date):
+        logger.info('manual sync. start_date=%s, end_date=%s' % (new_sync_date, end_date))
+        sync_record = VisionSyncInfo.new_instance(False, new_sync_date, end_date)
+        run.apply_async(args=[sync_record, format_date(new_sync_date), format_date(end_date)])
 
 
 @app.task
-def run(start_date, end_date):
-    sync(start_date, end_date)
+def run(sync_record, start_date, end_date):
+    sync(sync_record, start_date, end_date)
 
 
 @app.task

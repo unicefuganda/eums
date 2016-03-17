@@ -1,7 +1,9 @@
 from unittest import TestCase
 
+import datetime
+
 from eums.utils import snakify, get_lists_intersection, filter_relevant_value, all_relevant_data_contained, \
-    get_index_of_particular_element_in_complex_list
+    get_index_of_particular_element_in_complex_list, format_date
 
 
 class TestUtils(TestCase):
@@ -61,3 +63,8 @@ class TestUtils(TestCase):
         filter_dict = {'order_number': 654321, 'material_code': '100'}
 
         self.assertEqual(get_index_of_particular_element_in_complex_list(order_list, filter_dict), 2)
+
+    def test_should_get_formatted_date(self):
+        date = datetime.date(2016, 3, 14)
+
+        self.assertEqual(format_date(date), '14032016')

@@ -1,83 +1,118 @@
 import datetime
 
 from django.test import TestCase
+from mock import patch
 
-from eums.models import VisionSyncInfo
+from eums.models import VisionSyncInfo, SystemSettings
+from eums.test.helpers.fake_datetime import FakeDate
 
 
 class VisionSyncInfoTest(TestCase):
-    def setUp(self):
-        self.successful_so = VisionSyncInfo.objects.create(so_status=VisionSyncInfo.STATUS.SUCCESS)
-        self.successful_po = VisionSyncInfo.objects.create(po_status=VisionSyncInfo.STATUS.SUCCESS)
-        self.successful_ro = VisionSyncInfo.objects.create(ro_status=VisionSyncInfo.STATUS.SUCCESS)
-        self.date_2015_12_03 = datetime.datetime.fromtimestamp(1449118800)
-        self.date_2015_12_15 = datetime.datetime.fromtimestamp(1450118800)
-        self.date_2015_12_31 = datetime.datetime.fromtimestamp(1451538000)
-        self.date_2015_12_03_str = '03122015'
-        self.date_2015_12_15_str = '15122015'
-        self.date_2015_12_31_str = '31122015'
+    @patch('datetime.date', FakeDate)
+    def test_should_get_daily_sync_end_date(self):
+        self.assertEqual(VisionSyncInfo.get_daily_sync_end_date(), datetime.date(2014, 9, 25))
 
-    def tearDown(self):
-        VisionSyncInfo.objects.all().delete()
+    def test_should_get_none_daily_sync_start_date_when_no_sync_info(self):
+        system_settings = SystemSettings.objects.create()
 
-    def test_should_get_so_sync_start_date(self):
-        self.successful_so.sync_date = self.date_2015_12_03
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_31
-        self.successful_po.save()
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), None)
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('SO'), self.date_2015_12_03_str)
+        system_settings.sync_start_date = datetime.date(2016, 3, 13)
+        system_settings.save()
 
-        self.successful_so.sync_date = self.date_2015_12_31
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_03
-        self.successful_po.save()
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 13))
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('SO'), self.date_2015_12_31_str)
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 14),
+                                      sync_status=VisionSyncInfo.STATUS.SUCCESS,
+                                      start_date=datetime.date(2016, 3, 13),
+                                      end_date=datetime.date(2016, 3, 14),
+                                      is_daily_sync=False)
 
-    def test_should_get_po_sync_start_date(self):
-        self.successful_so.sync_date = self.date_2015_12_03
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_31
-        self.successful_po.save()
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 14))
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('PO'), self.date_2015_12_03_str)
+    def test_should_get_daily_sync_start_date_when_all_sync_successfully(self):
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 13),
+                                      sync_status=VisionSyncInfo.STATUS.SUCCESS,
+                                      start_date=datetime.date(2016, 3, 12),
+                                      end_date=datetime.date(2016, 3, 13),
+                                      is_daily_sync=True)
 
-        self.successful_so.sync_date = self.date_2015_12_31
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_03
-        self.successful_po.save()
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 14),
+                                      sync_status=VisionSyncInfo.STATUS.SUCCESS,
+                                      start_date=datetime.date(2016, 3, 13),
+                                      end_date=datetime.date(2016, 3, 14),
+                                      is_daily_sync=True)
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('PO'), self.date_2015_12_03_str)
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 14))
 
-        self.successful_so.sync_date = self.date_2015_12_03
-        self.successful_so.save()
-        self.successful_po.delete()
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('PO'), self.date_2015_12_03_str)
+    def test_should_get_daily_sync_start_date_when_last_sync_fail(self):
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 14),
+                                      sync_status=VisionSyncInfo.STATUS.SUCCESS,
+                                      start_date=datetime.date(2016, 3, 13),
+                                      end_date=datetime.date(2016, 3, 14),
+                                      is_daily_sync=True)
 
-    def test_should_get_ro_sync_start_date(self):
-        self.successful_so.sync_date = self.date_2015_12_03
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_15
-        self.successful_po.save()
-        self.successful_ro.sync_date = self.date_2015_12_31
-        self.successful_ro.save()
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 15),
+                                      sync_status=VisionSyncInfo.STATUS.FAILURE,
+                                      start_date=datetime.date(2016, 3, 14),
+                                      end_date=datetime.date(2016, 3, 15),
+                                      is_daily_sync=True)
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('RO'), self.date_2015_12_03_str)
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 16),
+                                      sync_status=VisionSyncInfo.STATUS.FAILURE,
+                                      start_date=datetime.date(2016, 1, 1),
+                                      end_date=datetime.date(2016, 3, 12),
+                                      is_daily_sync=False)
 
-        self.successful_so.sync_date = self.date_2015_12_15
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_03
-        self.successful_po.save()
-        self.successful_ro.sync_date = self.date_2015_12_31
-        self.successful_ro.save()
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 14))
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('RO'), self.date_2015_12_03_str)
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 16),
+                                      sync_status=VisionSyncInfo.STATUS.FAILURE,
+                                      start_date=datetime.date(2016, 3, 14),
+                                      end_date=datetime.date(2016, 3, 16),
+                                      is_daily_sync=True)
 
-        self.successful_so.sync_date = self.date_2015_12_15
-        self.successful_so.save()
-        self.successful_po.sync_date = self.date_2015_12_03
-        self.successful_po.save()
-        self.successful_ro.delete()
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 14))
 
-        self.assertEqual(VisionSyncInfo.get_sync_start_date('RO'), self.date_2015_12_03_str)
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 17),
+                                      sync_status=VisionSyncInfo.STATUS.SUCCESS,
+                                      start_date=datetime.date(2016, 3, 14),
+                                      end_date=datetime.date(2016, 3, 17),
+                                      is_daily_sync=True)
+
+        self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 17))
+
+    def test_should_get_manual_sync_start_date(self):
+        system_settings = SystemSettings.objects.create()
+        self.assertEqual(VisionSyncInfo.get_manual_sync_start_date(), None)
+
+        system_settings.sync_start_date = datetime.date(2016, 3, 12)
+        system_settings.save()
+        self.assertEqual(VisionSyncInfo.get_manual_sync_start_date(), datetime.date(2016, 3, 12))
+
+    @patch('datetime.date', FakeDate)
+    def test_should_get_manual_sync_end_date_at_first_time(self):
+        self.assertEqual(VisionSyncInfo.get_manual_sync_end_date(), datetime.date(2014, 9, 25))
+
+    def test_should_get_last_manual_sync_status(self):
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 13),
+                                      sync_status=VisionSyncInfo.STATUS.SUCCESS,
+                                      start_date=datetime.date(2016, 3, 12),
+                                      end_date=datetime.date(2016, 3, 13),
+                                      is_daily_sync=False)
+
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 14),
+                                      sync_status=VisionSyncInfo.STATUS.FAILURE,
+                                      start_date=datetime.date(2016, 3, 13),
+                                      end_date=datetime.date(2016, 3, 14),
+                                      is_daily_sync=True)
+
+        self.assertEqual(VisionSyncInfo.get_last_manual_sync_status(), VisionSyncInfo.STATUS.SUCCESS)
+
+        VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 15),
+                                      sync_status=VisionSyncInfo.STATUS.FAILURE,
+                                      start_date=datetime.date(2016, 3, 13),
+                                      end_date=datetime.date(2016, 3, 15),
+                                      is_daily_sync=False)
+
+        self.assertEqual(VisionSyncInfo.get_last_manual_sync_status(), VisionSyncInfo.STATUS.FAILURE)
