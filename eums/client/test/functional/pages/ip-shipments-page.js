@@ -48,6 +48,7 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
+        ftUtils.wait(200);
         ftUtils.waitForPageToLoad(null, 1);
     }},
 
