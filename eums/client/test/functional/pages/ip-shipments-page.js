@@ -26,29 +26,29 @@ IpShipmentsPage.prototype = Object.create({}, {
        element.all(by.css('.viewDeliveryDetailsBtn')).get(0).click();
     }},
     specifyDeliveryAsReceived: { value: function () {
-        element(by.id('deliveryConfirmationSelect')).$('[value="1"]').click();
+        element(by.id('deliveryConfirmationSelect')).$('[label="Yes"]').click();
     }},
     specifyDeliveryReceiptDate: { value: function (date) {
         element(by.css('#answer-2 input')).clear().sendKeys(date);
     }},
     specifyDeliveryConditionAsGood: { value: function () {
-        element(by.css('#answer-3 select')).$('[value="1"]').click()
+        element(by.css('#answer-3 select')).$('[label="Yes"]').click()
     }},
     specifyDeliveryConditionAsNotGood: { value: function () {
-        element(by.css('#answer-3 select')).$('[value="0"]').click()
+        element(by.css('#answer-3 select')).$('[label="No"]').click()
     }},
     specifyDeliverySatisfactionAsYes: { value: function () {
-        element(by.css('#answer-4 select')).$('[value="1"]').click()
+        element(by.css('#answer-4 select')).$('[label="Yes"]').click()
     }},
     specifyDeliverySatisfactionAsNo: { value: function () {
-        element(by.css('#answer-4 select')).$('[value="0"]').click()
+        element(by.css('#answer-4 select')).$('[label="No"]').click()
     }},
     addRemarks: { value: function (remarks) {
         element(by.css('#answer-5 textarea')).sendKeys(remarks);
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
-        ftUtils.wait(2000);
+        ftUtils.wait(4000);
         //ftUtils.waitForPageToLoad(null, 1);
     }},
 
