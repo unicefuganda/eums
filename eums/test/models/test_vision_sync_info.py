@@ -12,7 +12,7 @@ class VisionSyncInfoTest(TestCase):
     def test_should_get_daily_sync_end_date(self):
         self.assertEqual(VisionSyncInfo.get_daily_sync_end_date(), datetime.date(2014, 9, 25))
 
-    def test_should_get_none_daily_sync_start_date_when_no_sync_info(self):
+    def test_should_get_daily_sync_start_date(self):
         system_settings = SystemSettings.objects.create()
 
         self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), None)
@@ -61,7 +61,7 @@ class VisionSyncInfoTest(TestCase):
         VisionSyncInfo.objects.create(sync_date=datetime.date(2016, 3, 16),
                                       sync_status=VisionSyncInfo.STATUS.FAILURE,
                                       start_date=datetime.date(2016, 1, 1),
-                                      end_date=datetime.date(2016, 3, 12),
+                                      end_date=datetime.date(2016, 3, 16),
                                       is_daily_sync=False)
 
         self.assertEqual(VisionSyncInfo.get_daily_sync_start_date(), datetime.date(2016, 3, 14))

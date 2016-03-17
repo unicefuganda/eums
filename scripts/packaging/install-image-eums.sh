@@ -44,7 +44,7 @@ GA_TRACKING_ID=${14}
 
 USER_DIR=`eval echo ~/`
 
-sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 -p 9200:9200 \
+sudo docker run -p 50000:22 -p 80:80 \
 -h ${EUMS_HOST} \
 -e "LC_ALL=C" \
 -e "ADMIN_PASSWORD=${ADMIN_PASSWORD}" \

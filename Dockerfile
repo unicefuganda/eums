@@ -175,7 +175,7 @@ RUN touch /var/log/celery/workers.log
 VOLUME /var/lib/postgresql
 VOLUME /data
 
-EXPOSE 22 80 8005 9200
+EXPOSE 22 80
 
 ##############################################################################
 ## Entrypoint and command parameters
