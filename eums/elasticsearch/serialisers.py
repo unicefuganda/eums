@@ -15,6 +15,8 @@ def serialise_nodes(nodes):
 
 
 def _extract_clean_fields(obj):
+    if obj is None:
+        return {}
     obj_json = obj.__dict__.copy()
     bad_keys = filter(lambda key: key.startswith('_'), obj_json.keys())
     [obj_json.pop(bad_key) for bad_key in bad_keys]
