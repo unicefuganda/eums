@@ -236,7 +236,7 @@ module.exports = function (grunt) {
             questionAndFlowData: {
                 command: 'python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py --settings=eums.settings_test',
                 options: {
-                    stderr: false,
+                    stderr: true,
                     execOptions: {
                         cwd: '../..'
                     }

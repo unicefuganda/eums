@@ -34,7 +34,7 @@ describe('Item Feedback Report', function () {
         it('should search the Item report by recipient type', function () {
             itemFeedbackReport.searchByRecipientType('Sub-consignee');
             expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
-            expect(itemFeedbackReport.resultsCount).toEqual(1);
+            expect(itemFeedbackReport.resultsCount).toEqual(4);
         });
 
         it('should search the Item report by product received', function () {
@@ -52,12 +52,12 @@ describe('Item Feedback Report', function () {
         it('should search the Item report by quality of product', function () {
             itemFeedbackReport.searchByQuality('DAMAGED');
             expect(itemFeedbackReport.quality).not.toContain('GOOD');
-            expect(itemFeedbackReport.resultsCount).toEqual(1);
+            expect(itemFeedbackReport.resultsCount).toEqual(2);
         });
 
         it('should search the Item report by district', function () {
             itemFeedbackReport.searchByDistrict('Wakiso');
-            expect(itemFeedbackReport.resultsCount).toEqual(1);
+            expect(itemFeedbackReport.resultsCount).toEqual(10);
         });
 
         it('should sort by value', function () {

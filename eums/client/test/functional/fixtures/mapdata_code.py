@@ -7,7 +7,7 @@ from eums.elasticsearch.sync_info import SyncInfo
 from eums.fixtures import web_questions, ip_questions
 from eums.fixtures.end_user_questions import *
 from eums.fixtures.ip_questions import seed_ip_questions
-from eums.fixtures.middle_man_questions import mm_question_1, mm_q1_option_1, mm_question_2, mm_question_3
+from eums.fixtures.middle_man_questions import mm_question_1, mm_q1_option_1, mm_question_2, mm_question_3, mm_question_4, mm_question_5, mm_question_6
 from eums.models import DistributionReport
 from eums.models import MultipleChoiceAnswer
 from eums.models import NumericAnswer
@@ -17,6 +17,10 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.run_factory import RunFactory
+
+
+implement_partner_questions, options, _ = seed_ip_questions()
+end_user_questions, end_user_options = seed_questions()
 
 NumericAnswer.objects.create(run=run_7, question=EU_AMOUNT_RECEIVED, value=50)
 NumericAnswer.objects.create(run=run_8, question=EU_AMOUNT_RECEIVED, value=10)
@@ -37,7 +41,7 @@ NumericAnswer.objects.create(run=run_23, question=EU_AMOUNT_RECEIVED, value=1)
 
 TextAnswer.objects.create(run=run_7, question=EU_DATE_RECEIVED, value='2014-10-06')
 TextAnswer.objects.create(run=run_7, question=EU_REVISED_DELIVERY_DATE, value='didnt not specify')
-TextAnswer.objects.create(run=run_7, question=EU_DISSATISFACTION_FEEDBACK, value='they were damaged')
+TextAnswer.objects.create(run=run_7, question=EU_ADDITIONAL_REMARK, value='they were damaged')
 
 MultipleChoiceAnswer.objects.create(run=run_7, question=WAS_PRODUCT_RECEIVED, value=PRODUCT_WAS_RECEIVED)
 MultipleChoiceAnswer.objects.create(run=run_7, question=EU_QUALITY_OF_PRODUCT, value=EU_OPT_DAMAGED)
@@ -108,8 +112,6 @@ MultipleChoiceAnswer.objects.create(run=run_23, question=EU_SATISFACTION, value=
 DistributionReport.objects.create(total_distributed=80, total_not_received=67, consignee=consignee_32,
                                   total_received=100, programme=programme_3)
 
-ip_questions, options, _ = seed_ip_questions()
-
 # WEB RUNS
 web_flow = Flow.objects.get(label='WEB')
 was_item_received = MultipleChoiceQuestion.objects.get(flow=web_flow, label='itemReceived')
@@ -144,15 +146,15 @@ MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_que
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_78)
 
 # delivery answers
-TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_80)
+TextAnswerFactory(question=implement_partner_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_80)
 
-MultipleChoiceAnswerFactory(question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'],
+MultipleChoiceAnswerFactory(question=implement_partner_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'],
                             run=run_81)
-TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_81)
+TextAnswerFactory(question=implement_partner_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_81)
 
-MultipleChoiceAnswerFactory(question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'],
+MultipleChoiceAnswerFactory(question=implement_partner_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'],
                             run=run_82)
-TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_82)
+TextAnswerFactory(question=implement_partner_questions['DATE_OF_RECEIPT'], value='2015-12-02', run=run_82)
 
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_83)
 NumericAnswerFactory(question=web_questions.web_question_2, value=80, run=run_83)
@@ -193,33 +195,32 @@ run_delivery_pader = RunFactory(runnable=delivery_pader, status=Run.STATUS.sched
 run_delivery_amuru = RunFactory(runnable=delivery_Amuru, status=Run.STATUS.scheduled)
 run_delivery_kampala = RunFactory(runnable=delivery_kampala, status=Run.STATUS.scheduled)
 
-MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['WAS_DELIVERY_RECEIVED'],
+MultipleChoiceAnswerFactory(run=run_delivery_pader, question=implement_partner_questions['WAS_DELIVERY_RECEIVED'],
                             value=options['DELIVERY_WAS_RECEIVED'])
-TextAnswerFactory(run=run_delivery_pader, question=ip_questions['DATE_OF_RECEIPT'], value='2014-09-29')
-MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['IS_DELIVERY_IN_GOOD_ORDER'],
+TextAnswerFactory(run=run_delivery_pader, question=implement_partner_questions['DATE_OF_RECEIPT'], value='2014-09-29')
+MultipleChoiceAnswerFactory(run=run_delivery_pader, question=implement_partner_questions['IS_DELIVERY_IN_GOOD_ORDER'],
                             value=options['IN_GOOD_CONDITION'])
-MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['SATISFIED_WITH_DELIVERY'],
+MultipleChoiceAnswerFactory(run=run_delivery_pader, question=implement_partner_questions['SATISFIED_WITH_DELIVERY'],
                             value=options['SATISFIED'])
-TextAnswerFactory(run=run_delivery_pader, question=ip_questions['ADDITIONAL_DELIVERY_COMMENTS'], value='none')
+TextAnswerFactory(run=run_delivery_pader, question=implement_partner_questions['ADDITIONAL_DELIVERY_COMMENTS'], value='none')
 
-MultipleChoiceAnswerFactory(run=run_delivery_amuru, question=ip_questions['WAS_DELIVERY_RECEIVED'],
+MultipleChoiceAnswerFactory(run=run_delivery_amuru, question=implement_partner_questions['WAS_DELIVERY_RECEIVED'],
                             value=options['DELIVERY_WAS_NOT_RECEIVED'])
 
-MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=ip_questions['WAS_DELIVERY_RECEIVED'],
+MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=implement_partner_questions['WAS_DELIVERY_RECEIVED'],
                             value=options['DELIVERY_WAS_RECEIVED'])
-TextAnswerFactory(run=run_delivery_kampala, question=ip_questions['DATE_OF_RECEIPT'], value='2014-10-29')
-MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=ip_questions['IS_DELIVERY_IN_GOOD_ORDER'],
+TextAnswerFactory(run=run_delivery_kampala, question=implement_partner_questions['DATE_OF_RECEIPT'], value='2014-10-29')
+MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=implement_partner_questions['IS_DELIVERY_IN_GOOD_ORDER'],
                             value=options['NOT_IN_GOOD_CONDITION'])
-MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=ip_questions['SATISFIED_WITH_DELIVERY'],
+MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=implement_partner_questions['SATISFIED_WITH_DELIVERY'],
                             value=options['NOT_SATISFIED'])
-TextAnswerFactory(run=run_delivery_kampala, question=ip_questions['ADDITIONAL_DELIVERY_COMMENTS'], value='none')
+TextAnswerFactory(run=run_delivery_kampala, question=implement_partner_questions['ADDITIONAL_DELIVERY_COMMENTS'], value='none')
 
 non_response_delivery_one = DeliveryFactory(delivery_date=today + datetime.timedelta(days=4), location='PADER',
                                             track=True)
 RunFactory(runnable=non_response_delivery_one, status=Run.STATUS.scheduled)
 
 # end user nodes for home page
-end_user_questions, end_user_options = seed_questions()
 
 MultipleChoiceAnswerFactory(run=run_79, question=end_user_questions['WAS_PRODUCT_RECEIVED'],
                             value=end_user_options['PRODUCT_WAS_RECEIVED'])
@@ -227,8 +228,8 @@ MultipleChoiceAnswerFactory(run=run_79, question=end_user_questions['QUALITY_OF_
                             value=end_user_options['IN_GOOD_CONDITION'])
 MultipleChoiceAnswerFactory(run=run_79, question=end_user_questions['SATISFACTION_WITH_PRODUCT'],
                             value=end_user_options['SATISFIED'])
-NumericAnswerFactory(run=run_79, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=93)
-TextAnswerFactory(run=run_79, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
+NumericAnswerFactory(run=run_79, question=end_user_questions['AMOUNT_RECEIVED'], value=93)
+TextAnswerFactory(run=run_79, question=end_user_questions['DATE_RECEIVED'], value='2014-09-29')
 
 item_one = ItemFactory(description='A funny Item')
 po_item_one = PurchaseOrderItemFactory(quantity=100, value=1000, item=item_one)
@@ -270,8 +271,8 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_one, question=end_user_questio
                             value=end_user_options['IN_GOOD_CONDITION'])
 MultipleChoiceAnswerFactory(run=run_end_user_node_one, question=end_user_questions['SATISFACTION_WITH_PRODUCT'],
                             value=end_user_options['SATISFIED'])
-NumericAnswerFactory(run=run_end_user_node_one, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=5)
-TextAnswerFactory(run=run_end_user_node_one, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
+NumericAnswerFactory(run=run_end_user_node_one, question=end_user_questions['AMOUNT_RECEIVED'], value=5)
+TextAnswerFactory(run=run_end_user_node_one, question=end_user_questions['DATE_RECEIVED'], value='2014-09-29')
 
 end_user_node_three = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True, location='Kisoro',
                                           distribution_plan=None, item=po_item_one, parents=((ip_node_two, 2),))
@@ -283,8 +284,8 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_three, question=end_user_quest
                             value=end_user_options['IN_GOOD_CONDITION'])
 MultipleChoiceAnswerFactory(run=run_end_user_node_three, question=end_user_questions['SATISFACTION_WITH_PRODUCT'],
                             value=end_user_options['SATISFIED'])
-NumericAnswerFactory(run=run_end_user_node_three, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=2)
-TextAnswerFactory(run=run_end_user_node_three, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
+NumericAnswerFactory(run=run_end_user_node_three, question=end_user_questions['AMOUNT_RECEIVED'], value=2)
+TextAnswerFactory(run=run_end_user_node_three, question=end_user_questions['DATE_RECEIVED'], value='2014-09-29')
 
 end_user_node_four = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True, location='Kisoro',
                                          distribution_plan=None, parents=((ip_node_two, 1), (ip_node_one, 3)),
@@ -297,8 +298,8 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_four, question=end_user_questi
                             value=end_user_options['IN_GOOD_CONDITION'])
 MultipleChoiceAnswerFactory(run=run_end_user_node_four, question=end_user_questions['SATISFACTION_WITH_PRODUCT'],
                             value=end_user_options['NOT_SATISFIED'])
-NumericAnswerFactory(run=run_end_user_node_four, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=4)
-TextAnswerFactory(run=run_end_user_node_four, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
+NumericAnswerFactory(run=run_end_user_node_four, question=end_user_questions['AMOUNT_RECEIVED'], value=4)
+TextAnswerFactory(run=run_end_user_node_four, question=end_user_questions['DATE_RECEIVED'], value='2014-09-29')
 
 end_user_node_five = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True,
                                          distribution_plan=None, item=po_item_one, parents=((ip_node_two, 2),))
