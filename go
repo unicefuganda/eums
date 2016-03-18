@@ -51,7 +51,7 @@ function main {
       if [ "$2" = "--headless" ]; then
         testfunctional --headless
       elif [ "$2" = "--nomigrations" ]; then
-         testfunctional --nomigrations
+        testfunctional --nomigrations
       else
         testfunctional
       fi;;
