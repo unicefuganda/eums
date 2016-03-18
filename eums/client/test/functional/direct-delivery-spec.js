@@ -7,7 +7,7 @@ var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var alertsPage = require('./pages/alerts-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-describe('Direct Delivery', function () {
+fdescribe('Direct Delivery', function () {
 
     var PURCHASE_ORDER_NUMBER1 = '81026395';
     var PURCHASE_ORDER_NUMBER2 = '81029906';
@@ -143,7 +143,7 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertItems).toContain('How Business Affects Us');
         expect(alertsPage.alertOrderDate).toContain('10-Oct-2021');
         expect(alertsPage.alertOrderValue).toContain('$80.31');
-        expect(alertsPage.alertReporter).toContain('John Doe');
+        expect(alertsPage.alertReporter).toContain('John');
         expect(alertsPage.alertIP).toContain('WAKISO DHO');
         expect(alertsPage.alertLocation).toContain('Wakiso');
     });
