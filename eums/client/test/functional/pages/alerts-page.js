@@ -1,5 +1,3 @@
-var ftUtils = require('./../functional-test-utils.js');
-
 var AlertsPage = function () {
 };
 var EC = protractor.ExpectedConditions;
@@ -14,7 +12,7 @@ AlertsPage.prototype = Object.create({}, {
     visit: {
         value: function () {
             browser.get(this.url);
-            ftUtils.waitForPageToLoad();
+            waitForPageToLoad();
         }
     },
 
@@ -129,6 +127,12 @@ AlertsPage.prototype = Object.create({}, {
 });
 
 module.exports = new AlertsPage;
+
+function waitForPageToLoad() {
+    var spinner = element(by.css('#loading'));
+    var screenHasLoaded = EC.invisibilityOf(spinner);
+    browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
+}
 
 function waitForModalToLoad(elementIndex) {
     //resolvedAlertModal = element(by.id('resolved-alert-modal-1'));
