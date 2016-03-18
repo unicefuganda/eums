@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.decorators import detail_route
@@ -67,6 +68,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
             self.paginator.page_size = 0
         return super(DistributionPlanNodeViewSet, self).list(request, *args, **kwargs)
 
+    @transaction.atomic
     def perform_create(self, serializer):
         serializer.save()
 
