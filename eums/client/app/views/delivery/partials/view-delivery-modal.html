@@ -9,7 +9,7 @@
                 <div>
                     <div class="col-md-4">Date of Delivery</div>
                     <div class="col-md-4">Contact Person</div>
-                    <div class="col-md-4">Location</div>
+                    <div class="col-md-4">{{ systemSettings.district_label }}</div>
                 </div>
                 <div>
                     <div class="col-md-4"><span class="label label-success label-round">{{ deliveryInView.deliveryDate | date : 'dd-MMM-yyyy' }}</span></div>
@@ -18,7 +18,7 @@
                             {{ deliveryInView.contactPersonId.firstName }} {{ deliveryInView.contactPersonId.lastName }}
                         </span>
                     </div>
-                    <div class="col-md-4"><span class="label label-success label-round">{{ delivery.location }}</span></div>
+                    <div class="col-md-4"><span class="label label-success label-round">{{ deliveryInView.location }}</span></div>
                 </div>
                 <div class=pad-top-70>
                     <table id="past-delivery-view" class="table table-bordered table-striped table-hover table-condensed">

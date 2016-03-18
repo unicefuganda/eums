@@ -7,7 +7,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
         $scope.errors = false;
         $scope.valid_time_limitation = true;
 
-        loadOrderData();
+        initialize();
 
         $scope.save = function (tracked) {
             $scope.tracked = tracked || false;
@@ -58,6 +58,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
                 $scope.deliveryInView = delivery;
             }).finally(hideLoader);
         };
+
+        function initialize() {
+            var promises = [];
+            promises.push(SystemSettingsService.getSettingsWithDefault());
+            $q.all(promises).then(function (returns) {
+                $scope.systemSettings = returns[0];
+            });
+            loadOrderData();
+        }
 
         var saveDelivery = function () {
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
