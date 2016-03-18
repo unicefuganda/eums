@@ -176,6 +176,7 @@ function testfunctional {
 
   if [ "$1" = "--headless" ]; then
     grunt prep-test-env
+    grunt apimocker
     python ../../manage.py runserver 9000 --settings=eums.settings_test &> /dev/null &
     grunt functional-headless
   elif [ "$1" = "--nomigrations" ]; then

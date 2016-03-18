@@ -388,7 +388,6 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('functional-headless', 'Run functional tests in headless mode using selenium', [
-        'apimocker',
         'protractor:headless'
     ]);
 
