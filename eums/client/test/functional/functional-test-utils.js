@@ -13,11 +13,11 @@ var FunctionalTestUtils = (function () {
             elem(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
             elem(by.id('select2-drop')).element(by.css('.select2-results li')).click();
         },
-        waitForPageToLoad: function (elem, index) {
+        waitForPageToLoad: function (elem) {
             var EC = protractor.ExpectedConditions;
             var spinner = elem ? elem : element(by.css('#loading'));
             var screenHasLoaded = EC.invisibilityOf(spinner);
-            browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load" + index);
+            browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
         },
         waitForElementToBeVisible: function (elem) {
             var EC = protractor.ExpectedConditions;
