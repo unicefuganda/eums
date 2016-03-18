@@ -253,7 +253,7 @@ module.exports = function (grunt) {
             },
             processConfigs: {
                 command: function (url) {
-                    return 'sed "s/localhost/' + url +'/" config/staging.json > config/environment.json';
+                    return 'sed "s/localhost/' + url + '/" config/staging.json > config/environment.json';
                 }
             }
         },
@@ -371,12 +371,12 @@ module.exports = function (grunt) {
         'shell:seedData',
         'shell:mapData',
         'shell:dropES',
-        'shell:createAndSyncES',
-        'apimocker'
+        'shell:createAndSyncES'
     ]);
 
     grunt.registerTask('functional', 'Run functional tests using chrome', [
         'prep-test-env',
+        'apimocker',
         'run:djangoServer',
         'protractor:chrome'
     ]);
