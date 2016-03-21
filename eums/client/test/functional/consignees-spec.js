@@ -4,7 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var consigneesPage = require('./pages/consignees-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-describe('Consignees and subconsignees', function () {
+fdescribe('Consignees and subconsignees', function () {
 
     describe('main functionality', function () {
 

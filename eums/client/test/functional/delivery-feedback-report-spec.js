@@ -4,7 +4,7 @@ var report = require('./pages/ip-feedback-report-by-delivery-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-describe('Delivery Feedback Report', function () {
+fdescribe('Delivery Feedback Report', function () {
 
     beforeEach(function () {
         loginPage.visit();
