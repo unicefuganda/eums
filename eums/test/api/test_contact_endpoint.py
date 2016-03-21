@@ -1,3 +1,4 @@
+import json
 from urllib import urlencode
 
 import requests
@@ -28,7 +29,7 @@ CONTACT = {
 class ContactEndpointTest(AuthenticatedAPITestCase):
     @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.update')
-    def test_should_update_rapid_pro_contact(self, update):
+    def test_should_update_rapid_pro_contact_when_phone_modified(self, update):
         self.log_unicef_admin_in()
 
         execute_rapid_pro_contact_update.delay = MagicMock()
@@ -36,6 +37,7 @@ class ContactEndpointTest(AuthenticatedAPITestCase):
         first_name = "Jack"
         last_name = "Bob"
         phone = '+8618192235667'
+        pre_phone = '+861819249383'
         outcomes = ["YI105 - PCR 1 KEEP CHILDREN AND MOTHERS"]
         districts = ["Kampala"]
         ips = ["KAMPALA DHO, WAKISO DHO"]
@@ -49,10 +51,12 @@ class ContactEndpointTest(AuthenticatedAPITestCase):
             'outcomes': outcomes,
             'types': types,
             'ips': ips,
-            'districts': districts
+            'districts': districts,
+            'pre_phone': pre_phone
         }
         response = self.client.put(ENDPOINT_URL, data=contact)
         self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertTrue(execute_rapid_pro_contact_update.delay)
 
     @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.delete')

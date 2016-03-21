@@ -18,8 +18,7 @@ HEADER_CONTACT = {"Content-Type": "application/json"}
 
 
 class ContactService(object):
-
-    rapid_pro_contact_label_map = {
+    contact_type_map = {
         'IMPLEMENTING_PARTNER': 'IP',
         'MIDDLE_MAN': 'Sub-consignee',
         'END_USER': 'End-user'
@@ -137,45 +136,74 @@ class ContactService(object):
         ContactService._append_if_not_exist(outcome, updated_contact['outcomes'])
         ContactService._append_if_not_exist(ip, updated_contact['ips'])
         ContactService._append_if_not_exist(district, updated_contact['districts'])
-
         return updated_contact
 
     @staticmethod
     def add_or_update_rapid_pro_contact(contact):
         logger.info('rapid pro live = %s' % settings.RAPIDPRO_LIVE)
 
-        if settings.RAPIDPRO_LIVE:
-            rapid_pro_contact = ContactService.build_rapid_pro_contact(contact)
-            logger.info('rapid pro contact = %s' % rapid_pro_contact)
-            logger.info('url = %s' % settings.RAPIDPRO_URLS.get('CONTACTS'))
+        if not settings.RAPIDPRO_LIVE:
+            return
 
-            response = requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(rapid_pro_contact),
-                                     headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+        rapid_pro_contact = ContactService.build_rapid_pro_contact(contact)
+        phone = contact.get('phone')
+        pre_phone = contact.get('prePhone')
+        contact.pop('prePhone') if pre_phone else None
+        new_or_phone_not_modified = (not pre_phone or pre_phone == phone)
+        logger.info('++++++++++++++++++++++++++++++%s' % new_or_phone_not_modified)
+        if new_or_phone_not_modified:
+            return ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
+
+        pre_rapid_pro_contact = ContactService.get_rapid_pro_contact(pre_phone).json()
+        results = pre_rapid_pro_contact.get('results')
+
+        if results:
+            rapid_pro_contact.update({
+                'uuid': results[0].get('uuid')
+            })
+            rapid_pro_contact.get('urns').extend(results[0].get('urns'))
+            ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
+
+            rapid_pro_contact.get('urns').pop(rapid_pro_contact.get('urns').index('tel:%s' % pre_phone))
+            response = ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
+
             logger.info('add or update rapid pro contact response = [%s]' % response)
             return response
 
     @staticmethod
+    def __post_contact_to_rapid_pro(contact):
+        try:
+            return requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(contact),
+                                 headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+        except ConnectionError, error:
+            logger.error(error)
+            return HTTP_504_GATEWAY_TIMEOUT
+
+    @staticmethod
     def get_rapid_pro_contact(phone):
-        if settings.RAPIDPRO_LIVE:
-            url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
-                'urns': 'tel:%s' % phone
-            }))
-            response = requests.get(url_add_rapid_pro_contact, headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
-            return response
+        if not settings.RAPIDPRO_LIVE:
+            return
+
+        url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
+            'urns': 'tel:%s' % phone
+        }))
+        response = requests.get(url_add_rapid_pro_contact, headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+        return response
 
     @staticmethod
     def delete_rapid_pro_contact(phone):
-        if settings.RAPIDPRO_LIVE:
-            url_delete_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
-                'urns': 'tel:%s' % phone
-            }))
-            response = requests.delete(url_delete_rapid_pro_contact, headers=HEADER,
-                                       verify=settings.RAPIDPRO_SSL_VERIFY)
-            return response
+        if not settings.RAPIDPRO_LIVE:
+            return
+
+        url_delete_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
+            'urns': 'tel:%s' % phone
+        }))
+        response = requests.delete(url_delete_rapid_pro_contact, headers=HEADER,
+                                   verify=settings.RAPIDPRO_SSL_VERIFY)
+        return response
 
     @staticmethod
     def build_rapid_pro_contact(contact):
-        logger.info(contact)
         return {
             'name': '%(firstName)s %(lastName)s' % contact,
             'groups': ['EUMS'],
@@ -185,7 +213,7 @@ class ContactService(object):
 
     @staticmethod
     def build_rapid_pro_contact_fields(contact):
-        contact_label = ContactService.rapid_pro_contact_label(contact.get('types'))
+        contact_label = ContactService.convert_contact_types(contact.get('types'))
         return {
             'firstname': contact.get('firstName'),
             'lastname': contact.get('lastName'),
@@ -196,15 +224,15 @@ class ContactService(object):
         }
 
     @staticmethod
-    def rapid_pro_contact_label(contact_label_list):
-        if contact_label_list:
-            labels = []
-            for contact_label in contact_label_list:
-                if contact_label in ContactService.rapid_pro_contact_label_map:
-                    labels.append(ContactService.rapid_pro_contact_label_map[contact_label])
-            return labels
+    def convert_contact_types(pre_types):
+        if not pre_types:
+            return str(None)
 
-        return None
+        new_types = []
+        for contact_label in pre_types:
+            if contact_label in ContactService.contact_type_map:
+                new_types.append(ContactService.contact_type_map[contact_label])
+        return new_types
 
 
 @app.task

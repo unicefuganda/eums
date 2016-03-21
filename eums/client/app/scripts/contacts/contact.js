@@ -7,6 +7,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
+        $scope.preContactPhone;
         $scope.contact = {};
         $scope.currentUser = {};
 
@@ -58,6 +59,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
             showAdditionalInfo();
             $scope.$broadcast('edit-contact', $scope.currentContact);
+            $scope.preContactPhone = $scope.currentContact.phone;
         };
 
         $scope.formatDate = function (date) {
@@ -316,6 +318,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
                 scope.saveContact = function (contact) {
                     if (isEdit) {
+                        contact.prePhone = scope.preContactPhone;
                         ContactService.update(contact)
                             .then(function (createdContact) {
                                 createToast('Contact Updated!', 'success');

@@ -52,14 +52,8 @@ class ContactEndpoint(APIView):
     @staticmethod
     def __add_or_update_rapid_pro_contact(request_body):
         contact = dict(request_body)
-        if settings.CELERY_LIVE:
-            execute_rapid_pro_contact_update.delay(contact)
-        else:
-            execute_rapid_pro_contact_update(contact)
+        execute_rapid_pro_contact_update.delay(contact)
 
     @staticmethod
     def __delete_rapid_pro_contact(phone):
-        if settings.CELERY_LIVE:
-            execute_rapid_pro_contact_delete.delay(phone)
-        else:
-            execute_rapid_pro_contact_delete(phone)
+        execute_rapid_pro_contact_delete.delay(phone)

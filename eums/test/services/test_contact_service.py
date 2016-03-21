@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 from unittest import TestCase
@@ -6,7 +7,7 @@ from urllib import urlencode
 import requests
 from django.conf import settings
 from django.test import override_settings
-from mock import MagicMock, patch
+from mock import MagicMock, patch, call
 from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 
 from eums.rapid_pro.rapid_pro_service import HEADER
@@ -145,10 +146,65 @@ class ContactServiceTest(TestCase):
                                                       ip='WAKISO DHO', district='Wakiso')
 
         CONTACT.update(
-                {'outcomes': ['YI105 - PCR 1 KEEP CHILDREN AND MOTHERS', 'YI101 - PCR 1 KEEP CHILDREN AND MOTHERS']})
+            {'outcomes': ['YI105 - PCR 1 KEEP CHILDREN AND MOTHERS', 'YI101 - PCR 1 KEEP CHILDREN AND MOTHERS']})
 
         ContactService.get.assert_called_once_with(CONTACT['_id'])
         ContactService.update.assert_called_once_with(CONTACT)
+
+    @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
+    def test_should_add_rapid_pro_contact(self):
+        requests.get = MagicMock()
+        requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value=CONTACT)))
+        ContactService.add_or_update_rapid_pro_contact(CONTACT)
+
+        self.assertTrue(requests.post.called)
+        self.assertFalse(requests.get.called)
+
+    @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
+    def test_should_update_rapid_pro_contact_when_phone_not_modified(self):
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value=self.generate_add_or_update_rapid_pro_contact_response(CONTACT))))
+
+        new_contact = copy.deepcopy(CONTACT)
+        new_contact.update({
+            'prePhone': CONTACT['phone'],
+            'phone': CONTACT['phone']
+        })
+        requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value=new_contact)))
+
+        ContactService.add_or_update_rapid_pro_contact(new_contact)
+
+        self.assertTrue(requests.post.called)
+        self.assertFalse(requests.get.called)
+
+    @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
+    def test_should_update_rapid_pro_contact_when_phone_modified(self):
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value=self.generate_get_rapid_pro_contact_response(CONTACT))))
+
+        new_contact = copy.deepcopy(CONTACT)
+        new_phone = '+8618694029575'
+        new_contact.update({
+            'prePhone': CONTACT['phone'],
+            'phone': new_phone
+        })
+        requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value=self.generate_add_or_update_rapid_pro_contact_response(CONTACT))))
+
+        logger.info(new_contact)
+        ContactService.add_or_update_rapid_pro_contact(new_contact)
+
+        self.assertTrue(requests.get.called)
+        self.assertTrue(requests.post.called)
+
+    @override_settings(RAPIDPRO_LIVE=False)
+    def test_should_not_add_or_update_contact_when_rapid_pro_off(self):
+        requests.get = MagicMock()
+        requests.post = MagicMock()
+        self.assertFalse(requests.get.called)
+        self.assertFalse(requests.post.called)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_delete_rapid_pro_contact(self):
@@ -162,6 +218,13 @@ class ContactServiceTest(TestCase):
         requests.delete.assert_called_once_with(url_delete_rapid_pro_contact, headers=HEADER,
                                                 verify=settings.RAPIDPRO_SSL_VERIFY)
         self.assertEqual(response.status_code, HTTP_204_NO_CONTENT)
+
+    @override_settings(RAPIDPRO_LIVE=False)
+    def test_should_not_delete_contact_when_rapid_pro_off(self):
+        phone = '+8618192235667'
+        requests.delete = MagicMock(return_value=MagicMock(status_code=HTTP_204_NO_CONTENT))
+        ContactService.delete_rapid_pro_contact(phone)
+        self.assertFalse(requests.delete.called)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_get_rapid_pro_contact(self):
@@ -179,7 +242,7 @@ class ContactServiceTest(TestCase):
 
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
-                return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
+            return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
         response = ContactService.get_rapid_pro_contact(phone)
 
         requests.get.assert_called_once_with(url_add_rapid_pro_contact, headers=HEADER,
@@ -197,6 +260,13 @@ class ContactServiceTest(TestCase):
         self.assertEqual(fields.get('ips'), ','.join(ips))
         self.assertEqual(fields.get('types'), ','.join(["End-user", "IP"]))
 
+    @override_settings(RAPIDPRO_LIVE=False)
+    def test_should_not_get_contact_when_rapid_pro_off(self):
+        phone = '+8618192235667'
+        requests.get = MagicMock()
+        ContactService.get_rapid_pro_contact(phone)
+        self.assertFalse(requests.get.called)
+
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_add_rapid_pro_contact(self):
         first_name = "Jack"
@@ -209,7 +279,7 @@ class ContactServiceTest(TestCase):
 
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
         requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
-                return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
+            return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
 
         response = ContactService.add_or_update_rapid_pro_contact(contact)
 
@@ -229,6 +299,12 @@ class ContactServiceTest(TestCase):
                                               data=json.dumps(ContactService.build_rapid_pro_contact(contact)),
                                               headers=HEADER,
                                               verify=settings.RAPIDPRO_SSL_VERIFY)
+
+    @override_settings(RAPIDPRO_LIVE=False)
+    def test_should_not_add_contact_when_rapid_pro_off(self):
+        requests.post = MagicMock()
+        ContactService.add_or_update_rapid_pro_contact(CONTACT)
+        self.assertFalse(requests.post.called)
 
     def generate_eums_contact(self, districts, first_name, ips, last_name, outcomes, phone, types):
         contact = {
@@ -256,4 +332,18 @@ class ContactServiceTest(TestCase):
             "modified_on": "2016-03-07T09:09:46.429Z",
             "phone": contact.get('phone'),
             "groups": ['EUMS']
+        }
+
+    def generate_get_rapid_pro_contact_response(self, contact):
+        return {
+            "results": [
+                {
+                    "uuid": "52fa33e7-da32-4703-8feb-aa5114dc1a8b",
+                    "name": "Jack Bob",
+                    "urns": [
+                        "tel:%s" % contact.get('phone')
+                    ],
+                    "fields": ContactService.build_rapid_pro_contact_fields(contact)
+                }
+            ]
         }
