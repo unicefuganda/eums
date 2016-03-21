@@ -7,7 +7,7 @@ var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var alertsPage = require('./pages/alerts-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-fdescribe('Direct Delivery', function () {
+describe('Direct Delivery', function () {
 
     var PURCHASE_ORDER_NUMBER1 = '81026395';
     var PURCHASE_ORDER_NUMBER2 = '81029906';

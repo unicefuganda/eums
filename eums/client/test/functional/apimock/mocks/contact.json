@@ -7,6 +7,7 @@
     "kampala"
   ],
   "ips": [
+    "KAMPALA DHO",
     "WAKISO DHO"
   ],
   "types": [
@@ -14,6 +15,5 @@
   ],
   "outcomes": [
     "YI101 - PCR 1 KEEP CHILDREN LEARNING"
-  ],
-  "createdByUserId": 2
+  ]
 }
