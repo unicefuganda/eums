@@ -150,7 +150,7 @@ class ContactService(object):
         pre_phone = contact.get('prePhone')
         contact.pop('prePhone') if pre_phone else None
         new_or_phone_not_modified = (not pre_phone or pre_phone == phone)
-        logger.info('++++++++++++++++++++++++++++++%s' % new_or_phone_not_modified)
+
         if new_or_phone_not_modified:
             return ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
 
