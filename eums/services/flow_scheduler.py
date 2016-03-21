@@ -64,7 +64,8 @@ def _cancel_current_run(runnable):
 
 
 def _cancel(run):
-    app.control.revoke(run.scheduled_message_task_id)
+    if settings.CELERY_LIVE:
+        app.control.revoke(run.scheduled_message_task_id)
     run.update_status(Run.STATUS.cancelled)
 
 

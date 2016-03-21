@@ -5,7 +5,7 @@ var alertsPage = require('./pages/alerts-page.js');
 var ipDeliveriesPage = require('./pages/ip-shipments-page.js');
 
 
-describe('Alerts', function () {
+fdescribe('Alerts', function () {
     var purchaseOrder = '12345';
 
     beforeEach(function () {
