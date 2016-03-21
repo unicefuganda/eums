@@ -162,8 +162,10 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     }
                     $scope.answers = [];
                     $scope.activeDelivery = undefined;
-                    LoaderService.hideLoader();
-                });
+
+                }).finally(function () {
+                LoaderService.hideLoader();
+            });
         }
 
         function getImages(id) {
