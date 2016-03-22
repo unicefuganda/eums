@@ -121,6 +121,7 @@ class ContactService(object):
 
             if origin_contact != updated_contact:
                 ContactService.update(updated_contact)
+                ContactService.add_or_update_rapid_pro_contact(updated_contact)
         except Exception, e:
             logger.error(e)
 

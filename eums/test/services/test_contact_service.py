@@ -28,6 +28,16 @@ CONTACT = {
 
 
 class ContactServiceTest(TestCase):
+    def test_should_convert_type_label(self):
+        pre_types = ['IMPLEMENTING_PARTNER', 'MIDDLE_MAN', 'END_USER']
+        self.assertEquals(['IP', 'Sub-consignee', 'End-user'], ContactService.convert_contact_types(pre_types))
+
+    def test_should_not_convert_type_label_when_empty(self):
+        self.assertIsNone(ContactService.convert_contact_types([]))
+
+    def test_should_not_convert_type_label_when_none(self):
+        self.assertIsNone(ContactService.convert_contact_types(None))
+
     def test_should_get_contact(self):
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(return_value=CONTACT)))
         response = ContactService.get(CONTACT['_id'])
