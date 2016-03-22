@@ -146,7 +146,7 @@ class DistributionPlanNode(Runnable):
             if self.is_assigned_to_self:
                 self.track = False
             else:
-                self.track = self.arcs_in.filter(source__track=True).exists()
+                self.track = True
             self.save()
 
     def update_balance(self):

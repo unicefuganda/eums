@@ -4,7 +4,7 @@ from unittest import TestCase
 import datetime
 
 from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
-    MultipleChoiceQuestion, Run, Flow, Option, Runnable, PurchaseOrder, PurchaseOrderItem
+    MultipleChoiceQuestion, Run, Flow, Option, Runnable, PurchaseOrder, PurchaseOrderItem, DistributionPlanNode
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -195,11 +195,12 @@ class DeliveryTest(TestCase):
     def test_should_mirror_delivery_tracked_status_on_all_nodes_when_tracked_status_changes_on_delivery(self):
         Delivery.objects.all().delete()
         delivery = DeliveryFactory(track=False)
-        root_node = DeliveryNodeFactory(distribution_plan=delivery)
-        child_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[(root_node, 5)])
+        root_node = DeliveryNodeFactory(distribution_plan=delivery,
+                                        tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        child_node = DeliveryNodeFactory(distribution_plan=delivery, track=True, parents=[(root_node, 5)])
 
         self.assertFalse(root_node.track)
-        self.assertFalse(child_node.track)
+        self.assertTrue(child_node.track)
 
         delivery.track = True
         delivery.save()
@@ -209,7 +210,7 @@ class DeliveryTest(TestCase):
         delivery.track = False
         delivery.save()
         self.assertFalse(DeliveryNode.objects.get(pk=root_node.id).track)
-        self.assertFalse(DeliveryNode.objects.get(pk=child_node.id).track)
+        self.assertTrue(DeliveryNode.objects.get(pk=child_node.id).track)
 
     def test_should_return_false_when_delivery_has_no_answer_at_all(self):
         delivery = DeliveryFactory()

@@ -2,11 +2,11 @@ import datetime
 from decimal import Decimal
 
 from eums.models import MultipleChoiceQuestion, Run
+from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -26,8 +26,9 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
     def test_should_return_correct_json_object(self):
         response = self.client.get(ENDPOINT_URL + '?treePosition=END_USER')
         expected_stats = [
-            {'deliveries': Decimal('500.00'), 'location': u'Kampala', 'notReceived': Decimal('300.00'), 'hasIssues': 0,
-             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-not-received', 'noIssues': 0}]
+            {'deliveries': Decimal('2100.00'), 'location': u'Kampala', 'notReceived': Decimal('1200.00'),
+             'hasIssues': 0, 'nonResponse': Decimal('600.00'), 'received': Decimal('300.00'),
+             'state': 'map-not-received', 'noIssues': 0}]
         self.assert_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_programme(self):
@@ -63,8 +64,9 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             '%s?to=%s&treePosition=END_USER' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [
-            {'deliveries': Decimal('200.00'), 'location': u'Kampala', 'notReceived': 0, 'hasIssues': 0,
-             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-received-with-issues', 'noIssues': 0}]
+            {'deliveries': Decimal('1800.00'), 'location': u'Kampala', 'notReceived': Decimal('900.00'), 'hasIssues': 0,
+             'nonResponse': Decimal('600.00'), 'received': Decimal('300.00'), 'state': 'map-not-received',
+             'noIssues': 0}]
 
         self.assert_delivery_stats(response, expected_stats)
 
@@ -101,7 +103,7 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
         end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=10,
-                                                item=po_item)
+                                                item=po_item, track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
@@ -114,7 +116,8 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         self.today = FakeDate.today()
 
         self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=20,
-                                                     item=po_item, distribution_plan=distribution_plan)
+                                                     item=po_item, distribution_plan=distribution_plan,
+                                                     track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
@@ -125,21 +128,22 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
                                                   distribution_plan=distribution_plan,
                                                   ip=self.ip,
                                                   consignee=self.ip,
-                                                  delivery_date=self.today + datetime.timedelta(days=3))
+                                                  delivery_date=self.today + datetime.timedelta(days=3),
+                                                  track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=40,
-                                                 item=po_item)
+                                                 item=po_item, track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=50,
-                                                 item=po_item)
+                                                 item=po_item, track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],

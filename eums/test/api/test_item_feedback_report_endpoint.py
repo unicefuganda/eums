@@ -367,7 +367,8 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         for index in range(number_of_nodes):
             node = DeliveryNodeFactory(consignee=consignee_one, item=po_item, programme=programme_one,
-                                       distribution_plan=DeliveryFactory(track=True))
+                                       distribution_plan=DeliveryFactory(track=True),
+                                       track=True)
 
             run_one = RunFactory(runnable=node)
             MultipleChoiceAnswerFactory(question=question_1, run=run_one, value=option_1)

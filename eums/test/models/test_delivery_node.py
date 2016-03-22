@@ -484,19 +484,6 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(alert.runnable, node)
         self.assertEqual(alert.item_description, description)
 
-    def test_should_get_node_tracked_status_from_its_parents_if_they_are_provided(self):
-        distribution_plan = DeliveryFactory(track=True)
-        parent_one = DeliveryNodeFactory(track=True, distribution_plan=distribution_plan)
-        parent_two = DeliveryNodeFactory(track=False)
-
-        node_with_tuple_parents = DeliveryNodeFactory(parents=[(parent_one, 5), (parent_two, 4)], track=False)
-        node_with_dict_parents = DeliveryNodeFactory(parents=[{'id': parent_one.id, 'quantity': 5}], track=False)
-        untracked_node = DeliveryNodeFactory(parents=[(parent_two, 5)], track=True)
-
-        self.assertTrue(node_with_tuple_parents.track)
-        self.assertTrue(node_with_dict_parents.track)
-        self.assertFalse(untracked_node.track)
-
     def test_node_end_user(self):
         node = DeliveryNode(tree_position=Flow.Label.END_USER)
 

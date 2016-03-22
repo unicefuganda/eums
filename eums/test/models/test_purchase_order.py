@@ -1,21 +1,17 @@
 from unittest import TestCase
-import datetime
 
 from django.db import IntegrityError
 
 from eums.models import Consignee, DistributionPlan, DistributionPlanNode, SalesOrder, PurchaseOrderItem, PurchaseOrder, \
     Programme, SalesOrderItem, ReleaseOrder
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.release_order_factory import ReleaseOrderFactory
-from eums.test.helpers.fake_datetime import FakeDate
 
 
 class PurchaseOrderTest(TestCase):
-
     def setUp(self):
         self.clean_up()
 
@@ -53,10 +49,12 @@ class PurchaseOrderTest(TestCase):
         self.assertFalse(purchase_order.is_fully_delivered())
 
         delivery = DeliveryFactory()
-        node_one = NodeFactory(item=item_one, quantity=100, distribution_plan=delivery)
+        node_one = NodeFactory(item=item_one, quantity=100, distribution_plan=delivery,
+                               tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         self.assertFalse(purchase_order.is_fully_delivered())
 
-        node_two = NodeFactory(item=item_two, quantity=100, distribution_plan=delivery)
+        node_two = NodeFactory(item=item_two, quantity=100, distribution_plan=delivery,
+                               tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         self.assertFalse(purchase_order.is_fully_delivered())
 
         delivery.track = True

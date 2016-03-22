@@ -1,10 +1,11 @@
 import datetime
-from eums.models import Run, MultipleChoiceQuestion, MultipleChoiceAnswer, Item
+
+from eums.models import Run, MultipleChoiceQuestion
+from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
@@ -53,7 +54,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
 
         end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=6,
                                                 location='someLocation', distribution_plan=distribution_plan,
-                                                item=po_item_one)
+                                                item=po_item_one, track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
@@ -74,7 +75,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         self.today = FakeDate.today()
 
         self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=9,
-                                                     location='someLocation',
+                                                     location='someLocation', track=True,
                                                      item=po_item_two, distribution_plan=distribution_plan)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
@@ -86,6 +87,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
                                                   location='someLocation',
                                                   distribution_plan=distribution_plan,
                                                   ip=self.ip,
+                                                  track=True,
                                                   consignee=self.ip,
                                                   delivery_date=self.today + datetime.timedelta(days=3))
         MultipleChoiceAnswerFactory(
@@ -94,14 +96,14 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=40,
-                                                 item=po_item_one)
+                                                 item=po_item_one, track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=50,
-                                                 item=po_item_one)
+                                                 item=po_item_one, track=True)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],

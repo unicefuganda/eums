@@ -33,6 +33,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             {'location': 'Other location', 'deliveries': Decimal('200.00'), 'nonResponse': Decimal('200.00'),
              'received': 0,
              'notReceived': 0, 'hasIssues': 0, 'noIssues': 0, 'state': 'map-non-response'}]
+
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_programme(self):
