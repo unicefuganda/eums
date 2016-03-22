@@ -32,6 +32,10 @@ class ContactServiceTest(TestCase):
         pre_types = ['IMPLEMENTING_PARTNER', 'MIDDLE_MAN', 'END_USER']
         self.assertEquals(['IP', 'Sub-consignee', 'End-user'], ContactService.convert_contact_types(pre_types))
 
+    def test_should_partly_convert_type_label(self):
+        pre_types = ['IMPLEMENTING_PARTNER', 'MIDDLE', 'END_USER']
+        self.assertEquals(['IP', 'End-user'], ContactService.convert_contact_types(pre_types))
+
     def test_should_not_convert_type_label_when_empty(self):
         self.assertIsNone(ContactService.convert_contact_types([]))
 
