@@ -38,7 +38,7 @@ def save_answers(request):
     logger.info("ready to schedule a flow")
     _dequeue_next_run_for(runnable)
 
-    flow_scheduler.distribution_alert_raise()
+    flow_scheduler.distribution_alert_raise.delay()
     return Response(status=status.HTTP_201_CREATED)
 
 
