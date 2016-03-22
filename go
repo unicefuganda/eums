@@ -123,6 +123,7 @@ function resetdb {
     python manage.py shell_plus < eums/fixtures/cleanup_questions.py
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
     python manage.py shell_plus < eums/fixtures/init_basic_data.py
+    python manage.py shell_plus < eums/fixtures/cleanup_runqueues.py
 
     if [ "$1" = "prod" ]; then
         echo "+++ Reset production database..."
