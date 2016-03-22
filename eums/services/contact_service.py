@@ -226,7 +226,7 @@ class ContactService(object):
     @staticmethod
     def convert_contact_types(pre_types):
         if not pre_types:
-            return str(None)
+            return None
 
         new_types = []
         for contact_label in pre_types:
