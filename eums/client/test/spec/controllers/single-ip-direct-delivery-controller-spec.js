@@ -72,7 +72,7 @@ describe('Single IP Direct Delivery Controller', function () {
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create', 'update', 'get']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions'])
+        mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions']);
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         spyOn(_, 'debounce').and.callFake(function(cb) { return function() { cb(); } });
 
@@ -313,17 +313,20 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should not create delivery if all purchase order items have quantityShipped as zero', function () {
-            scope.purchaseOrderItems = [{quantityShipped: 0, isInvalid: valid}, {quantityShipped: 0, isInvalid: valid}];
+            purchaseOrder.purchaseorderitemSet = scope.purchaseOrderItems = [{quantityShipped: 0, availableBalance: 0, isInvalid: valid}, {quantityShipped: 0, availableBalance: 0, isInvalid: valid}];
             scope.save(true);
             scope.$apply();
 
             expect(mockDeliveryService.create).not.toHaveBeenCalled();
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
             expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
+
+            purchaseOrder.purchaseorderitemSet = purchaseOrderItems;
+            scope.$apply();
         });
 
         it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
-            scope.purchaseOrderItems = [{isInvalid: valid}, {quantityShipped: 10, isInvalid: valid}];
+            scope.purchaseOrderItems = [{isInvalid: valid}, {quantityShipped: 10, isInvalid: valid, availableBalance: 10}];
             scope.save(true);
             scope.$apply();
 
@@ -353,27 +356,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
         });
 
-        xit('should update delivery nodes on scope when save is called with create = falsy', function () {
-            scope.delivery = createdTrackedDelivery;
-            var nodeOneClone = angular.copy(nodeOne);
-            nodeOneClone = Object.merge(nodeOneClone, {id: 1, item: itemOne.id, track: true});
-            var nodeTwoClone = angular.copy(nodeTwo);
-            nodeTwoClone = Object.merge(nodeTwoClone, {id: 2, item: itemTwo.id, track: true});
-            mockDeliveryNodeService.filter.and.returnValue(q.when([nodeOneClone, nodeTwoClone]));
-
-            scope.save(true);
-            scope.$apply();
-
-            var updateNodeArgs = mockDeliveryNodeService.update.calls.allArgs();
-            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({
-                distribution_plan: createdTrackedDelivery.id,
-                is_root: true
-            });
-            expect(mockDeliveryNodeService.update.calls.count()).toBe(2);
-            expect(JSON.stringify(updateNodeArgs.first().first())).toEqual(JSON.stringify(nodeOneClone));
-            expect(JSON.stringify(updateNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwoClone));
-        });
-
         it('should create untracked nodes when save is called with falsy', function () {
             var untrackedCreatedDelivery = Object.clone(createdTrackedDelivery);
             untrackedCreatedDelivery.track = false;
@@ -393,7 +375,7 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should save node quantity as 0 when item.quantityShipped is undefined and track is false', function() {
             scope.purchaseOrderItems = [
                 {quantityShipped: 10, id: 1, isInvalid: valid, availableBalance: 10},
-                {quantityShipped: undefined, id: 1, isInvalid: valid, availableBalance: 10}
+                {quantityShipped: undefined, id: 1, isInvalid: valid, availableBalance: 11}
             ];
             scope.save(false);
             scope.$apply();
@@ -419,15 +401,34 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockLoader.modal.calls.count()).toBe(6);
         });
 
+        it('should not create delivery if any item available balance has changed', function() {
+            scope.purchaseOrderItems = [{quantityShipped: 10, availableBalance: 10, isInvalid: valid}, {quantityShipped: 8, availableBalance: 8, isInvalid: valid}];
+            scope.save(true);
+            scope.$apply();
+
+            expect(mockDeliveryService.create).not.toHaveBeenCalled();
+            var errorMessage = 'Item available balance has changed, please refresh page and try again!';
+            expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
+        });
+
         describe('successfully with track = true', function () {
             it('reload purchase order and purchase order items on scope', function () {
+                scope.purchaseOrderItems = [{quantityShipped: 10, availableBalance: 10, isInvalid: valid}, {quantityShipped: 11, availableBalance: 11, isInvalid: valid}];
                 var newPurchaseOrder = {id: 15, purchaseorderitemSet: []};
-                mockPurchaseOrderService.get.and.returnValue(q.when(newPurchaseOrder));
+                var count = 0;
+                mockPurchaseOrderService.get.and.callFake(function(){
+                    if(count == 0) {
+                        count ++;
+                        return q.when(purchaseOrder);
+                    } else {
+                        return q.when(newPurchaseOrder);
+                    }
+                });
 
                 scope.save(true);
                 scope.$apply();
 
-                expect(mockPurchaseOrderService.get.calls.count()).toBe(2);
+                expect(mockPurchaseOrderService.get.calls.count()).toBe(3);
                 expect(mockPurchaseOrderService.get.calls.mostRecent().args).toEqual(
                     [purchaseOrder.id, ['purchaseorderitem_set.item']]
                 );

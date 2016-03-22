@@ -59,44 +59,41 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
             }).finally(hideLoader);
         };
 
-        function initialize() {
-            var promises = [];
-            promises.push(SystemSettingsService.getSettingsWithDefault());
-            $q.all(promises).then(function (returns) {
-                $scope.systemSettings = returns[0];
-            });
-            loadOrderData();
-        }
-
         var saveDelivery = function () {
-            var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
-                return item.quantityShipped || 0;
+            isAvailableBalanceChanged().then(function (isChanged) {
+                if (isChanged) {
+                    createToast('Item available balance has changed, please refresh page and try again!', 'danger');
+                    return;
+                }
+                var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
+                    return item.quantityShipped || 0;
+                });
+                if (!$scope.delivery.id && totalQuantityShipped) {
+                    showLoader();
+                    createDelivery()
+                        .then(createDeliveryNodes)
+                        .then(updatePurchaseOrderDeliveryMode)
+                        .then(initialize)
+                        .then(notifyOnSuccess)
+                        .finally(hideLoader);
+                }
+                else if ($scope.delivery.id && totalQuantityShipped) {
+                    showLoader();
+                    updateDelivery()
+                        .then(updateOrCreateDeliveryNodes)
+                        .then(initialize)
+                        .then(function () {
+                            notifyOnSuccess('Delivery updated');
+                        })
+                        .finally(hideLoader);
+                }
+                else if (!totalQuantityShipped) {
+                    createToast('Cannot save delivery with zero quantity shipped', 'danger');
+                }
             });
-            if (!$scope.delivery.id && totalQuantityShipped) {
-                showLoader();
-                createDelivery()
-                    .then(createDeliveryNodes)
-                    .then(updatePurchaseOrderDeliveryMode)
-                    .then(loadOrderData)
-                    .then(notifyOnSuccess)
-                    .finally(hideLoader);
-            }
-            else if ($scope.delivery.id && totalQuantityShipped) {
-                showLoader();
-                updateDelivery()
-                    .then(updateOrCreateDeliveryNodes)
-                    .then(loadOrderData)
-                    .then(function () {
-                        notifyOnSuccess('Delivery updated');
-                    })
-                    .finally(hideLoader);
-            }
-            else if (!totalQuantityShipped) {
-                createToast('Cannot save delivery with zero quantity shipped', 'danger');
-            }
         };
 
-        function loadOrderData() {
+        function initialize() {
             showLoader();
             var promises = [];
             promises.push(loadUserPermissions());
@@ -198,6 +195,21 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
             });
         }
 
+        function isAvailableBalanceChanged() {
+            return PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
+                var items = purchaseOrder.purchaseorderitemSet;
+                var currentTotalBalance = 0, newTotalBalance = 0, i;
+                if (items.length != $scope.purchaseOrderItems.length) {
+                    return true;
+                }
+                for (i = 0; i < $scope.purchaseOrderItems.length && $scope.purchaseOrderItems[i].availableBalance; i++) {
+                    newTotalBalance += items[i].availableBalance;
+                    currentTotalBalance += $scope.purchaseOrderItems[i].availableBalance;
+                }
+                return currentTotalBalance != newTotalBalance;
+            });
+        }
+
         function setItemQuantityShipped(item) {
             var quantityShipped = item.node ? item.node.quantityIn : item.availableBalance;
             return Object.merge(item, {quantityShipped: quantityShipped})
@@ -213,7 +225,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
                         return !delivery.track;
                     }).first() || {};
 
-                //Because line item partial sucks
                 $scope.lineItem.remark = $scope.delivery.remark;
 
                 setDeliveryDataFromPastDelivery($scope.trackedDeliveries);

@@ -10,10 +10,8 @@ class ConsigneeTest(TestCase):
         Consignee.objects.all().delete()
 
     def test_string_representation_of_consignee_is_consignee_name(self):
-        test_consignee_name = 'Test Consignee'
-        test_consignee_customer_id = 'U007'
-        test_consignee = test_consignee_name + ' - ' + test_consignee_customer_id
-        consignee = Consignee(name=test_consignee_name, customer_id=test_consignee_customer_id)
+        test_consignee = 'Test Consignee'
+        consignee = Consignee(name=test_consignee)
         self.assertEqual(test_consignee, str(consignee))
 
     def test_return_true_when_remarks_is_the_only_change(self):

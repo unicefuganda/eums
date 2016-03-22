@@ -11,6 +11,7 @@ describe('Direct Delivery', function () {
 
     var PURCHASE_ORDER_NUMBER1 = '81026395';
     var PURCHASE_ORDER_NUMBER2 = '81029906';
+    var browser2 = browser.forkNewDriverInstance();
 
     it('Admin should be able to create direct deliveries to multiple IPs', function () {
         loginPage.visit();
@@ -148,7 +149,7 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertLocation).toContain('Wakiso');
     });
 
-    it('Admin can not create direct deliveries to multiple IPs if avalable balance updated by another admin', function () {
+    it('Admin can not create direct deliveries to multiple IPs if available balance updated by another admin', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         directDeliveryPage.visit();
@@ -156,7 +157,6 @@ describe('Direct Delivery', function () {
         directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
         directDeliveryPage.selectItem("Investor Perspectives & Children's Right");
 
-        var browser2 = browser.forkNewDriverInstance();
         loginPage.switchBrowser(browser2);
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
@@ -188,7 +188,36 @@ describe('Direct Delivery', function () {
         directDeliveryPage.enableTracking();
         directDeliveryPage.saveDelivery();
         expect(directDeliveryPage.toastMessage).toContain('Available balance has changed, please refresh page and try again!');
+    });
 
-        //browser2.close()
+    it('Admin can not create direct deliveries to single IP if available balance updated by another admin', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        directDeliveryPage.visit();
+        directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
+        directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER2);
+
+        loginPage.switchBrowser(browser2);
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        directDeliveryPage.switchBrowser(browser2);
+        directDeliveryPage.visit();
+        directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
+        directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER2);
+        directDeliveryPage.setDeliveryDateForSingleIP('10/10/2021');
+        directDeliveryPage.setContact('John');
+        directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.firstRowQuantityShipped.clear().sendKeys('125');
+        directDeliveryPage.saveAndTrackDelivery();
+        expect(directDeliveryPage.toastMessage).toContain('Delivery created');
+
+        loginPage.switchBrowser();
+        directDeliveryPage.switchBrowser();
+        directDeliveryPage.setDeliveryDateForSingleIP('10/10/2021');
+        directDeliveryPage.setContact('John');
+        directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.firstRowQuantityShipped.clear().sendKeys('100');
+        directDeliveryPage.saveAndTrackDelivery();
+        expect(directDeliveryPage.toastMessage).toContain('Item available balance has changed, please refresh page and try again!');
     });
 });

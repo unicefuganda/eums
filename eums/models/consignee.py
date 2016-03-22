@@ -27,4 +27,4 @@ class Consignee(TimeStampedModel):
         return True
 
     def __unicode__(self):
-        return '%s - %s' % (self.name, self.customer_id)
+        return '%s' % self.name
