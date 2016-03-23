@@ -4,6 +4,7 @@ from celery.utils.log import get_task_logger
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from django.conf import settings
 
 from eums.permissions.web_answer_permissions import WebAnswerPermissions
 from eums.models import Run, Flow, Runnable, RunQueue
@@ -37,7 +38,10 @@ def save_answers(request):
     logger.info("ready to schedule a flow")
     _dequeue_next_run_for(runnable)
 
-    flow_scheduler.distribution_alert_raise.delay()
+    if settings.CELERY_LIVE:
+        flow_scheduler.distribution_alert_raise.delay()
+    else:
+        flow_scheduler.distribution_alert_raise()
     return Response(status=status.HTTP_201_CREATED)
 
 
