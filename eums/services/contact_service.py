@@ -10,11 +10,11 @@ from rest_framework.status import HTTP_200_OK, HTTP_504_GATEWAY_TIMEOUT
 from urllib3.connection import ConnectionError
 
 from eums.celery import app
-from eums.rapid_pro.rapid_pro_service import HEADER
 
 logger = logging.getLogger(__name__)
 
 HEADER_CONTACT = {"Content-Type": "application/json"}
+HEADER_RAPID_PRO = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN, "Content-Type": "application/json"}
 
 
 class ContactService(object):
@@ -175,7 +175,7 @@ class ContactService(object):
     def __post_contact_to_rapid_pro(contact):
         try:
             return requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(contact),
-                                 headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+                                 headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
         except ConnectionError, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT
@@ -188,7 +188,7 @@ class ContactService(object):
         url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
             'urns': 'tel:%s' % phone
         }))
-        response = requests.get(url_add_rapid_pro_contact, headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+        response = requests.get(url_add_rapid_pro_contact, headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
         return response
 
     @staticmethod
@@ -199,7 +199,7 @@ class ContactService(object):
         url_delete_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
             'urns': 'tel:%s' % phone
         }))
-        response = requests.delete(url_delete_rapid_pro_contact, headers=HEADER,
+        response = requests.delete(url_delete_rapid_pro_contact, headers=HEADER_RAPID_PRO,
                                    verify=settings.RAPIDPRO_SSL_VERIFY)
         return response
 

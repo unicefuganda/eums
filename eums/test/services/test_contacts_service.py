@@ -1,5 +1,5 @@
 from unittest import TestCase
-from eums.services.contacts import ContactService
+from eums.services.contacts import Contacts
 
 
 class ContactServiceTest(TestCase):
@@ -10,6 +10,6 @@ class ContactServiceTest(TestCase):
             u'lastName': u'george',
             u'phone': u'+256781111111'}
 
-        contact = ContactService(**contact_data)
+        contact = Contacts(**contact_data)
 
         self.assertEqual(contact.full_name(), "chris george")

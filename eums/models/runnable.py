@@ -1,3 +1,5 @@
+import logging
+
 import requests
 from django.conf import settings
 from django.db import models
@@ -6,7 +8,11 @@ from polymorphic import PolymorphicModel
 
 from eums.models import Consignee
 from eums.models.time_stamped_model import TimeStampedModel
-from eums.services.contacts import ContactService
+
+from eums.services.contacts import Contacts
+from eums.services.contact_service import ContactService
+
+logger = logging.getLogger(__name__)
 
 
 class Runnable(PolymorphicModel, TimeStampedModel):
@@ -28,11 +34,8 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     END_USER = 'END_USER'
 
     def build_contact(self):
-        try:
-            response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))
-            return response.json() if response.status_code is 200 else {}
-        except:
-            return {}
+        logger.info('contact person id = %s' % self.contact_person_id)
+        return ContactService.get(self.contact_person_id)
 
     def current_run(self):
         return self.run_set.filter(status='scheduled').first()
@@ -61,7 +64,7 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     @property
     def contact(self):
         contact = self.build_contact()
-        return ContactService(**contact)
+        return Contacts(**contact)
 
     def number(self):
         pass
@@ -74,8 +77,8 @@ class Runnable(PolymorphicModel, TimeStampedModel):
 
     def create_alert(self, issue):
         self.alert_set.create(
-                order_type=self.type(),
-                order_number=self.number(),
-                consignee_name=self.consignee.name,
-                item_description=self.item_description(),
-                issue=issue)
+            order_type=self.type(),
+            order_number=self.number(),
+            consignee_name=self.consignee.name,
+            item_description=self.item_description(),
+            issue=issue)

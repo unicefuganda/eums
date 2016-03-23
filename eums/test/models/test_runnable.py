@@ -34,7 +34,7 @@ class RunnableTest(TestCase):
         contact = node.build_contact()
 
         self.assertEqual(contact, fake_contact_json)
-        mock_get.assert_called_with("%s%s/" % (settings.CONTACTS_SERVICE_URL, contact_id))
+        mock_get.assert_called_with(url="%s%s" % (settings.CONTACTS_SERVICE_URL, contact_id))
 
     def test_gets_all_response_for_node_consignee(self):
         multichoice_question = MultipleChoiceQuestionFactory(label='productReceived')

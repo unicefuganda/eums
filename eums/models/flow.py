@@ -1,6 +1,6 @@
 from django.db import models
 from djorm_pgarray.fields import IntegerArrayField
-from eums.models import Runnable, Option
+from eums.models import Option
 
 
 class Flow(models.Model):

@@ -1,4 +1,4 @@
-class ContactService:
+class Contacts:
     def __init__(self, **kwargs):
         self._id = kwargs.get('_id')
         self.first_name = kwargs.get('firstName')
