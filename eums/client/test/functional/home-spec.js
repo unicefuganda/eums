@@ -82,12 +82,12 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('9 deliveries');
-                expect(homePage.numberDelivered).toEqual('4 responses');
+                expect(homePage.numberSent).toEqual('13 deliveries'); //+2
+                expect(homePage.numberDelivered).toEqual('5 responses');
                 expect(homePage.numberNotDelivered).toEqual('2 responses');
                 expect(homePage.numberNonResponse).toEqual('3 non-responses');
-                expect(homePage.valueSent).toEqual('$1.1k');
-                expect(homePage.valueDelivered).toEqual('563');
+                expect(homePage.valueSent).toEqual('$2.1k'); //+0.2
+                expect(homePage.valueDelivered).toEqual('643');
                 expect(homePage.valueNotDelivered).toEqual('230');
                 expect(homePage.valueNonResponse).toEqual('262');
             });

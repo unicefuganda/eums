@@ -27,7 +27,7 @@ describe('Direct Delivery', function () {
         directDeliveryPage.addConsignee();
 
         directDeliveryPage.setQuantity(100);
-        directDeliveryPage.setDeliveryDate('10/10/2021');
+        directDeliveryPage.setDeliveryDate('20-Mar-2016');
         directDeliveryPage.setConsignee('WAKISO');
         directDeliveryPage.setContact('John');
         directDeliveryPage.setDistrict('Wakiso');
@@ -110,7 +110,7 @@ describe('Direct Delivery', function () {
         ipShipmentsPage.searchForShipment(PURCHASE_ORDER_NUMBER1);
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
-        ipShipmentsPage.specifyDeliveryReceiptDate('12/08/2015');
+        ipShipmentsPage.specifyDeliveryReceiptDate('22-Mar-2016');
         ipShipmentsPage.specifyDeliveryConditionAsNotGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsYes();
         ipShipmentsPage.addRemarks('The delivery was awesome');
@@ -132,7 +132,7 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertStatuses).toContain('IN BAD CONDITION');
         expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).not.toContain('How Business Affects Us');
-        expect(alertsPage.alertOrderDate).toContain('10-Oct-2021');
+        expect(alertsPage.alertOrderDate).toContain('20-Mar-2016');
         expect(alertsPage.alertOrderValue).toContain('$80.31');
         expect(alertsPage.alertReporter).toContain('John Doe');
         expect(alertsPage.alertIP).toContain('WAKISO DHO');
@@ -142,7 +142,7 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertStatuses).toContain('DAMAGED');
         expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).toContain('How Business Affects Us');
-        expect(alertsPage.alertOrderDate).toContain('10-Oct-2021');
+        expect(alertsPage.alertOrderDate).toContain('20-Mar-2016');
         expect(alertsPage.alertOrderValue).toContain('$80.31');
         expect(alertsPage.alertReporter).toContain('John Doe');
         expect(alertsPage.alertIP).toContain('WAKISO DHO');
