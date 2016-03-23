@@ -18,14 +18,14 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('8 deliveries');
-                expect(homePage.numberDelivered).toEqual('4 responses');
+                expect(homePage.numberSent).toEqual('24 deliveries');
+                expect(homePage.numberDelivered).toEqual('17 responses');
                 expect(homePage.numberNotDelivered).toEqual('1 response');
-                expect(homePage.numberNonResponse).toEqual('3 non-responses');
-                expect(homePage.valueSent).toEqual('$212');
-                expect(homePage.valueDelivered).toEqual('122');
+                expect(homePage.numberNonResponse).toEqual('8 non-responses');
+                expect(homePage.valueSent).toEqual('$326');
+                expect(homePage.valueDelivered).toEqual('306');
                 expect(homePage.valueNotDelivered).toEqual('20');
-                expect(homePage.valueNonResponse).toEqual('70');
+                expect(homePage.valueNonResponse).toEqual('72');
             });
 
             it('should click on Kisoro district', function () {
@@ -52,7 +52,7 @@ describe('Home Page', function () {
             it('should highlight a layer', function () {
                 homePage.highLightMapLayer('wakiso');
                 expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
-                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'white', fillOpacity: 1, weight: 1.5});
+                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'map-not-received', fillOpacity: 1, weight: 1.5});
             });
 
             it('responses panel should have labels on latest delivery responses', function () {
@@ -82,12 +82,12 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('11 deliveries');
-                expect(homePage.numberDelivered).toEqual('5 responses');
+                expect(homePage.numberSent).toEqual('9 deliveries');
+                expect(homePage.numberDelivered).toEqual('4 responses');
                 expect(homePage.numberNotDelivered).toEqual('2 responses');
                 expect(homePage.numberNonResponse).toEqual('3 non-responses');
-                expect(homePage.valueSent).toEqual('$1.9k');
-                expect(homePage.valueDelivered).toEqual('643');
+                expect(homePage.valueSent).toEqual('$1.1k');
+                expect(homePage.valueDelivered).toEqual('563');
                 expect(homePage.valueNotDelivered).toEqual('230');
                 expect(homePage.valueNonResponse).toEqual('262');
             });
@@ -116,7 +116,7 @@ describe('Home Page', function () {
             it('should highlight a layer', function () {
                 homePage.highLightMapLayer('wakiso');
                 expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
-                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'map-received-with-issues', fillOpacity: 1, weight: 1.5});
+                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'white', fillOpacity: 1, weight: 1.5});
             });
 
             it('responses panel should have a link to more details', function () {
@@ -148,14 +148,14 @@ describe('Home Page', function () {
 
         it('should get global stats on map only for IP', function () {
             expect(homePage.mapLocation).toEqual('');
-            expect(homePage.numberSent).toEqual('3 deliveries');
+            expect(homePage.numberSent).toEqual('5 deliveries');
             expect(homePage.numberDelivered).toEqual('1 response');
             expect(homePage.numberNotDelivered).toEqual('0 responses');
-            expect(homePage.numberNonResponse).toEqual('2 non-responses');
-            expect(homePage.valueSent).toEqual('$62');
+            expect(homePage.numberNonResponse).toEqual('4 non-responses');
+            expect(homePage.valueSent).toEqual('$64');
             expect(homePage.valueDelivered).toEqual('12');
             expect(homePage.valueNotDelivered).toEqual('0');
-            expect(homePage.valueNonResponse).toEqual('50');
+            expect(homePage.valueNonResponse).toEqual('52');
         });
     });
 });
