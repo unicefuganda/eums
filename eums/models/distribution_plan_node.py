@@ -143,10 +143,7 @@ class DistributionPlanNode(Runnable):
 
     def update_tracked_status(self):
         if not self.is_root():
-            if self.is_assigned_to_self:
-                self.track = False
-            else:
-                self.track = True
+            self.track = False if self.is_assigned_to_self else True
             self.save()
 
     def update_balance(self):
