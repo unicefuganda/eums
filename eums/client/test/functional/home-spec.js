@@ -116,7 +116,7 @@ describe('Home Page', function () {
             it('should highlight a layer', function () {
                 homePage.highLightMapLayer('wakiso');
                 expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
-                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'white', fillOpacity: 1, weight: 1.5});
+                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'map-received-with-issues', fillOpacity: 1, weight: 1.5});
             });
 
             it('responses panel should have a link to more details', function () {
