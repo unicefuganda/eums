@@ -2,6 +2,7 @@ import datetime as datetime
 import json
 
 from django.db.models import Q
+from django.test import override_settings
 from mock import MagicMock, patch
 from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_201_CREATED
 
@@ -45,6 +46,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         OptionFactory(question=satisfied_qn, text='No')
         TextQuestionFactory(label='additionalDeliveryComments', flow=flow)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_answers(self):
@@ -77,6 +79,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(answer_for_additional_comments.value, good_comment)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     @patch('eums.models.DistributionPlan.confirm')
@@ -100,6 +103,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertTrue(mock_confirm.called)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     @patch('eums.services.response_alert_handler.ResponseAlertHandler')
@@ -131,6 +135,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertTrue(mock_alert_handler.called_once_with(delivery, rapidpro_formatted_answers))
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     @patch('eums.services.response_alert_handler.ResponseAlertHandler.process')
@@ -154,6 +159,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertTrue(mock_process.called)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_create_alerts_integration(self):
@@ -183,6 +189,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_cancel_existing_runs_when_saving_a_new_set_of_answers(self):
@@ -207,6 +214,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(Run.objects.filter(runnable=delivery, status='completed')), 1)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_delivery_node_answers(self):
@@ -227,6 +235,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(MultipleChoiceAnswer.objects.filter(run__runnable=node)), 1)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_delivery_node_answers_to_web_flow(self):
@@ -247,6 +256,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(MultipleChoiceAnswer.objects.filter(question__flow=web_flow)), 1)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_numeric_answers(self):
@@ -266,6 +276,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(NumericAnswer.objects.filter(question__flow=web_flow)), 1)
         self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_dequeue_next_run_in_the_queue(self):
@@ -319,6 +330,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def test_unicef_viewer_should_not_have_permission_to_create_web_answer(self):
         self.log_and_assert_create_web_answer_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
 
+    @override_settings(CELERY_LIVE=True)
     @patch('eums.services.contact_service.ContactService.get', mock_get)
     @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_ip_editor_should_have_permission_to_create_web_answer(self):
