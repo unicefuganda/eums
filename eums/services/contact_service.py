@@ -5,9 +5,9 @@ from urllib import urlencode
 
 import requests
 from django.conf import settings
+from requests.packages.urllib3.connection import ConnectionError
 
 from rest_framework.status import HTTP_200_OK, HTTP_504_GATEWAY_TIMEOUT
-from urllib3.connection import ConnectionError
 
 from eums.celery import app
 
@@ -50,7 +50,7 @@ class ContactService(object):
 
             logger.error('Contact not found')
             return contacts
-        except ConnectionError, error:
+        except StandardError, error:
             logger.error(error)
             return contacts
 
