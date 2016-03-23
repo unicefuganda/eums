@@ -24,6 +24,7 @@ ENDPOINT_URL = BACKEND_URL + 'web-answers'
 
 class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     mock_get = MagicMock(return_value={})
+    mock_distribution_alert_raise = MagicMock()
 
     def setUp(self):
         super(WebAnswerEndpointTest, self).setUp()
@@ -45,6 +46,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         TextQuestionFactory(label='additionalDeliveryComments', flow=flow)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_answers(self):
         delivery = DeliveryFactory()
         date_of_receipt = self.__get_current_date()
@@ -73,8 +75,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(answer_for_delivery_order.value.text, 'Yes')
         self.assertEqual(answer_for_satisfaction.value.text, 'Yes')
         self.assertEqual(answer_for_additional_comments.value, good_comment)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     @patch('eums.models.DistributionPlan.confirm')
     def test_should_confirm_delivery_when_answers_are_saved(self, mock_confirm):
         delivery = DeliveryFactory()
@@ -94,8 +98,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(mock_confirm.called)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     @patch('eums.services.response_alert_handler.ResponseAlertHandler')
     def test_should_format_answers_to_rapidpro_hook_api_and_handle_corresponding_alerts(self, mock_alert_handler):
         delivery = DeliveryFactory()
@@ -123,8 +129,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         ]
 
         self.assertTrue(mock_alert_handler.called_once_with(delivery, rapidpro_formatted_answers))
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     @patch('eums.services.response_alert_handler.ResponseAlertHandler.process')
     def test_should_process_alerts(self, mock_process):
         delivery = DeliveryFactory()
@@ -144,8 +152,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(mock_process.called)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_create_alerts_integration(self):
         purchase_order = PurchaseOrderFactory(order_number=5678)
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
@@ -171,8 +181,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         alert = Alert.objects.get(consignee_name="Liverpool FC", order_number=5678)
         self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_cancel_existing_runs_when_saving_a_new_set_of_answers(self):
         delivery = DeliveryFactory()
 
@@ -193,8 +205,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(runs), 2)
         self.assertEqual(len(Run.objects.filter(runnable=delivery, status='cancelled')), 1)
         self.assertEqual(len(Run.objects.filter(runnable=delivery, status='completed')), 1)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_delivery_node_answers(self):
         self.setup_flow_with_questions(Flow.Label.WEB)
         node = DeliveryNodeFactory()
@@ -211,8 +225,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(runs), 1)
         self.assertEqual(len(TextAnswer.objects.filter(run__runnable=node)), 1)
         self.assertEqual(len(MultipleChoiceAnswer.objects.filter(run__runnable=node)), 1)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_delivery_node_answers_to_web_flow(self):
         self.setup_flow_with_questions(Flow.Label.WEB)
         node = DeliveryNodeFactory()
@@ -229,8 +245,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         web_flow = Flow.objects.get(label=Flow.Label.WEB)
         self.assertEqual(len(TextAnswer.objects.filter(question__flow=web_flow)), 1)
         self.assertEqual(len(MultipleChoiceAnswer.objects.filter(question__flow=web_flow)), 1)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_save_numeric_answers(self):
         self.setup_flow_with_questions(Flow.Label.WEB)
         web_flow = Flow.objects.filter(label=Flow.Label.WEB).first()
@@ -246,8 +264,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
 
         self.assertEqual(len(NumericAnswer.objects.filter(question__flow=web_flow)), 1)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_should_dequeue_next_run_in_the_queue(self):
         first_delivery_to_be_answered = DeliveryFactory(track=True)
         contact = {'name': 'Some name', 'phone': '098765433'}
@@ -272,6 +292,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(first_runs), 2)
         self.assertEqual(next_run.status, 'started')
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     def _get_answer_for(self, answer_type, delivery_id, question_label):
         return answer_type.objects.filter(run__runnable=delivery_id, question__label=question_label).first()
@@ -299,8 +320,10 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.log_and_assert_create_web_answer_permission(self.log_unicef_viewer_in, HTTP_403_FORBIDDEN)
 
     @patch('eums.services.contact_service.ContactService.get', mock_get)
+    @patch('eums.services.flow_scheduler.distribution_alert_raise', mock_distribution_alert_raise)
     def test_ip_editor_should_have_permission_to_create_web_answer(self):
         self.log_and_assert_create_web_answer_permission(self.log_ip_editor_in, HTTP_201_CREATED)
+        self.assertTrue(self.mock_distribution_alert_raise.delay.called)
 
     def test_ip_viewer_should_not_have_permission_to_create_web_answer(self):
         self.log_and_assert_create_web_answer_permission(self.log_ip_viewer_in, HTTP_403_FORBIDDEN)
