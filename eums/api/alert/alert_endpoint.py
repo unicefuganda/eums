@@ -130,7 +130,7 @@ class PropertySorter(CommonFieldSorter):
         reverse_flag = True if self.order == 'desc' else False
         alerts = list(queryset)
         alerts = sorted(alerts,
-                        key=lambda alert: getattr(alert, self.field_name, 'Z') if not reverse_flag else 'Z',
+                        key=lambda alert: getattr(alert, self.field_name, 'Z'),
                         reverse=reverse_flag)
         return self.process_method(alerts)
 
