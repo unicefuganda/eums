@@ -1,4 +1,4 @@
-ddescribe('Supply Efficiency Service', function () {
+describe('Supply Efficiency Service', function () {
     var mockBackend, service, config, queries, esEndpoint;
     var stubReportResponse = [
         {
