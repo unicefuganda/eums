@@ -106,6 +106,8 @@ class MultipleChoiceQuestion(Question):
         for val in params['values']:
             values.extend(ast.literal_eval(val))
 
-        params = filter(lambda v: self.label == v['label'], values)[0]
-        matching_option = self.option_set.get(text=params['category']['eng'])
+        params = filter(lambda v: self.label == v['label'], values)
+        param = params[len(params) - 1]
+
+        matching_option = self.option_set.get(text=param['category']['eng'])
         return self.answers.create(question=self, value=matching_option, run=run)
