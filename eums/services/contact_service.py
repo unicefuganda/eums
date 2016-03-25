@@ -5,7 +5,6 @@ from urllib import urlencode
 
 import requests
 from django.conf import settings
-from requests.packages.urllib3.connection import ConnectionError
 
 from rest_framework.status import HTTP_200_OK, HTTP_504_GATEWAY_TIMEOUT
 
@@ -35,7 +34,7 @@ class ContactService(object):
 
             logger.error('Contact not found')
             return default_contact
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return default_contact
 
@@ -50,7 +49,7 @@ class ContactService(object):
 
             logger.error('Contact not found')
             return contacts
-        except StandardError, error:
+        except Exception, error:
             logger.error(error)
             return contacts
 
@@ -65,7 +64,7 @@ class ContactService(object):
 
             logger.error('Contact not found')
             return contacts
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return contacts
 
@@ -80,7 +79,7 @@ class ContactService(object):
 
             logger.error('Contact not found')
             return default_contact
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return default_contact
 
@@ -89,7 +88,7 @@ class ContactService(object):
         try:
             response = requests.delete(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
             return response.status_code
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT
 
@@ -99,7 +98,7 @@ class ContactService(object):
             response = requests.put(settings.CONTACTS_SERVICE_URL, json.dumps(contact),
                                     headers=HEADER_CONTACT)
             return response.status_code
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT
 
@@ -109,7 +108,7 @@ class ContactService(object):
             response = requests.post(settings.CONTACTS_SERVICE_URL, json.dumps(contact),
                                      headers=HEADER_CONTACT)
             return response.status_code
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT
 
@@ -176,7 +175,7 @@ class ContactService(object):
         try:
             return requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(contact),
                                  headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
-        except ConnectionError, error:
+        except Exception, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT
 
