@@ -55,10 +55,17 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         function init() {
             LoaderService.showLoader();
             var promises = [];
+            promises.push(loadCurrentUser());
             promises.push(SystemSettingsService.getSettingsWithDefault());
             $q.all(promises).then(function (returns) {
-                $scope.systemSettings = returns[0];
+                $scope.systemSettings = returns[1];
                 LoaderService.hideLoader();
+            });
+        }
+
+        function loadCurrentUser() {
+            return UserService.getCurrentUser().then(function (user) {
+                $scope.user = user;
             });
         }
 
