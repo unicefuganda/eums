@@ -25,7 +25,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 pad-top-20">
-                    <table si-table class="table table-bordered table-hover table-striped table-condensed">
+                    <table si-table class="table table-bordered table-hover table-striped table-condensed si-table">
                         <thead>
                         <tr>
                             <th ng-if="view == views.DELIVERY" colspan="3" class="contextual-column">Delivery</th>
@@ -41,7 +41,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="table-sub-header">
+                        <tr class="table-sub-header white-sort-arrow">
                             <td class="centered contextual" sort-by="identifier.delivery.delivery_date" sort-init="desc"
                                 ng-if="view == views.DELIVERY">Date
                             </td>

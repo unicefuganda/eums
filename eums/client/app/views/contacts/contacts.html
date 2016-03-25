@@ -30,19 +30,18 @@
             <span class="well-sm"></span>
 
             <div class="table-wrapper">
-                <table class="table table-bordered table-striped table-hover table-condensed" si-table>
+                <table class="table table-bordered table-striped table-hover table-condensed si-table" si-table>
                     <thead ng-init="initialize()">
                     <tr>
-                        <th><a sort-by="firstName" sort-init="asc">First Name</a></th>
-                        <th><a sort-by="lastName">First Name</a></th>
-                        <th><a sort-by="phone">Phone</a></th>
-                        <th><a sort-by="district" ng-bind="systemSettings.district_label || 'District' "></a></th>
-                        <th><a sort-by="ips">Ip / Consignee</a></th>
-                        <th><a sort-by="types">Type</a></th>
-                        <th><a sort-by="outcomes">Outcome</a></th>
-
-                        <th ng-show="can_view_users"><a sort-by="createdBy">Created By</a></th>
-                        <th><a sort-by="createdOn">Created Date</a></th>
+                        <th sort-by="firstName" sort-init="asc">First Name</th>
+                        <th sort-by="lastName">First Name</th>
+                        <th sort-by="phone">Phone</th>
+                        <th ng-bind="systemSettings.district_label || 'District' "></th>
+                        <th>Ip / Consignee</th>
+                        <th>Type</th>
+                        <th>Outcome</th>
+                        <th ng-show="can_view_users">Created By</th>
+                        <th sort-by="createdOn">Created Date</th>
                         <th ng-show="can_change" class="width-160"></th>
                     </tr>
                     </thead>

@@ -363,13 +363,13 @@ h4.page-header {
 }
 
 .blue-border-button {
-  border-color: #1CABE2;
-  color: #1CABE2;
+  border-color: @brand-primary;
+  color: @brand-primary;
   font-weight: bold;
 }
 
 .blue-table-header th {
-  background-color: #1CABE2;
+  background-color: @brand-primary;
   color: #FFF;
 }
 
@@ -784,7 +784,7 @@ h4.page-header {
 }
 
 .three-columns-form .table-header th:hover {
-  background-color: #1cabe2;
+  background-color: @brand-primary;
 }
 
 .filter-bar ul {
@@ -879,6 +879,11 @@ h4.page-header {
 
 .eums-sort-arrow {
   color: whitesmoke;
+  margin-left: -3px;
+}
+
+.white-sort-arrow .eums-sort-arrow {
+  color: @brand-primary;
 }
 
 .eums-font-size-large {
@@ -1091,7 +1096,7 @@ tr.table-sub-header {
 }
 
 .eums-text-color {
-  color: @unicef-brand;
+  color: @brand-primary;
 }
 
 .maxlength-error,
@@ -1133,4 +1138,8 @@ tr.table-sub-header {
 
 .table-previous-deliveries-header tbody {
   height: auto;
+}
+
+.si-table th {
+  padding: 8px 0 8px 5px;
 }
