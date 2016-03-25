@@ -38,6 +38,14 @@ function main {
         pushcontacts2rapidpro dev
       fi;;
 
+    "startcelery" )
+      if [ "$2" = "--prod" ]; then
+        startcelery prod
+      else
+        startcelery dev
+      fi;;
+
+
     "seed" )
       seed;;
 
@@ -219,6 +227,15 @@ function seed {
 function setupmap {
   cd ./scripts/setupmap
   . ./setupmap.sh
+}
+
+function startcelery {
+    if [ "$1" = "prod" ]; then
+        export DJANGO_SETTINGS_MODULE="eums.settings_production"
+    else
+        export DJANGO_SETTINGS_MODULE="eums.settings_dev"
+    fi
+    celery worker -A eums -B --loglevel=INFO
 }
 
 
