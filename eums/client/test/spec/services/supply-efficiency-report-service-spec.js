@@ -124,7 +124,7 @@ describe('Supply Efficiency Service', function () {
         mockBackend.flush();
     });
 
-    iit('should filter report by filters specified when generating query', function () {
+    it('should filter report by filters specified when generating query', function () {
         var filters = {
             consignee: 1, item: 2, programme: 3, orderNumber: 4, location: 'wakiso',
             startDate: new Date(2015, 0, 10), endDate: new Date(2015, 3, 8)
