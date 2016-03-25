@@ -1,4 +1,4 @@
-describe('Supply Efficiency Service', function () {
+ddescribe('Supply Efficiency Service', function () {
     var mockBackend, service, config, queries, esEndpoint;
     var stubReportResponse = [
         {
@@ -124,9 +124,9 @@ describe('Supply Efficiency Service', function () {
         mockBackend.flush();
     });
 
-    it('should filter report by filters specified when generating query', function () {
+    iit('should filter report by filters specified when generating query', function () {
         var filters = {
-            consignee: 1, item: 2, programme: 3, orderNumber: 4, location: 5,
+            consignee: 1, item: 2, programme: 3, orderNumber: 4, location: 'wakiso',
             startDate: new Date(2015, 0, 10), endDate: new Date(2015, 3, 8)
         };
         spyOn(queries, 'makeQuery');
@@ -141,10 +141,10 @@ describe('Supply Efficiency Service', function () {
         expect(generalFilters).toContain({term: {'order_item.item.id': 2}});
         expect(generalFilters).toContain({term: {'programme.id': 3}});
         expect(generalFilters).toContain({term: {'order_item.order.order_number': 4}});
-        expect(generalFilters).toContain({term: {'location': 5}});
+        expect(generalFilters).toContain({term: {'delivery.location': 'wakiso'}});
         expect(generalFilters).toContain({
             range: {
-                'delivery_date': {
+                'delivery.delivery_date': {
                     "gte": "2015-01-10",
                     "lte": "2015-04-08",
                     "format": "yyyy-MM-dd"
