@@ -99,8 +99,8 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
 
         function generateFilters(filters, bucket) {
             var esFilters = [];
-            esFilters.push.apply(esFilters, generateFieldFilters(filters));
-            esFilters.push.apply(esFilters, generateDateRangeFilters(filters));
+            esFilters.push.apply(esFilters, generateFieldFilters(filters, bucket));
+            esFilters.push.apply(esFilters, generateDateRangeFilters(filters, bucket));
 
             if (bucket == BUCKETS.DELIVERY) {
                 esFilters.push({"exists": {"field": "distribution_plan_id"}});
@@ -109,7 +109,7 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
             return esFilters;
         }
 
-        function generateDateRangeFilters(filters) {
+        function generateDateRangeFilters(filters, bucket) {
             var dateFilters = {};
             var startDate = filters.startDate;
             var endDate = filters.endDate;
@@ -119,19 +119,25 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
                 dateFilters.gte = moment(startDate).format(dateFormat);
             if (endDate)
                 dateFilters.lte = moment(endDate).format(dateFormat);
-            if (Object.size(dateFilters))
-                return [{range: {delivery_date: Object.merge(dateFilters, {format: 'yyyy-MM-dd'})}}];
+            if (Object.size(dateFilters)) {
+                return bucket == BUCKETS.DELIVERY ?
+                    [{range: {"delivery.delivery_date": Object.merge(dateFilters, {format: 'yyyy-MM-dd'})}}]
+                    : [{range: {"delivery_date": Object.merge(dateFilters, {format: 'yyyy-MM-dd'})}}];
+            }
 
             return []
         }
 
-        function generateFieldFilters(filters) {
+        function generateFieldFilters(filters, bucket) {
+            convertLocation(filters, bucket);
+
             var filterMappings = {
                 item: 'order_item.item.id',
                 consignee: 'ip.id',
                 programme: 'programme.id',
                 location: 'location',
-                orderNumber: 'order_item.order.order_number'
+                orderNumber: 'order_item.order.order_number',
+                deliveryLocation: 'delivery.location'
             };
 
             var fieldFilters = [];
@@ -146,5 +152,13 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
             });
 
             return fieldFilters;
+        }
+
+        function convertLocation(filters, bucket) {
+            if (bucket == BUCKETS.DELIVERY && filters.hasOwnProperty('location')) {
+                filters.delivery = {};
+                filters.deliveryLocation = filters.location.toLowerCase();
+                delete filters['location']
+            }
         }
     });
