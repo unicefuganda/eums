@@ -8,7 +8,7 @@ from eums.models.time_stamped_model import TimeStampedModel
 
 
 class Run(TimeStampedModel):
-    STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
+    STATUS = Choices('not_started', 'scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
     runnable = models.ForeignKey('Runnable')
     status = StatusField()
@@ -22,6 +22,13 @@ class Run(TimeStampedModel):
         text_answers = self.textanswer_set.all()
         multiple_choice_answers = self.multiplechoiceanswer_set.all()
         return list(numeric_answers) + list(text_answers) + list(multiple_choice_answers)
+
+    def last_answer(self):
+        answers = self.answers()
+        if len(answers) > 0:
+            answers = sorted(answers, key=lambda answer: answer.modified, reverse=True)
+            return answers[0]
+        return None
 
     def questions_and_responses(self):
         answers = self.answers()
@@ -49,9 +56,15 @@ class Run(TimeStampedModel):
 
     @classmethod
     def has_scheduled_run(cls, contact_person_id):
-        scheduled_runs = Run.objects.filter(Q(status=Run.STATUS.scheduled) &
+        scheduled_runs = Run.objects.filter((Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.not_started)) &
                                             Q(runnable__contact_person_id=contact_person_id))
         return len(scheduled_runs) > 0
+
+    @classmethod
+    def last_temp_completed_run(cls, contact_person_id):
+        completed_runs = Run.objects.filter(Q(status=Run.STATUS.completed) &
+                                            Q(runnable__contact_person_id=contact_person_id)).order_by("-id")
+        return completed_runs.first()
 
     def update_status(self, status):
         self.status = status

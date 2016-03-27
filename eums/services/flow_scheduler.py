@@ -22,6 +22,7 @@ def schedule_run_for(runnable, run_delay=0):
     if _should_schedule(runnable):
         _cancel_current_run(runnable)
         delay = _calculate_delay(runnable, run_delay)
+        logger.info("schedule_run_for:: after calculated delay=%s" % delay)
         schedule_run_directly_for(runnable, delay)
 
 
@@ -29,9 +30,10 @@ def schedule_run_directly_for(runnable, run_delay):
     if Run.has_scheduled_run(runnable.contact_person_id):
         RunQueue.enqueue(runnable, settings.DELIVERY_STATUS_CHECK_DELAY)
     elif settings.RAPIDPRO_LIVE:
+        logger.info("schedule_run_directly_for:: run_delay=%s" % run_delay)
         task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
         Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
-                           status=Run.STATUS.scheduled, phone=runnable.contact.phone)
+                           status=Run.STATUS.not_started, phone=runnable.contact.phone)
 
 
 def _should_schedule(runnable):
@@ -40,10 +42,14 @@ def _should_schedule(runnable):
 
 @app.task
 def _schedule_run(runnable_id):
+    logger.info("runnable_id=%s" % runnable_id)
     runnable = Runnable.objects.get(id=runnable_id)
     message = DeliveryRunMessage(runnable)
     rapid_pro_service.create_run(runnable.build_contact(), runnable.flow(),
                                  message.description(), message.sender_name())
+    ready_to_start_run = runnable.ready_to_start_run()
+    if ready_to_start_run:
+        ready_to_start_run.update_status(Run.STATUS.scheduled)
 
 
 def _calculate_delay(runnable, run_delay):
@@ -51,16 +57,35 @@ def _calculate_delay(runnable, run_delay):
     when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY,
                                                                        hours=HOUR_TO_SEND_SMS)
 
-    delay_in_seconds = (when_to_send_message - datetime.datetime.now()).total_seconds()
+    delay_delta_in_seconds = (when_to_send_message - datetime.datetime.now()).total_seconds()
 
-    delay = run_delay if run_delay > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
-    return delay_in_seconds if delay_in_seconds > 0 else delay
+    run_delay = run_delay if run_delay > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
+    standard_delay = delay_delta_in_seconds if delay_delta_in_seconds > 0 else run_delay
+
+    completed_run = Run.last_temp_completed_run(runnable.contact_person_id)
+    temp_delay = 0
+    if completed_run:
+        last_answer = completed_run.last_answer()
+        if last_answer:
+            flow = completed_run.runnable.flow()
+            logger.info("flow=%s completed run id=%s,question=%s, answer=%s" % (
+                flow, completed_run.id, last_answer.question.label, last_answer.format()))
+            if flow.is_temp_ended(last_answer):
+                temp_delay = (
+                                 last_answer.modified - datetime.datetime.now()).total_seconds() + settings.TEMP_DELIVERY_BUFFER_IN_SECONDS
+
+    logger.info("temp_delay=%s" % temp_delay)
+
+    return standard_delay if standard_delay > temp_delay else temp_delay
 
 
 def _cancel_current_run(runnable):
     current_run = runnable.current_run()
     if current_run:
         _cancel(current_run)
+    not_start_run = runnable.ready_to_start_run()
+    if not_start_run:
+        _cancel(not_start_run)
 
 
 def _cancel(run):

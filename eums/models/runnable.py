@@ -37,11 +37,14 @@ class Runnable(PolymorphicModel, TimeStampedModel):
         logger.info('contact person id = %s' % self.contact_person_id)
         return ContactService.get(self.contact_person_id)
 
+    def ready_to_start_run(self):
+        return self.run_set.filter(status='not_started').first()
+
     def current_run(self):
         return self.run_set.filter(status='scheduled').first()
 
     def completed_run(self):
-        return self.run_set.filter(status='completed').first()
+        return self.run_set.filter(status='completed').order_by('-modified').first()
 
     def latest_run(self):
         return self.run_set.all().last()

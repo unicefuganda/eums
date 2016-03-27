@@ -65,6 +65,7 @@ def _dequeue_next_run(contact_person_id, run_delay):
 
 
 def _reschedule_next_run(phone, run_delay):
-    current_run = Run.objects.filter(Q(phone=phone) & Q(status='scheduled')).order_by('modified').first()
+    current_run = Run.objects.filter(Q(phone=phone) & (Q(status='scheduled') | Q(status='not_started'))).order_by(
+        'modified').first()
     if current_run:
         schedule_run_for(current_run.runnable, run_delay)
