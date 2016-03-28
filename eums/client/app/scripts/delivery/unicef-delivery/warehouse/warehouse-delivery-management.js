@@ -64,7 +64,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 $scope.systemSettings = returns[1];
                 showLoadingModal(true);
                 getDelivery();
-                showLoadingModal(false);
             });
         }
 
@@ -145,7 +144,10 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                                     $scope.delivery.tracked_date = firstChildNode.tracked_date;
                                     setLocationAndContactFields();
                                 }
+                                showLoadingModal(false);
                             });
+                    } else {
+                        showLoadingModal(false);
                     }
                 });
         };

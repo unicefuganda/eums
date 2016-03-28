@@ -69,7 +69,7 @@ angular.module('Directives', ['eums.ip', 'SysUtils'])
                 });
 
                 scope.$watch(function () {
-                    return scope.$parent.$eval(attrs.ngModel);
+                    return ngModel.$modelValue;
                 }, function (newValue, oldValue) {
                     $(element).select2('val', newValue ? newValue : '');
                 });
