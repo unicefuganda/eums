@@ -90,6 +90,6 @@ angular.module('User', ['eums.config', 'NavigationTabs', 'EumsLogin'])
                     disableFields('#id_consignee');
                     resetElementValue($consignee);
                 }
-            });
+            }).change();
         }
     });

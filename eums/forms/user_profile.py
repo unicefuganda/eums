@@ -8,7 +8,7 @@ from eums.util.user_password_checker import UserPasswordChecker
 
 
 class UserProfileForm(UserCreationForm):
-    groups = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label=None, required=True,
+    groups = forms.ModelChoiceField(queryset=Group.objects.all().order_by('id'), empty_label=None, required=True,
                                     widget=forms.Select(attrs={'class': 'select-roles'}), label="Role")
     consignees = Consignee.objects.filter(imported_from_vision=True).order_by('name')
     consignee = forms.ModelChoiceField(queryset=consignees, empty_label="Choose an Implementing Partner",
