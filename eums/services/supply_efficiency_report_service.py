@@ -2,8 +2,11 @@ import json
 import datetime
 import requests
 import math
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3 import Retry
 from celery.utils.log import get_task_logger
 from django.conf import settings
+
 from eums.services.exporter.supply_efficiency_report_csv_exporter import SUPPLY_EFFICIENCY_REPORT_TYPES
 
 HEADER = {"Content-Type": "application/json; charset=UTF-8"}
@@ -18,8 +21,11 @@ class SupplyEfficiencyReportService(object):
 
     @staticmethod
     def search_reports(query):
-        response = requests.post(SupplyEfficiencyReportService.es_service_url(), data=json.dumps(query), headers=HEADER)
-        return SupplyEfficiencyReportService.__parse_reports(response.json())
+        retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+        with requests.Session() as rs:
+            rs.mount('http://', HTTPAdapter(max_retries=retries))
+            response = rs.post(SupplyEfficiencyReportService.es_service_url(), data=json.dumps(query), headers=HEADER)
+            return SupplyEfficiencyReportService.__parse_reports(response.json())
 
     @staticmethod
     def parse_report_type(query):
