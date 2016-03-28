@@ -56,6 +56,8 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
             SupplyEfficiencyReportService.generate($scope.view, $scope.filters).then(function (report) {
                 $scope.report = report;
                 setTotals();
+            }, function (response) {
+                ngToast.create({content: response.data.message, class: 'info'})
             }).finally(LoaderService.hideLoader);
         }
 

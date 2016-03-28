@@ -118,8 +118,7 @@ def distribution_alert_raise():
 
 
 def is_distribution_expired_alert_not_raised(runnable):
-    return not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired,
-                                    runnable=runnable)
+    return not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired, runnable=runnable)
 
 
 def is_shipment_received_but_not_distributed(distribution_plan):
