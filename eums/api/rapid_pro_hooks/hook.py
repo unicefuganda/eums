@@ -22,7 +22,7 @@ def hook(request):
     try:
         params = request.POST
         flow = rapid_pro_service.flow(params['flow'])
-        run = Run.objects.filter(Q(phone=params['phone']) & (
+        run = Run.objects.filter(Q(phone=params['phone']) & ~Q(scheduled_message_task_id='Web') & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
         answer = _save_answer(flow, params, run)
 
