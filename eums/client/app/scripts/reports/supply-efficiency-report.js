@@ -66,6 +66,10 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
                 $scope.totals.UNICEFShipped = getTotal($scope.report, 'delivery_stages.unicef.total_value');
                 $scope.totals.IPReceived = getTotal($scope.report, 'delivery_stages.ip_receipt.total_value_received');
                 $scope.totals.endUserReceived = getTotal($scope.report, 'delivery_stages.end_user.total_value_received');
+            } else {
+                $scope.totals.UNICEFShipped = 0;
+                $scope.totals.IPReceived = 0;
+                $scope.totals.endUserReceived = 0;
             }
         }
 
