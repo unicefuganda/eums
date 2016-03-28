@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 HOUR_TO_SEND_SMS = 9
 
 
-def schedule_run_for(runnable, run_delay=0):
+def schedule_run_for(runnable, run_delay=10):
     if _should_schedule(runnable):
         _cancel_current_run(runnable)
         delay = _calculate_delay(runnable, run_delay)

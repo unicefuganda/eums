@@ -8,4 +8,6 @@ RAPIDPRO_LIVE = True
 
 RAPIDPRO_URLS.update({
     'CONTACTS': "%scontacts.json" % RAPIDPRO_URL,
+    'FLOWS': "%sflows.json" % RAPIDPRO_URL,
+    'RUNS': "%sruns.json" % RAPIDPRO_URL
 })

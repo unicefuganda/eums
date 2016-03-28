@@ -187,7 +187,8 @@ class ContactService(object):
         url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
             'urns': 'tel:%s' % phone
         }))
-        response = requests.get(url_add_rapid_pro_contact, headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
+        response = requests.get(url_add_rapid_pro_contact, headers=HEADER_RAPID_PRO,
+                                verify=settings.RAPIDPRO_SSL_VERIFY)
         return response
 
     @staticmethod
@@ -233,6 +234,14 @@ class ContactService(object):
             if contact_label in ContactService.contact_type_map:
                 new_types.append(ContactService.contact_type_map[contact_label])
         return new_types
+
+    @staticmethod
+    def get_rapid_pro_contact_uuid(phone):
+        try:
+            results = ContactService.get_rapid_pro_contact(phone).json().get('results')
+            return results[0].get('uuid')
+        except Exception, error:
+            logger.error(error)
 
 
 @app.task

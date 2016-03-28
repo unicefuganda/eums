@@ -15,7 +15,7 @@ HEADER = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN, 'Content-Ty
 FLOW_ID = 19772
 
 contact = {'firstName': 'Test', 'lastName': 'User', 'phone': '+256 772 123456'}
-item = "Plumpynut"
+item = 'Plumpynut'
 sender = 'Save the Children'
 
 
@@ -25,9 +25,9 @@ class TestRapidProService(TestCase):
         self.settings_rapid_pro_live = settings.RAPIDPRO_LIVE
         settings.RAPIDPRO_LIVE = True
         self.expected_payload = json.dumps({
-            "flow": FLOW_ID,
-            "phone": ['+256 772 123456'],
-            "extra": {'contactName': 'Test User', 'sender': sender, 'product': item}
+            'flow': FLOW_ID,
+            'phone': ['+256 772 123456'],
+            'extra': {'contactName': 'Test User', 'sender': sender, 'product': item}
         })
 
         self.response = ModelBuilder(Response, status_code=200,
