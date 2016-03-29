@@ -35,19 +35,19 @@
                 <a href="#/deliveries-by-ip/{{ item.item }}" class="btn btn-sm btn-success viewDelivery">
                     <span class="glyphicon glyphicon-eye-open"></span>
                     View Distributions</a>
-                <a ng-disabled="!item.availableBalance" href="#/deliveries-by-ip/{{ item.item }}/new"
+                <a ng-disabled="item.availableBalance<=0" href="#/deliveries-by-ip/{{ item.item }}/new"
                    ng-show="can_add_distributionplan_node"
                    class="btn btn-sm btn-primary reportDelivery">
                     <span class="glyphicon glyphicon-plus"></span>
                     Report New Distribution
                 </a>
-                <a ng-disabled="!item.availableBalance" href="#/deliveries-by-ip/{{ item.item }}/new/self"
+                <a ng-disabled="item.availableBalance<=0" href="#/deliveries-by-ip/{{ item.item }}/new/self"
                    ng-show="can_add_distributionplan_node"
                    class="btn btn-sm btn-primary assign-items-to-self">
                     <span class="glyphicon glyphicon-plus"></span>
                     Assign Items to Self
                 </a>
-                <a ng-disabled="!item.availableBalance" href="#/deliveries-by-ip/{{ item.item }}/report-loss"
+                <a ng-disabled="item.availableBalance<=0" href="#/deliveries-by-ip/{{ item.item }}/report-loss"
                    ng-show="can_add_distributionplan_node"
                    class="btn btn-sm btn-primary reportDelivery">
                     <span class="glyphicon glyphicon-plus"></span>
