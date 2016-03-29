@@ -200,6 +200,6 @@ def _get_uploads(delivery, host_name):
 
     uploads = Upload.objects.filter(plan=delivery)
     for upload in uploads.iterator():
-        data.append(str(upload.file))
-        ab_data.append(host_name + media_url[1:] + str(upload.file))
+        data.append(unicode(upload.file))
+        ab_data.append(host_name + media_url[1:] + unicode(upload.file))
     return data, ab_data

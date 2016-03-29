@@ -178,7 +178,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function initUpload() {
             var errorList = {
                 'queueLimit': 'Sorry, you can only upload 3 pictures',
-                'sizeFilter': 'Sorry, the maximum size for each file is 1MB'
+                'sizeFilter': 'Sorry, the maximum size for each file is 1MB',
+                'nameValidation': 'Sorry, the file name is invalid'
             };
             imageUploader = $scope.imageUploader = new FileUploader({
                 "url": "api/upload-image/",
@@ -198,6 +199,14 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 name: 'sizeFilter',
                 fn: function (item) {
                     return item.size <= 1048576;
+                }
+            }, {
+                name: 'nameValidation',
+                fn: function (item) {
+                    var filename = item.name;
+                    filename = filename.substr(0, filename.lastIndexOf('.')) || filename;
+                    filename = filename.replace(/[!@#$%^&*()]/g, "");
+                    return filename != "";
                 }
             });
             imageUploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
