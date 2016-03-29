@@ -6,8 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from eums import settings
 
-from eums.models import Run, RunQueue, Flow, Question
-from eums.rapid_pro.rapid_pro_service import rapid_pro_service, RapidProService
+from eums.models import Run, RunQueue, Question
+from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
 

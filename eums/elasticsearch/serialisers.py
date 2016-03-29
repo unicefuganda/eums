@@ -140,7 +140,7 @@ def _get_relevant_delivery_responses_for(node):
 
 def _serialise_simple_answer(answer):
     answer_json = _extract_clean_fields(answer)
-    answer_json['value'] = str(answer_json['value'])
+    answer_json['value'] = unicode(answer_json['value'])
     answer_json['question'] = _serialise_question(answer.question)
     answer_json['run'] = _serialise_run(answer.run)
     return answer_json
