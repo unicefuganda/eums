@@ -92,8 +92,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 });
                 $scope.editingAmountReceivedObj = {};
                 ngToast.create({content: 'Quantity updated successfully', class: 'success'});
-            }).catch(function () {
-                ngToast.create({content: 'Operation failed', class: 'danger'})
+                LoaderService.hideModal('stock-adjustment-modal-dialog');
+            }).catch(function (response) {
+                ngToast.create({content: 'Operation failed. ' + response.data.message, class: 'danger'})
             });
         };
 

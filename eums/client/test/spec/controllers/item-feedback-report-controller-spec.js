@@ -117,13 +117,12 @@ describe('ItemFeedbackReportController', function () {
     beforeEach(function () {
         module('ItemFeedbackReport');
 
-        mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
+        mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal', 'hideModal']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['hasPermission', 'retrieveUserPermissions', 'getCurrentUser']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['getSettings', 'getSettingsWithDefault']);
         mockAnswerService = jasmine.createSpyObj('mockAnswerService', ['updateNumericAnswer']);
-
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             scope = $rootScope.$new();
