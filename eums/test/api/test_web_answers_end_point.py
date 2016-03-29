@@ -268,7 +268,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         data = {
             'runnable': node.id, 'answers': [
                 {'question_label': 'deliveryReceived', 'value': 'Yes'},
-                {'question_label': 'quantityDelivered', 'value': 2}
+                {'question_label': 'quantityDelivered', 'value': '2'}
             ]}
 
         self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
@@ -350,7 +350,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         request_body = {
             'runnable': node.id, 'answers': [
                 {'question_label': 'deliveryReceived', 'value': 'Yes'},
-                {'question_label': 'quantityDelivered', 'value': 2}
+                {'question_label': 'quantityDelivered', 'value': '2'}
             ]}
 
         response = self.client.post(ENDPOINT_URL, data=json.dumps(request_body), content_type='application/json')
