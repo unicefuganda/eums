@@ -107,7 +107,8 @@ describe('Supply Efficiency Service', function () {
     });
 
     it('should fetch unfiltered report by delivery when view is delivery', function (done) {
-        var expectedQuery = queries.makeQuery("distribution_plan_id", [{exists: {field: 'distribution_plan_id'}}]);
+        var expectedQuery = queries.makeQuery("distribution_plan_id", [{"term":{"track":"true"}},
+            {exists: {field: 'distribution_plan_id'}}]);
         mockBackend.whenPOST(esEndpoint, expectedQuery).respond(stubReportResponse);
 
         service.generate(service.VIEWS.DELIVERY, {}).then(function (actualReport) {

@@ -105,6 +105,7 @@ angular.module('SupplyEfficiencyReport', ['eums.config', 'ngTable', 'ngToast', '
 
         function generateFilters(filters, bucket) {
             var esFilters = [];
+            esFilters.push({"term": {"track": "true"}});
             esFilters.push.apply(esFilters, generateFieldFilters(filters, bucket));
             esFilters.push.apply(esFilters, generateDateRangeFilters(filters, bucket));
 
