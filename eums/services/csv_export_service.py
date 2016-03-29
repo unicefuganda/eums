@@ -52,7 +52,8 @@ def generate_delivery_feedback_report(user, host_name, deliveries_feedback):
 
 @app.task
 def generate_item_feedback_report(user, host_name, items_feedback):
-    items_feedback_with_contact = map(set_remote_contact_to_report_item, items_feedback)
+    items_with_item_received_info = map(set_item_received_to_report_item, items_feedback)
+    items_feedback_with_contact = map(set_remote_contact_to_report_item, items_with_item_received_info)
     csv_export_service = ItemFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(items_feedback_with_contact),
                               csv_export_service.export_category,
@@ -89,6 +90,15 @@ def generate_supply_efficiency_report(user, host_name, supply_efficiency_items, 
                               csv_export_service.get_export_csv_file_name())
 
     CSVExportService.notify(user, *csv_export_service.notification_details())
+
+
+def set_item_received_to_report_item(report_item):
+    product_received = report_item['answers'].get('productReceived', None)
+
+    if product_received:
+        report_item['answers']['itemReceived'] = product_received
+
+    return report_item
 
 
 def set_remote_contact_to_report_item(report_item):
