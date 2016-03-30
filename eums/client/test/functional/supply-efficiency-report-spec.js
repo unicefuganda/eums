@@ -59,7 +59,7 @@ describe('Supply Efficiency Report', function () {
         });
 
         it('should show a correct count of report data', function () {
-            expect(supplyEfficiencyReportPage.reportsCount).toEqual(5);
+            expect(supplyEfficiencyReportPage.reportsCount).toEqual(4);
         });
 
         it('should show delivery details in rows', function () {
@@ -139,21 +139,21 @@ describe('Supply Efficiency Report', function () {
         });
 
         it('should show a correct count of report data', function () {
-            expect(supplyEfficiencyReportPage.reportsCount).toEqual(6);
+            expect(supplyEfficiencyReportPage.reportsCount).toEqual(5);
         });
 
         it('should show item details in rows', function () {
-            expect(supplyEfficiencyReportPage.itemDescriptions.get(0).getText()).toEqual('Birth Cushion set');
-            expect(supplyEfficiencyReportPage.materialCodes.get(0).getText()).toEqual('SL005328');
-            expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('17,998');
-            expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('17,998');
-            expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');
+            expect(supplyEfficiencyReportPage.itemDescriptions.get(0).getText()).toEqual('Fact sheet2013 A4 2013 Full colour 2013 double s');
+            expect(supplyEfficiencyReportPage.materialCodes.get(0).getText()).toEqual('SL004638');
+            expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('0');
+            expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('0');
+            expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
-            expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('17,998');
+            expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
-            expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
+            expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('144');
         });
 
         describe('On filter by IP', function () {
@@ -205,12 +205,12 @@ describe('Supply Efficiency Report', function () {
 
         it('should show outcome details in rows', function () {
             expect(supplyEfficiencyReportPage.programmeNames.get(0).getText()).toEqual('sample programme');
-            expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('18,179');
-            expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('18,179');
+            expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('181');
+            expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('181');
             expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');
             expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('144');
             expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
-            expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('18,179');
+            expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('181');
             expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
@@ -249,7 +249,7 @@ describe('Supply Efficiency Report', function () {
         });
 
         it('should show a correct count of report data', function () {
-            expect(supplyEfficiencyReportPage.reportsCount).toEqual(2);
+            expect(supplyEfficiencyReportPage.reportsCount).toEqual(1);
         });
 
         it('should show po or waybill details in rows', function () {
@@ -299,17 +299,17 @@ describe('Supply Efficiency Report', function () {
         });
 
         it('should show a correct count of report data', function () {
-            expect(supplyEfficiencyReportPage.reportsCount).toEqual(4   );
+            expect(supplyEfficiencyReportPage.reportsCount).toEqual(3);
         });
 
         it('should show IP details in rows', function () {
-            expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('ARUA DHO DR. ANGUZU PATRICK');
-            expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('17,998');
-            expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('17,998');
+            expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('KAABONG DHO');
+            expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('151');
+            expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('151');
             expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');
-            expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('0');
+            expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('144');
             expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
-            expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('17,998');
+            expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('151');
             expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
             expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
@@ -322,14 +322,14 @@ describe('Supply Efficiency Report', function () {
             });
 
             it('should show records filtered by start date', function () {
-                expect(supplyEfficiencyReportPage.reportsCount).toEqual(15);
-                expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('ARUA DHO DR. ANGUZU PATRICK');
-                expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('17,998');
-                expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('17,998');
-                expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');
+                expect(supplyEfficiencyReportPage.reportsCount).toEqual(10);
+                expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('BUNDIBUGYO DHO');
+                expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
-                expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('17,998');
+                expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
