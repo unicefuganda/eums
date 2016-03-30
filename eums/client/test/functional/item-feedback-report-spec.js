@@ -79,10 +79,10 @@ describe('Item Feedback Report', function () {
             ftUtils.wait(1000);
             itemFeedbackReport.showStockAdjustmentDialogIconInFirstRow().click();
             itemFeedbackReport.setValueOfEditingAmountReceived(2999);
-            itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 3001');
+            itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 2999');
             itemFeedbackReport.saveButtonOfEditingAmountReceivedDialog().click();
             ftUtils.wait(1000);
-            expect(itemFeedbackReport.amountReceived).toContain('3001');
+            expect(itemFeedbackReport.amountReceived).toContain('2999');
         });
     });
 
