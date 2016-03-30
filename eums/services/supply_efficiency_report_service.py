@@ -1,11 +1,12 @@
-import json
 import datetime
-import requests
+import json
 import math
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3 import Retry
+import requests
+
 from celery.utils.log import get_task_logger
 from django.conf import settings
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3 import Retry
 
 from eums.services.exporter.supply_efficiency_report_csv_exporter import SUPPLY_EFFICIENCY_REPORT_TYPES
 
@@ -28,6 +29,11 @@ class SupplyEfficiencyReportService(object):
             return SupplyEfficiencyReportService.__parse_reports(response.json())
 
     @staticmethod
+    def search_reports_with_formatted_date(query):
+        reports = SupplyEfficiencyReportService.search_reports(query)
+        return SupplyEfficiencyReportService.__change_reports_date_format(reports)
+
+    @staticmethod
     def parse_report_type(query):
         report_types_map = {
             'distribution_plan_id': SUPPLY_EFFICIENCY_REPORT_TYPES.delivery,
@@ -48,12 +54,6 @@ class SupplyEfficiencyReportService(object):
                 return int(math.floor(x))
             return 0
 
-        def __format_and_update_delivery_date(value_identifier):
-            original_delivery_date = value_identifier.get("delivery", {}).get("delivery_date")
-            if original_delivery_date:
-                formatted_date = datetime.datetime.strptime(original_delivery_date, "%Y-%m-%d").strftime("%d-%b-%Y")
-                value_identifier.get("delivery", {}).update(delivery_date=formatted_date)
-
         def __format_and_update_order_type(value_identifier):
             original_order_type = value_identifier.get("order_item", {}).get("order", {}).get("order_type")
             if original_order_type:
@@ -62,7 +62,6 @@ class SupplyEfficiencyReportService(object):
 
         def __map_bucket(bucket):
             value_identifier = bucket.get('identifier', {}).get('hits', {}).get('hits', {})[0].get("_source")
-            __format_and_update_delivery_date(value_identifier)
             __format_and_update_order_type(value_identifier)
 
             stages = bucket.get('delivery_stages', {}).get('buckets')
@@ -98,3 +97,15 @@ class SupplyEfficiencyReportService(object):
             }
 
         return map(__map_bucket, buckets)
+
+    @staticmethod
+    def __change_reports_date_format(reports):
+
+        def __format_and_update_delivery_date(report):
+            original_delivery_date = report.get("identifier", {}).get("delivery", {}).get("delivery_date")
+            if original_delivery_date:
+                formatted_date = datetime.datetime.strptime(original_delivery_date, "%Y-%m-%d").strftime("%d-%b-%Y")
+                report.get("identifier", {}).get("delivery", {}).update(delivery_date=formatted_date)
+            return report
+
+        return map(__format_and_update_delivery_date, reports)

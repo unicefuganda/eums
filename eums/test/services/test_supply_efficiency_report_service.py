@@ -10,9 +10,9 @@ class SupplyEfficiencyReportServiceTest(TestCase):
         self.__setup_stub_variables()
 
     @requests_mock.mock()
-    def test_should_get_reports_from_es(self, m):
+    def test_should_get_reports_from_es_with_formatted_date(self, m):
         m.post(SupplyEfficiencyReportService.es_service_url(), text=json.dumps(self.stub_es_response_data))
-        results = SupplyEfficiencyReportService.search_reports({})
+        results = SupplyEfficiencyReportService.search_reports_with_formatted_date({})
         self.assertEqual(len(results), 1)
         self.assertEqual(results, self.stub_es_parsed_response_data)
 
