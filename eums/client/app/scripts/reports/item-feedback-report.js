@@ -94,7 +94,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 ngToast.create({content: 'Quantity updated successfully', class: 'success'});
                 LoaderService.hideModal('stock-adjustment-modal-dialog');
             }).catch(function (response) {
-                ngToast.create({content: 'Operation failed. ' + response.data.message, class: 'danger'})
+                ngToast.create({content: '' + response.data.message, class: 'danger'})
             });
         };
 
@@ -106,10 +106,10 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         };
 
         $scope.isAmountReceivedEverChanged = function (amountReceivedObj) {
-            if (amountReceivedObj) {
-                return !isNaN(amountReceivedObj.value) && amountReceivedObj.remark;
+            if (amountReceivedObj && amountReceivedObj.remark) {
+                return amountReceivedObj.hasOwnProperty('value') ? !isNaN(amountReceivedObj.value) : false;
             }
-            return amountReceivedObj;
+            return false;
         };
 
         $scope.formatDate = function (date) {

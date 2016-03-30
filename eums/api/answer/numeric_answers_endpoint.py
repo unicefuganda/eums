@@ -32,8 +32,8 @@ class NumericAnswerViewSet(ModelViewSet):
             quantity_shipped = node.quantity_in()
             quantity_distributed = node.acknowledged - node.balance
             if new_quantity_received < quantity_distributed or new_quantity_received > quantity_shipped:
-                raise Exception('Quantity received cannot be larger than quantity shipped (%s) or less than quantity '
-                                'distributed (%s)' % (quantity_shipped, quantity_distributed))
+                raise Exception('Quantity Received should not be greater than quantity shipped '
+                                'or less than quantity dispensed.')
 
             previous_answer.value = new_quantity_received
             previous_answer.remark = request.data.get('remark')
