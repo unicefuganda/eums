@@ -2,8 +2,17 @@ from eums.models import Alert, Question
 from eums.utils import snakify
 
 
-class ResponseAlertHandler(object):
+def extract_category(answer):
+    category = answer.get('category')
+    if category:
+        return category.get("eng", category.get('base'))
 
+
+def _is_quality_unacceptable(answer):
+    return answer.get("label") == Question.LABEL.qualityOfProduct and not extract_category(answer) == "Good"
+
+
+class ResponseAlertHandler(object):
     ALERT_TYPES = {
         Question.LABEL.deliveryReceived: Alert.ISSUE_TYPES.not_received,
         Question.LABEL.itemReceived: Alert.ISSUE_TYPES.not_received,
@@ -25,13 +34,9 @@ class ResponseAlertHandler(object):
         for answer in self.answer_values:
             if self._is_generally_unacceptable(answer):
                 return self.ALERT_TYPES[answer["label"]]
-            if self._is_quality_unacceptable(answer):
-                return answer["category"]["base"]
+            if _is_quality_unacceptable(answer):
+                return extract_category(answer)
         return None
 
     def _is_generally_unacceptable(self, answer):
-        return answer.get("label") in self.ALERT_TYPES and answer["category"]["base"] == "No"
-
-    def _is_quality_unacceptable(self, answer):
-        return answer.get("label") == Question.LABEL.qualityOfProduct and not answer["category"]["base"] == "Good"
-
+        return answer.get("label") in self.ALERT_TYPES and extract_category(answer) == "No"
