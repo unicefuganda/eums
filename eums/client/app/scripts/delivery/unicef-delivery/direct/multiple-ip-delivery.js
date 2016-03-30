@@ -85,6 +85,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         $scope.save = function () {
+            $scope.isSaving = true;
             isAvailableBalanceChanged().then(function (isChanged) {
                 if (isChanged) {
                     createToast('Available balance has changed, please refresh page and try again!', 'danger');
@@ -98,7 +99,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         $scope.saveDeliveryNodes = function () {
-            $scope.isSaving = true;
             var saveNodePromises = [];
             $scope.distributionPlanNodes.forEach(function (node) {
                 saveNodePromises.push(saveMultipleIPNode(node));
