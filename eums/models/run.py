@@ -36,7 +36,7 @@ class Run(TimeStampedModel):
 
     @staticmethod
     def _merge(answer_collection, answer):
-        value = answer.value if type(answer.value) is long else str(answer.value)
+        value = answer.value if type(answer.value) is long else unicode(answer.value)
         answer_collection[str(answer.question.label)] = value
         return answer_collection
 
