@@ -78,7 +78,7 @@ describe('Item Feedback Report', function () {
             itemFeedbackReport.sortBy('amountReceived', 'desc');
             ftUtils.wait(1000);
             itemFeedbackReport.showStockAdjustmentDialogIconInFirstRow().click();
-            itemFeedbackReport.setValueOfEditingAmountReceived(3001);
+            itemFeedbackReport.setValueOfEditingAmountReceived(2999);
             itemFeedbackReport.setRemarkOfEditingAmountReceived('Some remark 3001');
             itemFeedbackReport.saveButtonOfEditingAmountReceivedDialog().click();
             ftUtils.wait(1000);
