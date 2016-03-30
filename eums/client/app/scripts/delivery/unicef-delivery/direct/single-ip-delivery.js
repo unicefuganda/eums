@@ -59,7 +59,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
             }).finally(hideLoader);
         };
 
-        var saveDelivery = function () {
+        var saveDelivery = _.debounce(function () {
             isAvailableBalanceChanged().then(function (isChanged) {
                 if (isChanged) {
                     createToast('Item available balance has changed, please refresh page and try again!', 'danger');
@@ -91,7 +91,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode', 'SystemSett
                     createToast('Cannot save delivery with zero quantity shipped', 'danger');
                 }
             });
-        };
+        }, 500);
 
         function initialize() {
             showLoader();
