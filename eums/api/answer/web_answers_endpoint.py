@@ -58,7 +58,8 @@ def _process_answers(raw_answers, flow, run):
     for answer in raw_answers:
         question = flow.question_with(label=answer['question_label'])
         params = {'values': [u'[{"category": {"eng":"%s", "base": "%s"}, "label": "%s"}]' %
-                             (answer['value'].replace('\n', '\\n').replace('"', '\\"'), answer['value'].replace('\n', '\\n').replace('"', '\\"'),
+                             (answer['value'].replace('\n', '\\n').replace('"', '\\"'),
+                              answer['value'].replace('\n', '\\n').replace('"', '\\"'),
                               answer['question_label'])],
                   'text': answer['value']}
         question.create_answer(params, run)
