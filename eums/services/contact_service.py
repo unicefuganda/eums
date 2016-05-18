@@ -105,9 +105,8 @@ class ContactService(object):
     @staticmethod
     def add(contact):
         try:
-            response = requests.post(settings.CONTACTS_SERVICE_URL, json.dumps(contact),
-                                     headers=HEADER_CONTACT)
-            return response.status_code
+            return requests.post(settings.CONTACTS_SERVICE_URL, json.dumps(contact),
+                                 headers=HEADER_CONTACT)
         except Exception, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT

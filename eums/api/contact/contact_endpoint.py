@@ -36,10 +36,10 @@ class ContactEndpoint(APIView):
         return Response(status=response_code)
 
     def post(self, request):
-        response_code = ContactService.add(request.data)
+        response = ContactService.add(request.data)
         ContactEndpoint.__add_or_update_rapid_pro_contact(request.data)
 
-        return Response(status=response_code)
+        return Response(status=response.status_code, data=response.json())
 
     def put(self, request):
         response_code = ContactService.update(request.data)

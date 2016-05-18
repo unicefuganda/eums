@@ -85,13 +85,14 @@ class ContactServiceTest(TestCase):
         self.assertEqual(response, 204)
 
     def test_should_add_contact(self):
-        requests.post = MagicMock(return_value=MagicMock(status_code=201))
+        requests.post = MagicMock(return_value=MagicMock(status_code=201, json=MagicMock(return_value=CONTACT)))
         response = ContactService.add(CONTACT)
 
         requests.post.assert_called_once_with('%s' % settings.CONTACTS_SERVICE_URL, json.dumps(CONTACT),
                                               headers=HEADER_CONTACT)
 
-        self.assertEqual(response, 201)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json(), CONTACT)
 
     @patch('eums.services.contact_service.ContactService.get')
     @patch('eums.services.contact_service.ContactService.update')
