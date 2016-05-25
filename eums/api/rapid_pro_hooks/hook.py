@@ -1,6 +1,6 @@
 import ast
+import logging
 
-from celery.utils.log import get_task_logger
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
@@ -11,20 +11,19 @@ from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
 
-logger = get_task_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
-# TODO-RAPID: code structure
 @csrf_exempt
 def hook(request):
-    # TODO: Remove the try catch. This suppresses the errors and was added due to rapidPro flakiness
-    logger.info("access webhook")
+    logger.info("************Access web hook***********")
     try:
         params = request.POST
         flow = rapid_pro_service.flow(params['flow'])
         run = Run.objects.filter(Q(phone=params['phone']) & ~Q(scheduled_message_task_id='Web') & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
         answer = _save_answer(flow, params, run)
+        logger.info("answer=%s" % answer)
 
         if flow.is_temp_ended(answer) or flow.is_final_ended(answer):
             run.update_status(Run.STATUS.completed)
@@ -37,9 +36,10 @@ def hook(request):
             run_delay = settings.DELIVERY_BUFFER_IN_SECONDS
             _reschedule_next_run(run.phone, run_delay)
 
+        logger.info("save answer successfully")
         return HttpResponse(status=200)
-
-    except StandardError, e:
+    
+    except (StandardError, Exception), e:
         logger.error('Exception occurs while access web hook, detail information: %s' % e.message)
         return HttpResponse(status=200)
 
