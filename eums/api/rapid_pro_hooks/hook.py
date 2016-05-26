@@ -19,9 +19,12 @@ def hook(request):
     logger.info("************Access web hook***********")
     try:
         params = request.POST
+        logger.info("param=%s" % params)
         flow = rapid_pro_service.flow(params['flow'])
+        logger.info("flow=%s" % flow)
         run = Run.objects.filter(Q(phone=params['phone']) & ~Q(scheduled_message_task_id='Web') & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()
+        logger.info("run=%s" % run)
         answer = _save_answer(flow, params, run)
         logger.info("answer=%s" % answer)
 
@@ -38,16 +41,20 @@ def hook(request):
 
         logger.info("save answer successfully")
         return HttpResponse(status=200)
-    
+
     except (StandardError, Exception), e:
         logger.error('Exception occurs while access web hook, detail information: %s' % e.message)
+        logger.error(e)
         return HttpResponse(status=200)
 
 
 def _save_answer(flow, params, run):
     answer_values = ast.literal_eval(params['values'])
+    logger.info("answer_values=%s" % answer_values)
     latest_answer = answer_values[-1]
+    logger.info("latest_answer=%s" % latest_answer)
     question = Question.objects.filter(flow=flow, label=latest_answer['label']).first().get_subclass_instance()
+    logger.info("question=%s" % question)
     return question.create_answer(params, run)
 
 
