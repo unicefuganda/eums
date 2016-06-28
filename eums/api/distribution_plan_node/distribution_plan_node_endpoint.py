@@ -1,3 +1,5 @@
+import logging
+
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework import status
@@ -10,6 +12,8 @@ from rest_framework.viewsets import ModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import DistributionPlanNode as DeliveryNode, UserProfile
 from eums.permissions.distribution_plan_node_permissions import DistributionPlanNodePermissions
+
+logger = logging.getLogger(__name__)
 
 
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
@@ -38,11 +42,18 @@ class DistributionPlanNodeViewSet(ModelViewSet):
 
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
+
+        logger.info('user profile = %s' % user_profile)
+        logger.info('user id = %s' % self.request.user.id)
+        logger.info('user consignee = %s' % user_profile.consignee)
+
         if user_profile and user_profile.consignee:
             return self._get_consignee_queryset(user_profile)
         is_root = self.request.GET.get('is_root')
         if is_root:
+            logger.info('root nodes = %s(%s)' % (DeliveryNode.objects.root_nodes(), DeliveryNode.objects.root_nodes()))
             return DeliveryNode.objects.root_nodes()
+        logger.info('queryset clone node = %s(%s)' % (self.queryset._clone(), len(self.queryset._clone())))
         return self.queryset._clone()
 
     def _get_consignee_queryset(self, user_profile):
@@ -57,9 +68,12 @@ class DistributionPlanNodeViewSet(ModelViewSet):
 
     def _consignee_nodes(self, user_profile):
         queryset = DeliveryNode.objects.filter(ip=user_profile.consignee)
+        logger.info('is_distributable = %s' % self.request.GET.get('is_distributable'))
         if self.request.GET.get('is_distributable'):
-            return queryset.filter(balance__gt=0, distribution_plan__confirmed=True,
-                                   tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+            queryset.filter(balance__gt=0, distribution_plan__confirmed=True,
+                            tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+            logger.info('user consignee nodes after query = %s(%s)' % (queryset, len(queryset)))
+            return queryset
         return queryset
 
     def list(self, request, *args, **kwargs):
