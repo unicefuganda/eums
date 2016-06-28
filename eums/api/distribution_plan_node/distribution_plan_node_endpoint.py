@@ -45,9 +45,9 @@ class DistributionPlanNodeViewSet(ModelViewSet):
 
         logger.info('user profile = %s' % user_profile)
         logger.info('user id = %s' % self.request.user.id)
-        logger.info('user consignee = %s' % user_profile.consignee)
 
         if user_profile and user_profile.consignee:
+            logger.info('user consignee = %s' % user_profile.consignee)
             return self._get_consignee_queryset(user_profile)
         is_root = self.request.GET.get('is_root')
         if is_root:
@@ -62,6 +62,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
             return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id).order_by('-id')
         parent_id = self.request.GET.get('parent')
         if parent_id:
+            logger.info('parent_id = %s' % parent_id)
             parent = DeliveryNode.objects.get(pk=parent_id)
             return parent.children()
         return self._consignee_nodes(user_profile)
@@ -70,8 +71,8 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         queryset = DeliveryNode.objects.filter(ip=user_profile.consignee)
         logger.info('is_distributable = %s' % self.request.GET.get('is_distributable'))
         if self.request.GET.get('is_distributable'):
-            queryset.filter(balance__gt=0, distribution_plan__confirmed=True,
-                            tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+            queryset = queryset.filter(balance__gt=0, distribution_plan__confirmed=True,
+                                       tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
             logger.info('user consignee nodes after query = %s(%s)' % (queryset, len(queryset)))
             return queryset
         return queryset
