@@ -1,13 +1,13 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-
-from eums.models import DistributionPlanNode, DistributionPlan, Flow
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from eums.api.sorting.standard_dic_sort import StandardDicSort
+
 from eums.api.filter.filter_mixin import RequestFilterMixin
+from eums.api.sorting.standard_dic_sort import StandardDicSort
+from eums.models import DistributionPlanNode, DistributionPlan, Flow
 from eums.permissions.stock_report_permissions import StockReportPermissions
 
 PAGE_SIZE = 10
@@ -61,7 +61,14 @@ def filter_stock_report(request):
 
 def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
     ip_nodes = DistributionPlanNode.objects.filter(
-            Q(tree_position=Flow.Label.IMPLEMENTING_PARTNER), ~Q(distribution_plan__is_auto_track_confirmed=False))
+        Q(tree_position=Flow.Label.IMPLEMENTING_PARTNER) &
+        (
+            Q(distribution_plan__track=True) |
+            (
+                Q(distribution_plan__track=False) & Q(distribution_plan__is_auto_track_confirmed=True)
+            )
+        )
+    )
 
     mixin.supported_filters = {
         "consignee_id": "consignee_id",
@@ -71,8 +78,8 @@ def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
         "to_date": "delivery_date__lte"
     }
     filters = mixin.build_filters(
-            {'consignee_id': consignee_id, 'location': location,
-             'outcome_id': outcome_id, 'from_date': from_date, 'to_date': to_date})
+        {'consignee_id': consignee_id, 'location': location,
+         'outcome_id': outcome_id, 'from_date': from_date, 'to_date': to_date})
 
     ip_nodes = ip_nodes.filter(**filters)
 
@@ -143,8 +150,10 @@ def _reduce_stock_report(stock_report):
 
 
 def _compute_totals(stock_report):
-    total_received = round(reduce(lambda total, report_item: total + report_item['total_value_received'], stock_report, 0), 2)
-    total_dispensed = round(reduce(lambda total, report_item: total + report_item['total_value_dispensed'], stock_report, 0), 2)
+    total_received = round(
+        reduce(lambda total, report_item: total + report_item['total_value_received'], stock_report, 0), 2)
+    total_dispensed = round(
+        reduce(lambda total, report_item: total + report_item['total_value_dispensed'], stock_report, 0), 2)
     total_lost = round(reduce(lambda total, report_item: total + report_item['total_value_lost'], stock_report, 0), 2)
     total_left = round(total_received - total_dispensed - total_lost, 2)
 

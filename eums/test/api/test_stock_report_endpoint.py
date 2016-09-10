@@ -1,7 +1,7 @@
+import logging
 from decimal import Decimal
-from httplib import FORBIDDEN, OK
 
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
+from rest_framework.status import HTTP_200_OK
 
 from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, Flow
 from eums.test.api.authorization.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -21,7 +21,6 @@ from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 from eums.test.helpers.fake_datetime import FakeDate
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -647,9 +646,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                                       sales_order_item=so_item_three, value=20)
 
     def setup_distribution_plans(self):
-        self.plan_one = DeliveryFactory(programme=self.programme_one)
-        self.plan_two = DeliveryFactory(programme=self.programme_one)
-        self.plan_three = DeliveryFactory(programme=self.programme_two)
+        self.plan_one = DeliveryFactory(programme=self.programme_one, track=True)
+        self.plan_two = DeliveryFactory(programme=self.programme_one, track=True)
+        self.plan_three = DeliveryFactory(programme=self.programme_two, track=True)
         self.setup_nodes()
 
     def setup_nodes(self):

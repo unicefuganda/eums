@@ -19,8 +19,8 @@ class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
         outcome_one = ProgrammeFactory(name='Outcome One')
         outcome_two = ProgrammeFactory(name='Outcome Two')
 
-        delivery_one = DeliveryFactory(programme=outcome_one)
-        delivery_two = DeliveryFactory(programme=outcome_two)
+        delivery_one = DeliveryFactory(programme=outcome_one, track=True)
+        delivery_two = DeliveryFactory(programme=outcome_two, track=True)
 
         DeliveryNodeFactory(distribution_plan=delivery_one, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(distribution_plan=delivery_two, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
@@ -40,8 +40,8 @@ class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
         consignee_one = ConsigneeFactory(name="Consignee One", type=Consignee.TYPES.implementing_partner)
         consignee_two = ConsigneeFactory(name="Consignee Two", type=Consignee.TYPES.implementing_partner)
 
-        delivery_one = DeliveryFactory(programme=outcome_one)
-        delivery_two = DeliveryFactory(programme=outcome_two)
+        delivery_one = DeliveryFactory(programme=outcome_one, track=True)
+        delivery_two = DeliveryFactory(programme=outcome_two, track=True)
 
         DeliveryNodeFactory(
             distribution_plan=delivery_one,
@@ -68,8 +68,10 @@ class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
         self.assertEqual(results[0]['items'][0]['consignee'], 'Consignee One')
 
     def test_should_filter_based_on_from_date(self):
-        DeliveryNodeFactory(delivery_date=datetime.date(2015, 10, 1), tree_position=Flow.Label.IMPLEMENTING_PARTNER)
-        DeliveryNodeFactory(delivery_date=datetime.date(2015, 11, 1), tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=DeliveryFactory(track=True), delivery_date=datetime.date(2015, 10, 1),
+                            tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=DeliveryFactory(track=True), delivery_date=datetime.date(2015, 11, 1),
+                            tree_position=Flow.Label.IMPLEMENTING_PARTNER)
 
         endpoint_url = BACKEND_URL + 'stock-report?fromDate=2015-10-15'
         response = self.client.get(endpoint_url)
@@ -89,8 +91,10 @@ class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results), 0)
 
     def test_should_filter_based_on_to_date(self):
-        DeliveryNodeFactory(delivery_date=datetime.date(2015, 10, 1), tree_position=Flow.Label.IMPLEMENTING_PARTNER)
-        DeliveryNodeFactory(delivery_date=datetime.date(2015, 11, 1), tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=DeliveryFactory(track=True), delivery_date=datetime.date(2015, 10, 1),
+                            tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=DeliveryFactory(track=True), delivery_date=datetime.date(2015, 11, 1),
+                            tree_position=Flow.Label.IMPLEMENTING_PARTNER)
 
         endpoint_url = BACKEND_URL + 'stock-report?toDate=2015-10-15'
         response = self.client.get(endpoint_url)

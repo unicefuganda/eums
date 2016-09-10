@@ -29,7 +29,7 @@ class MockCelery(object):
         return task
 
 
-class MockAsyncTask():
+class MockAsyncTask(object):
     def __init__(self):
         self.id = '3ff44672-d7bd-42b2-bf54-b63b9f379546'
 
@@ -43,6 +43,7 @@ class MockPeriodicTask(object):
     def __call__(self, decorated_function):
         def wrapper(*args):
             decorated_function(*args)
+
         return wrapper
 
     @classmethod

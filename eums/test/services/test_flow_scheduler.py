@@ -1,25 +1,27 @@
-from unittest import TestCase
-import celery
 import datetime
+from unittest import TestCase
+
+import celery
 from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
-from eums.test.factories.alert_factory import AlertFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
-from eums.test.factories.flow_factory import FlowFactory
-from eums.test.factories.option_factory import OptionFactory
-from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.delivery_factory import DeliveryFactory
-from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
-from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
+
 from eums import celery as local_celery
 from eums.models import DistributionPlanNode as Node, Question, Runnable, Flow, Run, RunQueue, Alert
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service
+from eums.services import flow_scheduler as my_flow_scheduler
 from eums.test.factories.RunQueueFactory import RunQueueFactory
+from eums.test.factories.alert_factory import AlertFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, DeliveryNodeFactory
+from eums.test.factories.flow_factory import FlowFactory
+from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime, FakeDate
-from eums.services import flow_scheduler as my_flow_scheduler
+from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 
 
 class FlowSchedulerTest(TestCase):

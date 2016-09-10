@@ -103,9 +103,9 @@ def build_answers_for_nodes(nodes, response):
         answer_list = _build_answer_list(node_responses)
         plan_answer_list = _build_answer_list(node_plan_responses)
         is_item_received = answer_list.get('productReceived', {}).get('value') == 'Yes' or answer_list.get(
-                'itemReceived', {}).get('value') == 'Yes'
+            'itemReceived', {}).get('value') == 'Yes'
         temp_merged_date_of_receipt = answer_list.get('dateOfReceipt', {}).get('value') if answer_list.get(
-                'dateOfReceipt') else plan_answer_list.get('dateOfReceipt', {}).get('value')
+            'dateOfReceipt') else plan_answer_list.get('dateOfReceipt', {}).get('value')
         delivery_node = {
             'item_description': node.item.item.description,
             'programme': {'id': node.programme.id, 'name': node.programme.name},
@@ -157,9 +157,9 @@ def _filter_answers_by_id(answers, node_id):
 
 def _filter_track_and_confirmed_auto_track_nodes(request):
     nodes = DistributionPlanNode.objects.filter(
-            Q(track=True) |
-            (Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True)) |
-            (Q(track=False) & Q(is_assigned_to_self=True)))
+        Q(track=True) |
+        (Q(track=False) & Q(distribution_plan__is_auto_track_confirmed=True)) |
+        (Q(track=False) & Q(is_assigned_to_self=True)))
     kwargs = {}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
     status_value = params.get("status")
