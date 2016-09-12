@@ -50,7 +50,7 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
-    it('should get ip feedback with multiple filters', function () {
+    xit('should get ip feedback with multiple filters', function () {
         var fakeReport = {results: [{id: 34}]};
         var url = '/api/item-feedback-report?programme_id=2&consignee_id=1&item_description=something+interesting&po_waybill=309';
 
@@ -68,7 +68,7 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
-    it('should get ip feedback with filters of multiple words', function () {
+    xit('should get ip feedback with filters of multiple words', function () {
         var fakeReport = {results: [{id: 34}]};
         var url = '/api/item-feedback-report?item_description=something+interesting';
 
