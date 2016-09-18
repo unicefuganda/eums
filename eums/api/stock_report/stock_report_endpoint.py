@@ -1,3 +1,6 @@
+import logging
+import time
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 from rest_framework import status
@@ -15,6 +18,8 @@ sort = StandardDicSort('last_shipment_date', 'last_received_date',
                        'total_value_received', 'total_value_dispensed', 'total_value_lost', 'balance')
 
 mixin = RequestFilterMixin()
+
+logger = logging.getLogger(__name__)
 
 
 class StockReport(APIView):
@@ -39,12 +44,6 @@ class StockReport(APIView):
         }
 
         return Response(data, status=status.HTTP_200_OK)
-
-
-def _aggregate_nodes_into_stock_report(stock_report, node):
-    if node.item:
-        stock_report.append(_get_report_details_for_node(node))
-    return stock_report
 
 
 def filter_stock_report(request):
@@ -82,8 +81,13 @@ def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
          'outcome_id': outcome_id, 'from_date': from_date, 'to_date': to_date})
 
     ip_nodes = ip_nodes.filter(**filters)
-
     return reduce(_aggregate_nodes_into_stock_report, ip_nodes, [])
+
+
+def _aggregate_nodes_into_stock_report(stock_report, node):
+    if node.item:
+        stock_report.append(_get_report_details_for_node(node))
+    return stock_report
 
 
 def _get_report_details_for_node(node):
@@ -97,28 +101,22 @@ def _get_report_details_for_node(node):
     value_dispensed = quantity_dispensed * node.item.unit_value()
     ip_delivery = DistributionPlan.objects.get(pk=node.distribution_plan.id)
 
-    return {
-        'document_number': purchase_order_number,
-        'programme': node.programme.name,
-        'last_shipment_date': str(node.delivery_date),
-        'last_received_date': str(ip_delivery.received_date()),
-        'total_value_received': total_value_received,
-        'total_value_dispensed': value_dispensed,
-        'total_value_lost': total_value_lost,
-        'balance': (total_value_received - value_dispensed - total_value_lost),
-        'items': [{'code': node.item.item.material_code,
-                   'description': node.item.item.description,
-                   'location': node.location,
-                   'consignee': node.consignee.name,
-                   'quantity_delivered': node.quantity_in(),
-                   'date_delivered': str(node.delivery_date),
-                   'quantity_confirmed': quantity_received,
-                   'date_confirmed': str(ip_delivery.received_date()),
-                   'quantity_dispatched': quantity_dispensed,
-                   'quantity_lost': quantity_lost,
-                   'remark_lost': remark_lost,
-                   'balance': quantity_received - quantity_dispensed - quantity_lost}]
-    }
+    received_date = ip_delivery.received_date()
+
+    quantity_in = node.quantity_in()
+
+    result = {'document_number': purchase_order_number, 'programme': node.programme.name,
+              'last_shipment_date': str(node.delivery_date), 'last_received_date': str(received_date),
+              'total_value_received': total_value_received, 'total_value_dispensed': value_dispensed,
+              'total_value_lost': total_value_lost,
+              'balance': (total_value_received - value_dispensed - total_value_lost), 'items': [
+            {'code': node.item.item.material_code, 'description': node.item.item.description, 'location': node.location,
+             'consignee': node.consignee.name, 'quantity_delivered': quantity_in,
+             'date_delivered': str(node.delivery_date), 'quantity_confirmed': quantity_received,
+             'date_confirmed': str(received_date), 'quantity_dispatched': quantity_dispensed,
+             'quantity_lost': quantity_lost, 'remark_lost': remark_lost,
+             'balance': quantity_received - quantity_dispensed - quantity_lost}]}
+    return result
 
 
 def _get_responses(node):
