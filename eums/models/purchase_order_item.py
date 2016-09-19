@@ -28,7 +28,8 @@ class PurchaseOrderItem(OrderItem):
 
     def __unicode__(self):
         return '%s %s %s.' \
-               % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)
+               % (self.purchase_order.order_number, str(self.item_number),
+                  self.sales_order_item.description if self.sales_order_item else '')
 
     def __eq__(self, other):
         if not isinstance(other, PurchaseOrderItem):
