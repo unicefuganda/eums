@@ -2,6 +2,5 @@ node_modules
 dist
 .tmp
 .sass-cache
-bower_components
 app/scripts/config/config.js
 coverage/

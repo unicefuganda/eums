@@ -22,7 +22,6 @@
 */eums/client/dist*
 */eums/client/.tmp*
 */eums/client/.sass-cache*
-*/eums/client/bower_components*
 */eums/client/coverage*
 
 */eums/client/test/*

@@ -147,10 +147,14 @@ COPY ./contacts/package.json /opt/app/contacts/package.json
 RUN cd /opt/app/contacts/ && npm install
 
 COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
-COPY ./eums/eums/client/bower.json /opt/app/eums/eums/client/bower.json
 RUN cd /opt/app/eums/eums/client && npm install
-RUN cd /opt/app/eums/eums/client && npm install -g bower
-RUN cd /opt/app/eums/eums/client && bower install --allow-root
+
+#RUN cd /opt/app/eums/eums/client && npm install -g bower
+#COPY ./eums/eums/client/bower.json /opt/app/eums/eums/client/bower.json
+#RUN cd /opt/app/eums/eums/client && bower install --allow-root
+ADD ./eums/eums/client/bower_components /opt/app/eums/eums/client/bower_components/
+
+
 RUN cd /opt/app/eums/eums/client && npm install -g grunt-cli
 
 ##############################################################################
