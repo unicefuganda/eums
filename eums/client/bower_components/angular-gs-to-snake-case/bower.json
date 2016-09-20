@@ -1,0 +1,27 @@
+{
+  "name": "angular-gs-to-snake-case",
+  "version": "0.1.1",
+  "authors": [
+    "Gabriel Scholz <info@garbl.es>"
+  ],
+  "description": "Converts camelCase to snake_case. http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/comment-page-1/",
+  "main": "./build/angular-gs-to-snake-case.js",
+  "keywords": ["snake","case","angular"],
+  "license": "MIT",
+  "homepage": "https://github.com/garbles/angular-gs-to-snake-case",
+  "ignore": [
+    "src",
+    "node_modules",
+    "bower_components",
+    "test",
+    "karma.conf.js",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "angular": ">= 1.0.0"
+  },
+  "devDependencies": {
+    "angular-mocks": ">= 1.0.0"
+  }
+}
