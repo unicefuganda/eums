@@ -126,6 +126,14 @@ Local Environment Setup
 
 	`$ python manage.py createsuperuser`
 
+* Build static files
+
+    ```
+    $ cd {project_root_dir}
+    $ cd eums/client
+    $ grunt build
+    ```
+
 * Start the application server
 
 	```
