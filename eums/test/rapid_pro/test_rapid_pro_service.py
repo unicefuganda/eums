@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 from unittest import TestCase
 
@@ -13,13 +12,12 @@ from eums.rapid_pro.rapid_pro_service import RapidProService
 from eums.test.helpers.model_builder import ModelBuilder
 
 HEADER = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN, 'Content-Type': 'application/json'}
-FLOW_ID = 'b128ffd2-7ad8-4899-88ab-b7a863c623b5'
+FLOW_ID = 19772
 
-contact = {'_id': '58b912f85d0e55577f61d4d2', 'firstName': 'Test', 'lastName': 'User', 'phone': '+256 772 123456'}
+contact = {'firstName': 'Test', 'lastName': 'User', 'phone': '+256 772 123456'}
 item = 'Plumpynut'
 sender = 'Save the Children'
 
-logger = logging.getLogger(__name__)
 
 class TestRapidProService(TestCase):
     def setUp(self):
@@ -29,7 +27,6 @@ class TestRapidProService(TestCase):
         self.expected_payload = json.dumps({
             'flow': FLOW_ID,
             'phone': ['+256 772 123456'],
-            "contacts": ["58b912f85d0e55577f61d4d2"],
             'extra': {'contactName': 'Test User', 'sender': sender, 'product': item}
         })
 
@@ -46,6 +43,7 @@ class TestRapidProService(TestCase):
     def test_should_create_run(self, mocked_post, *_):
         self.rapid_pro_service.cache = MagicMock(expired=False,
                                                  flow_label_mapping={FLOW_ID: [Flow.Label.IMPLEMENTING_PARTNER]})
+
         flow = ModelBuilder(Flow, label=Flow.Label.IMPLEMENTING_PARTNER).instance
         self.rapid_pro_service.create_run(contact, flow, item, sender)
         mocked_post.assert_called_with(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload, headers=HEADER,
@@ -62,7 +60,7 @@ class TestRapidProService(TestCase):
         requests.get.assert_called_with(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER,
                                         verify=settings.RAPIDPRO_SSL_VERIFY)
 
-        mock_filter.assert_called_with(label__in=[Flow.Label.MIDDLE_MAN])
+        mock_filter.assert_called_with(label__in=[Flow.Label.IMPLEMENTING_PARTNER])
 
     @patch('eums.rapid_pro.rapid_pro_service.logger.info')
     def test_should_get_middle_man_flow_id(self, _):
@@ -71,4 +69,5 @@ class TestRapidProService(TestCase):
         mock_flow = MagicMock(label='MIDDLE_MAN')
 
         flow_id = self.rapid_pro_service.flow_id(mock_flow)
-        self.assertEquals(flow_id, 'b128ffd2-7ad8-4899-88ab-b7a863c623b5')
+
+        self.assertEquals(flow_id, 19773)

@@ -27,7 +27,6 @@ class ContactService(object):
     def get(contact_person_id):
         default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
                            'types': [], 'outcomes': [], 'ips': [], 'districts': []}
-
         try:
             response = requests.get(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
             if response.status_code is HTTP_200_OK:
@@ -184,8 +183,10 @@ class ContactService(object):
         if not settings.RAPIDPRO_LIVE:
             return
 
-        params = {'urns': 'tel:%s' % phone}
-        response = requests.get(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(params), headers=HEADER_RAPID_PRO,
+        url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
+            'urns': 'tel:%s' % phone
+        }))
+        response = requests.get(url_add_rapid_pro_contact, headers=HEADER_RAPID_PRO,
                                 verify=settings.RAPIDPRO_SSL_VERIFY)
         return response
 
@@ -205,7 +206,7 @@ class ContactService(object):
     def build_rapid_pro_contact(contact):
         return {
             'name': '%(firstName)s %(lastName)s' % contact,
-            'groups': [{'name': 'EUMS', 'uuid': '362bcb66-6f2e-4899-b78b-187309bdf636'}],
+            'groups': ['EUMS'],
             'urns': ['tel:%(phone)s' % contact],
             'fields': ContactService.build_rapid_pro_contact_fields(contact)
         }

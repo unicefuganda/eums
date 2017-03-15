@@ -41,8 +41,8 @@ class RapidProService(object):
     def create_run(self, contact, flow, item, sender):
         logger.info('contact = %s' % contact)
 
-        payload = FlowRequestTemplate().build(phone=contact['phone'], contact_id=contact['_id'],
-                                              flow=self.flow_id(flow), sender=sender, item=item,
+        payload = FlowRequestTemplate().build(phone=contact['phone'], flow=self.flow_id(flow),
+                                              sender=sender, item=item,
                                               contact_name="%s %s" % (contact['firstName'], contact['lastName']))
 
         if settings.RAPIDPRO_LIVE:
@@ -55,7 +55,7 @@ class RapidProService(object):
 
         self.__sync_if_required()
 
-        # flow_id = int(flow_id)
+        flow_id = int(flow_id)
         if flow_id not in self.cache.flow_label_mapping:
             raise FlowLabelNonExistException()
 
@@ -85,9 +85,8 @@ class RapidProService(object):
         if response.status_code == 200:
             self.cache.invalidate()
             flows = response.json()['results']
-            logger.info(flows)
             self.cache.update(
-                flow_label_mapping={rapid['uuid']: map((lambda label: label['name']), rapid['labels']) for rapid in flows if len(rapid['labels']) > 0})
+                flow_label_mapping={rapid['flow']: rapid['labels'] for rapid in flows if len(rapid['labels']) > 0})
         else:
             logger.warning("Failed to get flows information from Rapidpro, response=%s" % response)
 

@@ -9,19 +9,50 @@
       "expires": 30,
       "name": "EUMS IP & Sub-consignees",
       "labels": [
-        {
-          "name": "SUB_CONSIGNEES",
-          "uuid": ""
-        }
+        "SUB_CONSIGNEES"
       ],
       "participants": 1,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-12-04T03:10:51.926Z"
+      "runs": 1,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "5b0f1f19-767f-47f1-97a5-b9b32c45a47c",
+          "id": 40551,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "productReceived"
+        },
+        {
+          "node": "b3fad71f-ca0a-4212-b7f9-892dd3dc4c4b",
+          "id": 40553,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "dateOfReceipt"
+        },
+        {
+          "node": "bd82e4f8-82b8-4a8d-ba57-7d6e11940da5",
+          "id": 40552,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "informedOfDelay"
+        },
+        {
+          "node": "18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c",
+          "id": 40554,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "amountReceived"
+        },
+        {
+          "node": "5b9e74d3-de10-451b-beb1-13df774283b2",
+          "id": 40555,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "revisedDeliveryDate"
+        }
+      ],
+      "created_on": "2015-12-04T03:10:51.926Z",
+      "flow": 19773
     },
     {
       "uuid": "c1b8f2a1-7e5f-4d72-9665-6d46af8ba52b",
@@ -29,19 +60,50 @@
       "expires": 10080,
       "name": "EUMS IP Acknowledgement",
       "labels": [
-        {
-          "name": "IMPLEMENTING_PARTNER",
-          "uuid": ""
-        }
+        "IMPLEMENTING_PARTNER"
       ],
       "participants": 0,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-12-04T03:10:39.493Z"
+      "runs": 0,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "bf2678dd-252b-4f06-8d2e-b2416c36f53b",
+          "id": 40702,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "deliveryReceived"
+        },
+        {
+          "node": "12a80321-8eda-4d36-bfc8-58567bb9987c",
+          "id": 40703,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "dateOfReceipt"
+        },
+        {
+          "node": "92525f90-f36a-4164-8688-8e91bad510f9",
+          "id": 40701,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "isDeliveryInGoodOrder"
+        },
+        {
+          "node": "58649bb5-cc66-45fb-90f1-b3717907d494",
+          "id": 40705,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "satisfiedWithDelivery"
+        },
+        {
+          "node": "442d15b1-748f-429e-8392-01e1a37cbc5a",
+          "id": 40704,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "additionalDeliveryComments"
+        }
+      ],
+      "created_on": "2015-12-04T03:10:39.493Z",
+      "flow": 19772
     },
     {
       "uuid": "548f5e5d-cd77-4a5d-82c2-336ea6972b2c",
@@ -49,19 +111,71 @@
       "expires": 10080,
       "name": "EUMS End User",
       "labels": [
-        {
-          "name": "END_USER",
-          "uuid": ""
-        }
+        "END_USER"
       ],
       "participants": 1,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-12-04T03:09:49.356Z"
+      "runs": 1,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "bb9ea913-6ffa-4760-b1bc-6e19c37683bd",
+          "id": 40539,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "productReceived"
+        },
+        {
+          "node": "e99decab-c2b5-4140-9490-7f1ef89779ca",
+          "id": 40542,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "informedOfDelay"
+        },
+        {
+          "node": "d279f6a6-8744-4b22-ad58-af65691bf3ef",
+          "id": 40540,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "dateOfReceipt"
+        },
+        {
+          "node": "a3fd0e01-69d5-4574-9f5e-572b36040a8c",
+          "id": 40541,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "revisedDeliveryDate"
+        },
+        {
+          "node": "aacfd143-e021-449e-b772-1e9e44fdb206",
+          "id": 40538,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "amountReceived"
+        },
+        {
+          "node": "5487a250-10c5-407e-8f24-8492036ae342",
+          "id": 40544,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "qualityOfProduct"
+        },
+        {
+          "node": "f3e632d6-84c4-4552-ad39-124f4a98bc92",
+          "id": 40543,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "satisfiedWithProduct"
+        },
+        {
+          "node": "f18b54d9-4cce-45b5-886a-bc2757448891",
+          "id": 40545,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "feebackAboutDissatisfaction"
+        }
+      ],
+      "created_on": "2015-12-04T03:09:49.356Z",
+      "flow": 19771
     },
     {
       "uuid": "6f2c89ed-57b6-4286-9863-54bc018f8873",
@@ -70,13 +184,11 @@
       "name": "eums-end-user",
       "labels": [],
       "participants": 0,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-12-04T03:05:55.253Z"
+      "runs": 0,
+      "completed_runs": 0,
+      "rulesets": [],
+      "created_on": "2015-12-04T03:05:55.253Z",
+      "flow": 19770
     },
     {
       "uuid": "04b437f1-0bc8-49ad-beb5-2192772b2f77",
@@ -85,13 +197,19 @@
       "name": "Sample Flow - Simple Poll",
       "labels": [],
       "participants": 2,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-11-23T07:12:08.794Z"
+      "runs": 2,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "87a3f97c-064e-4781-88a6-09cfa6424559",
+          "id": 39825,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Filter Working"
+        }
+      ],
+      "created_on": "2015-11-23T07:12:08.794Z",
+      "flow": 19582
     },
     {
       "uuid": "20a2ae0d-d1aa-46b6-bb40-d8f13aed4450",
@@ -100,13 +218,68 @@
       "name": "Sample Flow - Satisfaction Survey",
       "labels": [],
       "participants": 3,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-11-23T07:12:08.790Z"
+      "runs": 3,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "5c6b2ffb-d0eb-4d04-a497-2721fe6a34e1",
+          "id": 39817,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Take Poll"
+        },
+        {
+          "node": "38cf8406-de44-452c-9163-9385f421e7a3",
+          "id": 39824,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "Extra Comments"
+        },
+        {
+          "node": "3cbf1769-3347-4e3a-a592-744214507793",
+          "id": 39818,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Shop Again"
+        },
+        {
+          "node": "1a5833dc-be01-4441-bd84-21e77f720e34",
+          "id": 39822,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Recommend"
+        },
+        {
+          "node": "685a5bf1-18ae-4dcd-bdf7-85ce36a2203f",
+          "id": 39820,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "Suggestion"
+        },
+        {
+          "node": "890d7ab5-8a06-4637-9cdc-a353c9f0ff40",
+          "id": 39819,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Gender"
+        },
+        {
+          "node": "3f7591f9-637e-409f-bba5-0c3cf28f7ea0",
+          "id": 39823,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Age"
+        },
+        {
+          "node": "94ecd1b4-4ff5-4d06-afa9-f2dbf6da737c",
+          "id": 39821,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "Extra Comments"
+        }
+      ],
+      "created_on": "2015-11-23T07:12:08.790Z",
+      "flow": 19581
     },
     {
       "uuid": "4a5683d2-90d1-4fcc-a081-6c9f286c7d05",
@@ -115,13 +288,47 @@
       "name": "Sample Flow - Order Status Checker",
       "labels": [],
       "participants": 1,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-11-23T07:12:08.785Z"
+      "runs": 1,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "91f19531-2530-4fff-89be-8145f546f9fb",
+          "id": 39813,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "Lookup Response"
+        },
+        {
+          "node": "52e2c9ae-5db3-4b8c-87a8-3dcd48e52f5f",
+          "id": 39816,
+          "response_type": "O",
+          "ruleset_type": "webhook",
+          "label": "Lookup Webhook"
+        },
+        {
+          "node": "3c2884cc-ad49-4793-ba88-cc5867e4d976",
+          "id": 39815,
+          "response_type": "C",
+          "ruleset_type": "expression",
+          "label": "Lookup"
+        },
+        {
+          "node": "8188ec05-1ced-4425-8bd3-4c3f49bac3e2",
+          "id": 39812,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "Comment"
+        },
+        {
+          "node": "779139fb-29ea-4390-ae6d-acc266fe7674",
+          "id": 39814,
+          "response_type": "O",
+          "ruleset_type": "wait_message",
+          "label": "Extra Comments"
+        }
+      ],
+      "created_on": "2015-11-23T07:12:08.785Z",
+      "flow": 19580
     },
     {
       "uuid": "d5a09a14-5b87-4fa1-ad4f-631dc31b3540",
@@ -130,13 +337,19 @@
       "name": "Sample Flow - Group Chat",
       "labels": [],
       "participants": 1,
-      "runs": {
-        "active": 47,
-        "completed": 123,
-        "interrupted": 2,
-        "expired": 34
-      },
-      "created_on": "2015-11-23T07:12:08.776Z"
+      "runs": 1,
+      "completed_runs": 0,
+      "rulesets": [
+        {
+          "node": "1ab2361e-a127-4d65-8288-59c0447a7545",
+          "id": 39811,
+          "response_type": "C",
+          "ruleset_type": "wait_message",
+          "label": "Commands"
+        }
+      ],
+      "created_on": "2015-11-23T07:12:08.776Z",
+      "flow": 19579
     }
   ]
 }
