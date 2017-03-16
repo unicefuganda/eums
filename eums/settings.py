@@ -119,11 +119,12 @@ CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
-RAPIDPRO_URL = 'https://app.rapidpro.io/api/v1/'
+RAPIDPRO_URL = 'https://app.rapidpro.io/api/v2/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
-    'RUNS': "%sruns.json" % RAPIDPRO_URL,
+    'RUNS': "%sflow_starts.json" % RAPIDPRO_URL,
     'CONTACTS': "%scontacts.json" % RAPIDPRO_URL,
+    'GROUPS': "%sgroups.json" % RAPIDPRO_URL
 }
 RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}
 

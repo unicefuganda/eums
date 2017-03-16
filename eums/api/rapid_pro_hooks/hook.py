@@ -20,7 +20,8 @@ def hook(request):
     try:
         params = request.POST
         logger.info("param=%s" % params)
-        flow = rapid_pro_service.flow(params['flow'])
+        flow = rapid_pro_service.flow(params['flow_uuid'])
+        logger.info("flow uuid=%s" % params['flow_uuid'])
         logger.info("flow=%s" % flow)
         run = Run.objects.filter(Q(phone=params['phone']) & ~Q(scheduled_message_task_id='Web') & (
             Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed))).order_by('-id').first()

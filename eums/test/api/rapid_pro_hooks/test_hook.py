@@ -25,31 +25,13 @@ FLOW_RESPONSE = {
         {
             "uuid": "b128ffd2-7ad8-4899-88ab-b7a863c623b5",
             "name": "IMPLEMENTING PARTNER",
-            "labels": ['IMPLEMENTING_PARTNER'],
-            "rulesets": [
-                {
-                    "node": "5b0f1f19-767f-47f1-97a5-b9b32c45a47c",
-                    "id": 40551,
-                    "response_type": "C",
-                    "ruleset_type": "wait_message",
-                    "label": "productReceived"
-                },
-                {
-                    "node": "b3fad71f-ca0a-4212-b7f9-892dd3dc4c4b",
-                    "id": 40553,
-                    "response_type": "C",
-                    "ruleset_type": "wait_message",
-                    "label": "dateOfReceipt"
-                },
-                {
-                    "node": "18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c",
-                    "id": 40554,
-                    "response_type": "C",
-                    "ruleset_type": "wait_message",
-                    "label": "amountReceived"
-                }
-            ],
-            "flow": 2436
+            "labels": [{"name": "IMPLEMENTING_PARTNER", "uuid": "5a4eb79e-1b1f-4ae3-8700-09384cca385f"}],
+            "runs": {
+                "active": 47,
+                "completed": 123,
+                "interrupted": 2,
+                "expired": 34
+            }
         }
     ]
 }
@@ -59,6 +41,7 @@ class HookTest(AuthenticatedAPITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
+        self.flow_uuid = 'b128ffd2-7ad8-4899-88ab-b7a863c623b5'
         self.flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(return_value=FLOW_RESPONSE)))
         self.my_hook = reload(my_hook)
@@ -261,7 +244,7 @@ class HookTest(AuthenticatedAPITestCase):
 
     def _create_rapid_pro_url_params(self, phone, uuid, text="Yes", category=None, label=""):
         return {u'run': [u'4621789'], u'relayer': [u'138'], u'text': [u'%s' % text], u'flow': [u'%s' % self.flow_id],
-                u'phone': [u'%s' % phone], u'step': [u'%s' % uuid],
+                u'phone': [u'%s' % phone], u'step': [u'%s' % uuid], u'flow_uuid': [u'%s' % self.flow_uuid],
                 u'values': [u'[{"category": {"eng": "%s"}, "time": "2014-10-22T11:56:52.836354Z", '
                             u'"text": "Yes", "rule_value": "Yes", "value": "Yes", "label": "%s"}]' % (category, label)],
                 u'time': [u'2014-10-22T11:57:35.606372Z']}

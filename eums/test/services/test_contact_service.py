@@ -7,7 +7,7 @@ from urllib import urlencode
 import requests
 from django.conf import settings
 from django.test import override_settings
-from mock import MagicMock, patch, call
+from mock import MagicMock, patch
 from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 
 from eums.rapid_pro.rapid_pro_service import HEADER
@@ -167,7 +167,9 @@ class ContactServiceTest(TestCase):
         ContactService.update.assert_called_once_with(CONTACT)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
-    def test_should_add_rapid_pro_contact(self):
+    @patch('eums.services.contact_service.ContactService.build_rapid_pro_contact')
+    def test_should_add_rapid_pro_contact_called(self, rapid_pro_contact):
+        rapid_pro_contact.return_value = self.generate_build_rapid_pro_contact(CONTACT)
         requests.get = MagicMock()
         requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=CONTACT)))
@@ -177,7 +179,9 @@ class ContactServiceTest(TestCase):
         self.assertFalse(requests.get.called)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
-    def test_should_update_rapid_pro_contact_when_phone_not_modified(self):
+    @patch('eums.services.contact_service.ContactService.build_rapid_pro_contact')
+    def test_should_update_rapid_pro_contact_when_phone_not_modified(self, rapid_pro_contact):
+        rapid_pro_contact.return_value = self.generate_build_rapid_pro_contact(CONTACT)
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=self.generate_add_or_update_rapid_pro_contact_response(CONTACT))))
 
@@ -241,6 +245,20 @@ class ContactServiceTest(TestCase):
         ContactService.delete_rapid_pro_contact(phone)
         self.assertFalse(requests.delete.called)
 
+    @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERITY=False)
+    def test_should_get_rapid_pro_contact_group(self):
+        group_name = 'EUMS'
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(return_value=
+            self.generate_rapid_pro_contact_group())))
+        url_get_rapid_pro_contact_group = '%s?%s' % (settings.RAPIDPRO_URLS.get('GROUPS'), urlencode({
+            'name': '%s' % group_name
+        }))
+        response = ContactService.get_rapid_pro_contact_group(group_name)
+        requests.get.assert_called_once_with(url_get_rapid_pro_contact_group,
+                                             headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
+        self.assertEqual(response.get('name'), 'EUMS')
+        self.assertEqual(response.get('uuid'), '362bcb66-6f2e-4899-b78b-187309bdf636')
+
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_get_rapid_pro_contact(self):
         first_name = "Jack"
@@ -251,17 +269,14 @@ class ContactServiceTest(TestCase):
         ips = ["KAMPALA DHO, WAKISO DHO"]
         types = ["END_USER", "IMPLEMENTING_PARTNER"]
 
-        url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
-            'urns': 'tel:%s' % phone
-        }))
-
+        params = {'urns': 'tel:%s' % phone}
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
         response = ContactService.get_rapid_pro_contact(phone)
 
-        requests.get.assert_called_once_with(url_add_rapid_pro_contact, headers=HEADER,
-                                             verify=settings.RAPIDPRO_SSL_VERIFY)
+        requests.get.assert_called_once_with(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(params),
+                                             headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.json().get('groups')), 1)
@@ -283,7 +298,8 @@ class ContactServiceTest(TestCase):
         self.assertFalse(requests.get.called)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
-    def test_should_add_rapid_pro_contact(self):
+    @patch('eums.services.contact_service.ContactService.build_rapid_pro_contact')
+    def test_should_add_rapid_pro_contact(self, rapid_pro_contact):
         first_name = "Jack"
         last_name = "Bob"
         phone = '+8618192235667'
@@ -293,6 +309,7 @@ class ContactServiceTest(TestCase):
         types = ["END_USER", "IMPLEMENTING_PARTNER"]
 
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
+        rapid_pro_contact.return_value = self.generate_build_rapid_pro_contact(contact)
         requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
 
@@ -334,6 +351,20 @@ class ContactServiceTest(TestCase):
         }
         return contact
 
+    def generate_rapid_pro_contact_group(self):
+        return {
+            "next": None,
+            "previous": None,
+            "results": [
+                {
+                    "uuid": "362bcb66-6f2e-4899-b78b-187309bdf636",
+                    "name": "EUMS",
+                    "query": None,
+                    "count": 60
+                }
+            ]
+        }
+
     def generate_add_or_update_rapid_pro_contact_response(self, contact):
         return {
             "uuid": "e5de51c0-844b-4feb-8023-33b180bdf965",
@@ -361,4 +392,12 @@ class ContactServiceTest(TestCase):
                     "fields": ContactService.build_rapid_pro_contact_fields(contact)
                 }
             ]
+        }
+
+    def generate_build_rapid_pro_contact(self, contact):
+        return {
+            'name': 'Jack Bob',
+            'groups': [{'name': 'EUMS', 'uuid': '362bcb66-6f2e-4899-b78b-187309bdf636'}],
+            'urns': ['tel:%s' % contact.get('phone')],
+            'fields': ContactService.build_rapid_pro_contact_fields(contact)
         }

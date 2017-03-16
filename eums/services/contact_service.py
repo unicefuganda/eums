@@ -27,6 +27,7 @@ class ContactService(object):
     def get(contact_person_id):
         default_contact = {'_id': '', 'firstName': '', 'lastName': '', 'phone': '',
                            'types': [], 'outcomes': [], 'ips': [], 'districts': []}
+
         try:
             response = requests.get(url='%s%s' % (settings.CONTACTS_SERVICE_URL, contact_person_id))
             if response.status_code is HTTP_200_OK:
@@ -179,14 +180,24 @@ class ContactService(object):
             return HTTP_504_GATEWAY_TIMEOUT
 
     @staticmethod
+    def get_rapid_pro_contact_group(name):
+        if not settings.RAPIDPRO_LIVE:
+            return
+
+        url_get_rapid_pro_contact_group = '%s?%s' % (settings.RAPIDPRO_URLS.get('GROUPS'), urlencode({
+            'name': '%s' % name
+        }))
+        response = requests.get(url_get_rapid_pro_contact_group, headers=HEADER_RAPID_PRO,
+                                verify=settings.RAPIDPRO_SSL_VERIFY)
+        return response.json()['results'][0] if len(response.json()['results']) > 0 else None
+
+    @staticmethod
     def get_rapid_pro_contact(phone):
         if not settings.RAPIDPRO_LIVE:
             return
 
-        url_add_rapid_pro_contact = '%s?%s' % (settings.RAPIDPRO_URLS.get('CONTACTS'), urlencode({
-            'urns': 'tel:%s' % phone
-        }))
-        response = requests.get(url_add_rapid_pro_contact, headers=HEADER_RAPID_PRO,
+        params = {'urns': 'tel:%s' % phone}
+        response = requests.get(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(params), headers=HEADER_RAPID_PRO,
                                 verify=settings.RAPIDPRO_SSL_VERIFY)
         return response
 
@@ -204,9 +215,14 @@ class ContactService(object):
 
     @staticmethod
     def build_rapid_pro_contact(contact):
+        group_name = 'EUMS'
+        contact_group = ContactService.get_rapid_pro_contact_group(group_name)
+        contact_group_uuid = contact_group['uuid'] if contact_group else ''
+        logger.info('group uuid of EUMS is %s' % contact_group_uuid)
+
         return {
             'name': '%(firstName)s %(lastName)s' % contact,
-            'groups': ['EUMS'],
+            'groups': [{'name': 'EUMS', 'uuid': contact_group_uuid}],
             'urns': ['tel:%(phone)s' % contact],
             'fields': ContactService.build_rapid_pro_contact_fields(contact)
         }
