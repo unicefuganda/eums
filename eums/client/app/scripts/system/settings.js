@@ -23,6 +23,7 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
 
         $scope.isON = false;
         $scope.settings.syncStartDate = null;
+        $scope.settings.syncEndDate = null;
         $scope.currectStartDate = null;
         $scope.isAllowSync = false;
         $scope.currentNotificationMessage = '';
@@ -90,18 +91,15 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         $scope.cancelSync = function () {
             LoaderService.hideModal('sync-start-date-confirm-modal');
             $scope.settings.syncStartDate = $scope.currectStartDate;
-        };
-
-        $scope.confirmSync = function () {
-            LoaderService.hideModal('sync-start-date-confirm-modal');
-            $scope.currectStartDate = SysUtilsService.formatDateToYMD($scope.settings.syncStartDate);
-            SystemSettingsService.updateSettings({sync_start_date: $scope.currectStartDate});
+            $scope.settings.syncEndDate = $scope.currectEndDate;
         };
 
         function init() {
             SystemSettingsService.getSettings().then(function (settings) {
                 $scope.settings.syncStartDate = settings.sync_start_date ? new Date(settings.sync_start_date) : null;
+                $scope.settings.syncEndDate = settings.sync_end_date ? new Date(settings.sync_end_date) : null;
                 $scope.currectStartDate = $scope.settings.syncStartDate;
+                $scope.currectEndDate = $scope.settings.syncEndDate;
                 $scope.notificationMessage = $scope.currentNotificationMessage = settings.notification_message;
                 $scope.districtLabel = $scope.currentDistrictLabel = settings.district_label;
                 $scope.countryLabel = $scope.currentCountryLabel = settings.country_label;
@@ -110,14 +108,24 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
             });
         }
 
+        $scope.confirmSync = function () {
+            LoaderService.hideModal('sync-start-date-confirm-modal');
+            $scope.currentStartDate = SysUtilsService.formatDateToYMD($scope.settings.syncStartDate);
+            $scope.currentEndDate = SysUtilsService.formatDateToYMD($scope.settings.syncEndDate);
+            SystemSettingsService.updateSettings({
+                sync_start_date: $scope.currentStartDate,
+                sync_end_date: $scope.currentEndDate
+            });
+        };
+
         function isNewDate() {
-            return $scope.currectStartDate == null && $scope.settings.syncStartDate
-                || $scope.currectStartDate.toString() != $scope.settings.syncStartDate.toString();
+            return $scope.currectStartDate != $scope.settings.syncStartDate ||
+                   $scope.currectEndDate != $scope.settings.syncEndDate;
         }
 
         function allowToSync() {
-            return $scope.currectStartDate == null
-                || new Date($scope.settings.syncStartDate) < new Date($scope.currectStartDate)
+            return $scope.settings.syncStartDate && $scope.settings.syncEndDate &&
+                    new Date($scope.settings.syncStartDate) < new Date($scope.settings.syncEndDate);
         }
 
         function updateSettings() {

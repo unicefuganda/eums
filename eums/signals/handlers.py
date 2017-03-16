@@ -39,14 +39,13 @@ def on_post_save_delivery(sender, **kwargs):
 
 @receiver(pre_save, sender=SystemSettings)
 def on_pre_save_system_settings(sender, **kwargs):
-    start_date = VisionSyncInfo.get_manual_sync_start_date()
-    end_date = VisionSyncInfo.get_manual_sync_end_date()
-    new_sync_date = kwargs['instance'].sync_start_date
+    new_sync_start_date = kwargs['instance'].sync_start_date
+    new_sync_end_date = kwargs['instance'].sync_end_date
 
-    if new_sync_date and new_sync_date < datetime.date.today() and (not start_date or new_sync_date < start_date):
-        logger.info('manual sync. start_date=%s, end_date=%s' % (new_sync_date, end_date))
-        sync_record = VisionSyncInfo.new_instance(False, new_sync_date, end_date)
-        run.apply_async(args=[sync_record, format_date(new_sync_date), format_date(end_date)])
+    if new_sync_start_date and new_sync_end_date and new_sync_start_date < new_sync_end_date:
+        logger.info('manual sync. start_date=%s, end_date=%s' % (new_sync_start_date, new_sync_end_date))
+        sync_record = VisionSyncInfo.new_instance(False, new_sync_start_date, new_sync_end_date)
+        run.apply_async(args=[sync_record, format_date(new_sync_start_date), format_date(new_sync_end_date)])
 
 
 @app.task

@@ -63,20 +63,28 @@ describe('SystemSettingsController', function () {
         });
     });
 
-    describe('For sync start date', function () {
-        it('should get sync start date', function () {
-            deferGetSettings.resolve({sync_start_date: new Date('2015-12-06')});
+    describe('For vision sync', function () {
+        it('should get sync start date and end date', function () {
+            deferGetSettings.resolve({
+                sync_start_date: new Date('2015-12-06'),
+                sync_end_date: new Date('2016-06-06')
+            });
             scope.$apply();
 
             expect(mockSystemSettingsService.getSettings).toHaveBeenCalled();
             expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06'));
+            expect(scope.settings.syncEndDate).toEqual(new Date('2016-06-06'));
         });
 
-        it('should set an earlier sync start date', function () {
-            deferGetSettings.resolve({sync_start_date: '2015-12-06'});
+        it('should set valid sync date', function () {
+            deferGetSettings.resolve({
+                sync_start_date: new Date('2015-12-06'),
+                sync_end_date: new Date('2016-06-06')
+            });
             scope.$apply();
 
             scope.settings.syncStartDate = new Date('2015-12-05');
+            scope.settings.syncEndDate = new Date('2016-06-05');
             spyOn(scope, 'clickSyncBtn').and.callThrough();
             scope.clickSyncBtn();
             scope.$apply();
@@ -90,15 +98,22 @@ describe('SystemSettingsController', function () {
 
             expect(mockLoaderService.hideModal).toHaveBeenCalled();
             expect(scope.confirmSync).toHaveBeenCalled();
-            expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({sync_start_date: '2015-12-05'});
+            expect(mockSystemSettingsService.updateSettings).toHaveBeenCalledWith({
+                sync_start_date: '2015-12-05', sync_end_date: '2016-06-05'
+            });
             expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-05'));
+            expect(scope.settings.syncEndDate).toEqual(new Date('2016-06-05'));
         });
 
-        it('should cancel an earlier sync start date', function () {
-            deferGetSettings.resolve({sync_start_date: '2015-12-06'});
+        it('should cancel an vision sync', function () {
+            deferGetSettings.resolve({
+                sync_start_date: new Date('2015-12-06'),
+                sync_end_date: new Date('2016-06-06')
+            });
             scope.$apply();
 
             scope.settings.syncStartDate = new Date('2015-12-05');
+            scope.settings.syncEndDate = new Date('2016-06-05');
             spyOn(scope, 'clickSyncBtn').and.callThrough();
             scope.clickSyncBtn();
             scope.$apply();
@@ -114,13 +129,18 @@ describe('SystemSettingsController', function () {
             expect(scope.cancelSync).toHaveBeenCalled();
             expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
             expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06'));
+            expect(scope.settings.syncEndDate).toEqual(new Date('2016-06-06'));
         });
 
-        it('should not set and later sync start date', function () {
-            deferGetSettings.resolve({sync_start_date: '2015-12-06'});
+        it('should not set and sync when dates are not changed', function () {
+            deferGetSettings.resolve({
+                sync_start_date: new Date('2015-12-06'),
+                sync_end_date: new Date('2016-06-06')
+            });
             scope.$apply();
 
             scope.settings.syncStartDate = new Date('2015-12-07');
+            scope.settings.syncEndDate = new Date('2015-08-07');
             spyOn(scope, 'clickSyncBtn').and.callThrough();
             scope.clickSyncBtn();
             scope.$apply();
@@ -133,6 +153,7 @@ describe('SystemSettingsController', function () {
             expect(mockLoaderService.hideModal).toHaveBeenCalled();
             expect(mockSystemSettingsService.updateSettings.calls.count()).toEqual(0);
             expect(scope.settings.syncStartDate).toEqual(new Date('2015-12-06'));
+            expect(scope.settings.syncEndDate).toEqual(new Date('2016-06-06'));
         });
     });
 

@@ -15,6 +15,7 @@ describe('New IP Delivery Controller', function () {
         "id": 1,
         "auto_track": false,
         "sync_start_date": null,
+        "sync_end_date": null,
         'notification_message': 'notification',
         "district_label": "District"
     };

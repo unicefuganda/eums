@@ -90,14 +90,14 @@
             </div>
             <div class="row row-spaced pad-top-5 pad-bottom-20">
                 <div class="col-xs-5">
-                    <label class="pull-right vertical-align-middle">Start Date for VISION Data Import</label>
+                    <label class="pull-right vertical-align-middle">VISION Data Import</label>
                 </div>
-                <div class="col-xs-5 pad-right-0">
+                <div class="col-xs-3 pad-right-0">
                     <span class="input-group" eums-date-picker>
                         <input type="text" class="form-control white-bg"
                                datepicker-popup="dd-MMM-yyyy"
                                ng-model="settings.syncStartDate"
-                               is-open="datepicker[1]"
+                               is-open="datepicker[0]"
                                datepicker-options="dateOptions"
                                show-button-bar="false"
                                ng-required="true"
@@ -105,6 +105,29 @@
                                placeholder="{{ settings.syncStartDate }}"
                                required="required"
                                value="{{ settings.syncStartDate | date : 'dd-MMM-yyyy' }}"/>
+
+                        <span class="input-group-btn">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    ng-click="open($event, 0)">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </span>
+                </div>
+                <div class="col-xs-3 pad-left-5">
+                    <span class="input-group" eums-date-picker>
+                        <input type="text" class="form-control white-bg"
+                               datepicker-popup="dd-MMM-yyyy"
+                               ng-model="settings.syncEndDate"
+                               is-open="datepicker[1]"
+                               datepicker-options="dateOptions"
+                               show-button-bar="false"
+                               ng-required="true"
+                               ng-disabled="true"
+                               placeholder="{{ settings.syncEndDate }}"
+                               required="required"
+                               value="{{ settings.syncEndDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
                             <button type="button"
                                     class="btn btn-default"
@@ -114,10 +137,10 @@
                         </span>
                     </span>
                 </div>
-                <div class="col-xs-2 pad-left-5">
+                <div class="col-xs-1 pad-left-0">
                     <span eums-date-picker>
                         <a ng-click="clickSyncBtn()" class="btn btn-default blue-border-button">
-                            <i class="glyphicon glyphicon-log-out"></i> Start sync</a>
+                            <i class="glyphicon glyphicon-log-out"></i>Start sync</a>
                     </span>
                 </div>
             </div>

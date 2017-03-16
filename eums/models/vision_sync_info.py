@@ -56,7 +56,10 @@ class VisionSyncInfo(models.Model):
 
     @staticmethod
     def get_manual_sync_end_date():
-        return datetime.date.today()
+        system_settings = SystemSettings.objects.first()
+        sync_end_date = system_settings.sync_end_date if system_settings else None
+
+        return sync_end_date if sync_end_date else datetime.date.today()
 
     @staticmethod
     def get_last_manual_sync_status():
