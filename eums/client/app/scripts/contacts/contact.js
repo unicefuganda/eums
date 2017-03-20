@@ -246,6 +246,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             replace: true,
             link: function (scope) {
                 scope.contact = {};
+                scope.userInput = '';
+                scope.inputLength = 0;
+                scope.isValid = false;
                 var contactInput = $('#contact-phone'), isEdit = false;
 
                 $templateCache.remove(templateUrl);
@@ -263,12 +266,31 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 });
 
                 scope.contactChanged = function () {
-                    if ($.trim(contactInput.val()) && contactInput.intlTelInput('isValidNumber')) {
+                    var newInput = contactInput.val();
+                    var newIsValid = contactInput.intlTelInput('isValidNumber');
+                    var newLength = trim(newInput).length;
+                    console.info('input:'+newInput+'; length:'+newLength+'; valid:'+newIsValid);
+                    console.info(newInput.length+'=='+newLength);
+                    if ($.trim(newInput) && newIsValid) {
                         scope.contact.phone = contactInput.intlTelInput('getNumber');
+                        scope.userInput = newInput;
+                        scope.inputLength = newLength;
+                        scope.isValid = newIsValid;
                     } else {
+                        if (scope.isValid && newLength > scope.inputLength) {
+                            contactInput.val(scope.userInput);
+                        } else {
+                            scope.userInput = newInput;
+                            scope.inputLength = newLength;
+                            scope.isValid = newIsValid;
+                        }
                         scope.contact.phone = undefined;
                     }
                 };
+
+                function trim(str) {
+                    return str.replace(/\s+/g,"");
+                }
 
                 function getEntityName(group) {
                     if (group.startsWith('UNICEF')) {
