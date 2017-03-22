@@ -246,9 +246,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             replace: true,
             link: function (scope) {
                 scope.contact = {};
-                scope.userInput = '';
-                scope.inputLength = 0;
-                scope.isValid = false;
                 var contactInput = $('#contact-phone'), isEdit = false;
 
                 $templateCache.remove(templateUrl);
@@ -266,27 +263,26 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 });
 
                 scope.contactChanged = function () {
-                    var newInput = contactInput.val();
-                    var newIsValid = contactInput.intlTelInput('isValidNumber');
-                    var newLength = trim(newInput).length;
-                    console.info('input:'+newInput+'; length:'+newLength+'; valid:'+newIsValid);
-                    console.info(newInput.length+'=='+newLength);
-                    if ($.trim(newInput) && newIsValid) {
+                    limitNumberToSomalia();
+                    if ($.trim(contactInput.val()) && contactInput.intlTelInput('isValidNumber')) {
                         scope.contact.phone = contactInput.intlTelInput('getNumber');
-                        scope.userInput = newInput;
-                        scope.inputLength = newLength;
-                        scope.isValid = newIsValid;
                     } else {
-                        if (scope.isValid && newLength > scope.inputLength) {
-                            contactInput.val(scope.userInput);
-                        } else {
-                            scope.userInput = newInput;
-                            scope.inputLength = newLength;
-                            scope.isValid = newIsValid;
-                        }
                         scope.contact.phone = undefined;
                     }
                 };
+
+                function limitNumberToSomalia() {
+                    var country = contactInput.intlTelInput('getSelectedCountryData').name,
+                        isSomalia = /Somalia/i.test(country);
+                    if(isSomalia) {
+                        var formatNumber = contactInput.intlTelInput('getNumber', intlTelInputUtils.numberFormat.NATIONAL),
+                            userInput = trim(contactInput.val()),
+                            rule = 8;
+                        if(userInput.length>rule) {
+                            contactInput.intlTelInput("setNumber", formatNumber.substr(0, formatNumber.length-1));
+                        }
+                    }
+                }
 
                 function trim(str) {
                     return str.replace(/\s+/g,"");
