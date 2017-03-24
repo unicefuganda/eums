@@ -6,6 +6,9 @@
             ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
             <a href="/#/direct-delivery">Delivery</a>
         </li>
+        <li ng-class="{ active: isActive('/ip-items,/item-deliveries')}">
+            <a href="/#/ip-items">Delivery Reporting</a>
+        </li>
         <li id="reports-nav" class="dropdown"
             ng-class="{ active: isActive('/ip-feedback-report-by-delivery,/item-feedback-report,/stock-report,/supply-efficiency-report')}">
             <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>

@@ -38,12 +38,12 @@ class PermissionsTest(PermissionsTestCase):
         self.assertTrue(permission_to_test not in self.ip_editor_permissions)
         self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
 
-    def test_grant_correct_view_distribution_plan_permission(self):
+    def test_grant_correct_view_distribution_plans_permission(self):
         permission_to_test = PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS
 
         self.assertTrue(permission_to_test not in self.unicef_admin_permissions)
-        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
-        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
         self.assertTrue(permission_to_test in self.ip_editor_permissions)
         self.assertTrue(permission_to_test in self.ip_viewer_permissions)
 
@@ -132,8 +132,8 @@ class PermissionsTest(PermissionsTestCase):
         permission_to_test = PermissionCode.CAN_VIEW_CONSIGNEE_ITEM
 
         self.assertTrue(permission_to_test not in self.unicef_admin_permissions)
-        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
-        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
         self.assertTrue(permission_to_test in self.ip_editor_permissions)
         self.assertTrue(permission_to_test in self.ip_viewer_permissions)
 
@@ -177,8 +177,8 @@ class PermissionsTest(PermissionsTestCase):
         permission_to_test = PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE
 
         self.assertTrue(permission_to_test in self.unicef_admin_permissions)
-        self.assertTrue(permission_to_test in self.unicef_editor_permissions)
-        self.assertTrue(permission_to_test in self.unicef_viewer_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_editor_permissions)
+        self.assertTrue(permission_to_test not in self.unicef_viewer_permissions)
         self.assertTrue(permission_to_test in self.ip_editor_permissions)
         self.assertTrue(permission_to_test not in self.ip_viewer_permissions)
 

@@ -68,8 +68,6 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN,
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN,
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
-        PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
-        PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
 
         PermissionCode.CAN_VIEW_UNICEF_MENU,
 
@@ -96,6 +94,9 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_ITEM,
         PermissionCode.CAN_CHANGE_NUMERIC_ANSWER,
         PermissionCode.CAN_PATCH_NUMERIC_ANSWER,
+
+        PermissionCode.CAN_VIEW_CONSIGNEE_ITEM,
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,
     ],
     GROUP_UNICEF_VIEWER: [
         PermissionCode.CAN_VIEW_DASH_BOARD,
@@ -105,8 +106,6 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN,
 
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLAN_NODE,
-        PermissionCode.CAN_ADD_DISTRIBUTION_PLAN_NODE,
-        PermissionCode.CAN_CHANGE_DISTRIBUTION_PLAN_NODE,
 
         PermissionCode.CAN_VIEW_SELF_CONTACT,
         PermissionCode.CAN_VIEW_CONTACT,
@@ -125,6 +124,9 @@ GROUP_PERMISSIONS = {
         PermissionCode.CAN_VIEW_DELIVERY_FEEDBACK_REPORT,
 
         PermissionCode.CAN_VIEW_ITEM,
+
+        PermissionCode.CAN_VIEW_CONSIGNEE_ITEM,
+        PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,
     ],
     GROUP_IP_EDITOR: [
         PermissionCode.CAN_VIEW_DISTRIBUTION_PLANS,
