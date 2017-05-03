@@ -15,7 +15,7 @@ from eums.test.helpers.model_builder import ModelBuilder
 HEADER = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN, 'Content-Type': 'application/json'}
 FLOW_ID = 'b128ffd2-7ad8-4899-88ab-b7a863c623b5'
 
-contact = {'_id': '58b912f85d0e55577f61d4d2', 'firstName': 'Test', 'lastName': 'User', 'phone': '+256 772 123456'}
+contact = {'firstName': 'Test', 'lastName': 'User', 'phone': '+256 772 123456'}
 item = 'Plumpynut'
 sender = 'Save the Children'
 
@@ -28,8 +28,7 @@ class TestRapidProService(TestCase):
         settings.RAPIDPRO_LIVE = True
         self.expected_payload = json.dumps({
             'flow': FLOW_ID,
-            'phone': ['+256 772 123456'],
-            "contacts": ["58b912f85d0e55577f61d4d2"],
+            'urns': ["tel:+256 772 123456"],
             'extra': {'contactName': 'Test User', 'sender': sender, 'product': item}
         })
 

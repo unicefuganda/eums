@@ -41,7 +41,7 @@ class RapidProService(object):
     def create_run(self, contact, flow, item, sender):
         logger.info('contact = %s' % contact)
 
-        payload = FlowRequestTemplate().build(phone=contact['phone'], contact_id=contact['_id'],
+        payload = FlowRequestTemplate().build(phone=contact['phone'],
                                               flow=self.flow_id(flow), sender=sender, item=item,
                                               contact_name="%s %s" % (contact['firstName'], contact['lastName']))
 
