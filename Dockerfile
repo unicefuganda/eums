@@ -144,7 +144,7 @@ RUN virtualenv ~/.virtualenvs/eums
 RUN /bin/bash -c "source ~/.virtualenvs/eums/bin/activate && cd /opt/app/eums && pip install -r requirements.txt"
 
 COPY ./contacts/package.json /opt/app/contacts/package.json
-RUN cd /opt/app/contacts/ && npm install
+RUN cd /opt/app/contacts/ && npm install -g fibers@1.0.15 && npm install
 
 COPY ./eums/eums/client/package.json /opt/app/eums/eums/client/package.json
 RUN cd /opt/app/eums/eums/client && npm install
