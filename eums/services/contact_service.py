@@ -148,33 +148,36 @@ class ContactService(object):
         rapid_pro_contact = ContactService.build_rapid_pro_contact(contact)
         phone = contact.get('phone')
         pre_phone = contact.get('prePhone')
-        contact.pop('prePhone') if pre_phone else None
-        new_or_phone_not_modified = (not pre_phone or pre_phone == phone)
 
-        if new_or_phone_not_modified:
-            return ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
-
-        pre_rapid_pro_contact = ContactService.get_rapid_pro_contact(pre_phone).json()
+        pre_rapid_pro_contact = ContactService.get_rapid_pro_contact(pre_phone or phone).json()
         results = pre_rapid_pro_contact.get('results')
 
         if results:
             rapid_pro_contact.update({
                 'uuid': results[0].get('uuid')
             })
-            rapid_pro_contact.get('urns').extend(results[0].get('urns'))
-            ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
+            if results[0].get('urns'):
+                rapid_pro_contact.get('urns').extend(results[0].get('urns'))
+            if pre_phone and pre_phone != phone:
+                try:
+                    rapid_pro_contact.get('urns').remove('tel:%s' % pre_phone)
+                except ValueError:
+                    pass
 
-            rapid_pro_contact.get('urns').pop(rapid_pro_contact.get('urns').index('tel:%s' % pre_phone))
-            response = ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
-
-            logger.info('add or update rapid pro contact response = [%s]' % response)
-            return response
+        response = ContactService.__post_contact_to_rapid_pro(rapid_pro_contact)
+        logger.info('add or update rapid pro contact response = [%s]' % response)
+        return response
 
     @staticmethod
     def __post_contact_to_rapid_pro(contact):
         try:
-            return requests.post(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(contact),
+            url = settings.RAPIDPRO_URLS.get('CONTACTS')
+            if contact.get('uuid'):
+                url = '%s?%s' % (url, urlencode({'uuid': contact.get('uuid')}))
+            response = requests.post(url, data=json.dumps(contact),
                                  headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
+            logger.info('rapid pro contact api response: %s', response.json())
+            return response
         except Exception, error:
             logger.error(error)
             return HTTP_504_GATEWAY_TIMEOUT
@@ -222,7 +225,7 @@ class ContactService(object):
 
         return {
             'name': '%(firstName)s %(lastName)s' % contact,
-            'groups': [{'name': 'EUMS', 'uuid': contact_group_uuid}],
+            'groups': [contact_group_uuid],
             'urns': ['tel:%(phone)s' % contact],
             'fields': ContactService.build_rapid_pro_contact_fields(contact)
         }

@@ -170,13 +170,14 @@ class ContactServiceTest(TestCase):
     @patch('eums.services.contact_service.ContactService.build_rapid_pro_contact')
     def test_should_add_rapid_pro_contact_called(self, rapid_pro_contact):
         rapid_pro_contact.return_value = self.generate_build_rapid_pro_contact(CONTACT)
-        requests.get = MagicMock()
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value={'results': []}
+        )))
         requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=CONTACT)))
         ContactService.add_or_update_rapid_pro_contact(CONTACT)
 
         self.assertTrue(requests.post.called)
-        self.assertFalse(requests.get.called)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     @patch('eums.services.contact_service.ContactService.build_rapid_pro_contact')
@@ -196,7 +197,6 @@ class ContactServiceTest(TestCase):
         ContactService.add_or_update_rapid_pro_contact(new_contact)
 
         self.assertTrue(requests.post.called)
-        self.assertFalse(requests.get.called)
 
     @override_settings(RAPIDPRO_LIVE=True, RAPIDPRO_SSL_VERIFY=False)
     def test_should_update_rapid_pro_contact_when_phone_modified(self):
@@ -215,7 +215,6 @@ class ContactServiceTest(TestCase):
         logger.info(new_contact)
         ContactService.add_or_update_rapid_pro_contact(new_contact)
 
-        self.assertTrue(requests.get.called)
         self.assertTrue(requests.post.called)
 
     @override_settings(RAPIDPRO_LIVE=False)
@@ -310,6 +309,9 @@ class ContactServiceTest(TestCase):
 
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
         rapid_pro_contact.return_value = self.generate_build_rapid_pro_contact(contact)
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
+            return_value={'results': []}
+        )))
         requests.post = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
 
