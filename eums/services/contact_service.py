@@ -175,7 +175,7 @@ class ContactService(object):
             if contact.get('uuid'):
                 url = '%s?%s' % (url, urlencode({'uuid': contact.get('uuid')}))
             response = requests.post(url, data=json.dumps(contact),
-                                 headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
+                                     headers=HEADER_RAPID_PRO, verify=settings.RAPIDPRO_SSL_VERIFY)
             logger.info('rapid pro contact api response: %s', response.json())
             return response
         except Exception, error:
@@ -199,8 +199,8 @@ class ContactService(object):
         if not settings.RAPIDPRO_LIVE:
             return
 
-        params = {'urns': 'tel:%s' % phone}
-        response = requests.get(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(params), headers=HEADER_RAPID_PRO,
+        params = {'urn': 'tel:%s' % phone}
+        response = requests.get(settings.RAPIDPRO_URLS.get('CONTACTS'), params=params, headers=HEADER_RAPID_PRO,
                                 verify=settings.RAPIDPRO_SSL_VERIFY)
         return response
 

@@ -268,13 +268,13 @@ class ContactServiceTest(TestCase):
         ips = ["KAMPALA DHO, WAKISO DHO"]
         types = ["END_USER", "IMPLEMENTING_PARTNER"]
 
-        params = {'urns': 'tel:%s' % phone}
+        params = {'urn': 'tel:%s' % phone}
         contact = self.generate_eums_contact(districts, first_name, ips, last_name, outcomes, phone, types)
         requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(
             return_value=self.generate_add_or_update_rapid_pro_contact_response(contact))))
         response = ContactService.get_rapid_pro_contact(phone)
 
-        requests.get.assert_called_once_with(settings.RAPIDPRO_URLS.get('CONTACTS'), data=json.dumps(params),
+        requests.get.assert_called_once_with(settings.RAPIDPRO_URLS.get('CONTACTS'), params=params,
                                              headers=HEADER, verify=settings.RAPIDPRO_SSL_VERIFY)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
